@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SpeedView">
+        <attr name="indicatorColor" format="color" />
+        <attr name="centerCircleColor" format="color" />
+        <attr name="markColor" format="color" />
+        <attr name="lowSpeedColor" format="color" />
+        <attr name="mediumSpeedColor" format="color" />
+        <attr name="highSpeedColor" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="speedometerWidth" format="dimension" />
+        <attr name="maxSpeed" format="integer" />
+        <attr name="withTremble" format="boolean" />
+        <attr name="speedTextSize" format="dimension" />
+    </declare-styleable>
+</resources>
