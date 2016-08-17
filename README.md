@@ -5,6 +5,8 @@ Dynamic Speedometer UI for Android :zap: , you can change the color of everythin
 
 Library Size ~ 6 Kb.
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-green.svg?style=true)](https://android-arsenal.com/details/1/4169)
+
 <img src="/images/SpeedView.gif" width="70%" /><br/>
 
 # dependencies 
