@@ -7,7 +7,11 @@ Library Size ~ 6 Kb.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-green.svg?style=true)](https://android-arsenal.com/details/1/4169)
 
-<img src="/images/SpeedView.gif" width="70%" /><br/>
+<img src="/images/SpeedView.gif" width="96%" /><br/>
+<img src="/images/SpeedView1.png" width="24%" />
+<img src="/images/SpeedView2.png" width="24%" />
+<img src="/images/SpeedView3.png" width="24%" />
+<img src="/images/SpeedView4.png" width="24%" />
 
 # dependencies 
 
