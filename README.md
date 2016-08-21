@@ -3,7 +3,7 @@ Dynamic Speedometer UI for Android :zap: , you can change the color of everythin
 
 `minSdkVersion=11`
 
-Library Size ~ 6 Kb.
+Library Size ~ 9 Kb.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-green.svg?style=true)](https://android-arsenal.com/details/1/4169)
 
@@ -97,6 +97,7 @@ deluxeSpeedView.setWithEffects(false); //def : true
 deluxeSpeedView.setSpeedBackgroundColor(Color.YELLOW);
 ```
 
+# Attributes
 
 and also you can change everything in XML, see this Attributes : 
 
