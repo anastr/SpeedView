@@ -10,44 +10,18 @@
     android:orientation="vertical"
     tools:context="com.github.anastr.speedview.MainActivity">
 
-    <com.github.anastr.speedviewlib.SpeedView
-        android:id="@+id/speedView"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <SeekBar
-            android:id="@+id/seekBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:max="100"
-            android:layout_gravity="center_vertical"/>
-
-        <TextView
-            android:id="@+id/textSpeed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            tools:text="50" />
-
-        <Button
-            android:id="@+id/ok"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ok" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:onClick="openSpeedViewActivity"
+        android:text="open Speed View Activity"
+        style="@style/Base.Widget.AppCompat.Button.Colored"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="openControlActivity"
-        android:text="control" />
+        android:onClick="openDeluxeSpeedActivity"
+        android:text="open Deluxe Speed View Activity"
+        style="@style/Base.Widget.AppCompat.Button.Colored"/>
 
 </LinearLayout>
