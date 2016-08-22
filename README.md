@@ -69,7 +69,8 @@ speedView.setMaxSpeed(220);
 ## 2nd DeluxeSpeedView
 SpeedView with Blur Effects.
 
-<img src="/images/DeluxeSpeedView1.png" width="50%" />
+<img src="/images/DeluxeSpeedView1.png" width="49%" />
+<img src="/images/DeluxeSpeedView2.png" width="49%" />
 
 **add SpeedView to your layout**
 
