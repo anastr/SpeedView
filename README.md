@@ -128,6 +128,14 @@ app:speedTextColor="#000000"
 
 ```
 
+## Coming Soon ...
+i well try to draw this Speedometer.
+if you have any idea, image, template please **open new issue** and give me the image , and i well try to add it to the Library.
+
+<img src="/images/new1.png" width="24%" />
+<img src="/images/new2.png" width="24%" />
+<img src="/images/new3.png" width="24%" />
+
 # LICENSE
 ```
 
