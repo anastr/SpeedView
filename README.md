@@ -72,7 +72,7 @@ SpeedView with Blur Effects.
 <img src="/images/DeluxeSpeedView1.png" width="49%" />
 <img src="/images/DeluxeSpeedView2.png" width="49%" />
 
-**add SpeedView to your layout**
+**add DeluxeSpeedView to your layout**
 
 ```xml
 
@@ -116,6 +116,7 @@ app:mediumSpeedColor="#edd029"
 app:highSpeedColor="#ec2f33"
 app:markColor="#99000000"
 app:textColor="#e23900"
+app:backgroundCircleColor="#212121"
 
 ```
 Attributes just for **DeluxeSpeedView** :
