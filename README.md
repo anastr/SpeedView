@@ -1,5 +1,5 @@
 # SpeedView
-Dynamic Speedometer UI for Android :zap: , you can change the color of everything.
+Dynamic Speedometer for Android. amazing, powerful, and multi shape :zap: , you can change the color of everything.
 
 `minSdkVersion=11`
 
