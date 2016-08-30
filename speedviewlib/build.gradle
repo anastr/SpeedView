@@ -49,7 +49,7 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 group = 'com.github.anastr'
-version = '1.0.3'
+version = '1.0.6'
 
 bintray {
     user = properties.getProperty("bintray.user")
@@ -59,10 +59,10 @@ bintray {
         name = 'SpeedView' // the name of the package in BinTray
 
         version {
-            name = 'SpeedView_1.0.3' // the name of your library project
+            name = 'SpeedView_1.0.6' // the name of your library project
             desc = 'Speedometer UI for Android'
             released  = new Date()
-            vcsTag = '1.0.3' // the version
+            vcsTag = '1.0.6' // the version
         }
 
         licenses = ['Apache-2.0']

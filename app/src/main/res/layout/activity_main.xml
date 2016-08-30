@@ -14,14 +14,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openSpeedViewActivity"
-        android:text="open Speed View Activity"
+        android:text="Speed View"
         style="@style/Base.Widget.AppCompat.Button.Colored"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openDeluxeSpeedActivity"
-        android:text="open Deluxe Speed View Activity"
+        android:text="Deluxe Speed View"
+        style="@style/Base.Widget.AppCompat.Button.Colored"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="openAwesomeSpeedometerActivity"
+        android:text="Awesome Speedometer View"
         style="@style/Base.Widget.AppCompat.Button.Colored"/>
 
 </LinearLayout>

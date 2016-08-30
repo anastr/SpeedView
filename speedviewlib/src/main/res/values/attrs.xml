@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="Speed">
+    <declare-styleable name="Speedometer">
         <attr name="indicatorColor" format="color" />
         <attr name="centerCircleColor" format="color" />
         <attr name="markColor" format="color" />
@@ -14,7 +14,10 @@
         <attr name="withTremble" format="boolean" />
         <attr name="withBackgroundCircle" format="boolean" />
         <attr name="speedTextSize" format="dimension" />
+        <attr name="textSize" format="dimension" />
         <attr name="unit" format="string" />
+
+        <attr name="speedTextColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speed">
@@ -31,6 +34,7 @@
         <attr name="withTremble" />
         <attr name="withBackgroundCircle" />
         <attr name="speedTextSize" />
+        <attr name="textSize" />
         <attr name="unit" />
     </declare-styleable>
 
@@ -48,9 +52,31 @@
         <attr name="withTremble" />
         <attr name="withBackgroundCircle" />
         <attr name="speedTextSize" />
+        <attr name="textSize" />
         <attr name="unit" />
-        <attr name="speedTextColor" format="color" />
+
+        <attr name="speedTextColor" />
         <attr name="speedBackgroundColor" format="color" />
         <attr name="withEffects" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="AwesomeSpeedometer" parent="Speed">
+        <attr name="indicatorColor" />
+        <attr name="centerCircleColor" />
+        <attr name="markColor" />
+        <attr name="textColor" />
+        <attr name="backgroundCircleColor" />
+        <attr name="speedometerWidth" />
+        <attr name="maxSpeed" />
+        <attr name="withTremble" />
+        <attr name="withBackgroundCircle" />
+        <attr name="speedTextSize" />
+        <attr name="textSize" />
+        <attr name="unit" />
+
+        <attr name="speedTextColor"/>
+        <attr name="indicatorWidth" format="dimension"/>
+        <attr name="speedometerColor" format="color"/>
+        <attr name="trianglesColor" format="color"/>
     </declare-styleable>
 </resources>

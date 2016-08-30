@@ -1,6 +1,5 @@
 package com.github.anastr.speedview;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -8,29 +7,45 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.github.anastr.speedviewlib.SpeedView;
+import com.github.anastr.speedviewlib.AwesomeSpeedometer;
 
-public class SpeedViewActivity extends AppCompatActivity {
+public class AwesomeSpeedometerActivity extends AppCompatActivity {
 
-    SpeedView speedView;
+    AwesomeSpeedometer awesomeSpeedometer;
     SeekBar seekBar;
-    Button ok;
+    Button speedTo, realSpeedTo, stop;
     TextView textSpeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_speed_view);
+        setContentView(R.layout.activity_awesome_speedometer);
 
-        speedView = (SpeedView) findViewById(R.id.awesomeSpeedometer);
+        awesomeSpeedometer = (AwesomeSpeedometer) findViewById(R.id.awesomeSpeedometer);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
-        ok = (Button) findViewById(R.id.ok);
+        speedTo = (Button) findViewById(R.id.speedTo);
+        realSpeedTo = (Button) findViewById(R.id.realSpeedTo);
+        stop = (Button) findViewById(R.id.stop);
         textSpeed = (TextView) findViewById(R.id.textSpeed);
 
-        ok.setOnClickListener(new View.OnClickListener() {
+        speedTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                speedView.speedTo(seekBar.getProgress());
+                awesomeSpeedometer.speedTo(seekBar.getProgress());
+            }
+        });
+
+        realSpeedTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                awesomeSpeedometer.realSpeedTo(seekBar.getProgress());
+            }
+        });
+
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                awesomeSpeedometer.stop();
             }
         });
 
@@ -50,10 +65,5 @@ public class SpeedViewActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void openControlActivity(View view) {
-        Intent intent = new Intent(SpeedViewActivity.this, ControlActivity.class);
-        startActivity(intent);
     }
 }

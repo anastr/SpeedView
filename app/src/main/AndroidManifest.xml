@@ -17,7 +17,8 @@
         </activity>
         <activity android:name=".ControlActivity" />
         <activity android:name=".DeluxeSpeedActivity" />
-        <activity android:name=".SpeedViewActivity"></activity>
+        <activity android:name=".SpeedViewActivity" />
+        <activity android:name=".AwesomeSpeedometerActivity"></activity>
     </application>
 
 </manifest>

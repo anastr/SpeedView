@@ -7,22 +7,35 @@ Library Size ~ 9 Kb.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-green.svg?style=true)](https://android-arsenal.com/details/1/4169)
 
-<img src="/images/SpeedView.gif" width="100%" /><br/>
+<img src="/images/SpeedView.gif" width="30%" />
+<img src="/images/DeluxeSpeedView.gif" width="30%" />
+<img src="/images/AwesomeSpeedometer.gif" width="30%" /><br/>
 
-# dependencies 
+# Download
 
 **add this line to** `build.gradle`
 
 ```gradle
 
 dependencies {
-	    compile 'com.github.anastr:speedviewlib:1.0.3'
+	    compile 'com.github.anastr:speedviewlib:1.0.6'
 }
 
 ```
 
+for **maven**
+
+```maven
+<dependency>
+  <groupId>com.github.anastr</groupId>
+  <artifactId>speedviewlib</artifactId>
+  <version>1.0.6</version>
+  <type>pom</type>
+</dependency>
+```
+
 # Usage
-we have two views :
+we have three views :
 
 ## 1st SpeedView
 
@@ -69,8 +82,8 @@ speedView.setMaxSpeed(220);
 ## 2nd DeluxeSpeedView
 SpeedView with Blur Effects.
 
-<img src="/images/DeluxeSpeedView1.png" width="49%" />
-<img src="/images/DeluxeSpeedView2.png" width="49%" />
+<img src="/images/DeluxeSpeedView1.png" width="30%" />
+<img src="/images/DeluxeSpeedView2.png" width="30%" />
 
 **add DeluxeSpeedView to your layout**
 
@@ -98,6 +111,39 @@ deluxeSpeedView.setWithEffects(false); //def : true
 deluxeSpeedView.setSpeedBackgroundColor(Color.YELLOW);
 ```
 
+## 3st AwesomeSpeedometer
+
+<img src="/images/AwesomeSpeedometer.png" width="30%" />
+
+**add AwesomeSpeedometer to your layout**
+
+```xml
+
+<com.github.anastr.speedviewlib.AwesomeSpeedometer
+        android:id="@+id/awesomeSpeedometer"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:speedometerWidth="75dp"
+        app:indicatorWidth="35dp" />
+
+```
+the same methods in SpeedView
+```java
+AwesomeSpeedometer awesomeSpeedometer = (AwesomeSpeedometer) findViewById(R.id.awesomeSpeedometer);
+
+awesomeSpeedometer.speedTo(50);
+
+awesomeSpeedometer.setMaxSpeed(220);
+```
+
+special methods for AwesomeSpeedometer :
+```java
+awesomeSpeedometer.setIndicatorWidth(80); //def : 60dp
+
+awesomeSpeedometer.setTrianglesColor(Color.YELLOW);
+awesomeSpeedometer.setSpeedometerColor(Color.RED);
+```
+
 # Attributes
 
 and also you can change everything in XML, see this Attributes : 
@@ -117,6 +163,7 @@ app:highSpeedColor="#ec2f33"
 app:markColor="#99000000"
 app:textColor="#e23900"
 app:backgroundCircleColor="#212121"
+app:textColor="#84ff84"
 
 ```
 Attributes just for **DeluxeSpeedView** :
@@ -129,13 +176,24 @@ app:speedTextColor="#000000"
 
 ```
 
+Attributes just for **AwesomeSpeedometer** :
+
+```xml
+
+app:speedometerWidth="70dp" <!-- def : 60dp -->
+app:indicatorWidth="#30dp" <!-- def : 25dp -->
+app:speedTextColor="#000000"
+app:speedometerColor="#ef3737"
+app:trianglesColor="#25b9b4"
+
+```
+
 ## Coming Soon ...
 i well try to draw this Speedometer.
 if you have any idea, image, template please **open new issue** and give me the image , and i well try to add it to the Library.
 
-<img src="/images/new1.png" width="24%" />
-<img src="/images/new2.png" width="24%" />
-<img src="/images/new3.png" width="24%" />
+<img src="/images/new2.png" width="30%" />
+<img src="/images/new3.png" width="30%" />
 
 # LICENSE
 ```

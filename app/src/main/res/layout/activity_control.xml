@@ -12,7 +12,7 @@
     tools:ignore="HardcodedText">
 
     <com.github.anastr.speedviewlib.SpeedView
-        android:id="@+id/speedView"
+        android:id="@+id/awesomeSpeedometer"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -27,7 +27,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/speedView" >
+        android:layout_below="@+id/awesomeSpeedometer" >
 
         <LinearLayout
             android:orientation="vertical"

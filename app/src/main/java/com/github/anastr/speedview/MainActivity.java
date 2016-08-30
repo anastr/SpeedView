@@ -22,4 +22,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent (MainActivity.this, DeluxeSpeedActivity.class);
         startActivity(intent);
     }
+
+    public void openAwesomeSpeedometerActivity(View view) {
+        Intent intent = new Intent (MainActivity.this, AwesomeSpeedometerActivity.class);
+        startActivity(intent);
+    }
 }

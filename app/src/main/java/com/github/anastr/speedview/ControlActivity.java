@@ -27,7 +27,7 @@ public class ControlActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
 
-        speedView = (SpeedView) findViewById(R.id.speedView);
+        speedView = (SpeedView) findViewById(R.id.awesomeSpeedometer);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         textSpeed = (TextView) findViewById(R.id.textSpeed);
         maxSpeed = (EditText) findViewById(R.id.maxSpeed);
