@@ -111,7 +111,7 @@ deluxeSpeedView.setWithEffects(false); //def : true
 deluxeSpeedView.setSpeedBackgroundColor(Color.YELLOW);
 ```
 
-## 3st AwesomeSpeedometer
+## 3rd AwesomeSpeedometer
 
 <img src="/images/AwesomeSpeedometer.png" width="30%" />
 
