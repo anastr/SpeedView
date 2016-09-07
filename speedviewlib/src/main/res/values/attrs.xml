@@ -9,6 +9,7 @@
         <attr name="highSpeedColor" format="color" />
         <attr name="textColor" format="color" />
         <attr name="backgroundCircleColor" format="color" />
+        <attr name="speedTextColor" format="color"/>
         <attr name="speedometerWidth" format="dimension" />
         <attr name="maxSpeed" format="integer" />
         <attr name="withTremble" format="boolean" />
@@ -16,11 +17,9 @@
         <attr name="speedTextSize" format="dimension" />
         <attr name="textSize" format="dimension" />
         <attr name="unit" format="string" />
-
-        <attr name="speedTextColor" format="color"/>
     </declare-styleable>
 
-    <declare-styleable name="SpeedView" parent="Speed">
+    <declare-styleable name="SpeedView" parent="Speedometer">
         <attr name="indicatorColor" />
         <attr name="centerCircleColor" />
         <attr name="markColor" />
@@ -29,6 +28,7 @@
         <attr name="highSpeedColor" />
         <attr name="textColor" />
         <attr name="backgroundCircleColor" />
+        <attr name="speedTextColor"/>
         <attr name="speedometerWidth" />
         <attr name="maxSpeed" />
         <attr name="withTremble" />
@@ -38,7 +38,7 @@
         <attr name="unit" />
     </declare-styleable>
 
-    <declare-styleable name="DeluxeSpeedView" parent="Speed">
+    <declare-styleable name="DeluxeSpeedView" parent="Speedometer">
         <attr name="indicatorColor" />
         <attr name="centerCircleColor" />
         <attr name="markColor" />
@@ -47,25 +47,26 @@
         <attr name="highSpeedColor" />
         <attr name="textColor" />
         <attr name="backgroundCircleColor" />
-        <attr name="speedometerWidth" />
-        <attr name="maxSpeed" />
-        <attr name="withTremble" />
-        <attr name="withBackgroundCircle" />
-        <attr name="speedTextSize" />
-        <attr name="textSize" />
-        <attr name="unit" />
-
         <attr name="speedTextColor" />
+        <attr name="speedometerWidth" />
+        <attr name="maxSpeed" />
+        <attr name="withTremble" />
+        <attr name="withBackgroundCircle" />
+        <attr name="speedTextSize" />
+        <attr name="textSize" />
+        <attr name="unit" />
+
         <attr name="speedBackgroundColor" format="color" />
         <attr name="withEffects" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="AwesomeSpeedometer" parent="Speed">
+    <declare-styleable name="AwesomeSpeedometer" parent="Speedometer">
         <attr name="indicatorColor" />
         <attr name="centerCircleColor" />
         <attr name="markColor" />
         <attr name="textColor" />
         <attr name="backgroundCircleColor" />
+        <attr name="speedTextColor"/>
         <attr name="speedometerWidth" />
         <attr name="maxSpeed" />
         <attr name="withTremble" />
@@ -74,9 +75,31 @@
         <attr name="textSize" />
         <attr name="unit" />
 
-        <attr name="speedTextColor"/>
         <attr name="indicatorWidth" format="dimension"/>
         <attr name="speedometerColor" format="color"/>
         <attr name="trianglesColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="RaySpeedometer" parent="DeluxeSpeedView">
+        <attr name="markColor" />
+        <attr name="lowSpeedColor" />
+        <attr name="mediumSpeedColor" />
+        <attr name="highSpeedColor" />
+        <attr name="textColor" />
+        <attr name="backgroundCircleColor" />
+        <attr name="speedTextColor" />
+        <attr name="speedometerWidth" />
+        <attr name="maxSpeed" />
+        <attr name="withTremble" />
+        <attr name="withBackgroundCircle" />
+        <attr name="speedTextSize" />
+        <attr name="textSize" />
+        <attr name="unit" />
+
+        <attr name="speedBackgroundColor"/>
+        <attr name="withEffects"/>
+        <attr name="rayColor" format="color"/>
+        <attr name="degreeBetweenMark" format="integer"/>
+        <attr name="markWidth" format="dimension"/>
     </declare-styleable>
 </resources>
