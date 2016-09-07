@@ -145,7 +145,7 @@ awesomeSpeedometer.setTrianglesColor(Color.YELLOW);
 awesomeSpeedometer.setSpeedometerColor(Color.RED);
 ```
 
-## 3rd RaySpeedometer
+## 4th RaySpeedometer
 
 <img src="/images/RaySpeedometer.png" width="30%" />
 
@@ -169,7 +169,7 @@ raySpeedometer.setRayColor(Color.RED);
 
 # Attributes
 
-and also you can change everything in XML, see this Attributes : 
+and also you can change everything in XML, see this Attributes for **all Speedometers** : 
 
 ```xml
 
