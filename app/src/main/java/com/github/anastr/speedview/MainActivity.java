@@ -27,4 +27,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent (MainActivity.this, AwesomeSpeedometerActivity.class);
         startActivity(intent);
     }
+
+    public void openRaySpeedometerActivity(View view) {
+        Intent intent = new Intent (MainActivity.this, RayActivity.class);
+        startActivity(intent);
+    }
 }

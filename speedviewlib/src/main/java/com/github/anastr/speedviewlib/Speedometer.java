@@ -33,7 +33,8 @@ abstract public class Speedometer extends View {
             , mediumSpeedColor = Color.YELLOW
             , highSpeedColor = Color.RED
             , textColor = Color.BLACK
-            , backgroundCircleColor = Color.WHITE;
+            , backgroundCircleColor = Color.WHITE
+            , speedTextColor = Color.BLACK;
 
     private int speed = 0;
     private float correctSpeed = 0f;
@@ -79,6 +80,7 @@ abstract public class Speedometer extends View {
         highSpeedColor = a.getColor(R.styleable.Speedometer_highSpeedColor, highSpeedColor);
         textColor = a.getColor(R.styleable.Speedometer_textColor, textColor);
         backgroundCircleColor = a.getColor(R.styleable.Speedometer_backgroundCircleColor, backgroundCircleColor);
+        speedTextColor = a.getColor(R.styleable.Speedometer_speedTextColor, speedTextColor);
         speedometerWidth = a.getDimension(R.styleable.Speedometer_speedometerWidth, speedometerWidth);
         maxSpeed = a.getInt(R.styleable.Speedometer_maxSpeed, maxSpeed);
         withTremble = a.getBoolean(R.styleable.Speedometer_withTremble, withTremble);
@@ -292,12 +294,21 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * what speed is now
      * @return the last speed which you set by {@link #speedTo(int)}
-     * or {@link #speedTo(int, long)} or {@link #speedPercentTo(int)}.
+     * or {@link #speedTo(int, long)} or {@link #speedPercentTo(int)},
+     * or if you stop speedometer By {@link #stop()} method.
      */
     public int getSpeed() {
         return speed;
+    }
+
+    /**
+     * what is correct speed is now.
+     * <p>It will give different results if withTremble is running.</p>
+     * @see #setWithTremble(boolean)
+     */
+    public float getCorrectSpeed() {
+        return correctSpeed;
     }
 
     public int getMaxSpeed() {
@@ -401,7 +412,7 @@ abstract public class Speedometer extends View {
         return textSize;
     }
 
-    public void setTextSize(float speedTextSize) {
+    public void setTextSize(float textSize) {
         this.textSize = textSize;
         invalidate();
     }
@@ -439,6 +450,15 @@ abstract public class Speedometer extends View {
 
     public void setWithBackgroundCircle(boolean withBackgroundCircle) {
         this.withBackgroundCircle = withBackgroundCircle;
+        invalidate();
+    }
+
+    public int getSpeedTextColor() {
+        return speedTextColor;
+    }
+
+    public void setSpeedTextColor(int speedTextColor) {
+        this.speedTextColor = speedTextColor;
         invalidate();
     }
 }

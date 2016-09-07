@@ -19,13 +19,21 @@ import java.util.Locale;
  */
 public class DeluxeSpeedView extends Speedometer {
 
-    private Path indicatorPath, markPath, smallMarkPath;
-    private Paint circlePaint, centerCirclePaint, indicatorPaint
-            , speedometerPaint, markPaint, smallMarkPaint, speedBackgroundPaint;
-    private TextPaint speedTextPaint, textPaint;
-    private RectF speedometerRect, speedBackgroundRect;
-    private int speedBackgroundColor = Color.WHITE
-            , speedTextColor = Color.BLACK;
+    private Path indicatorPath = new Path(),
+            markPath = new Path(),
+            smallMarkPath = new Path();
+    private Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            smallMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            speedBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
+            textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private RectF speedometerRect = new RectF(),
+            speedBackgroundRect = new RectF();
+    private int speedBackgroundColor = Color.WHITE;
 
     private boolean withEffects = true;
 
@@ -69,7 +77,6 @@ public class DeluxeSpeedView extends Speedometer {
     private void initAttributeSet(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DeluxeSpeedView, 0, 0);
 
-        speedTextColor = a.getColor(R.styleable.DeluxeSpeedView_speedTextColor, speedTextColor);
         speedBackgroundColor = a.getColor(R.styleable.DeluxeSpeedView_speedBackgroundColor, speedBackgroundColor);
         withEffects = a.getBoolean(R.styleable.DeluxeSpeedView_withEffects, withEffects);
         a.recycle();
@@ -77,23 +84,6 @@ public class DeluxeSpeedView extends Speedometer {
     }
 
     private void init() {
-        indicatorPath = new Path();
-        markPath = new Path();
-        smallMarkPath = new Path();
-
-        circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        smallMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        speedBackgroundPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-
-        speedometerRect = new RectF();
-        speedBackgroundRect = new RectF();
-
         speedometerPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
@@ -113,6 +103,7 @@ public class DeluxeSpeedView extends Speedometer {
 
         float indW = w/32f;
 
+        indicatorPath.reset();
         indicatorPath.moveTo(w/2f, h/5f);
         indicatorPath.lineTo(w/2f -indW, h*3f/5f);
         indicatorPath.lineTo(w/2f +indW, h*3f/5f);
@@ -121,12 +112,14 @@ public class DeluxeSpeedView extends Speedometer {
         indicatorPath.moveTo(0f, 0f);
 
         float markH = h/28f;
+        markPath.reset();
         markPath.moveTo(w/2f, 0f);
         markPath.lineTo(w/2f, markH);
         markPath.moveTo(0f, 0f);
         markPaint.setStrokeWidth(markH/3f);
 
         float smallMarkH = h/20f;
+        smallMarkPath.reset();
         smallMarkPath.moveTo(w/2f, getSpeedometerWidth());
         smallMarkPath.lineTo(w/2f, getSpeedometerWidth() + smallMarkH);
         smallMarkPath.moveTo(0f, 0f);
@@ -138,7 +131,7 @@ public class DeluxeSpeedView extends Speedometer {
         speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
         smallMarkPaint.setColor(getMarkColor());
-        speedTextPaint.setColor(speedTextColor);
+        speedTextPaint.setColor(getSpeedTextColor());
         speedTextPaint.setTextSize(getSpeedTextSize());
         textPaint.setColor(getTextColor());
         textPaint.setTextSize(getTextSize());
@@ -188,16 +181,14 @@ public class DeluxeSpeedView extends Speedometer {
         canvas.drawText("00", getWidth()/5f, getHeight()*6/7f, textPaint);
         textPaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(String.format(Locale.getDefault(), "%d", getMaxSpeed()), getWidth()*4/5f, getHeight()*6/7f, textPaint);
-        String sSpeed = String.format(Locale.getDefault(), "%.1f"
-                , (getDegree()-MIN_DEGREE) * getMaxSpeed()/(MAX_DEGREE-MIN_DEGREE)) +getUnit();
-        speedBackgroundRect.set(getWidth()/2f - (speedTextPaint.measureText(sSpeed)/2f) -5
+        String sSpeedUnit = String.format(Locale.getDefault(), "%.1f"
+                , getCorrectSpeed()) +getUnit();
+        speedBackgroundRect.set(getWidth()/2f - (speedTextPaint.measureText(sSpeedUnit)/2f) -5
                 , speedometerRect.bottom - speedTextPaint.getTextSize()
-                , getWidth()/2f + (speedTextPaint.measureText(sSpeed)/2f) +5
+                , getWidth()/2f + (speedTextPaint.measureText(sSpeedUnit)/2f) +5
                 , speedometerRect.bottom + 4);
         canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
-        canvas.drawText(String.format(Locale.getDefault(), "%.1f"
-                , (getDegree()-MIN_DEGREE) * getMaxSpeed()/(MAX_DEGREE-MIN_DEGREE)) +getUnit()
-                , getWidth()/2f, speedometerRect.bottom, speedTextPaint);
+        canvas.drawText(sSpeedUnit, getWidth()/2f, speedometerRect.bottom, speedTextPaint);
     }
 
     public boolean isWithEffects() {
@@ -227,15 +218,6 @@ public class DeluxeSpeedView extends Speedometer {
 
     public void setSpeedBackgroundColor(int speedBackgroundColor) {
         this.speedBackgroundColor = speedBackgroundColor;
-        invalidate();
-    }
-
-    public int getSpeedTextColor() {
-        return speedTextColor;
-    }
-
-    public void setSpeedTextColor(int speedTextColor) {
-        this.speedTextColor = speedTextColor;
         invalidate();
     }
 }

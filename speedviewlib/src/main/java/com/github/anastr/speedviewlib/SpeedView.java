@@ -16,10 +16,15 @@ import java.util.Locale;
  */
 public class SpeedView extends Speedometer {
 
-    private Path indicatorPath, markPath;
-    private Paint circlePaint, paint, speedometerPaint, markPaint;
-    private TextPaint speedTextPaint, textPaint;
-    private RectF speedometerRect;
+    private Path indicatorPath = new Path(),
+            markPath = new Path();
+    private Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            paint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
+            textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private RectF speedometerRect = new RectF();
 
     public SpeedView(Context context) {
         super(context);
@@ -50,18 +55,6 @@ public class SpeedView extends Speedometer {
     }
 
     private void init() {
-        indicatorPath = new Path();
-        markPath = new Path();
-
-        circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-
-        speedometerRect = new RectF();
-
         speedometerPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
         speedTextPaint.setTextAlign(Paint.Align.CENTER);
@@ -76,6 +69,7 @@ public class SpeedView extends Speedometer {
 
         float indW = w/32f;
 
+        indicatorPath.reset();
         indicatorPath.moveTo(w/2f, 0f);
         indicatorPath.lineTo(w/2f -indW, h*2f/3f);
         indicatorPath.lineTo(w/2f +indW, h*2f/3f);
@@ -84,6 +78,7 @@ public class SpeedView extends Speedometer {
         indicatorPath.moveTo(0f, 0f);
 
         float markH = h/28f;
+        markPath.reset();
         markPath.moveTo(w/2f, 0f);
         markPath.lineTo(w/2f, markH);
         markPath.moveTo(0f, 0f);
@@ -93,7 +88,7 @@ public class SpeedView extends Speedometer {
     private void initDraw() {
         speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
-        speedTextPaint.setColor(getTextColor());
+        speedTextPaint.setColor(getSpeedTextColor());
         speedTextPaint.setTextSize(getSpeedTextSize());
         textPaint.setColor(getTextColor());
         textPaint.setTextSize(getTextSize());
@@ -135,8 +130,7 @@ public class SpeedView extends Speedometer {
         canvas.drawText("00", getWidth()/5f, getHeight()*6/7f, textPaint);
         textPaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(String.format(Locale.getDefault(), "%d", getMaxSpeed()), getWidth()*4/5f, getHeight()*6/7f, textPaint);
-        canvas.drawText(String.format(Locale.getDefault(), "%.1f"
-                , (getDegree()-MIN_DEGREE) * getMaxSpeed()/(MAX_DEGREE-MIN_DEGREE)) +getUnit()
+        canvas.drawText(String.format(Locale.getDefault(), "%.1f", getCorrectSpeed()) +getUnit()
                 , getWidth()/2f, speedometerRect.bottom, speedTextPaint);
     }
 }

@@ -22,13 +22,19 @@ import java.util.Locale;
  */
 public class AwesomeSpeedometer extends Speedometer {
 
-    private Path indicatorPath, markPath, trianglesPath;
-    private Paint circlePaint, indicatorPaint, markPaint, ringPaint, trianglesPaint;
-    private TextPaint speedTextPaint, textPaint;
-    private RectF speedometerRect;
+    private Path indicatorPath = new Path(),
+            markPath = new Path(),
+            trianglesPath = new Path();
+    private Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            ringPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            trianglesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
+            textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private RectF speedometerRect = new RectF();
 
     private int speedometerColor = Color.parseColor("#00e6e6")
-            , speedTextColor = Color.WHITE
             , trianglesColor = Color.parseColor("#3949ab");
     private float indicatorWidth = dpTOpx(25f);
 
@@ -58,6 +64,7 @@ public class AwesomeSpeedometer extends Speedometer {
         setBackgroundCircleColor(Color.parseColor("#212121"));
         setIndicatorColor(Color.parseColor("#00e6e6"));
         setTextColor(Color.parseColor("#ffc260"));
+        setSpeedTextColor(Color.WHITE);
     }
 
     @Override
@@ -73,27 +80,12 @@ public class AwesomeSpeedometer extends Speedometer {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AwesomeSpeedometer, 0, 0);
 
         speedometerColor = a.getColor(R.styleable.AwesomeSpeedometer_speedometerColor, speedometerColor);
-        speedTextColor = a.getColor(R.styleable.AwesomeSpeedometer_speedTextColor, speedTextColor);
         trianglesColor = a.getColor(R.styleable.AwesomeSpeedometer_trianglesColor, trianglesColor);
         indicatorWidth = a.getDimension(R.styleable.AwesomeSpeedometer_indicatorWidth, indicatorWidth);
         a.recycle();
     }
 
     private void init() {
-        indicatorPath = new Path();
-        markPath = new Path();
-        trianglesPath = new Path();
-
-        circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        ringPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        trianglesPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-
-        speedometerRect = new RectF();
-
         markPaint.setStyle(Paint.Style.STROKE);
         speedTextPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTextAlign(Paint.Align.CENTER);
@@ -110,11 +102,13 @@ public class AwesomeSpeedometer extends Speedometer {
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
         float markH = h/22f;
+        markPath.reset();
         markPath.moveTo(w/2f, 0f);
         markPath.lineTo(w/2f, markH);
         markPath.moveTo(0f, 0f);
         markPaint.setStrokeWidth(markH/5f);
 
+        trianglesPath.reset();
         trianglesPath.moveTo(w/2f, h/20f);
         trianglesPath.lineTo(w/2f -(w/40f), 0f);
         trianglesPath.lineTo(w/2f +(w/40f), 0f);
@@ -151,7 +145,7 @@ public class AwesomeSpeedometer extends Speedometer {
         indicatorPaint.setColor(getIndicatorColor());
         ringPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
-        speedTextPaint.setColor(speedTextColor);
+        speedTextPaint.setColor(getSpeedTextColor());
         speedTextPaint.setTextSize(getSpeedTextSize());
         textPaint.setColor(getTextColor());
         textPaint.setTextSize(getTextSize());
@@ -193,8 +187,7 @@ public class AwesomeSpeedometer extends Speedometer {
         canvas.drawPath(indicatorPath, indicatorPaint);
         canvas.restore();
 
-        canvas.drawText(String.format(Locale.getDefault(), "%.1f"
-                , (getDegree()-MIN_DEGREE) * getMaxSpeed()/(MAX_DEGREE-MIN_DEGREE))
+        canvas.drawText(String.format(Locale.getDefault(), "%.1f", getCorrectSpeed())
                 , getWidth()/2f, getHeight()/2f, speedTextPaint);
         canvas.drawText(getUnit()
                 , getWidth()/2f, getHeight()/2f +speedTextPaint.getTextSize(), speedTextPaint);
@@ -215,15 +208,6 @@ public class AwesomeSpeedometer extends Speedometer {
 
     public void setSpeedometerColor(int speedometerColor) {
         this.speedometerColor = speedometerColor;
-        invalidate();
-    }
-
-    public int getSpeedTextColor() {
-        return speedTextColor;
-    }
-
-    public void setSpeedTextColor(int speedTextColor) {
-        this.speedTextColor = speedTextColor;
         invalidate();
     }
 

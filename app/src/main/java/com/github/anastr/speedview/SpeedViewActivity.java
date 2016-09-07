@@ -22,7 +22,7 @@ public class SpeedViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speed_view);
 
-        speedView = (SpeedView) findViewById(R.id.awesomeSpeedometer);
+        speedView = (SpeedView) findViewById(R.id.speedView);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         ok = (Button) findViewById(R.id.ok);
         textSpeed = (TextView) findViewById(R.id.textSpeed);

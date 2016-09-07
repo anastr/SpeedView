@@ -11,7 +11,7 @@
     tools:context="com.github.anastr.speedview.SpeedViewActivity">
 
     <com.github.anastr.speedviewlib.SpeedView
-        android:id="@+id/awesomeSpeedometer"
+        android:id="@+id/speedView"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>

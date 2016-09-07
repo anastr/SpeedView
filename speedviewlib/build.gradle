@@ -49,24 +49,24 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 group = 'com.github.anastr'
-version = '1.0.6'
+version = '1.0.8'
 
 bintray {
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
     pkg {
         repo = 'maven'
-        name = 'SpeedView' // the name of the package in BinTray
+        name = 'SpeedView'
 
         version {
-            name = 'SpeedView_1.0.6' // the name of your library project
+            name = 'SpeedView_1.0.8'
             desc = 'Speedometer UI for Android'
             released  = new Date()
-            vcsTag = '1.0.6' // the version
+            vcsTag = '1.0.8'
         }
 
         licenses = ['Apache-2.0']
-        websiteUrl = 'https://github.com/anastr' // your website or whatever has documentation
+        websiteUrl = 'https://github.com/anastr'
         vcsUrl = 'https://github.com/anastr/SpeedView.git'
     }
     configurations = ['archives']

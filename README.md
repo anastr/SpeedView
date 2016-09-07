@@ -3,13 +3,14 @@ Dynamic Speedometer for Android. amazing, powerful, and multi shape :zap: , you 
 
 `minSdkVersion=11`
 
-Library Size ~ 9 Kb.
+Library Size ~ 12 Kb.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-green.svg?style=true)](https://android-arsenal.com/details/1/4169)
 
 <img src="/images/SpeedView.gif" width="30%" />
 <img src="/images/DeluxeSpeedView.gif" width="30%" />
 <img src="/images/AwesomeSpeedometer.gif" width="30%" /><br/>
+<img src="/images/RaySpeedometer.gif" width="30%" />
 
 # Download
 
@@ -18,7 +19,7 @@ Library Size ~ 9 Kb.
 ```gradle
 
 dependencies {
-	    compile 'com.github.anastr:speedviewlib:1.0.6'
+	    compile 'com.github.anastr:speedviewlib:1.0.8'
 }
 
 ```
@@ -29,13 +30,13 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.8</version>
   <type>pom</type>
 </dependency>
 ```
 
 # Usage
-we have three views :
+we have 4 views :
 
 ## 1st SpeedView
 
@@ -144,6 +145,28 @@ awesomeSpeedometer.setTrianglesColor(Color.YELLOW);
 awesomeSpeedometer.setSpeedometerColor(Color.RED);
 ```
 
+## 3rd RaySpeedometer
+
+<img src="/images/RaySpeedometer.png" width="30%" />
+
+**add AwesomeSpeedometer to your layout**
+
+```xml
+
+<com.github.anastr.speedviewlib.RaySpeedometer
+        android:id="@+id/raySpeedometer"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+
+```
+the same methods in SpeedView.<br/>
+special methods for AwesomeSpeedometer :
+```java
+raySpeedometer.setDegreeBetweenMark(3); //def : 5
+raySpeedometer.setMarkWidth(2); //def : 3dp
+raySpeedometer.setRayColor(Color.RED);
+```
+
 # Attributes
 
 and also you can change everything in XML, see this Attributes : 
@@ -164,15 +187,15 @@ app:markColor="#99000000"
 app:textColor="#e23900"
 app:backgroundCircleColor="#212121"
 app:textColor="#84ff84"
+app:speedTextColor="#000000"
 
 ```
-Attributes just for **DeluxeSpeedView** :
+Attributes for **DeluxeSpeedView** and **RaySpeedometer** :
 
 ```xml
 
 app:withEffects="false" <!-- def : true -->
 app:speedBackgroundColor="#000077"
-app:speedTextColor="#000000"
 
 ```
 
@@ -182,9 +205,18 @@ Attributes just for **AwesomeSpeedometer** :
 
 app:speedometerWidth="70dp" <!-- def : 60dp -->
 app:indicatorWidth="#30dp" <!-- def : 25dp -->
-app:speedTextColor="#000000"
 app:speedometerColor="#ef3737"
 app:trianglesColor="#25b9b4"
+
+```
+
+Attributes just for **RaySpeedometer** :
+
+```xml
+
+app:rayColor="#d8ff0000" <!-- def : WHITE -->
+app:degreeBetweenMark="7" <!-- def : 5 -->
+app:markWidth="5dp" <!-- def : 3dp -->
 
 ```
 
