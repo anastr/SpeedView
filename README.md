@@ -5,7 +5,9 @@ Dynamic Speedometer for Android. amazing, powerful, and multi shape :zap: , you 
 
 Library Size ~ 12 Kb.
 
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-green.svg?style=true)](https://android-arsenal.com/details/1/4169)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-blue.svg?style=true)](https://android-arsenal.com/details/1/4169)
+[![API](https://img.shields.io/badge/API-+11-red.svg?style=flat)](#)
+[![Bintray](https://img.shields.io/bintray/v/anastr/maven/SpeedView.svg)](https://bintray.com/anastr/maven/SpeedView)
 
 <img src="/images/SpeedView.gif" width="30%" />
 <img src="/images/DeluxeSpeedView.gif" width="30%" />
