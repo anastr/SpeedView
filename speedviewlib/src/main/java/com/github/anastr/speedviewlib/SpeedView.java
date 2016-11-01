@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 
 import java.util.Locale;
@@ -18,12 +17,9 @@ public class SpeedView extends Speedometer {
 
     private Path indicatorPath = new Path(),
             markPath = new Path();
-    private Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
-            paint = new Paint(Paint.ANTI_ALIAS_FLAG),
+    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
-            textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
 
     public SpeedView(Context context) {
@@ -45,19 +41,9 @@ public class SpeedView extends Speedometer {
     protected void defaultValues() {
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-        int size = (width > height) ? height : width;
-        setMeasuredDimension(size, size);
-    }
-
     private void init() {
         speedometerPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
-        speedTextPaint.setTextAlign(Paint.Align.CENTER);
     }
 
     @Override
@@ -88,20 +74,12 @@ public class SpeedView extends Speedometer {
     private void initDraw() {
         speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
-        speedTextPaint.setColor(getSpeedTextColor());
-        speedTextPaint.setTextSize(getSpeedTextSize());
-        textPaint.setColor(getTextColor());
-        textPaint.setTextSize(getTextSize());
-        circlePaint.setColor(getBackgroundCircleColor());
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         initDraw();
-
-        if (isWithBackgroundCircle())
-            canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f, circlePaint);
 
         speedometerPaint.setColor(getLowSpeedColor());
         canvas.drawArc(speedometerRect, 135f, 160f, false, speedometerPaint);
@@ -111,7 +89,7 @@ public class SpeedView extends Speedometer {
         canvas.drawArc(speedometerRect, 135f+160f+75f, 35f, false, speedometerPaint);
 
         canvas.save();
-        canvas.rotate(135f+90f, getWidth()/2f, getHeight()/2f);
+        canvas.rotate(90f + MIN_DEGREE, getWidth()/2f, getHeight()/2f);
         for (int i=135; i <= 345; i+=30) {
             canvas.rotate(30f, getWidth()/2f, getHeight()/2f);
             canvas.drawPath(markPath, markPaint);

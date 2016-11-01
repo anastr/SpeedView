@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 
 import java.util.Locale;
@@ -22,15 +21,12 @@ public class DeluxeSpeedView extends Speedometer {
     private Path indicatorPath = new Path(),
             markPath = new Path(),
             smallMarkPath = new Path();
-    private Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
-            centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+    private Paint centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             smallMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
-            textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF(),
             speedBackgroundRect = new RectF();
     private int speedBackgroundColor = Color.WHITE;
@@ -65,13 +61,13 @@ public class DeluxeSpeedView extends Speedometer {
         setBackgroundCircleColor(Color.parseColor("#212121"));
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-        int size = (width > height) ? height : width;
-        setMeasuredDimension(size, size);
+    private void init() {
+        speedometerPaint.setStyle(Paint.Style.STROKE);
+        markPaint.setStyle(Paint.Style.STROKE);
+        smallMarkPaint.setStyle(Paint.Style.STROKE);
+
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        setWithEffects(withEffects);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -81,16 +77,11 @@ public class DeluxeSpeedView extends Speedometer {
         withEffects = a.getBoolean(R.styleable.DeluxeSpeedView_withEffects, withEffects);
         a.recycle();
         setWithEffects(withEffects);
+        initAttributeValue();
     }
 
-    private void init() {
-        speedometerPaint.setStyle(Paint.Style.STROKE);
-        markPaint.setStyle(Paint.Style.STROKE);
-        smallMarkPaint.setStyle(Paint.Style.STROKE);
-        speedTextPaint.setTextAlign(Paint.Align.CENTER);
-
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
-        setWithEffects(withEffects);
+    private void initAttributeValue() {
+        speedBackgroundPaint.setColor(speedBackgroundColor);
     }
 
 
@@ -131,22 +122,13 @@ public class DeluxeSpeedView extends Speedometer {
         speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
         smallMarkPaint.setColor(getMarkColor());
-        speedTextPaint.setColor(getSpeedTextColor());
-        speedTextPaint.setTextSize(getSpeedTextSize());
-        textPaint.setColor(getTextColor());
-        textPaint.setTextSize(getTextSize());
-        speedBackgroundPaint.setColor(speedBackgroundColor);
         centerCirclePaint.setColor(getCenterCircleColor());
-        circlePaint.setColor(getBackgroundCircleColor());
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         initDraw();
-
-        if (isWithBackgroundCircle())
-            canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f, circlePaint);
 
         speedometerPaint.setColor(getLowSpeedColor());
         canvas.drawArc(speedometerRect, 135f, 160f, false, speedometerPaint);
@@ -218,6 +200,7 @@ public class DeluxeSpeedView extends Speedometer {
 
     public void setSpeedBackgroundColor(int speedBackgroundColor) {
         this.speedBackgroundColor = speedBackgroundColor;
+        speedBackgroundPaint.setColor(speedBackgroundColor);
         invalidate();
     }
 }

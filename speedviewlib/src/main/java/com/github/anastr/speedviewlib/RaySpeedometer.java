@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 
 import java.util.Locale;
@@ -22,12 +21,9 @@ public class RaySpeedometer extends Speedometer {
     private Path markPath = new Path(),
             ray1Path = new Path(),
             ray2Path = new Path();
-    private Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
-            markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+    private Paint markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             rayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
-            textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF(),
             speedBackgroundRect = new RectF();
     private int speedBackgroundColor = Color.WHITE;
@@ -62,15 +58,6 @@ public class RaySpeedometer extends Speedometer {
         setBackgroundCircleColor(Color.parseColor("#212121"));
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-        int size = (width > height) ? height : width;
-        setMeasuredDimension(size, size);
-    }
-
     private void initAttributeSet(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.RaySpeedometer, 0, 0);
 
@@ -83,13 +70,19 @@ public class RaySpeedometer extends Speedometer {
         setWithEffects(withEffects);
         if (degreeBetweenMark > 0 && degreeBetweenMark <= 20)
             this.degreeBetweenMark = degreeBetweenMark;
+        initAttributeValue();
+    }
+
+    private void initAttributeValue() {
+        speedBackgroundPaint.setColor(speedBackgroundColor);
+        markPaint.setStrokeWidth(markWidth);
+        rayPaint.setColor(rayColor);
     }
 
     private void init() {
         markPaint.setStyle(Paint.Style.STROKE);
         rayPaint.setStyle(Paint.Style.STROKE);
         rayPaint.setStrokeWidth(dpTOpx(1.8f));
-        speedTextPaint.setTextAlign(Paint.Align.CENTER);
 
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         setWithEffects(withEffects);
@@ -121,24 +114,9 @@ public class RaySpeedometer extends Speedometer {
         ray2Path.lineTo(w/1.8f, h/3.8f);
     }
 
-    private void initDraw() {
-        speedTextPaint.setColor(getSpeedTextColor());
-        speedTextPaint.setTextSize(getSpeedTextSize());
-        textPaint.setColor(getTextColor());
-        textPaint.setTextSize(getTextSize());
-        speedBackgroundPaint.setColor(speedBackgroundColor);
-        circlePaint.setColor(getBackgroundCircleColor());
-        markPaint.setStrokeWidth(markWidth);
-        rayPaint.setColor(rayColor);
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        initDraw();
-
-        if (isWithBackgroundCircle())
-            canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f, circlePaint);
 
         canvas.save();
         for (int i=0; i<6; i++) {
@@ -209,6 +187,7 @@ public class RaySpeedometer extends Speedometer {
 
     public void setSpeedBackgroundColor(int speedBackgroundColor) {
         this.speedBackgroundColor = speedBackgroundColor;
+        speedBackgroundPaint.setColor(speedBackgroundColor);
         invalidate();
     }
 
@@ -236,6 +215,7 @@ public class RaySpeedometer extends Speedometer {
 
     public void setMarkWidth(float markWidth) {
         this.markWidth = markWidth;
+        markPaint.setStrokeWidth(markWidth);
         invalidate();
     }
 
@@ -245,6 +225,8 @@ public class RaySpeedometer extends Speedometer {
 
     public void setRayColor(int rayColor) {
         this.rayColor = rayColor;
+        rayPaint.setColor(rayColor);
+        invalidate();
     }
 
     @Deprecated

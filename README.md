@@ -13,6 +13,7 @@ Library Size ~ 12 Kb.
 <img src="/images/DeluxeSpeedView.gif" width="30%" />
 <img src="/images/AwesomeSpeedometer.gif" width="30%" /><br/>
 <img src="/images/RaySpeedometer.gif" width="30%" />
+<img src="/images/PointerSpeedometer.gif" width="30%" />
 
 # Download
 
@@ -21,7 +22,7 @@ Library Size ~ 12 Kb.
 ```gradle
 
 dependencies {
-	    compile 'com.github.anastr:speedviewlib:1.0.8'
+	    compile 'com.github.anastr:speedviewlib:1.0.9'
 }
 
 ```
@@ -32,13 +33,13 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
   <type>pom</type>
 </dependency>
 ```
 
 # Usage
-we have 4 views :
+we have 5 views :
 
 ## 1st SpeedView
 
@@ -151,7 +152,7 @@ awesomeSpeedometer.setSpeedometerColor(Color.RED);
 
 <img src="/images/RaySpeedometer.png" width="30%" />
 
-**add AwesomeSpeedometer to your layout**
+**add RaySpeedometer to your layout**
 
 ```xml
 
@@ -162,11 +163,32 @@ awesomeSpeedometer.setSpeedometerColor(Color.RED);
 
 ```
 the same methods in SpeedView.<br/>
-special methods for AwesomeSpeedometer :
+special methods for RaySpeedometer :
 ```java
 raySpeedometer.setDegreeBetweenMark(3); //def : 5
 raySpeedometer.setMarkWidth(2); //def : 3dp
 raySpeedometer.setRayColor(Color.RED);
+```
+
+## 5th PointerSpeedometer
+
+<img src="/images/PointerSpeedometer.png" width="30%" />
+
+**add PointerSpeedometer to your layout**
+
+```xml
+
+<com.github.anastr.speedviewlib.PointerSpeedometer
+        android:id="@+id/pointerSpeedometer"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+
+```
+the same methods in SpeedView.<br/>
+special methods for PointerSpeedometer :
+```java
+pointerSpeedometer.setUnitTextSize(15); //def : 5dp
+pointerSpeedometer.setPointerColor(Color.RED);
 ```
 
 # Attributes
@@ -222,13 +244,22 @@ app:markWidth="5dp" <!-- def : 3dp -->
 
 ```
 
+Attributes just for **PointerSpeedometer** :
+
+```xml
+
+app:speedometerColor="#ffb26b" <!-- def : #eeeeee -->
+app:pointerColor="#ffff00" <!-- def : WHITE -->
+app:unitTextSize="15dp" <!-- def : 11dp -->
+
+```
+
 ## Coming Soon ...
 i well try to draw this Speedometer.
 if you have any idea, image, template please **open new issue** and give me the image , and i well try to add it to the Library.
 
 <img src="/images/new2.png" width="30%" />
 <img src="/images/new3.png" width="30%" />
-<img src="/images/new4.png" width="30%" />
 
 # LICENSE
 ```

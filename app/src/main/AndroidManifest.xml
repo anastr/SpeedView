@@ -19,7 +19,8 @@
         <activity android:name=".DeluxeSpeedActivity" />
         <activity android:name=".SpeedViewActivity" />
         <activity android:name=".AwesomeSpeedometerActivity" />
-        <activity android:name=".RayActivity"></activity>
+        <activity android:name=".RayActivity" />
+        <activity android:name=".PointerActivity"></activity>
     </application>
 
 </manifest>

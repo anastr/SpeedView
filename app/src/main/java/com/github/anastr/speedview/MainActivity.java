@@ -32,4 +32,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent (MainActivity.this, RayActivity.class);
         startActivity(intent);
     }
+
+    public void openPointerSpeedometerActivity(View view) {
+        Intent intent = new Intent (MainActivity.this, PointerActivity.class);
+        startActivity(intent);
+    }
 }

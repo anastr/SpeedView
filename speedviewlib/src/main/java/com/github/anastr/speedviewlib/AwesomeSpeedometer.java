@@ -11,7 +11,6 @@ import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 
 import java.util.Locale;
@@ -25,13 +24,10 @@ public class AwesomeSpeedometer extends Speedometer {
     private Path indicatorPath = new Path(),
             markPath = new Path(),
             trianglesPath = new Path();
-    private Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
-            indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+    private Paint indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             ringPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             trianglesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
-            textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
 
     private int speedometerColor = Color.parseColor("#00e6e6")
@@ -67,13 +63,12 @@ public class AwesomeSpeedometer extends Speedometer {
         setSpeedTextColor(Color.WHITE);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-        int size = (width > height) ? height : width;
-        setMeasuredDimension(size, size);
+    private void init() {
+        markPaint.setStyle(Paint.Style.STROKE);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        ringPaint.setStyle(Paint.Style.STROKE);
+        textPaint.setTextSize(dpTOpx(10));
+        textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -83,15 +78,11 @@ public class AwesomeSpeedometer extends Speedometer {
         trianglesColor = a.getColor(R.styleable.AwesomeSpeedometer_trianglesColor, trianglesColor);
         indicatorWidth = a.getDimension(R.styleable.AwesomeSpeedometer_indicatorWidth, indicatorWidth);
         a.recycle();
+        initAttributeValue();
     }
 
-    private void init() {
-        markPaint.setStyle(Paint.Style.STROKE);
-        speedTextPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        ringPaint.setStyle(Paint.Style.STROKE);
-        textPaint.setTextSize(dpTOpx(10));
-        textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+    private void initAttributeValue() {
+        trianglesPaint.setColor(trianglesColor);
     }
 
     @Override
@@ -142,24 +133,18 @@ public class AwesomeSpeedometer extends Speedometer {
     }
 
     private void initDraw() {
-        indicatorPaint.setColor(getIndicatorColor());
         ringPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
         speedTextPaint.setColor(getSpeedTextColor());
         speedTextPaint.setTextSize(getSpeedTextSize());
         textPaint.setColor(getTextColor());
         textPaint.setTextSize(getTextSize());
-        circlePaint.setColor(getBackgroundCircleColor());
-        trianglesPaint.setColor(trianglesColor);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         initDraw();
-
-        if (isWithBackgroundCircle())
-            canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f, circlePaint);
 
         canvas.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
 
@@ -208,6 +193,7 @@ public class AwesomeSpeedometer extends Speedometer {
 
     public void setSpeedometerColor(int speedometerColor) {
         this.speedometerColor = speedometerColor;
+        updateGradient();
         invalidate();
     }
 
@@ -217,6 +203,7 @@ public class AwesomeSpeedometer extends Speedometer {
 
     public void setTrianglesColor(int trianglesColor) {
         this.trianglesColor = trianglesColor;
+        trianglesPaint.setColor(trianglesColor);
         invalidate();
     }
 

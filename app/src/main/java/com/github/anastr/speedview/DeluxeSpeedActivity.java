@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.DeluxeSpeedView;
 
+import java.util.Locale;
+
 public class DeluxeSpeedActivity extends AppCompatActivity {
 
     DeluxeSpeedView deluxeSpeedView;
@@ -55,7 +57,7 @@ public class DeluxeSpeedActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textSpeed.setText(String.format("%d", progress));
+                textSpeed.setText(String.format(Locale.getDefault(), "%d", progress));
             }
 
             @Override

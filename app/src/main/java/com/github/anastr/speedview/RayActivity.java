@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.RaySpeedometer;
 
+import java.util.Locale;
+
 public class RayActivity extends AppCompatActivity {
 
     RaySpeedometer raySpeedometer;
@@ -40,7 +42,7 @@ public class RayActivity extends AppCompatActivity {
         seekBarSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textSpeed.setText(String.format("%d", progress));
+                textSpeed.setText(String.format(Locale.getDefault(), "%d", progress));
             }
 
             @Override
@@ -57,7 +59,7 @@ public class RayActivity extends AppCompatActivity {
         seekBarDegree.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textDegree.setText(String.format("%d", progress));
+                textDegree.setText(String.format(Locale.getDefault(), "%d", progress));
                 raySpeedometer.setDegreeBetweenMark(progress);
             }
 
@@ -73,8 +75,9 @@ public class RayActivity extends AppCompatActivity {
         seekBarWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textWidth.setText(String.format("%d", progress) + "dp");
-                raySpeedometer.setMarkWidth((int) dpTOpx(progress));
+                textWidth.setText(String.format(Locale.getDefault(), "%ddp", progress));
+
+                raySpeedometer.setMarkWidth((int) raySpeedometer.dpTOpx(progress));
             }
 
             @Override
@@ -85,9 +88,5 @@ public class RayActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-    }
-
-    float dpTOpx(float dp) {
-        return dp * getResources().getDisplayMetrics().density;
     }
 }
