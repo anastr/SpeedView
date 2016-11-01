@@ -39,6 +39,7 @@ for **maven**
 ```
 
 # Usage
+see The most important methods at [Get Started - Wiki](https://github.com/anastr/SpeedView/wiki/Get-Started).<br>
 we have 5 views :
 
 ## 1st SpeedView
