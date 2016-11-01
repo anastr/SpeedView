@@ -209,7 +209,6 @@ app:mediumSpeedColor="#edd029"
 app:highSpeedColor="#ec2f33"
 app:markColor="#99000000"
 app:textColor="#e23900"
-app:backgroundCircleColor="#212121"
 app:textColor="#84ff84"
 app:speedTextColor="#000000"
 
