@@ -67,11 +67,11 @@ we have 5 Speedometers : <br>
 ======================
 Name | Screenshot
 --- | ---
-[1. SpeedView - Wiki](https://github.com/anastr/SpeedView/wiki/1.-SpeedView) | <img src="/images/SpeedView3.png" width="15%" />
-[2. DeluxeSpeedView - Wiki](https://github.com/anastr/SpeedView/wiki/2.-DeluxeSpeedView) | <img src="/images/DeluxeSpeedView2.png" width="15%" />
-[3. AwesomeSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/3.-AwesomeSpeedometer) | <img src="/images/AwesomeSpeedometer.png" width="15%" />
-[4. RaySpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/4.-RaySpeedometer) | <img src="/images/RaySpeedometer.png" width="15%" />
-[5. PointerSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/5.-PointerSpeedometer) | <img src="/images/PointerSpeedometer.png" width="15%" />
+[1. SpeedView - Wiki](https://github.com/anastr/SpeedView/wiki/1.-SpeedView) | <img src="/images/SpeedView3.png" width="25%" />
+[2. DeluxeSpeedView - Wiki](https://github.com/anastr/SpeedView/wiki/2.-DeluxeSpeedView) | <img src="/images/DeluxeSpeedView2.png" width="25%" />
+[3. AwesomeSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/3.-AwesomeSpeedometer) | <img src="/images/AwesomeSpeedometer.png" width="25%" />
+[4. RaySpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/4.-RaySpeedometer) | <img src="/images/RaySpeedometer.png" width="25%" />
+[5. PointerSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/5.-PointerSpeedometer) | <img src="/images/PointerSpeedometer.png" width="25%" />
 
 ## Coming Soon ...
 i well try to draw this Speedometer.
