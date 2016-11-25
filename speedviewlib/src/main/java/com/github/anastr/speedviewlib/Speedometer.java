@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,10 +27,12 @@ abstract public class Speedometer extends View {
 
     private Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     protected TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
-            textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+            textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
+            unitTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private float speedometerWidth = dpTOpx(30f);
     private float speedTextSize = dpTOpx(18f);
     private float textSize = dpTOpx(10f);
+    private float unitTextSize = dpTOpx(15f);
     private String unit = "Km/h";
     private boolean withTremble = true;
     private int maxSpeed = 100;
@@ -83,6 +86,14 @@ abstract public class Speedometer extends View {
         public void onAnimationRepeat(Animator animation) {
         }
     };
+
+    protected Bitmap backgroundBitmap;
+    protected Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    private int lowSpeedPercent = 60;
+    private int mediumSpeedPercent = 87;
+
+    private boolean speedometerTextRightToLeft = false;
 
     public Speedometer(Context context) {
         super(context);
@@ -138,8 +149,19 @@ abstract public class Speedometer extends View {
         speedTextSize = a.getDimension(R.styleable.Speedometer_speedTextSize, speedTextSize);
         textSize = a.getDimension(R.styleable.Speedometer_textSize, textSize);
         String unit = a.getString(R.styleable.Speedometer_unit);
+        unitTextSize = a.getDimension(R.styleable.Speedometer_unitTextSize, unitTextSize);
+        trembleDegree = a.getFloat(R.styleable.Speedometer_trembleDegree, trembleDegree);
+        trembleDuration = a.getInt(R.styleable.Speedometer_trembleDuration, trembleDuration);
+        MIN_DEGREE = a.getInt(R.styleable.Speedometer_startDegree, MIN_DEGREE);
+        MAX_DEGREE = a.getInt(R.styleable.Speedometer_endDegree, MAX_DEGREE);
+        lowSpeedPercent = a.getInt(R.styleable.Speedometer_lowSpeedPercent, lowSpeedPercent);
+        mediumSpeedPercent = a.getInt(R.styleable.Speedometer_mediumSpeedPercent, mediumSpeedPercent);
+        speedometerTextRightToLeft = a.getBoolean(R.styleable.Speedometer_speedometerTextRightToLeft, speedometerTextRightToLeft);
+        degree = MIN_DEGREE;
         a.recycle();
         this.unit =  (unit != null) ? unit : this.unit;
+        checkStartAndEndDegree();
+        checkSpeedometerPercent();
         initAttributeValue();
     }
 
@@ -147,8 +169,34 @@ abstract public class Speedometer extends View {
         circleBackPaint.setColor(backgroundCircleColor);
         speedTextPaint.setColor(speedTextColor);
         speedTextPaint.setTextSize(speedTextSize);
+        unitTextPaint.setColor(speedTextColor);
+        unitTextPaint.setTextSize(unitTextSize);
         textPaint.setColor(textColor);
         textPaint.setTextSize(textSize);
+    }
+
+    private void checkStartAndEndDegree() {
+//        if (MIN_DEGREE > 360)
+//            throw new IllegalArgumentException("StartDegree can\'t be bigger than 360");
+        if (MIN_DEGREE < 0)
+            throw new IllegalArgumentException("StartDegree can\'t be smaller than 0");
+//        if (MAX_DEGREE > 360)
+//            throw new IllegalArgumentException("EndDegree can\'t be bigger than 360");
+        if (MAX_DEGREE < 0)
+            throw new IllegalArgumentException("EndDegree can\'t be smaller than 0");
+        if (MIN_DEGREE >= MAX_DEGREE)
+            throw new IllegalArgumentException("EndDegree should be bigger than StartDegree !");
+        if (MAX_DEGREE - MIN_DEGREE > 360)
+            throw new IllegalArgumentException("EndDegree - StartDegree should be smaller than 360 !");
+    }
+
+    private void checkSpeedometerPercent() {
+        if (lowSpeedPercent > mediumSpeedPercent)
+            throw new IllegalArgumentException("lowSpeedPercent must be smaller than mediumSpeedPercent");
+        if (lowSpeedPercent > 100 || lowSpeedPercent < 0)
+            throw new IllegalArgumentException("lowSpeedPercent must be between [0, 100]");
+        if (mediumSpeedPercent > 100 || mediumSpeedPercent < 0)
+            throw new IllegalArgumentException("mediumSpeedPercent must be between [0, 100]");
     }
 
     /**
@@ -170,6 +218,7 @@ abstract public class Speedometer extends View {
     }
 
     abstract protected void defaultValues();
+    abstract protected Bitmap updateBackgroundBitmap();
 
 
     @Override
@@ -181,10 +230,11 @@ abstract public class Speedometer extends View {
         correctSpeed = (degree-MIN_DEGREE) * maxSpeed/(MAX_DEGREE-MIN_DEGREE);
         int newSpeed = (int) correctSpeed;
         if (newSpeed != correctIntSpeed) {
-            if (onSpeedChangeListener != null){
-                onSpeedChangeListener.onSpeedChange(this, newSpeed > correctIntSpeed, trembleAnimator.isRunning());
-            }
+            boolean isSpeedUp = newSpeed > correctIntSpeed;
             correctIntSpeed = newSpeed;
+            if (onSpeedChangeListener != null){
+                onSpeedChangeListener.onSpeedChange(this, isSpeedUp, trembleAnimator.isRunning());
+            }
         }
     }
 
@@ -536,6 +586,7 @@ abstract public class Speedometer extends View {
 
     public void setLowSpeedColor(int lowSpeedColor) {
         this.lowSpeedColor = lowSpeedColor;
+        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -545,6 +596,7 @@ abstract public class Speedometer extends View {
 
     public void setMediumSpeedColor(int mediumSpeedColor) {
         this.mediumSpeedColor = mediumSpeedColor;
+        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -554,6 +606,7 @@ abstract public class Speedometer extends View {
 
     public void setHighSpeedColor(int highSpeedColor) {
         this.highSpeedColor = highSpeedColor;
+        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -602,6 +655,7 @@ abstract public class Speedometer extends View {
     public void setBackgroundCircleColor(int backgroundCircleColor) {
         this.backgroundCircleColor = backgroundCircleColor;
         circleBackPaint.setColor(backgroundCircleColor);
+        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -615,6 +669,7 @@ abstract public class Speedometer extends View {
      *
      * @see #dpTOpx(float)
      * @see #setSpeedTextSize(float)
+     * @see #setUnitTextSize(float)
      */
     public void setTextSize(float textSize) {
         this.textSize = textSize;
@@ -632,11 +687,31 @@ abstract public class Speedometer extends View {
      *
      * @see #dpTOpx(float)
      * @see #setTextSize(float)
+     * @see #setUnitTextSize(float)
      */
     public void setSpeedTextSize(float speedTextSize) {
         this.speedTextSize = speedTextSize;
         speedTextPaint.setTextSize(speedTextSize);
         invalidate();
+    }
+
+    /**
+     * change just unit text size.
+     * @param unitTextSize new size in pixel
+     *
+     * @see #dpTOpx(float)
+     * @see #setSpeedTextSize(float)
+     * @see #setTextSize(float)
+     */
+    public void setUnitTextSize(float unitTextSize) {
+        this.unitTextSize = unitTextSize;
+        unitTextPaint.setTextSize(unitTextSize);
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    public float getUnitTextSize() {
+        return unitTextSize;
     }
 
     public String getUnit() {
@@ -671,5 +746,77 @@ abstract public class Speedometer extends View {
      */
     public void setOnSpeedChangeListener(OnSpeedChangeListener onSpeedChangeListener) {
         this.onSpeedChangeListener = onSpeedChangeListener;
+    }
+
+    protected int getMIN_DEGREE() {
+        return MIN_DEGREE;
+    }
+
+    protected void setMIN_DEGREE(int MIN_DEGREE) {
+        this.MIN_DEGREE = MIN_DEGREE;
+    }
+
+    public void setStartDegree(int startDegree) {
+        this.MIN_DEGREE = startDegree;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    protected int getMAX_DEGREE() {
+        return MAX_DEGREE;
+    }
+
+    protected void setMAX_DEGREE(int MAX_DEGREE) {
+        this.MAX_DEGREE = MAX_DEGREE;
+    }
+
+    public void setEndDegree(int endDegree) {
+        this.MAX_DEGREE = endDegree;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    public int getLowSpeedPercent() {
+        return lowSpeedPercent;
+    }
+
+    public float getLowSpeedOffset() {
+        return lowSpeedPercent/100f;
+    }
+
+    public void setLowSpeedPercent(int lowSpeedPercent) {
+        this.lowSpeedPercent = lowSpeedPercent;
+        checkSpeedometerPercent();
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    public int getMediumSpeedPercent() {
+        return mediumSpeedPercent;
+    }
+
+    public float getMediumSpeedOffset() {
+        return mediumSpeedPercent/100f;
+    }
+
+    public void setMediumSpeedPercent(int mediumSpeedPercent) {
+        this.mediumSpeedPercent = mediumSpeedPercent;
+        checkSpeedometerPercent();
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    public boolean isSpeedometerTextRightToLeft() {
+        return speedometerTextRightToLeft;
+    }
+
+    /**
+     * to support Right To Left Text.
+     * @param speedometerTextRightToLeft true to flip text right to left.
+     */
+    public void setSpeedometerTextRightToLeft(boolean speedometerTextRightToLeft) {
+        this.speedometerTextRightToLeft = speedometerTextRightToLeft;
+        updateBackgroundBitmap();
+        invalidate();
     }
 }

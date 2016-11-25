@@ -2,6 +2,7 @@ package com.github.anastr.speedviewlib;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -52,13 +53,13 @@ public class DeluxeSpeedView extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        setIndicatorColor(Color.parseColor("#00ffec"));
-        setCenterCircleColor(Color.parseColor("#e0e0e0"));
-        setLowSpeedColor(Color.parseColor("#37872f"));
-        setMediumSpeedColor(Color.parseColor("#a38234"));
-        setHighSpeedColor(Color.parseColor("#9b2020"));
-        setTextColor(Color.WHITE);
-        setBackgroundCircleColor(Color.parseColor("#212121"));
+        super.setIndicatorColor(Color.parseColor("#00ffec"));
+        super.setCenterCircleColor(Color.parseColor("#e0e0e0"));
+        super.setLowSpeedColor(Color.parseColor("#37872f"));
+        super.setMediumSpeedColor(Color.parseColor("#a38234"));
+        super.setHighSpeedColor(Color.parseColor("#9b2020"));
+        super.setTextColor(Color.WHITE);
+        super.setBackgroundCircleColor(Color.parseColor("#212121"));
     }
 
     private void init() {
@@ -115,6 +116,8 @@ public class DeluxeSpeedView extends Speedometer {
         smallMarkPath.lineTo(w/2f, getSpeedometerWidth() + smallMarkH);
         smallMarkPath.moveTo(0f, 0f);
         smallMarkPaint.setStrokeWidth(3);
+
+        updateBackgroundBitmap();
     }
 
     private void initDraw() {
@@ -130,28 +133,8 @@ public class DeluxeSpeedView extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        speedometerPaint.setColor(getLowSpeedColor());
-        canvas.drawArc(speedometerRect, 135f, 160f, false, speedometerPaint);
-        speedometerPaint.setColor(getMediumSpeedColor());
-        canvas.drawArc(speedometerRect, 135f+160f, 75f, false, speedometerPaint);
-        speedometerPaint.setColor(getHighSpeedColor());
-        canvas.drawArc(speedometerRect, 135f+160f+75f, 35f, false, speedometerPaint);
-
-        canvas.save();
-        canvas.rotate(135f+90f, getWidth()/2f, getHeight()/2f);
-        for (int i=135; i <= 345; i+=30) {
-            canvas.rotate(30f, getWidth()/2f, getHeight()/2f);
-            canvas.drawPath(markPath, markPaint);
-        }
-        canvas.restore();
-
-        canvas.save();
-        canvas.rotate(135f+90f, getWidth()/2f, getHeight()/2f);
-        for (int i=135; i < 395; i+=10) {
-            canvas.rotate(10f, getWidth()/2f, getHeight()/2f);
-            canvas.drawPath(smallMarkPath, smallMarkPaint);
-        }
-        canvas.restore();
+        if (backgroundBitmap != null)
+            canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
 
         canvas.save();
         canvas.rotate(90f +getDegree(), getWidth()/2f, getHeight()/2f);
@@ -159,18 +142,97 @@ public class DeluxeSpeedView extends Speedometer {
         canvas.restore();
         canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/12f, centerCirclePaint);
 
-        textPaint.setTextAlign(Paint.Align.LEFT);
-        canvas.drawText("00", getWidth()/5f, getHeight()*6/7f, textPaint);
-        textPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(String.format(Locale.getDefault(), "%d", getMaxSpeed()), getWidth()*4/5f, getHeight()*6/7f, textPaint);
-        String sSpeedUnit = String.format(Locale.getDefault(), "%.1f"
-                , getCorrectSpeed()) +getUnit();
-        speedBackgroundRect.set(getWidth()/2f - (speedTextPaint.measureText(sSpeedUnit)/2f) -5
-                , speedometerRect.bottom - speedTextPaint.getTextSize()
-                , getWidth()/2f + (speedTextPaint.measureText(sSpeedUnit)/2f) +5
-                , speedometerRect.bottom + 4);
+        String speed = String.format(Locale.getDefault(), "%.1f", getCorrectSpeed());
+        float speedTextPadding = dpTOpx(1);
+        float unitTextPadding = dpTOpx(1f);
+        float unitW = unitTextPadding + unitTextPaint.measureText(getUnit()) + 5;
+        speedBackgroundRect.top = getHeight()*.9f - Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize());
+        speedBackgroundRect.bottom = getHeight()*.9f + 4f;
+        if (isSpeedometerTextRightToLeft()) {
+            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
+            speedBackgroundRect.left = getWidth()/2f - unitW;
+            unitTextPadding *= -1;
+            speedTextPaint.setTextAlign(Paint.Align.LEFT);
+            speedBackgroundRect.right = getWidth() / 2f + speedTextPaint.measureText(speed) + 5f + speedTextPadding;
+            speedTextPadding *= -1;
+        }
+        else {
+            unitTextPaint.setTextAlign(Paint.Align.LEFT);
+            speedBackgroundRect.right = getWidth()/2f + unitW;
+            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
+            speedBackgroundRect.left = getWidth() / 2f - speedTextPaint.measureText(speed) - 5f - speedTextPadding;
+        }
         canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
-        canvas.drawText(sSpeedUnit, getWidth()/2f, speedometerRect.bottom, speedTextPaint);
+
+        canvas.drawText(speed
+                , getWidth()/2f - speedTextPadding, getHeight()*.9f, speedTextPaint);
+        canvas.drawText(getUnit()
+                , getWidth()/2f + unitTextPadding, getHeight()*.9f, unitTextPaint);
+    }
+
+    @Override
+    protected Bitmap updateBackgroundBitmap() {
+        if (getWidth() == 0 || getHeight() == 0)
+            return null;
+        initDraw();
+        backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(backgroundBitmap);
+
+        speedometerPaint.setColor(getHighSpeedColor());
+        c.drawArc(speedometerRect, getMIN_DEGREE(), getMAX_DEGREE()-getMIN_DEGREE(), false, speedometerPaint);
+        speedometerPaint.setColor(getMediumSpeedColor());
+        c.drawArc(speedometerRect, getMIN_DEGREE()
+                , (getMAX_DEGREE()-getMIN_DEGREE())*getMediumSpeedOffset(), false, speedometerPaint);
+        speedometerPaint.setColor(getLowSpeedColor());
+        c.drawArc(speedometerRect, getMIN_DEGREE()
+                , (getMAX_DEGREE()-getMIN_DEGREE())*getLowSpeedOffset(), false, speedometerPaint);
+
+        c.save();
+        c.rotate(90f + getMIN_DEGREE(), getWidth()/2f, getHeight()/2f);
+        float everyDegree = (getMAX_DEGREE() - getMIN_DEGREE()) * .111f;
+        for (float i=getMIN_DEGREE(); i < getMAX_DEGREE()-(2f*everyDegree); i+=everyDegree) {
+            c.rotate(everyDegree, getWidth()/2f, getHeight()/2f);
+            c.drawPath(markPath, markPaint);
+        }
+        c.restore();
+
+        c.save();
+        c.rotate(90f + getMIN_DEGREE(), getWidth()/2f, getHeight()/2f);
+        for (float i= getMIN_DEGREE(); i < getMAX_DEGREE() - 10f; i+=10f) {
+            c.rotate(10f, getWidth()/2f, getHeight()/2f);
+            c.drawPath(smallMarkPath, smallMarkPaint);
+        }
+        c.restore();
+
+        if (getMIN_DEGREE()%360 <= 90)
+            textPaint.setTextAlign(Paint.Align.RIGHT);
+        else if (getMIN_DEGREE()%360 <= 180)
+            textPaint.setTextAlign(Paint.Align.LEFT);
+        else if (getMIN_DEGREE()%360 <= 270)
+            textPaint.setTextAlign(Paint.Align.CENTER);
+        else
+            textPaint.setTextAlign(Paint.Align.RIGHT);
+        c.save();
+        c.rotate(getMIN_DEGREE() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getMIN_DEGREE() + 90f), getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize());
+        c.drawText("00", getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
+        c.restore();
+        if (getMAX_DEGREE()%360 <= 90)
+            textPaint.setTextAlign(Paint.Align.RIGHT);
+        else if (getMAX_DEGREE()%360 <= 180)
+            textPaint.setTextAlign(Paint.Align.LEFT);
+        else if (getMAX_DEGREE()%360 <= 270)
+            textPaint.setTextAlign(Paint.Align.CENTER);
+        else
+            textPaint.setTextAlign(Paint.Align.RIGHT);
+        c.save();
+        c.rotate(getMAX_DEGREE() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getMAX_DEGREE() + 90f), getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize());
+        String maxSpeed = String.format(Locale.getDefault(), "%d", getMaxSpeed());
+        c.drawText(maxSpeed, getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
+        c.restore();
+
+        return backgroundBitmap;
     }
 
     public boolean isWithEffects() {
@@ -179,7 +241,7 @@ public class DeluxeSpeedView extends Speedometer {
 
     public void setWithEffects(boolean withEffects) {
         this.withEffects = withEffects;
-        if (withEffects) {
+        if (withEffects && !isInEditMode()) {
             indicatorPaint.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.SOLID));
             markPaint.setMaskFilter(new BlurMaskFilter(5, BlurMaskFilter.Blur.SOLID));
             speedBackgroundPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.SOLID));
@@ -191,6 +253,7 @@ public class DeluxeSpeedView extends Speedometer {
             speedBackgroundPaint.setMaskFilter(null);
             centerCirclePaint.setMaskFilter(null);
         }
+        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -201,6 +264,7 @@ public class DeluxeSpeedView extends Speedometer {
     public void setSpeedBackgroundColor(int speedBackgroundColor) {
         this.speedBackgroundColor = speedBackgroundColor;
         speedBackgroundPaint.setColor(speedBackgroundColor);
+        updateBackgroundBitmap();
         invalidate();
     }
 }

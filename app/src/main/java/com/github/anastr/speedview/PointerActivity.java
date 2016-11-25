@@ -8,6 +8,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.PointerSpeedometer;
+import com.github.anastr.speedviewlib.Speedometer;
+import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 
 import java.util.Locale;
 
@@ -16,7 +18,7 @@ public class PointerActivity extends AppCompatActivity {
     PointerSpeedometer pointerSpeedometer;
     SeekBar seekBarSpeed;
     Button ok;
-    TextView textSpeed;
+    TextView textSpeed, textSpeedChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,7 @@ public class PointerActivity extends AppCompatActivity {
         seekBarSpeed = (SeekBar) findViewById(R.id.seekBarSpeed);
         ok = (Button) findViewById(R.id.ok);
         textSpeed = (TextView) findViewById(R.id.textSpeed);
+        textSpeedChange = (TextView) findViewById(R.id.textSpeedChange);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +52,14 @@ public class PointerActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+
+        pointerSpeedometer.setOnSpeedChangeListener(new OnSpeedChangeListener() {
+            @Override
+            public void onSpeedChange(Speedometer speedometer, boolean isSpeedUp, boolean isByTremble) {
+                textSpeedChange.setText(String.format(Locale.getDefault(), "onSpeedChange %d"
+                        , speedometer.getCorrectIntSpeed()));
             }
         });
     }

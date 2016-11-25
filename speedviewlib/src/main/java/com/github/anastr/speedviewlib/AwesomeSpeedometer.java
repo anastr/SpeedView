@@ -2,6 +2,7 @@ package com.github.anastr.speedviewlib;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -53,14 +54,14 @@ public class AwesomeSpeedometer extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        MIN_DEGREE = 135;
-        MAX_DEGREE = 135+320;
+        super.setMIN_DEGREE(135);
+        super.setMAX_DEGREE(135+320);
 
         super.setSpeedometerWidth(dpTOpx(60));
-        setBackgroundCircleColor(Color.parseColor("#212121"));
-        setIndicatorColor(Color.parseColor("#00e6e6"));
-        setTextColor(Color.parseColor("#ffc260"));
-        setSpeedTextColor(Color.WHITE);
+        super.setBackgroundCircleColor(Color.parseColor("#212121"));
+        super.setIndicatorColor(Color.parseColor("#00e6e6"));
+        super.setTextColor(Color.parseColor("#ffc260"));
+        super.setSpeedTextColor(Color.WHITE);
     }
 
     private void init() {
@@ -106,6 +107,7 @@ public class AwesomeSpeedometer extends Speedometer {
         trianglesPath.moveTo(0f, 0f);
 
         updateGradient();
+        updateBackgroundBitmap();
     }
 
     private void updateGradient() {
@@ -137,6 +139,7 @@ public class AwesomeSpeedometer extends Speedometer {
         markPaint.setColor(getMarkColor());
         speedTextPaint.setColor(getSpeedTextColor());
         speedTextPaint.setTextSize(getSpeedTextSize());
+        unitTextPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setColor(getTextColor());
         textPaint.setTextSize(getTextSize());
     }
@@ -146,26 +149,8 @@ public class AwesomeSpeedometer extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        canvas.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
-
-        canvas.save();
-        canvas.rotate(135f+90f-5f, getWidth()/2f, getHeight()/2f);
-        for (int i=0; i <= MAX_DEGREE - MIN_DEGREE; i+=4) {
-            canvas.rotate(4f, getWidth()/2f, getHeight()/2f);
-            if (i % 40 == 0) {
-                canvas.drawPath(trianglesPath, trianglesPaint);
-                canvas.drawText(i*getMaxSpeed()/(MAX_DEGREE -MIN_DEGREE) +""
-                        , getWidth()/2f, getHeight()/20f +textPaint.getTextSize(), textPaint);
-            }
-            else {
-                if (i % 20 == 0)
-                    markPaint.setStrokeWidth(getHeight()/22f/5);
-                else
-                    markPaint.setStrokeWidth(getHeight()/22f/9);
-                canvas.drawPath(markPath, markPaint);
-            }
-        }
-        canvas.restore();
+        if (backgroundBitmap != null)
+            canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
 
         canvas.save();
         canvas.rotate(90f +getDegree(), getWidth()/2f, getHeight()/2f);
@@ -175,7 +160,40 @@ public class AwesomeSpeedometer extends Speedometer {
         canvas.drawText(String.format(Locale.getDefault(), "%.1f", getCorrectSpeed())
                 , getWidth()/2f, getHeight()/2f, speedTextPaint);
         canvas.drawText(getUnit()
-                , getWidth()/2f, getHeight()/2f +speedTextPaint.getTextSize(), speedTextPaint);
+                , getWidth()/2f, getHeight()/2f +unitTextPaint.getTextSize(), unitTextPaint);
+    }
+
+    @Override
+    protected Bitmap updateBackgroundBitmap() {
+        if (getWidth() == 0 || getHeight() == 0)
+            return null;
+        initDraw();
+        backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(backgroundBitmap);
+
+        c.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
+
+        c.save();
+        c.rotate(getMIN_DEGREE()+90f, getWidth()/2f, getHeight()/2f);
+        for (float i=0; i <= getMAX_DEGREE() - getMIN_DEGREE(); i+=4f) {
+            c.rotate(4f, getWidth()/2f, getHeight()/2f);
+            if (i % 40 == 0) {
+                c.drawPath(trianglesPath, trianglesPaint);
+                c.drawText((int)i*getMaxSpeed()/(getMAX_DEGREE() -getMIN_DEGREE()) +""
+                        , getWidth()/2f, getHeight()/20f +textPaint.getTextSize(), textPaint);
+            }
+            else {
+                if (i % 20 == 0)
+                    markPaint.setStrokeWidth(getHeight()/22f/5);
+                else
+                    markPaint.setStrokeWidth(getHeight()/22f/9);
+                c.drawPath(markPath, markPaint);
+            }
+        }
+        c.restore();
+
+
+        return backgroundBitmap;
     }
 
     @Override
@@ -184,6 +202,7 @@ public class AwesomeSpeedometer extends Speedometer {
         float risk = speedometerWidth/2f;
         speedometerRect.set(risk, risk, getWidth() -risk, getHeight() -risk);
         updateGradient();
+        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -194,6 +213,7 @@ public class AwesomeSpeedometer extends Speedometer {
     public void setSpeedometerColor(int speedometerColor) {
         this.speedometerColor = speedometerColor;
         updateGradient();
+        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -204,6 +224,7 @@ public class AwesomeSpeedometer extends Speedometer {
     public void setTrianglesColor(int trianglesColor) {
         this.trianglesColor = trianglesColor;
         trianglesPaint.setColor(trianglesColor);
+        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -217,36 +238,98 @@ public class AwesomeSpeedometer extends Speedometer {
         invalidate();
     }
 
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code Color.TRANSPARENT} always.
+     */
     @Deprecated
     @Override
     public int getLowSpeedColor() {
-        return super.getLowSpeedColor();
+        return Color.TRANSPARENT;
     }
 
+    /**
+     * this Speedometer doesn't use this method.
+     * @param lowSpeedColor nothing.
+     */
     @Deprecated
     @Override
     public void setLowSpeedColor(int lowSpeedColor) {
     }
 
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code Color.TRANSPARENT} always.
+     */
     @Deprecated
     @Override
     public int getMediumSpeedColor() {
-        return super.getMediumSpeedColor();
+        return Color.TRANSPARENT;
     }
 
+    /**
+     * this Speedometer doesn't use this method.
+     * @param mediumSpeedColor nothing.
+     */
     @Deprecated
     @Override
     public void setMediumSpeedColor(int mediumSpeedColor) {
     }
 
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code Color.TRANSPARENT} always.
+     */
     @Deprecated
     @Override
     public int getHighSpeedColor() {
-        return super.getHighSpeedColor();
+        return Color.TRANSPARENT;
     }
 
+    /**
+     * this Speedometer doesn't use this method.
+     * @param highSpeedColor nothing.
+     */
     @Deprecated
     @Override
     public void setHighSpeedColor(int highSpeedColor) {
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code 0} always.
+     */
+    @Deprecated
+    @Override
+    public int getLowSpeedPercent() {
+        return 0;
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @param lowSpeedPercent nothing.
+     */
+    @Deprecated
+    @Override
+    public void setLowSpeedPercent(int lowSpeedPercent) {
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code 0} always.
+     */
+    @Deprecated
+    @Override
+    public int getMediumSpeedPercent() {
+        return 0;
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @param mediumSpeedPercent nothing.
+     */
+    @Deprecated
+    @Override
+    public void setMediumSpeedPercent(int mediumSpeedPercent) {
     }
 }

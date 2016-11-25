@@ -3,7 +3,7 @@ Dynamic Speedometer, Gauge for Android. amazing, powerful, and multi shape :zap:
 
 `minSdkVersion=11`
 
-Library Size just ~ 14 Kb.
+Library Size just ~ 19 Kb.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-blue.svg?style=true)](https://android-arsenal.com/details/1/4169)
 [![API](https://img.shields.io/badge/API-+11-red.svg?style=flat)](#)
@@ -22,7 +22,7 @@ Library Size just ~ 14 Kb.
 ```gradle
 
 dependencies {
-	    compile 'com.github.anastr:speedviewlib:1.0.9'
+	    compile 'com.github.anastr:speedviewlib:1.1.0'
 }
 
 ```
@@ -33,7 +33,7 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.0.9</version>
+  <version>1.1.0</version>
   <type>pom</type>
 </dependency>
 ```

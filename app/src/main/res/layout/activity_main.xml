@@ -14,35 +14,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openSpeedViewActivity"
-        android:text="Speed View"
-        style="@style/Base.Widget.AppCompat.Button.Colored"/>
+        android:text="Speed View"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openDeluxeSpeedActivity"
-        android:text="Deluxe Speed View"
-        style="@style/Base.Widget.AppCompat.Button.Colored"/>
+        android:text="Deluxe Speed View"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openAwesomeSpeedometerActivity"
-        android:text="Awesome Speedometer View"
-        style="@style/Base.Widget.AppCompat.Button.Colored"/>
+        android:text="Awesome Speedometer View"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openRaySpeedometerActivity"
-        android:text="Ray Speedometer View"
-        style="@style/Base.Widget.AppCompat.Button.Colored"/>
+        android:text="Ray Speedometer View"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openPointerSpeedometerActivity"
-        android:text="Pointer Speedometer"
-        style="@style/Base.Widget.AppCompat.Button.Colored"/>
+        android:text="Pointer Speedometer"/>
 
 </LinearLayout>

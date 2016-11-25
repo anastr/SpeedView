@@ -17,6 +17,15 @@
         <attr name="speedTextSize" format="dimension" />
         <attr name="textSize" format="dimension" />
         <attr name="unit" format="string" />
+
+        <attr name="unitTextSize" format="dimension"/>
+        <attr name="trembleDegree" format="float" />
+        <attr name="trembleDuration" format="integer" />
+        <attr name="startDegree" format="integer" />
+        <attr name="endDegree" format="integer" />
+        <attr name="lowSpeedPercent" format="integer" />
+        <attr name="mediumSpeedPercent" format="integer" />
+        <attr name="speedometerTextRightToLeft" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">
@@ -115,6 +124,5 @@
 
         <attr name="speedometerColor" />
         <attr name="pointerColor" format="color"/>
-        <attr name="unitTextSize" format="dimension"/>
     </declare-styleable>
 </resources>
