@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -95,7 +94,6 @@ abstract public class Speedometer extends View {
     /** to contain all drawing that doesn't change */
     protected Bitmap backgroundBitmap;
     protected Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    protected RectF paddingRect = new RectF();
     protected int padding = 0;
 
     /** low speed area, started from {@link #startDegree} */
@@ -189,7 +187,7 @@ abstract public class Speedometer extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        updatePaddingRect();
+        updatePadding();
     }
 
     private void checkStartAndEndDegree() {
@@ -233,9 +231,8 @@ abstract public class Speedometer extends View {
     abstract protected void defaultValues();
     abstract protected Bitmap updateBackgroundBitmap();
 
-    private void updatePaddingRect() {
+    private void updatePadding() {
         padding = Math.max(Math.max(getPaddingLeft(), getPaddingRight()), Math.max(getPaddingTop(), getPaddingBottom()));
-        paddingRect.set(padding, padding, getWidth()-padding, getHeight()-padding);
     }
 
     @Override
@@ -929,5 +926,11 @@ abstract public class Speedometer extends View {
 
     protected float getHeightPa() {
         return getHeight() - getPaddingTop() - getPaddingBottom();
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        super.setPadding(left, top, right, bottom);
+        updatePadding();
     }
 }
