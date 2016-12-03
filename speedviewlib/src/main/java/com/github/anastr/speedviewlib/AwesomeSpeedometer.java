@@ -90,21 +90,19 @@ public class AwesomeSpeedometer extends Speedometer {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        float risk = getSpeedometerWidth()/2f;
+        float risk = getSpeedometerWidth()/2f + padding;
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
-        float markH = h/22f;
+        float markH = getHeightPa()/22f;
         markPath.reset();
-        markPath.moveTo(w/2f, 0f);
-        markPath.lineTo(w/2f, markH);
-        markPath.moveTo(0f, 0f);
+        markPath.moveTo(w/2f, padding);
+        markPath.lineTo(w/2f, markH + padding);
         markPaint.setStrokeWidth(markH/5f);
 
         trianglesPath.reset();
-        trianglesPath.moveTo(w/2f, h/20f);
-        trianglesPath.lineTo(w/2f -(w/40f), 0f);
-        trianglesPath.lineTo(w/2f +(w/40f), 0f);
-        trianglesPath.moveTo(0f, 0f);
+        trianglesPath.moveTo(w/2f, padding + getHeightPa()/20f);
+        trianglesPath.lineTo(w/2f -(w/40f), padding);
+        trianglesPath.lineTo(w/2f +(w/40f), padding);
 
         updateGradient();
         updateBackgroundBitmap();
@@ -112,25 +110,27 @@ public class AwesomeSpeedometer extends Speedometer {
 
     private void updateGradient() {
         float w = getWidth();
-        float stop = (getWidth()/2f - getSpeedometerWidth()) / (getWidth()/2f);
+        float stop = (getWidthPa()/2f - getSpeedometerWidth()) / (getWidthPa()/2f);
         float stop2 = stop+((1f-stop)*.1f);
         float stop3 = stop+((1f-stop)*.36f);
         float stop4 = stop+((1f-stop)*.64f);
         float stop5 = stop+((1f-stop)*.9f);
         int []colors = new int[]{getBackgroundCircleColor(), speedometerColor, getBackgroundCircleColor()
                 , getBackgroundCircleColor(), speedometerColor, speedometerColor};
-        Shader radialGradient = new RadialGradient(getWidth() / 2f, getHeight() / 2f, getWidth() / 2f
+        Shader radialGradient = new RadialGradient(getWidth() / 2f, getHeight() / 2f, getWidthPa() / 2f
                 , colors, new float[]{stop, stop2, stop3, stop4, stop5, 1f}, Shader.TileMode.CLAMP);
         ringPaint.setShader(radialGradient);
 
         indicatorPath = new Path();
-        indicatorPath.moveTo(w/2f, getSpeedometerWidth() + dpTOpx(5));
-        indicatorPath.lineTo(w/2f -indicatorWidth, getSpeedometerWidth() +indicatorWidth);
-        indicatorPath.lineTo(w/2f +indicatorWidth, getSpeedometerWidth() +indicatorWidth);
+        float indicatorH = padding + getSpeedometerWidth() + dpTOpx(5);
+        indicatorPath.moveTo(w/2f, indicatorH);
+        indicatorPath.lineTo(w/2f -indicatorWidth, indicatorH + indicatorWidth);
+        indicatorPath.lineTo(w/2f +indicatorWidth, indicatorH + indicatorWidth);
         indicatorPath.moveTo(0f, 0f);
 
-        Shader linearGradient = new LinearGradient(w/2f, getSpeedometerWidth() + dpTOpx(5), w/2f, getSpeedometerWidth() +indicatorWidth
-                , getIndicatorColor(), getBackgroundCircleColor(), Shader.TileMode.CLAMP);
+        int endColor = Color.argb(0, Color.red(getIndicatorColor()), Color.green(getIndicatorColor()), Color.blue(getIndicatorColor()));
+        Shader linearGradient = new LinearGradient(w/2f, indicatorH, w/2f, indicatorH + indicatorWidth
+                , getIndicatorColor(), endColor, Shader.TileMode.CLAMP);
         indicatorPaint.setShader(linearGradient);
     }
 
@@ -148,9 +148,6 @@ public class AwesomeSpeedometer extends Speedometer {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         initDraw();
-
-        if (backgroundBitmap != null)
-            canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
 
         canvas.save();
         canvas.rotate(90f +getDegree(), getWidth()/2f, getHeight()/2f);
@@ -170,6 +167,7 @@ public class AwesomeSpeedometer extends Speedometer {
         initDraw();
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
+        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - padding, circleBackPaint);
 
         c.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
 
@@ -179,8 +177,8 @@ public class AwesomeSpeedometer extends Speedometer {
             c.rotate(4f, getWidth()/2f, getHeight()/2f);
             if (i % 40 == 0) {
                 c.drawPath(trianglesPath, trianglesPaint);
-                c.drawText((int)i*getMaxSpeed()/(getEndDegree() - getStartDegree()) +""
-                        , getWidth()/2f, getHeight()/20f +textPaint.getTextSize(), textPaint);
+                c.drawText((int)getSpeedAtDegree(i + getStartDegree()) +""
+                        , getWidth()/2f, getHeightPa()/20f +textPaint.getTextSize() + padding, textPaint);
             }
             else {
                 if (i % 20 == 0)

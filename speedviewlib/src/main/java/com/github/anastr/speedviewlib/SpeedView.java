@@ -53,24 +53,23 @@ public class SpeedView extends Speedometer {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        float risk = getSpeedometerWidth()/2f;
+        float risk = getSpeedometerWidth()/2f + padding;
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
         float indW = w/32f;
 
         indicatorPath.reset();
-        indicatorPath.moveTo(w/2f, 0f);
-        indicatorPath.lineTo(w/2f -indW, h*2f/3f);
-        indicatorPath.lineTo(w/2f +indW, h*2f/3f);
-        RectF rectF = new RectF(w/2f -indW, h*2f/3f -indW, w/2f +indW, h*2f/3f +indW);
+        indicatorPath.moveTo(w/2f, padding);
+        float indicatorBottom = getHeightPa()*2f/3f + padding;
+        indicatorPath.lineTo(w/2f -indW, indicatorBottom);
+        indicatorPath.lineTo(w/2f +indW, indicatorBottom);
+        RectF rectF = new RectF(w/2f -indW, indicatorBottom -indW, w/2f +indW, indicatorBottom +indW);
         indicatorPath.addArc(rectF, 0f, 180f);
-        indicatorPath.moveTo(0f, 0f);
 
-        float markH = h/28f;
+        float markH = getHeightPa()/28f;
         markPath.reset();
-        markPath.moveTo(w/2f, 0f);
-        markPath.lineTo(w/2f, markH);
-        markPath.moveTo(0f, 0f);
+        markPath.moveTo(w/2f, padding);
+        markPath.lineTo(w/2f, markH + padding);
         markPaint.setStrokeWidth(markH/3f);
 
         updateBackgroundBitmap();
@@ -86,16 +85,13 @@ public class SpeedView extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        if (backgroundBitmap != null)
-            canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
-
         paint.setColor(getIndicatorColor());
         canvas.save();
         canvas.rotate(90f +getDegree(), getWidth()/2f, getHeight()/2f);
         canvas.drawPath(indicatorPath, paint);
         canvas.restore();
         paint.setColor(getCenterCircleColor());
-        canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/12f, paint);
+        canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidthPa()/12f, paint);
 
         String speed = String.format(Locale.getDefault(), "%.1f", getCorrectSpeed());
         float speedTextPadding = dpTOpx(1);
@@ -106,7 +102,7 @@ public class SpeedView extends Speedometer {
         else
             speedTextPaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(speed
-                , getWidth()/2f - speedTextPadding, getHeight()*.9f, speedTextPaint);
+                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + padding, speedTextPaint);
     }
 
     @Override
@@ -116,6 +112,7 @@ public class SpeedView extends Speedometer {
         initDraw();
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
+        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - padding, circleBackPaint);
 
         speedometerPaint.setColor(getHighSpeedColor());
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, speedometerPaint);
@@ -145,9 +142,9 @@ public class SpeedView extends Speedometer {
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
         c.rotate(getStartDegree() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getStartDegree() + 90f), getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize());
+        c.rotate(-(getStartDegree() + 90f), getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
         String minSpeed = String.format(Locale.getDefault(), "%d", getMinSpeed());
-        c.drawText(minSpeed, getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
+        c.drawText(minSpeed, getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding, textPaint);
         c.restore();
         if (getEndDegree()%360 <= 90)
             textPaint.setTextAlign(Paint.Align.RIGHT);
@@ -159,9 +156,9 @@ public class SpeedView extends Speedometer {
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
         c.rotate(getEndDegree() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getEndDegree() + 90f), getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize());
+        c.rotate(-(getEndDegree() + 90f), getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
         String maxSpeed = String.format(Locale.getDefault(), "%d", getMaxSpeed());
-        c.drawText(maxSpeed, getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
+        c.drawText(maxSpeed, getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding, textPaint);
         c.restore();
 
         float unitTextPadding = dpTOpx(1);
@@ -173,7 +170,7 @@ public class SpeedView extends Speedometer {
             unitTextPaint.setTextAlign(Paint.Align.LEFT);
 
         c.drawText(getUnit()
-                , getWidth()/2f + unitTextPadding, getHeight()*.9f, unitTextPaint);
+                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + padding, unitTextPaint);
 
         return backgroundBitmap;
     }

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -25,7 +26,7 @@ import java.util.Random;
 @SuppressWarnings("unused")
 abstract public class Speedometer extends View {
 
-    private Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    protected Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     protected TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
             textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
             unitTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -94,6 +95,8 @@ abstract public class Speedometer extends View {
     /** to contain all drawing that doesn't change */
     protected Bitmap backgroundBitmap;
     protected Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    protected RectF paddingRect = new RectF();
+    protected int padding = 0;
 
     /** low speed area, started from {@link #startDegree} */
     private int lowSpeedPercent = 60;
@@ -183,6 +186,12 @@ abstract public class Speedometer extends View {
         textPaint.setTextSize(textSize);
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        updatePaddingRect();
+    }
+
     private void checkStartAndEndDegree() {
         if (startDegree < 0)
             throw new IllegalArgumentException("StartDegree can\'t be Negative");
@@ -224,14 +233,19 @@ abstract public class Speedometer extends View {
     abstract protected void defaultValues();
     abstract protected Bitmap updateBackgroundBitmap();
 
+    private void updatePaddingRect() {
+        padding = Math.max(Math.max(getPaddingLeft(), getPaddingRight()), Math.max(getPaddingTop(), getPaddingBottom()));
+        paddingRect.set(padding, padding, getWidth()-padding, getHeight()-padding);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f, circleBackPaint);
+        if (backgroundBitmap != null)
+            canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
 
-        correctSpeed = (degree- startDegree) * (maxSpeed - minSpeed)/(endDegree - startDegree) + minSpeed;
+        correctSpeed = getSpeedAtDegree(degree);
         int newSpeed = (int) correctSpeed;
         if (newSpeed != correctIntSpeed) {
             boolean isSpeedUp = newSpeed > correctIntSpeed;
@@ -279,8 +293,16 @@ abstract public class Speedometer extends View {
      * @param speed to know the degree at this.
      * @return correct Degree at that speed.
      */
-    private float getDegreeAtSpeed (float speed) {
+    protected float getDegreeAtSpeed (float speed) {
         return (speed - minSpeed) * (endDegree - startDegree) /(maxSpeed - minSpeed) + startDegree;
+    }
+
+    /**
+     * @param degree to know the speed at this.
+     * @return correct speed at that degree.
+     */
+    protected float getSpeedAtDegree (float degree) {
+        return (degree - startDegree) * (maxSpeed - minSpeed) /(endDegree - startDegree) + minSpeed;
     }
 
     /**
@@ -609,7 +631,7 @@ abstract public class Speedometer extends View {
      * @return percent speed, between [0,100].
      */
     public float getPercentSpeed() {
-        return (getDegreeAtSpeed(correctSpeed)- startDegree) * 100f / (float)(endDegree - startDegree);
+        return (correctSpeed - minSpeed) * 100f / (float)(maxSpeed - minSpeed);
     }
 
     public int getIndicatorColor() {
@@ -899,5 +921,13 @@ abstract public class Speedometer extends View {
         this.speedometerTextRightToLeft = speedometerTextRightToLeft;
         updateBackgroundBitmap();
         invalidate();
+    }
+
+    protected float getWidthPa() {
+        return getWidth() - getPaddingLeft() - getPaddingRight();
+    }
+
+    protected float getHeightPa() {
+        return getHeight() - getPaddingTop() - getPaddingBottom();
     }
 }
