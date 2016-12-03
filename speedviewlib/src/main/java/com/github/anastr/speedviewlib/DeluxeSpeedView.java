@@ -179,55 +179,55 @@ public class DeluxeSpeedView extends Speedometer {
         Canvas c = new Canvas(backgroundBitmap);
 
         speedometerPaint.setColor(getHighSpeedColor());
-        c.drawArc(speedometerRect, getMIN_DEGREE(), getMAX_DEGREE()-getMIN_DEGREE(), false, speedometerPaint);
+        c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, speedometerPaint);
         speedometerPaint.setColor(getMediumSpeedColor());
-        c.drawArc(speedometerRect, getMIN_DEGREE()
-                , (getMAX_DEGREE()-getMIN_DEGREE())*getMediumSpeedOffset(), false, speedometerPaint);
+        c.drawArc(speedometerRect, getStartDegree()
+                , (getEndDegree()- getStartDegree())*getMediumSpeedOffset(), false, speedometerPaint);
         speedometerPaint.setColor(getLowSpeedColor());
-        c.drawArc(speedometerRect, getMIN_DEGREE()
-                , (getMAX_DEGREE()-getMIN_DEGREE())*getLowSpeedOffset(), false, speedometerPaint);
+        c.drawArc(speedometerRect, getStartDegree()
+                , (getEndDegree()- getStartDegree())*getLowSpeedOffset(), false, speedometerPaint);
 
         c.save();
-        c.rotate(90f + getMIN_DEGREE(), getWidth()/2f, getHeight()/2f);
-        float everyDegree = (getMAX_DEGREE() - getMIN_DEGREE()) * .111f;
-        for (float i=getMIN_DEGREE(); i < getMAX_DEGREE()-(2f*everyDegree); i+=everyDegree) {
+        c.rotate(90f + getStartDegree(), getWidth()/2f, getHeight()/2f);
+        float everyDegree = (getEndDegree() - getStartDegree()) * .111f;
+        for (float i = getStartDegree(); i < getEndDegree()-(2f*everyDegree); i+=everyDegree) {
             c.rotate(everyDegree, getWidth()/2f, getHeight()/2f);
             c.drawPath(markPath, markPaint);
         }
         c.restore();
 
         c.save();
-        c.rotate(90f + getMIN_DEGREE(), getWidth()/2f, getHeight()/2f);
-        for (float i= getMIN_DEGREE(); i < getMAX_DEGREE() - 10f; i+=10f) {
+        c.rotate(90f + getStartDegree(), getWidth()/2f, getHeight()/2f);
+        for (float i = getStartDegree(); i < getEndDegree() - 10f; i+=10f) {
             c.rotate(10f, getWidth()/2f, getHeight()/2f);
             c.drawPath(smallMarkPath, smallMarkPaint);
         }
         c.restore();
 
-        if (getMIN_DEGREE()%360 <= 90)
+        if (getStartDegree()%360 <= 90)
             textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getMIN_DEGREE()%360 <= 180)
+        else if (getStartDegree()%360 <= 180)
             textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getMIN_DEGREE()%360 <= 270)
+        else if (getStartDegree()%360 <= 270)
             textPaint.setTextAlign(Paint.Align.CENTER);
         else
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
-        c.rotate(getMIN_DEGREE() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getMIN_DEGREE() + 90f), getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize());
+        c.rotate(getStartDegree() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getStartDegree() + 90f), getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize());
         c.drawText("00", getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
         c.restore();
-        if (getMAX_DEGREE()%360 <= 90)
+        if (getEndDegree()%360 <= 90)
             textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getMAX_DEGREE()%360 <= 180)
+        else if (getEndDegree()%360 <= 180)
             textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getMAX_DEGREE()%360 <= 270)
+        else if (getEndDegree()%360 <= 270)
             textPaint.setTextAlign(Paint.Align.CENTER);
         else
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
-        c.rotate(getMAX_DEGREE() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getMAX_DEGREE() + 90f), getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize());
+        c.rotate(getEndDegree() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getEndDegree() + 90f), getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize());
         String maxSpeed = String.format(Locale.getDefault(), "%d", getMaxSpeed());
         c.drawText(maxSpeed, getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
         c.restore();

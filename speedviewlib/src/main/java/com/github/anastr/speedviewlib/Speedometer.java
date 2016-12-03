@@ -33,9 +33,13 @@ abstract public class Speedometer extends View {
     private float speedTextSize = dpTOpx(18f);
     private float textSize = dpTOpx(10f);
     private float unitTextSize = dpTOpx(15f);
+    /** the text after speedText */
     private String unit = "Km/h";
     private boolean withTremble = true;
+    /** the max range in speedometer, {@code default = 100} */
     private int maxSpeed = 100;
+    /** the min range in speedometer, {@code default = 0} */
+    private int minSpeed = 0;
 
     private int indicatorColor = Color.RED
             , centerCircleColor = Color.DKGRAY
@@ -60,9 +64,9 @@ abstract public class Speedometer extends View {
     /** a degree to increases and decreases the indicator around correct speed */
     private float trembleDegree = 4f;
     private int trembleDuration = 1000;
-    protected int MIN_DEGREE = 135, MAX_DEGREE = 135+270;
+    protected int startDegree = 135, endDegree = 135+270;
     /** to rotate indicator */
-    private float degree = MIN_DEGREE;
+    private float degree = startDegree;
     private ValueAnimator speedAnimator, trembleAnimator, realSpeedAnimator;
     private boolean canceled = false;
     private OnSpeedChangeListener onSpeedChangeListener;
@@ -87,10 +91,13 @@ abstract public class Speedometer extends View {
         }
     };
 
+    /** to contain all drawing that doesn't change */
     protected Bitmap backgroundBitmap;
     protected Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+    /** low speed area, started from {@link #startDegree} */
     private int lowSpeedPercent = 60;
+    /** medium speed area, started from {@link #startDegree} */
     private int mediumSpeedPercent = 87;
 
     private boolean speedometerTextRightToLeft = false;
@@ -145,6 +152,7 @@ abstract public class Speedometer extends View {
         speedTextColor = a.getColor(R.styleable.Speedometer_speedTextColor, speedTextColor);
         speedometerWidth = a.getDimension(R.styleable.Speedometer_speedometerWidth, speedometerWidth);
         maxSpeed = a.getInt(R.styleable.Speedometer_maxSpeed, maxSpeed);
+        minSpeed = a.getInt(R.styleable.Speedometer_minSpeed, minSpeed);
         withTremble = a.getBoolean(R.styleable.Speedometer_withTremble, withTremble);
         speedTextSize = a.getDimension(R.styleable.Speedometer_speedTextSize, speedTextSize);
         textSize = a.getDimension(R.styleable.Speedometer_textSize, textSize);
@@ -152,12 +160,12 @@ abstract public class Speedometer extends View {
         unitTextSize = a.getDimension(R.styleable.Speedometer_unitTextSize, unitTextSize);
         trembleDegree = a.getFloat(R.styleable.Speedometer_trembleDegree, trembleDegree);
         trembleDuration = a.getInt(R.styleable.Speedometer_trembleDuration, trembleDuration);
-        MIN_DEGREE = a.getInt(R.styleable.Speedometer_startDegree, MIN_DEGREE);
-        MAX_DEGREE = a.getInt(R.styleable.Speedometer_endDegree, MAX_DEGREE);
+        startDegree = a.getInt(R.styleable.Speedometer_startDegree, startDegree);
+        endDegree = a.getInt(R.styleable.Speedometer_endDegree, endDegree);
         lowSpeedPercent = a.getInt(R.styleable.Speedometer_lowSpeedPercent, lowSpeedPercent);
         mediumSpeedPercent = a.getInt(R.styleable.Speedometer_mediumSpeedPercent, mediumSpeedPercent);
         speedometerTextRightToLeft = a.getBoolean(R.styleable.Speedometer_speedometerTextRightToLeft, speedometerTextRightToLeft);
-        degree = MIN_DEGREE;
+        degree = startDegree;
         a.recycle();
         this.unit =  (unit != null) ? unit : this.unit;
         checkStartAndEndDegree();
@@ -176,18 +184,14 @@ abstract public class Speedometer extends View {
     }
 
     private void checkStartAndEndDegree() {
-//        if (MIN_DEGREE > 360)
-//            throw new IllegalArgumentException("StartDegree can\'t be bigger than 360");
-        if (MIN_DEGREE < 0)
-            throw new IllegalArgumentException("StartDegree can\'t be smaller than 0");
-//        if (MAX_DEGREE > 360)
-//            throw new IllegalArgumentException("EndDegree can\'t be bigger than 360");
-        if (MAX_DEGREE < 0)
-            throw new IllegalArgumentException("EndDegree can\'t be smaller than 0");
-        if (MIN_DEGREE >= MAX_DEGREE)
-            throw new IllegalArgumentException("EndDegree should be bigger than StartDegree !");
-        if (MAX_DEGREE - MIN_DEGREE > 360)
-            throw new IllegalArgumentException("EndDegree - StartDegree should be smaller than 360 !");
+        if (startDegree < 0)
+            throw new IllegalArgumentException("StartDegree can\'t be Negative");
+        if (endDegree < 0)
+            throw new IllegalArgumentException("EndDegree can\'t be Negative");
+        if (startDegree >= endDegree)
+            throw new IllegalArgumentException("EndDegree must be bigger than StartDegree !");
+        if (endDegree - startDegree > 360)
+            throw new IllegalArgumentException("(EndDegree - StartDegree) must be smaller than 360 !");
     }
 
     private void checkSpeedometerPercent() {
@@ -227,7 +231,7 @@ abstract public class Speedometer extends View {
 
         canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f, circleBackPaint);
 
-        correctSpeed = (degree-MIN_DEGREE) * maxSpeed/(MAX_DEGREE-MIN_DEGREE);
+        correctSpeed = (degree- startDegree) * (maxSpeed - minSpeed)/(endDegree - startDegree) + minSpeed;
         int newSpeed = (int) correctSpeed;
         if (newSpeed != correctIntSpeed) {
             boolean isSpeedUp = newSpeed > correctIntSpeed;
@@ -238,13 +242,22 @@ abstract public class Speedometer extends View {
         }
     }
 
+    /**
+     * stop speedometer and run tremble if {@link #withTremble} is true.
+     * use this method just when you wont to stop {@code speedTo and realSpeedTo}.
+     */
     public void stop() {
+        if (!speedAnimator.isRunning() && !realSpeedAnimator.isRunning())
+            return;
         speed = (int) correctSpeed;
-        cancel();
+        cancelSpeedAnimator();
         tremble();
     }
 
-    private void cancel() {
+    /**
+     * cancel all animators without call {@link #tremble()}.
+     */
+    private void cancelSpeedAnimator() {
         cancelSpeedMove();
         cancelTremble();
     }
@@ -263,8 +276,16 @@ abstract public class Speedometer extends View {
     }
 
     /**
+     * @param speed to know the degree at this.
+     * @return correct Degree at that speed.
+     */
+    private float getDegreeAtSpeed (float speed) {
+        return (speed - minSpeed) * (endDegree - startDegree) /(maxSpeed - minSpeed) + startDegree;
+    }
+
+    /**
      * move speed to percent value.
-     * @param percent percent value to move, should be between [0,100].
+     * @param percent percent value to move, must be between [0,100].
      *
      * @see #speedTo(int)
      * @see #speedTo(int, long)
@@ -272,15 +293,15 @@ abstract public class Speedometer extends View {
      */
     public void speedPercentTo(int percent) {
         percent = (percent > 100) ? 100 : (percent < 0) ? 0 : percent;
-        speedTo(percent * maxSpeed / 100);
+        speedTo(percent * (maxSpeed - minSpeed) / 100 + minSpeed);
     }
 
     /**
      * move speed to correct {@code int},
-     * it should be between [0, MAX Speed].<br>
+     * it should be between [{@link #minSpeed}, {@link #maxSpeed}].<br>
      * <br>
-     * if {@code speed > maxSpeed} speed will be maxSpeed,<br>
-     * if {@code speed < 0} speed will be 0.<br>
+     * if {@code speed > maxSpeed} speed will change to {@link #maxSpeed},<br>
+     * if {@code speed < minSpeed} speed will change to {@link #minSpeed}.<br>
      *
      * it is the same {@link #speedTo(int, long)}
      * with default {@code moveDuration = 2000}.
@@ -297,10 +318,10 @@ abstract public class Speedometer extends View {
 
     /**
      * move speed to correct {@code int},
-     * it should be between [0, MAX Speed].<br>
+     * it should be between [{@link #minSpeed}, {@link #maxSpeed}].<br>
      * <br>
-     * if {@code speed > maxSpeed} speed will be maxSpeed,<br>
-     * if {@code speed < 0} speed will be 0.
+     * if {@code speed > maxSpeed} speed will change to {@link #maxSpeed},<br>
+     * if {@code speed < minSpeed} speed will change to {@link #minSpeed}.
      *
      * @param speed correct speed to move.
      * @param moveDuration The length of the animation, in milliseconds.
@@ -311,14 +332,14 @@ abstract public class Speedometer extends View {
      * @see #realSpeedTo(int)
      */
     public void speedTo(int speed, long moveDuration) {
-        speed = (speed > maxSpeed) ? maxSpeed : (speed < 0) ? 0 : speed;
+        speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
 
-        float newDegree = (float)speed * (MAX_DEGREE - MIN_DEGREE) /maxSpeed +MIN_DEGREE;
+        float newDegree = getDegreeAtSpeed(speed);
         if (newDegree == degree)
             return;
 
-        cancel();
+        cancelSpeedAnimator();
         speedAnimator = ValueAnimator.ofFloat(degree, newDegree);
         speedAnimator.setInterpolator(new DecelerateInterpolator());
         speedAnimator.setDuration(moveDuration);
@@ -335,7 +356,7 @@ abstract public class Speedometer extends View {
 
     /**
      * this method use {@code realSpeedTo()} to speed up
-     * the speedometer to <b>MAX speed</b>.
+     * the speedometer to {@link #maxSpeed}.
      *
      * @see #realSpeedTo(int)
      * @see #slowDown()
@@ -346,7 +367,7 @@ abstract public class Speedometer extends View {
 
     /**
      * this method use {@code #realSpeedTo()} to slow down
-     * the speedometer to <b>0</b>.
+     * the speedometer to {@link #minSpeed}.
      *
      * @see #realSpeedTo(int)
      * @see #speedUp()
@@ -370,14 +391,14 @@ abstract public class Speedometer extends View {
      * @see #slowDown()
      */
     public void realSpeedTo(int speed) {
-        speed = (speed > maxSpeed) ? maxSpeed : (speed < 0) ? 0 : speed;
+        speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
 
-        float newDegree = (float)speed * (MAX_DEGREE - MIN_DEGREE) /maxSpeed +MIN_DEGREE;
+        float newDegree = getDegreeAtSpeed(speed);
         if (newDegree == degree)
             return;
 
-        cancel();
+        cancelSpeedAnimator();
         realSpeedAnimator = ValueAnimator.ofInt((int)degree, (int)newDegree);
         realSpeedAnimator.setRepeatCount(ValueAnimator.INFINITE);
         realSpeedAnimator.setInterpolator(new LinearInterpolator());
@@ -404,15 +425,18 @@ abstract public class Speedometer extends View {
         realSpeedAnimator.start();
     }
 
+    /**
+     * check if {@link #withTremble} true, and run tremble.
+     */
     private void tremble() {
         cancelTremble();
         if (!isWithTremble())
             return;
         Random random = new Random();
         float mad = trembleDegree * random.nextFloat() * ((random.nextBoolean()) ? -1 :1);
-        float originalDegree = (float)speed * (MAX_DEGREE - MIN_DEGREE) /maxSpeed +MIN_DEGREE;
-        mad = (originalDegree+mad > MAX_DEGREE) ? MAX_DEGREE - originalDegree
-                : (originalDegree+mad < MIN_DEGREE) ? MIN_DEGREE - originalDegree : mad;
+        float originalDegree = getDegreeAtSpeed(speed);
+        mad = (originalDegree+mad > endDegree) ? endDegree - originalDegree
+                : (originalDegree+mad < startDegree) ? startDegree - originalDegree : mad;
         trembleAnimator = ValueAnimator.ofFloat(degree, originalDegree +mad);
         trembleAnimator.setInterpolator(new DecelerateInterpolator());
         trembleAnimator.setDuration(trembleDuration);
@@ -429,6 +453,12 @@ abstract public class Speedometer extends View {
 
     protected float getDegree() {
         return degree;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        cancelSpeedAnimator();
     }
 
     /**
@@ -524,6 +554,7 @@ abstract public class Speedometer extends View {
      * get max speed in speedometer, default max speed is 100.
      * @return max speed.
      *
+     * @see #getMinSpeed()
      * @see #setMaxSpeed(int)
      */
     public int getMaxSpeed() {
@@ -533,24 +564,52 @@ abstract public class Speedometer extends View {
     /**
      * change max speed.<br>
      * this method well call {@link #speedTo(int)} method
-     * to make the change smooth.
+     * to make the change smooth.<br>
+     * if {@code maxSpeed <= minSpeed} will ignore.
      *
      * @param maxSpeed new MAX Speed.
      */
     public void setMaxSpeed(int maxSpeed) {
-        if (maxSpeed <= 0)
+        if (maxSpeed <= minSpeed)
             return;
         this.maxSpeed = maxSpeed;
+        updateBackgroundBitmap();
         speedTo(speed);
-        invalidate();
     }
 
     /**
-     * get speed as <b>percent</b>.
+     * get min speed in speedometer, default min speed is 0.
+     * @return min speed.
+     *
+     * @see #getMaxSpeed()
+     * @see #setMinSpeed(int)
+     */
+    public int getMinSpeed() {
+        return minSpeed;
+    }
+
+    /**
+     * change min speed.<br>
+     * this method well call {@link #speedTo(int)} method
+     * to make the change smooth.<br>
+     * if {@code minSpeed >= maxSpeed} will ignore.
+     *
+     * @param minSpeed new MAX Speed.
+     */
+    public void setMinSpeed(int minSpeed) {
+        if (minSpeed >= maxSpeed)
+            return;
+        this.minSpeed = minSpeed;
+        updateBackgroundBitmap();
+        speedTo(speed);
+    }
+
+    /**
+     * get correct speed as <b>percent</b>.
      * @return percent speed, between [0,100].
      */
     public float getPercentSpeed() {
-        return correctSpeed * 100f / maxSpeed;
+        return (getDegreeAtSpeed(correctSpeed)- startDegree) * 100f / (float)(endDegree - startDegree);
     }
 
     public int getIndicatorColor() {
@@ -748,30 +807,38 @@ abstract public class Speedometer extends View {
         this.onSpeedChangeListener = onSpeedChangeListener;
     }
 
-    protected int getMIN_DEGREE() {
-        return MIN_DEGREE;
+    protected int getStartDegree() {
+        return startDegree;
     }
 
-    protected void setMIN_DEGREE(int MIN_DEGREE) {
-        this.MIN_DEGREE = MIN_DEGREE;
-    }
-
+    /**
+     * change the start of speedometer (at {@link #minSpeed}).
+     * @param startDegree the start of speedometer.
+     * @throws IllegalArgumentException if {@code startDegree} negative.
+     * @throws IllegalArgumentException if {@code startDegree >= endDegree}.
+     * @throws IllegalArgumentException if the difference between {@code endDegree and startDegree} bigger than 360.
+     */
     public void setStartDegree(int startDegree) {
-        this.MIN_DEGREE = startDegree;
+        this.startDegree = startDegree;
+        checkStartAndEndDegree();
         updateBackgroundBitmap();
         invalidate();
     }
 
-    protected int getMAX_DEGREE() {
-        return MAX_DEGREE;
+    protected int getEndDegree() {
+        return endDegree;
     }
 
-    protected void setMAX_DEGREE(int MAX_DEGREE) {
-        this.MAX_DEGREE = MAX_DEGREE;
-    }
-
+    /**
+     * change the end of speedometer (at {@link #maxSpeed}).
+     * @param endDegree the end of speedometer.
+     * @throws IllegalArgumentException if {@code endDegree} negative.
+     * @throws IllegalArgumentException if {@code endDegree <= startDegree}.
+     * @throws IllegalArgumentException if the difference between {@code endDegree and startDegree} bigger than 360.
+     */
     public void setEndDegree(int endDegree) {
-        this.MAX_DEGREE = endDegree;
+        this.endDegree = endDegree;
+        checkStartAndEndDegree();
         updateBackgroundBitmap();
         invalidate();
     }
@@ -784,6 +851,13 @@ abstract public class Speedometer extends View {
         return lowSpeedPercent/100f;
     }
 
+    /**
+     * to change low speed area.
+     * @param lowSpeedPercent the long of low speed area as percent,
+     *                        must be between {@code [0,100]}.
+     * @throws IllegalArgumentException if {@code lowSpeedPercent} out of range.
+     * @throws IllegalArgumentException if {@code lowSpeedPercent > mediumSpeedPercent}.
+     */
     public void setLowSpeedPercent(int lowSpeedPercent) {
         this.lowSpeedPercent = lowSpeedPercent;
         checkSpeedometerPercent();
@@ -799,6 +873,13 @@ abstract public class Speedometer extends View {
         return mediumSpeedPercent/100f;
     }
 
+    /**
+     * to change medium speed area.
+     * @param mediumSpeedPercent the long of medium speed area as percent,
+     *                        must be between {@code [0,100]}.
+     * @throws IllegalArgumentException if {@code mediumSpeedPercent} out of range.
+     * @throws IllegalArgumentException if {@code lowSpeedPercent > mediumSpeedPercent}.
+     */
     public void setMediumSpeedPercent(int mediumSpeedPercent) {
         this.mediumSpeedPercent = mediumSpeedPercent;
         checkSpeedometerPercent();

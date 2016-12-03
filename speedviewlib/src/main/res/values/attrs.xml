@@ -26,6 +26,8 @@
         <attr name="lowSpeedPercent" format="integer" />
         <attr name="mediumSpeedPercent" format="integer" />
         <attr name="speedometerTextRightToLeft" format="boolean" />
+
+        <attr name="minSpeed" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">

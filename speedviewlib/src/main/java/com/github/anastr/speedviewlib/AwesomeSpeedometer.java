@@ -54,8 +54,8 @@ public class AwesomeSpeedometer extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        super.setMIN_DEGREE(135);
-        super.setMAX_DEGREE(135+320);
+        super.setStartDegree(135);
+        super.setEndDegree(135+320);
 
         super.setSpeedometerWidth(dpTOpx(60));
         super.setBackgroundCircleColor(Color.parseColor("#212121"));
@@ -174,12 +174,12 @@ public class AwesomeSpeedometer extends Speedometer {
         c.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
 
         c.save();
-        c.rotate(getMIN_DEGREE()+90f, getWidth()/2f, getHeight()/2f);
-        for (float i=0; i <= getMAX_DEGREE() - getMIN_DEGREE(); i+=4f) {
+        c.rotate(getStartDegree()+90f, getWidth()/2f, getHeight()/2f);
+        for (float i = 0; i <= getEndDegree() - getStartDegree(); i+=4f) {
             c.rotate(4f, getWidth()/2f, getHeight()/2f);
             if (i % 40 == 0) {
                 c.drawPath(trianglesPath, trianglesPaint);
-                c.drawText((int)i*getMaxSpeed()/(getMAX_DEGREE() -getMIN_DEGREE()) +""
+                c.drawText((int)i*getMaxSpeed()/(getEndDegree() - getStartDegree()) +""
                         , getWidth()/2f, getHeight()/20f +textPaint.getTextSize(), textPaint);
             }
             else {

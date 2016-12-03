@@ -128,7 +128,7 @@ public class PointerSpeedometer extends Speedometer {
         if (backgroundBitmap != null)
             canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
 
-        canvas.drawArc(speedometerRect, getMIN_DEGREE(), 270f, false, speedometerPaint);
+        canvas.drawArc(speedometerRect, getStartDegree(), 270f, false, speedometerPaint);
 
         canvas.save();
         canvas.rotate(90 + getDegree(), getWidth()/2f, getHeight()/2f);
@@ -167,38 +167,38 @@ public class PointerSpeedometer extends Speedometer {
         Canvas c = new Canvas(backgroundBitmap);
 
         c.save();
-        c.rotate(90f + getMIN_DEGREE(), getWidth()/2f, getHeight()/2f);
-        float everyDegree = (getMAX_DEGREE() - getMIN_DEGREE()) * .111f;
-        for (float i=getMIN_DEGREE(); i < getMAX_DEGREE()-(2f*everyDegree); i+=everyDegree) {
+        c.rotate(90f + getStartDegree(), getWidth()/2f, getHeight()/2f);
+        float everyDegree = (getEndDegree() - getStartDegree()) * .111f;
+        for (float i = getStartDegree(); i < getEndDegree()-(2f*everyDegree); i+=everyDegree) {
             c.rotate(everyDegree, getWidth()/2f, getHeight()/2f);
             c.drawPath(markPath, markPaint);
         }
         c.restore();
 
-        if (getMIN_DEGREE()%360 <= 90)
+        if (getStartDegree()%360 <= 90)
             textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getMIN_DEGREE()%360 <= 180)
+        else if (getStartDegree()%360 <= 180)
             textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getMIN_DEGREE()%360 <= 270)
+        else if (getStartDegree()%360 <= 270)
             textPaint.setTextAlign(Paint.Align.CENTER);
         else
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
-        c.rotate(getMIN_DEGREE() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getMIN_DEGREE() + 90f), getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize());
+        c.rotate(getStartDegree() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getStartDegree() + 90f), getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize());
         c.drawText("00", getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
         c.restore();
-        if (getMAX_DEGREE()%360 <= 90)
+        if (getEndDegree()%360 <= 90)
             textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getMAX_DEGREE()%360 <= 180)
+        else if (getEndDegree()%360 <= 180)
             textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getMAX_DEGREE()%360 <= 270)
+        else if (getEndDegree()%360 <= 270)
             textPaint.setTextAlign(Paint.Align.CENTER);
         else
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
-        c.rotate(getMAX_DEGREE() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getMAX_DEGREE() + 90f), getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize());
+        c.rotate(getEndDegree() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getEndDegree() + 90f), getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize());
         String maxSpeed = String.format(Locale.getDefault(), "%d", getMaxSpeed());
         c.drawText(maxSpeed, getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
         c.restore();
@@ -227,7 +227,7 @@ public class PointerSpeedometer extends Speedometer {
                 , new int[]{startColor, color2, speedometerColor, color3, endColor, startColor}
                 , new float[]{0f, position/2f, position, position, .9f, 1f});
         Matrix matrix = new Matrix();
-        matrix.postRotate(getMIN_DEGREE(), getWidth()/2f, getHeight()/2f);
+        matrix.postRotate(getStartDegree(), getWidth()/2f, getHeight()/2f);
         sweepGradient.setLocalMatrix(matrix);
         return sweepGradient;
     }
