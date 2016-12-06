@@ -158,6 +158,8 @@ public class AwesomeSpeedometer extends Speedometer {
                 , getWidth()/2f, getHeight()/2f, speedTextPaint);
         canvas.drawText(getUnit()
                 , getWidth()/2f, getHeight()/2f +unitTextPaint.getTextSize(), unitTextPaint);
+
+        drawNotes(canvas);
     }
 
     @Override

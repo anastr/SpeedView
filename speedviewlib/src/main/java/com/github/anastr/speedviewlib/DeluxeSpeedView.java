@@ -163,6 +163,8 @@ public class DeluxeSpeedView extends Speedometer {
                 , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + padding, speedTextPaint);
         canvas.drawText(getUnit()
                 , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + padding, unitTextPaint);
+
+        drawNotes(canvas);
     }
 
     @Override

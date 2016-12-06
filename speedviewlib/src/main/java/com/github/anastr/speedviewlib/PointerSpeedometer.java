@@ -153,6 +153,8 @@ public class PointerSpeedometer extends Speedometer {
             speedTextPaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(speed
                 , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + padding, speedTextPaint);
+
+        drawNotes(canvas);
     }
 
     @Override

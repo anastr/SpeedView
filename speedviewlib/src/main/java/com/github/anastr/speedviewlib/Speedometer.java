@@ -14,8 +14,10 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
+import com.github.anastr.speedviewlib.components.note.Note;
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -102,6 +104,9 @@ abstract public class Speedometer extends View {
     private int mediumSpeedPercent = 87;
 
     private boolean speedometerTextRightToLeft = false;
+
+    private ArrayList<Note> notes = new ArrayList<>();
+    private boolean attachedToWindow = false;
 
     public Speedometer(Context context) {
         super(context);
@@ -249,6 +254,25 @@ abstract public class Speedometer extends View {
             correctIntSpeed = newSpeed;
             if (onSpeedChangeListener != null){
                 onSpeedChangeListener.onSpeedChange(this, isSpeedUp, trembleAnimator.isRunning());
+            }
+        }
+    }
+
+    protected void drawNotes(Canvas canvas) {
+        for (Note note : notes) {
+            if (note.getPosition().position == Note.Position.CenterSpeedometer.position)
+                note.draw(canvas, getWidth()/2f, getHeight()/2f);
+            else {
+                float y = 0f;
+                if (note.getPosition().position == Note.Position.CenterIndicator.position)
+                    y = getHeightPa()/4f + padding;
+                else if (note.getPosition().position == Note.Position.TopIndicator.position)
+                    y = padding;
+                canvas.save();
+                canvas.rotate(90f +getDegree(), getWidth()/2f, getHeight()/2f);
+                canvas.rotate(-(90f +getDegree()), getWidth()/2f, y);
+                note.draw(canvas, getWidth()/2f, y);
+                canvas.restore();
             }
         }
     }
@@ -475,9 +499,16 @@ abstract public class Speedometer extends View {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        attachedToWindow = true;
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         cancelSpeedAnimator();
+        attachedToWindow = false;
     }
 
     /**
@@ -932,5 +963,29 @@ abstract public class Speedometer extends View {
     public void setPadding(int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
         updatePadding();
+    }
+
+    @Override
+    public void setPaddingRelative(int start, int top, int end, int bottom) {
+        super.setPaddingRelative(start, top, end, bottom);
+        updatePadding();
+    }
+
+    public void addNote(Note note) {
+        addNote(note, 3000);
+    }
+
+    public void addNote(final Note note, long showTimeMillisecond) {
+        note.build(getWidth());
+        notes.add(note);
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (attachedToWindow) {
+                    notes.remove(note);
+                    postInvalidate();
+                }
+            }
+        }, showTimeMillisecond);
     }
 }

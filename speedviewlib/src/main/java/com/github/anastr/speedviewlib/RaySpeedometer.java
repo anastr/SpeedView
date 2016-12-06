@@ -166,6 +166,8 @@ public class RaySpeedometer extends Speedometer {
                 , getHeight()/2f + (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f), speedTextPaint);
         canvas.drawText(getUnit(), getWidth()/2f + unitTextPadding
                 , getHeight()/2f + (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f), unitTextPaint);
+
+        drawNotes(canvas);
     }
 
     @Override
