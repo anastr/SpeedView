@@ -987,5 +987,11 @@ abstract public class Speedometer extends View {
                 }
             }
         }, showTimeMillisecond);
+        invalidate();
+    }
+
+    public void removeAllNotes() {
+        notes.clear();
+        invalidate();
     }
 }

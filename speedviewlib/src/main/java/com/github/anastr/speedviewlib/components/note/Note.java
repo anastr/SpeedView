@@ -54,7 +54,6 @@ public abstract class Note<N extends Note> {
             this.noteH = (int) (containsH + paddingTop + paddingBottom + triangle_Width);
         }
         else {
-            // TODO enable this code after adding (left and right align)
 //            this.noteW = (int) (containsW + paddingLeft + paddingRight + triangle_Width);
 //            this.noteH = (int) (containsH + paddingTop + paddingBottom);
         }
@@ -148,6 +147,14 @@ public abstract class Note<N extends Note> {
         paddingRight = right;
         paddingBottom = bottom;
         noticeContainsSizeChange(containsW, containsH);
+    }
+
+    protected int getContainsW() {
+        return containsW;
+    }
+
+    protected int getContainsH() {
+        return containsH;
     }
 
     public enum Position {

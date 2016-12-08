@@ -37,4 +37,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent (MainActivity.this, PointerActivity.class);
         startActivity(intent);
     }
+
+    public void openWorkWithNoteActivity(View view) {
+        Intent intent = new Intent (MainActivity.this, WorkWithNoteActivity.class);
+        startActivity(intent);
+    }
 }

@@ -25,7 +25,7 @@ public class TextNote extends Note<TextNote> {
         if (noteText == null)
             throw new IllegalArgumentException("noteText cannot be null.");
         this.noteText = noteText;
-        notePaint.setTextAlign(Paint.Align.CENTER);
+        notePaint.setTextAlign(Paint.Align.LEFT);
     }
 
     @Override
@@ -41,9 +41,8 @@ public class TextNote extends Note<TextNote> {
 
     @Override
     protected void drawContains(Canvas canvas, float centerX, float topY) {
-//        canvas.drawText(noteText, bottomXCenter, bottomY, notePaint);
         canvas.save();
-        canvas.translate(centerX, topY);
+        canvas.translate(centerX - (getContainsW()/2f), topY);
         textLayout.draw(canvas);
         canvas.restore();
     }
