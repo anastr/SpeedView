@@ -98,21 +98,20 @@ public class RaySpeedometer extends Speedometer {
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
         markPath.reset();
-        markPath.moveTo(w/2f, 0f);
-        markPath.lineTo(w/2f, getSpeedometerWidth());
-        markPath.moveTo(0f, 0f);
+        markPath.moveTo(w/2f, padding);
+        markPath.lineTo(w/2f, getSpeedometerWidth() + padding);
 
         ray1Path.reset();
         ray1Path.moveTo(w/2f, h/2f);
-        ray1Path.lineTo(w/2f, h/3.2f); ray1Path.moveTo(w/2f, h/3.2f);
-        ray1Path.lineTo(w/2.2f, h/3f); ray1Path.moveTo(w/2.2f, h/3f);
-        ray1Path.lineTo(w/2.1f, h/4.5f);
+        ray1Path.lineTo(w/2f, getHeightPa()/3.2f + padding); ray1Path.moveTo(w/2f, getHeightPa()/3.2f + padding);
+        ray1Path.lineTo(w/2.2f, getHeightPa()/3f + padding); ray1Path.moveTo(w/2.2f, getHeightPa()/3f + padding);
+        ray1Path.lineTo(w/2.1f, getHeightPa()/4.5f + padding);
 
         ray2Path.reset();
         ray2Path.moveTo(w/2f, h/2f);
-        ray2Path.lineTo(w/2f, h/3.2f); ray2Path.moveTo(w/2f, h/3.2f);
-        ray2Path.lineTo(w/2.2f, h/3.8f); ray2Path.moveTo(w/2f, h/3.2f);
-        ray2Path.lineTo(w/1.8f, h/3.8f);
+        ray2Path.lineTo(w/2f, getHeightPa()/3.2f + padding); ray2Path.moveTo(w/2f, getHeightPa()/3.2f + padding);
+        ray2Path.lineTo(w/2.2f, getHeightPa()/3.8f + padding); ray2Path.moveTo(w/2f, getHeightPa()/3.2f + padding);
+        ray2Path.lineTo(w/1.8f, getHeightPa()/3.8f + padding);
 
         updateBackgroundBitmap();
     }
@@ -121,21 +120,18 @@ public class RaySpeedometer extends Speedometer {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (backgroundBitmap != null)
-            canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
-
         canvas.save();
-        canvas.rotate(getMIN_DEGREE()+90f, getWidth()/2f, getHeight()/2f);
-        for (int i=getMIN_DEGREE(); i < getMAX_DEGREE(); i+=degreeBetweenMark) {
+        canvas.rotate(getStartDegree()+90f, getWidth()/2f, getHeight()/2f);
+        for (int i = getStartDegree(); i < getEndDegree(); i+=degreeBetweenMark) {
             if (getDegree() <= i) {
                 markPaint.setColor(getMarkColor());
                 canvas.drawPath(markPath, markPaint);
                 canvas.rotate(degreeBetweenMark, getWidth()/2f, getHeight()/2f);
                 continue;
             }
-            if (i > (getMAX_DEGREE()-getMIN_DEGREE())*getMediumSpeedOffset() + getMIN_DEGREE())
+            if (i > (getEndDegree()- getStartDegree())*getMediumSpeedOffset() + getStartDegree())
                 markPaint.setColor(getHighSpeedColor());
-            else if (i > (getMAX_DEGREE()-getMIN_DEGREE())*getLowSpeedOffset() + getMIN_DEGREE())
+            else if (i > (getEndDegree()- getStartDegree())*getLowSpeedOffset() + getStartDegree())
                 markPaint.setColor(getMediumSpeedColor());
             else
                 markPaint.setColor(getLowSpeedColor());
@@ -170,6 +166,8 @@ public class RaySpeedometer extends Speedometer {
                 , getHeight()/2f + (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f), speedTextPaint);
         canvas.drawText(getUnit(), getWidth()/2f + unitTextPadding
                 , getHeight()/2f + (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f), unitTextPaint);
+
+        drawNotes(canvas);
     }
 
     @Override
@@ -178,6 +176,7 @@ public class RaySpeedometer extends Speedometer {
             return null;
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
+        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - padding, circleBackPaint);
 
         c.save();
         for (int i=0; i<6; i++) {
@@ -189,32 +188,33 @@ public class RaySpeedometer extends Speedometer {
         }
         c.restore();
 
-        if (getMIN_DEGREE()%360 <= 90)
+        if (getStartDegree()%360 <= 90)
             textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getMIN_DEGREE()%360 <= 180)
+        else if (getStartDegree()%360 <= 180)
             textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getMIN_DEGREE()%360 <= 270)
+        else if (getStartDegree()%360 <= 270)
             textPaint.setTextAlign(Paint.Align.CENTER);
         else
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
-        c.rotate(getMIN_DEGREE() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getMIN_DEGREE() + 90f), getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize());
-        c.drawText("00", getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
+        c.rotate(getStartDegree() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getStartDegree() + 90f), getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
+        String minSpeed = String.format(Locale.getDefault(), "%d", getMinSpeed());
+        c.drawText(minSpeed, getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding, textPaint);
         c.restore();
-        if (getMAX_DEGREE()%360 <= 90)
+        if (getEndDegree()%360 <= 90)
             textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getMAX_DEGREE()%360 <= 180)
+        else if (getEndDegree()%360 <= 180)
             textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getMAX_DEGREE()%360 <= 270)
+        else if (getEndDegree()%360 <= 270)
             textPaint.setTextAlign(Paint.Align.CENTER);
         else
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
-        c.rotate(getMAX_DEGREE() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getMAX_DEGREE() + 90f), getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize());
+        c.rotate(getEndDegree() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getEndDegree() + 90f), getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
         String maxSpeed = String.format(Locale.getDefault(), "%d", getMaxSpeed());
-        c.drawText(maxSpeed, getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
+        c.drawText(maxSpeed, getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding, textPaint);
         c.restore();
 
         return backgroundBitmap;

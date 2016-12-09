@@ -40,4 +40,10 @@
         android:onClick="openPointerSpeedometerActivity"
         android:text="Pointer Speedometer"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="openWorkWithNoteActivity"
+        android:text="Work With Note"/>
+
 </LinearLayout>

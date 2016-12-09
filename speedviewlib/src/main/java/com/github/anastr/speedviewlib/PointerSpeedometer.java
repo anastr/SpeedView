@@ -94,18 +94,18 @@ public class PointerSpeedometer extends Speedometer {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        float risk = getSpeedometerWidth()/2f + dpTOpx(8);
+        float risk = getSpeedometerWidth()/2f + dpTOpx(8) + padding;
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
         float indW = w/20f;
         indicatorPath.reset();
         indicatorPath.moveTo(w/2f, h/2f);
-        indicatorPath.quadTo(w/2f -indW, h*.34f, w/2f, h*.18f);
-        indicatorPath.quadTo(w/2f +indW, h*.34f, w/2f, h/2f);
+        indicatorPath.quadTo(w/2f -indW, getHeightPa()*.34f + padding, w/2f, getHeightPa()*.18f + padding);
+        indicatorPath.quadTo(w/2f +indW, getHeightPa()*.34f + padding, w/2f, h/2f);
 
         markPath.reset();
-        markPath.moveTo(w/2f, getSpeedometerWidth() + dpTOpx(8) + dpTOpx(4));
-        markPath.lineTo(w/2f, getSpeedometerWidth() + dpTOpx(8) + dpTOpx(4) + w/60);
+        markPath.moveTo(w/2f, getSpeedometerWidth() + dpTOpx(8) + dpTOpx(4) + padding);
+        markPath.lineTo(w/2f, getSpeedometerWidth() + dpTOpx(8) + dpTOpx(4) + padding + w/60);
 
         updateRadial();
         updateBackgroundBitmap();
@@ -125,25 +125,22 @@ public class PointerSpeedometer extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        if (backgroundBitmap != null)
-            canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
-
-        canvas.drawArc(speedometerRect, getMIN_DEGREE(), 270f, false, speedometerPaint);
+        canvas.drawArc(speedometerRect, getStartDegree(), 270f, false, speedometerPaint);
 
         canvas.save();
         canvas.rotate(90 + getDegree(), getWidth()/2f, getHeight()/2f);
-        canvas.drawCircle(getWidth()/2f, getSpeedometerWidth()/2f + dpTOpx(8)
+        canvas.drawCircle(getWidth()/2f, getSpeedometerWidth()/2f + dpTOpx(8) + padding
                 , getSpeedometerWidth()/2f + dpTOpx(8), pointerBackPaint);
-        canvas.drawCircle(getWidth()/2f, getSpeedometerWidth()/2f + dpTOpx(8)
+        canvas.drawCircle(getWidth()/2f, getSpeedometerWidth()/2f + dpTOpx(8) + padding
                 , getSpeedometerWidth()/2f + dpTOpx(1), pointerPaint);
         canvas.drawPath(indicatorPath, indicatorPaint);
         canvas.restore();
 
         int c = getCenterCircleColor();
         circlePaint.setColor(Color.argb(120, Color.red(c), Color.green(c), Color.blue(c)));
-        canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/14f, circlePaint);
+        canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidthPa()/14f, circlePaint);
         circlePaint.setColor(c);
-        canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/22f, circlePaint);
+        canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidthPa()/22f, circlePaint);
 
 
         String speed = String.format(Locale.getDefault(), "%.1f", getCorrectSpeed());
@@ -155,7 +152,9 @@ public class PointerSpeedometer extends Speedometer {
         else
             speedTextPaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(speed
-                , getWidth()/2f - speedTextPadding, getHeight()*.9f, speedTextPaint);
+                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + padding, speedTextPaint);
+
+        drawNotes(canvas);
     }
 
     @Override
@@ -165,42 +164,44 @@ public class PointerSpeedometer extends Speedometer {
         initDraw();
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
+        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - padding, circleBackPaint);
 
         c.save();
-        c.rotate(90f + getMIN_DEGREE(), getWidth()/2f, getHeight()/2f);
-        float everyDegree = (getMAX_DEGREE() - getMIN_DEGREE()) * .111f;
-        for (float i=getMIN_DEGREE(); i < getMAX_DEGREE()-(2f*everyDegree); i+=everyDegree) {
+        c.rotate(90f + getStartDegree(), getWidth()/2f, getHeight()/2f);
+        float everyDegree = (getEndDegree() - getStartDegree()) * .111f;
+        for (float i = getStartDegree(); i < getEndDegree()-(2f*everyDegree); i+=everyDegree) {
             c.rotate(everyDegree, getWidth()/2f, getHeight()/2f);
             c.drawPath(markPath, markPaint);
         }
         c.restore();
 
-        if (getMIN_DEGREE()%360 <= 90)
+        if (getStartDegree()%360 <= 90)
             textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getMIN_DEGREE()%360 <= 180)
+        else if (getStartDegree()%360 <= 180)
             textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getMIN_DEGREE()%360 <= 270)
+        else if (getStartDegree()%360 <= 270)
             textPaint.setTextAlign(Paint.Align.CENTER);
         else
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
-        c.rotate(getMIN_DEGREE() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getMIN_DEGREE() + 90f), getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize());
-        c.drawText("00", getWidth()/2f - textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
+        c.rotate(getStartDegree() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getStartDegree() + 90f), getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
+        String minSpeed = String.format(Locale.getDefault(), "%d", getMinSpeed());
+        c.drawText(minSpeed, getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding, textPaint);
         c.restore();
-        if (getMAX_DEGREE()%360 <= 90)
+        if (getEndDegree()%360 <= 90)
             textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getMAX_DEGREE()%360 <= 180)
+        else if (getEndDegree()%360 <= 180)
             textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getMAX_DEGREE()%360 <= 270)
+        else if (getEndDegree()%360 <= 270)
             textPaint.setTextAlign(Paint.Align.CENTER);
         else
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
-        c.rotate(getMAX_DEGREE() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getMAX_DEGREE() + 90f), getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize());
+        c.rotate(getEndDegree() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getEndDegree() + 90f), getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
         String maxSpeed = String.format(Locale.getDefault(), "%d", getMaxSpeed());
-        c.drawText(maxSpeed, getWidth()/2f + textPaint.getTextSize(), textPaint.getTextSize(), textPaint);
+        c.drawText(maxSpeed, getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding, textPaint);
         c.restore();
 
         float unitTextPadding = dpTOpx(1);
@@ -212,7 +213,7 @@ public class PointerSpeedometer extends Speedometer {
             unitTextPaint.setTextAlign(Paint.Align.LEFT);
 
         c.drawText(getUnit()
-                , getWidth()/2f + unitTextPadding, getHeight()*.9f, unitTextPaint);
+                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + padding, unitTextPaint);
 
         return backgroundBitmap;
     }
@@ -227,7 +228,7 @@ public class PointerSpeedometer extends Speedometer {
                 , new int[]{startColor, color2, speedometerColor, color3, endColor, startColor}
                 , new float[]{0f, position/2f, position, position, .9f, 1f});
         Matrix matrix = new Matrix();
-        matrix.postRotate(getMIN_DEGREE(), getWidth()/2f, getHeight()/2f);
+        matrix.postRotate(getStartDegree(), getWidth()/2f, getHeight()/2f);
         sweepGradient.setLocalMatrix(matrix);
         return sweepGradient;
     }
@@ -235,8 +236,8 @@ public class PointerSpeedometer extends Speedometer {
     private void updateRadial() {
         int centerColor = Color.argb(160, Color.red(pointerColor), Color.green(pointerColor), Color.blue(pointerColor));
         int edgeColor = Color.argb(10, Color.red(pointerColor), Color.green(pointerColor), Color.blue(pointerColor));
-        RadialGradient pointerGradient = new RadialGradient(getWidth() / 2f, getSpeedometerWidth() / 2f + dpTOpx(8)
-                , getSpeedometerWidth() / 2f + dpTOpx(8), new int[]{centerColor, edgeColor}
+        RadialGradient pointerGradient = new RadialGradient(getWidth()/2f, getSpeedometerWidth()/2f + dpTOpx(8) + padding
+                , getSpeedometerWidth()/2f + dpTOpx(8), new int[]{centerColor, edgeColor}
                 , new float[]{.4f, 1f}, Shader.TileMode.CLAMP);
         pointerBackPaint.setShader(pointerGradient);
     }
