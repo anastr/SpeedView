@@ -65,7 +65,7 @@ speedometer.speedTo(50, 4000);
 for more control, see The most important methods at [Get Started - Wiki](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) for **All Speedometers**.<br>
 and also you can see **advanced usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage) and [Work With Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).<br>
 <img src="/images/usage/StartEndDegree.png" width="40%" />
-<img src="/images/usage/WorkWithNote.gif" width="30%" />
+<img src="/images/usage/WorkWithNote.gif" width="35%" />
 we have 5 Speedometers : <br>
 ======================
 Name | Screenshot
