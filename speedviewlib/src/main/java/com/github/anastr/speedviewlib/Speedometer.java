@@ -990,12 +990,18 @@ abstract public class Speedometer extends View {
         invalidate();
     }
 
+    /**
+     * @return View width without padding.
+     */
     protected float getWidthPa() {
-        return getWidth() - getPaddingLeft() - getPaddingRight();
+        return getWidth() - (padding*2f);
     }
 
+    /**
+     * @return View height without padding.
+     */
     protected float getHeightPa() {
-        return getHeight() - getPaddingTop() - getPaddingBottom();
+        return getHeight() - (padding*2f);
     }
 
     @Override
