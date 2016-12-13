@@ -35,14 +35,11 @@ public class DeluxeSpeedView extends Speedometer {
     private boolean withEffects = true;
 
     public DeluxeSpeedView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public DeluxeSpeedView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-        initAttributeSet(context, attrs);
+        this(context, attrs, 0);
     }
 
     public DeluxeSpeedView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -72,6 +69,10 @@ public class DeluxeSpeedView extends Speedometer {
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
+        if (attrs == null) {
+            initAttributeValue();
+            return;
+        }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DeluxeSpeedView, 0, 0);
 
         speedBackgroundColor = a.getColor(R.styleable.DeluxeSpeedView_speedBackgroundColor, speedBackgroundColor);

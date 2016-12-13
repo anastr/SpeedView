@@ -25,13 +25,11 @@ public class SpeedView extends Speedometer {
     private RectF speedometerRect = new RectF();
 
     public SpeedView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public SpeedView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public SpeedView(Context context, AttributeSet attrs, int defStyleAttr) {

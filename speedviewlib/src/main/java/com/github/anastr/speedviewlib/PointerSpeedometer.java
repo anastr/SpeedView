@@ -37,14 +37,11 @@ public class PointerSpeedometer extends Speedometer {
             , pointerColor = Color.WHITE;
 
     public PointerSpeedometer(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public PointerSpeedometer(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-        initAttributeSet(context, attrs);
+        this(context, attrs, 0);
     }
 
     public PointerSpeedometer(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -77,6 +74,10 @@ public class PointerSpeedometer extends Speedometer {
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
+        if (attrs == null) {
+            initAttributeValue();
+            return;
+        }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PointerSpeedometer, 0, 0);
 
         speedometerColor = a.getColor(R.styleable.PointerSpeedometer_speedometerColor, speedometerColor);

@@ -36,14 +36,11 @@ public class RaySpeedometer extends Speedometer {
     private float markWidth = dpTOpx(3);
 
     public RaySpeedometer(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public RaySpeedometer(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-        initAttributeSet(context, attrs);
+        this(context, attrs, 0);
     }
 
     public RaySpeedometer(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -60,6 +57,10 @@ public class RaySpeedometer extends Speedometer {
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
+        if (attrs == null) {
+            initAttributeValue();
+            return;
+        }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.RaySpeedometer, 0, 0);
 
         rayColor = a.getColor(R.styleable.RaySpeedometer_rayColor, rayColor);

@@ -36,14 +36,11 @@ public class AwesomeSpeedometer extends Speedometer {
     private float indicatorWidth = dpTOpx(25f);
 
     public AwesomeSpeedometer(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public AwesomeSpeedometer(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-        initAttributeSet(context, attrs);
+        this(context, attrs, 0);
     }
 
     public AwesomeSpeedometer(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -73,6 +70,10 @@ public class AwesomeSpeedometer extends Speedometer {
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
+        if (attrs == null) {
+            initAttributeValue();
+            return;
+        }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AwesomeSpeedometer, 0, 0);
 
         speedometerColor = a.getColor(R.styleable.AwesomeSpeedometer_speedometerColor, speedometerColor);
