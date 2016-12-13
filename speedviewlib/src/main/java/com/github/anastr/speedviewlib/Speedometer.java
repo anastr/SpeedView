@@ -623,6 +623,8 @@ abstract public class Speedometer extends View {
         if (maxSpeed <= minSpeed)
             return;
         this.maxSpeed = maxSpeed;
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         speedTo(speed);
     }
@@ -650,6 +652,8 @@ abstract public class Speedometer extends View {
         if (minSpeed >= maxSpeed)
             return;
         this.minSpeed = minSpeed;
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         speedTo(speed);
     }
@@ -668,6 +672,8 @@ abstract public class Speedometer extends View {
 
     public void setIndicatorColor(int indicatorColor) {
         this.indicatorColor = indicatorColor;
+        if (!attachedToWindow)
+            return;
         invalidate();
     }
 
@@ -677,6 +683,8 @@ abstract public class Speedometer extends View {
 
     public void setCenterCircleColor(int centerCircleColor) {
         this.centerCircleColor = centerCircleColor;
+        if (!attachedToWindow)
+            return;
         invalidate();
     }
 
@@ -686,6 +694,8 @@ abstract public class Speedometer extends View {
 
     public void setMarkColor(int markColor) {
         this.markColor = markColor;
+        if (!attachedToWindow)
+            return;
         invalidate();
     }
 
@@ -695,6 +705,8 @@ abstract public class Speedometer extends View {
 
     public void setLowSpeedColor(int lowSpeedColor) {
         this.lowSpeedColor = lowSpeedColor;
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -705,6 +717,8 @@ abstract public class Speedometer extends View {
 
     public void setMediumSpeedColor(int mediumSpeedColor) {
         this.mediumSpeedColor = mediumSpeedColor;
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -715,6 +729,8 @@ abstract public class Speedometer extends View {
 
     public void setHighSpeedColor(int highSpeedColor) {
         this.highSpeedColor = highSpeedColor;
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -732,6 +748,8 @@ abstract public class Speedometer extends View {
     public void setTextColor(int textColor) {
         this.textColor = textColor;
         textPaint.setColor(textColor);
+        if (!attachedToWindow)
+            return;
         invalidate();
     }
 
@@ -748,6 +766,8 @@ abstract public class Speedometer extends View {
     public void setSpeedTextColor(int speedTextColor) {
         this.speedTextColor = speedTextColor;
         speedTextPaint.setColor(speedTextColor);
+        if (!attachedToWindow)
+            return;
         invalidate();
     }
 
@@ -764,6 +784,8 @@ abstract public class Speedometer extends View {
     public void setBackgroundCircleColor(int backgroundCircleColor) {
         this.backgroundCircleColor = backgroundCircleColor;
         circleBackPaint.setColor(backgroundCircleColor);
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -783,6 +805,8 @@ abstract public class Speedometer extends View {
     public void setTextSize(float textSize) {
         this.textSize = textSize;
         textPaint.setTextSize(textSize);
+        if (!attachedToWindow)
+            return;
         invalidate();
     }
 
@@ -801,6 +825,8 @@ abstract public class Speedometer extends View {
     public void setSpeedTextSize(float speedTextSize) {
         this.speedTextSize = speedTextSize;
         speedTextPaint.setTextSize(speedTextSize);
+        if (!attachedToWindow)
+            return;
         invalidate();
     }
 
@@ -815,6 +841,8 @@ abstract public class Speedometer extends View {
     public void setUnitTextSize(float unitTextSize) {
         this.unitTextSize = unitTextSize;
         unitTextPaint.setTextSize(unitTextSize);
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -833,6 +861,8 @@ abstract public class Speedometer extends View {
      */
     public void setUnit(String unit) {
         this.unit = unit;
+        if (!attachedToWindow)
+            return;
         invalidate();
     }
 
@@ -842,10 +872,9 @@ abstract public class Speedometer extends View {
 
     public void setSpeedometerWidth(float speedometerWidth) {
         this.speedometerWidth = speedometerWidth;
-        try {
-            onSizeChanged(getWidth(), getHeight(), getWidth(), getHeight());
-        }
-        catch (Exception ignore){}
+        if (!attachedToWindow)
+            return;
+        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -871,6 +900,8 @@ abstract public class Speedometer extends View {
     public void setStartDegree(int startDegree) {
         this.startDegree = startDegree;
         checkStartAndEndDegree();
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -889,6 +920,8 @@ abstract public class Speedometer extends View {
     public void setEndDegree(int endDegree) {
         this.endDegree = endDegree;
         checkStartAndEndDegree();
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -911,6 +944,8 @@ abstract public class Speedometer extends View {
     public void setLowSpeedPercent(int lowSpeedPercent) {
         this.lowSpeedPercent = lowSpeedPercent;
         checkSpeedometerPercent();
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -933,6 +968,8 @@ abstract public class Speedometer extends View {
     public void setMediumSpeedPercent(int mediumSpeedPercent) {
         this.mediumSpeedPercent = mediumSpeedPercent;
         checkSpeedometerPercent();
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -947,6 +984,8 @@ abstract public class Speedometer extends View {
      */
     public void setSpeedometerTextRightToLeft(boolean speedometerTextRightToLeft) {
         this.speedometerTextRightToLeft = speedometerTextRightToLeft;
+        if (!attachedToWindow)
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
