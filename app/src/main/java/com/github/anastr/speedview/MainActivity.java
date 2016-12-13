@@ -42,4 +42,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent (MainActivity.this, WorkWithNoteActivity.class);
         startActivity(intent);
     }
+
+    public void openCreateProgrammatically(View view) {
+        Intent intent = new Intent (MainActivity.this, CreateProgrammatically.class);
+        startActivity(intent);
+    }
 }
