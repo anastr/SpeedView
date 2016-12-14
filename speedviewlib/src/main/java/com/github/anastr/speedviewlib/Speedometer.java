@@ -190,8 +190,8 @@ abstract public class Speedometer extends View {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    protected void onSizeChanged(int w, int h, int oldW, int oldH) {
+        super.onSizeChanged(w, h, oldW, oldH);
         updatePadding();
     }
 
@@ -258,15 +258,19 @@ abstract public class Speedometer extends View {
         }
     }
 
+    /**
+     * every Speedometer must call this method at End of it's {@code onDraw()} method.
+     * @param canvas view canvas to draw notes.
+     */
     protected void drawNotes(Canvas canvas) {
         for (Note note : notes) {
-            if (note.getPosition().position == Note.Position.CenterSpeedometer.position)
+            if (note.getPosition() == Note.Position.CenterSpeedometer)
                 note.draw(canvas, getWidth()/2f, getHeight()/2f);
             else {
                 float y = 0f;
-                if (note.getPosition().position == Note.Position.CenterIndicator.position)
+                if (note.getPosition() == Note.Position.CenterIndicator)
                     y = getHeightPa()/4f + padding;
-                else if (note.getPosition().position == Note.Position.TopIndicator.position)
+                else if (note.getPosition() == Note.Position.TopIndicator)
                     y = padding;
                 canvas.save();
                 canvas.rotate(90f +getDegree(), getWidth()/2f, getHeight()/2f);
@@ -311,7 +315,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * @param speed to know the degree at this.
+     * @param speed to know the degree at it.
      * @return correct Degree at that speed.
      */
     protected float getDegreeAtSpeed (float speed) {
@@ -319,7 +323,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * @param degree to know the speed at this.
+     * @param degree to know the speed at it.
      * @return correct speed at that degree.
      */
     protected float getSpeedAtDegree (float degree) {
@@ -963,7 +967,7 @@ abstract public class Speedometer extends View {
      * @param mediumSpeedPercent the long of medium speed area as percent,
      *                        must be between {@code [0,100]}.
      * @throws IllegalArgumentException if {@code mediumSpeedPercent} out of range.
-     * @throws IllegalArgumentException if {@code lowSpeedPercent > mediumSpeedPercent}.
+     * @throws IllegalArgumentException if {@code mediumSpeedPercent < lowSpeedPercent}.
      */
     public void setMediumSpeedPercent(int mediumSpeedPercent) {
         this.mediumSpeedPercent = mediumSpeedPercent;
@@ -1016,10 +1020,19 @@ abstract public class Speedometer extends View {
         updatePadding();
     }
 
+    /**
+     * Display new Note for 3 seconds.
+     * @param note to display.
+     */
     public void addNote(Note note) {
         addNote(note, 3000);
     }
 
+    /**
+     * Display new Note for custom seconds.
+     * @param note to display.
+     * @param showTimeMillisecond time to remove Note.
+     */
     public void addNote(final Note note, long showTimeMillisecond) {
         note.build(getWidth());
         notes.add(note);
@@ -1035,6 +1048,9 @@ abstract public class Speedometer extends View {
         invalidate();
     }
 
+    /**
+     * remove All Notes.
+     */
     public void removeAllNotes() {
         notes.clear();
         invalidate();

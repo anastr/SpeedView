@@ -19,7 +19,10 @@ public class TextNote extends Note<TextNote> {
     private float textSize = notePaint.getTextSize();
     private StaticLayout textLayout;
 
-    // support SpannableString and multi-lines
+    /**
+     * @param context you can use {@code getApplicationContext()} method.
+     * @param noteText text to display, support SpannableString and multi-lines.
+     */
     public TextNote(Context context, CharSequence noteText) {
         super(context);
         if (noteText == null)
@@ -36,13 +39,12 @@ public class TextNote extends Note<TextNote> {
         for (int i = 0; i< textLayout.getLineCount(); i++)
             w = (int) Math.max(w, textLayout.getLineWidth(i));
         noticeContainsSizeChange(w, textLayout.getHeight());
-        updateBackgroundBitmap();
     }
 
     @Override
-    protected void drawContains(Canvas canvas, float centerX, float topY) {
+    protected void drawContains(Canvas canvas, float leftX, float topY) {
         canvas.save();
-        canvas.translate(centerX - (getContainsW()/2f), topY);
+        canvas.translate(leftX, topY);
         textLayout.draw(canvas);
         canvas.restore();
     }
@@ -51,14 +53,24 @@ public class TextNote extends Note<TextNote> {
         return textSize;
     }
 
+    /**
+     * set Text size.
+     * @param textSize in Pixel.
+     * @return This Note object to allow for chaining of calls to set methods.
+     */
     public TextNote setTextSize(float textSize) {
         this.textSize = textSize;
         notePaint.setTextSize(textSize);
         return this;
     }
 
-    public TextNote setTextTypeFace(Typeface typeFace) {
-        notePaint.setTypeface(typeFace);
+    /**
+     * to change font or text style.
+     * @param typeface new Typeface.
+     * @return This Note object to allow for chaining of calls to set methods.
+     */
+    public TextNote setTextTypeFace(Typeface typeface) {
+        notePaint.setTypeface(typeface);
         return this;
     }
 
@@ -66,6 +78,11 @@ public class TextNote extends Note<TextNote> {
         return notePaint.getColor();
     }
 
+    /**
+     * set text color.
+     * @param textColor new color.
+     * @return This Note object to allow for chaining of calls to set methods.
+     */
     public TextNote setTextColor(int textColor) {
         notePaint.setColor(textColor);
         return this;

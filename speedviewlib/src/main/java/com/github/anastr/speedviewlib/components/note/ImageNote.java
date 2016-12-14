@@ -17,10 +17,20 @@ public class ImageNote extends Note<ImageNote> {
     private RectF imageRect = new RectF();
     private Paint notePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+    /**
+     * @param context you can use {@code getApplicationContext()} method.
+     * @param image to display.
+     */
     public ImageNote(Context context, Bitmap image) {
         this(context, image, image.getWidth(), image.getHeight());
     }
 
+    /**
+     * @param context you can use {@code getApplicationContext()} method.
+     * @param image to display.
+     * @param width set custom width.
+     * @param height set custom height.
+     */
     public ImageNote(Context context, Bitmap image, int width, int height) {
         super(context);
         if (image == null)
@@ -33,12 +43,11 @@ public class ImageNote extends Note<ImageNote> {
     @Override
     public void build(int viewWidth) {
         noticeContainsSizeChange(this.width, this.height);
-        updateBackgroundBitmap();
     }
 
     @Override
-    protected void drawContains(Canvas canvas, float centerX, float topY) {
-        imageRect.set(centerX - (width/2f), topY, centerX + (width/2f), topY + height);
+    protected void drawContains(Canvas canvas, float leftX, float topY) {
+        imageRect.set(leftX, topY, leftX + width, topY + height);
         canvas.drawBitmap(image, null, imageRect, notePaint);
     }
 }
