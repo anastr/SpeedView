@@ -11,8 +11,6 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
-import java.util.Locale;
-
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
@@ -138,7 +136,7 @@ public class DeluxeSpeedView extends Speedometer {
         canvas.restore();
         canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidthPa()/12f, centerCirclePaint);
 
-        String speed = String.format(Locale.getDefault(), "%.1f", getCorrectSpeed());
+        String speedText = getSpeedText();
         float speedTextPadding = dpTOpx(1);
         float unitTextPadding = dpTOpx(1f);
         float unitW = unitTextPadding + unitTextPaint.measureText(getUnit()) + 5;
@@ -149,18 +147,18 @@ public class DeluxeSpeedView extends Speedometer {
             speedBackgroundRect.left = getWidth()/2f - unitW;
             unitTextPadding *= -1;
             speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedBackgroundRect.right = getWidth() / 2f + speedTextPaint.measureText(speed) + 5f + speedTextPadding;
+            speedBackgroundRect.right = getWidth() / 2f + speedTextPaint.measureText(speedText) + 5f + speedTextPadding;
             speedTextPadding *= -1;
         }
         else {
             unitTextPaint.setTextAlign(Paint.Align.LEFT);
             speedBackgroundRect.right = getWidth()/2f + unitW;
             speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-            speedBackgroundRect.left = getWidth() / 2f - speedTextPaint.measureText(speed) - 5f - speedTextPadding;
+            speedBackgroundRect.left = getWidth() / 2f - speedTextPaint.measureText(speedText) - 5f - speedTextPadding;
         }
         canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
 
-        canvas.drawText(speed
+        canvas.drawText(speedText
                 , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + padding, speedTextPaint);
         canvas.drawText(getUnit()
                 , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + padding, unitTextPaint);
@@ -203,34 +201,7 @@ public class DeluxeSpeedView extends Speedometer {
         }
         c.restore();
 
-        if (getStartDegree()%360 <= 90)
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getStartDegree()%360 <= 180)
-            textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getStartDegree()%360 <= 270)
-            textPaint.setTextAlign(Paint.Align.CENTER);
-        else
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        c.save();
-        c.rotate(getStartDegree() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getStartDegree() + 90f), getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
-        String minSpeed = String.format(Locale.getDefault(), "%d", getMinSpeed());
-        c.drawText(minSpeed, getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding, textPaint);
-        c.restore();
-        if (getEndDegree()%360 <= 90)
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getEndDegree()%360 <= 180)
-            textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getEndDegree()%360 <= 270)
-            textPaint.setTextAlign(Paint.Align.CENTER);
-        else
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        c.save();
-        c.rotate(getEndDegree() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getEndDegree() + 90f), getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
-        String maxSpeed = String.format(Locale.getDefault(), "%d", getMaxSpeed());
-        c.drawText(maxSpeed, getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding, textPaint);
-        c.restore();
+        drawDefaultMinAndMaxSpeedPosition(c);
 
         return backgroundBitmap;
     }

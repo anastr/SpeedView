@@ -14,8 +14,6 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
-import java.util.Locale;
-
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
@@ -155,7 +153,7 @@ public class AwesomeSpeedometer extends Speedometer {
         canvas.drawPath(indicatorPath, indicatorPaint);
         canvas.restore();
 
-        canvas.drawText(String.format(Locale.getDefault(), "%.1f", getCorrectSpeed())
+        canvas.drawText(getSpeedText()
                 , getWidth()/2f, getHeight()/2f, speedTextPaint);
         canvas.drawText(getUnit()
                 , getWidth()/2f, getHeight()/2f +unitTextPaint.getTextSize(), unitTextPaint);
@@ -180,7 +178,7 @@ public class AwesomeSpeedometer extends Speedometer {
             c.rotate(4f, getWidth()/2f, getHeight()/2f);
             if (i % 40 == 0) {
                 c.drawPath(trianglesPath, trianglesPaint);
-                c.drawText((int)getSpeedAtDegree(i + getStartDegree()) +""
+                c.drawText(String.format(getLocale(), "%d", (int)getSpeedAtDegree(i + getStartDegree()))
                         , getWidth()/2f, getHeightPa()/20f +textPaint.getTextSize() + padding, textPaint);
             }
             else {

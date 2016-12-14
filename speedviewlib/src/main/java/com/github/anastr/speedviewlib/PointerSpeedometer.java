@@ -15,8 +15,6 @@ import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
-import java.util.Locale;
-
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
@@ -144,7 +142,6 @@ public class PointerSpeedometer extends Speedometer {
         canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidthPa()/22f, circlePaint);
 
 
-        String speed = String.format(Locale.getDefault(), "%.1f", getCorrectSpeed());
         float speedTextPadding = dpTOpx(1);
         if (isSpeedometerTextRightToLeft()) {
             speedTextPaint.setTextAlign(Paint.Align.LEFT);
@@ -152,7 +149,7 @@ public class PointerSpeedometer extends Speedometer {
         }
         else
             speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(speed
+        canvas.drawText(getSpeedText()
                 , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + padding, speedTextPaint);
 
         drawNotes(canvas);
@@ -176,34 +173,7 @@ public class PointerSpeedometer extends Speedometer {
         }
         c.restore();
 
-        if (getStartDegree()%360 <= 90)
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getStartDegree()%360 <= 180)
-            textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getStartDegree()%360 <= 270)
-            textPaint.setTextAlign(Paint.Align.CENTER);
-        else
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        c.save();
-        c.rotate(getStartDegree() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getStartDegree() + 90f), getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
-        String minSpeed = String.format(Locale.getDefault(), "%d", getMinSpeed());
-        c.drawText(minSpeed, getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding, textPaint);
-        c.restore();
-        if (getEndDegree()%360 <= 90)
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getEndDegree()%360 <= 180)
-            textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getEndDegree()%360 <= 270)
-            textPaint.setTextAlign(Paint.Align.CENTER);
-        else
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        c.save();
-        c.rotate(getEndDegree() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getEndDegree() + 90f), getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
-        String maxSpeed = String.format(Locale.getDefault(), "%d", getMaxSpeed());
-        c.drawText(maxSpeed, getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding, textPaint);
-        c.restore();
+        drawDefaultMinAndMaxSpeedPosition(c);
 
         float unitTextPadding = dpTOpx(1);
         if (isSpeedometerTextRightToLeft()) {

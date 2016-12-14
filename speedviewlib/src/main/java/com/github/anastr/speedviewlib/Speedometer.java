@@ -18,6 +18,7 @@ import com.github.anastr.speedviewlib.components.note.Note;
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -107,6 +108,9 @@ abstract public class Speedometer extends View {
 
     private ArrayList<Note> notes = new ArrayList<>();
     private boolean attachedToWindow = false;
+
+    /** object to set text digits locale */
+    private Locale locale = Locale.getDefault();
 
     public Speedometer(Context context) {
         super(context);
@@ -552,6 +556,30 @@ abstract public class Speedometer extends View {
     public void setTrembleData (float trembleDegree, int trembleDuration) {
         setTrembleDegree(trembleDegree);
         setTrembleDuration(trembleDuration);
+    }
+
+    /**
+     * get correct speed as string to <b>Draw</b>.
+     * @return correct speed to draw.
+     */
+    protected String getSpeedText() {
+        return String.format(locale, "%.1f", correctSpeed);
+    }
+
+    /**
+     * get Max speed as string to <b>Draw</b>.
+     * @return Max speed to draw.
+     */
+    protected String getMaxSpeedText() {
+        return String.format(locale, "%d", maxSpeed);
+    }
+
+    /**
+     * get Min speed as string to <b>Draw</b>.
+     * @return Min speed to draw.
+     */
+    protected String getMinSpeedText() {
+        return String.format(locale, "%d", minSpeed);
     }
 
     /**
@@ -1054,5 +1082,56 @@ abstract public class Speedometer extends View {
     public void removeAllNotes() {
         notes.clear();
         invalidate();
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * set Locale to localizing digits to the given locale,
+     * for speed Text and speedometer Text.
+     * @param locale the locale to apply, {@code null} value means no localization.
+     */
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+        if (!attachedToWindow)
+            return;
+        invalidate();
+    }
+
+    /**
+     * draw minSpeedText and maxSpeedText aat default Position.
+     * @param c canvas to draw.
+     */
+    protected void drawDefaultMinAndMaxSpeedPosition(Canvas c) {
+        if (getStartDegree()%360 <= 90)
+            textPaint.setTextAlign(Paint.Align.RIGHT);
+        else if (getStartDegree()%360 <= 180)
+            textPaint.setTextAlign(Paint.Align.LEFT);
+        else if (getStartDegree()%360 <= 270)
+            textPaint.setTextAlign(Paint.Align.CENTER);
+        else
+            textPaint.setTextAlign(Paint.Align.RIGHT);
+        c.save();
+        c.rotate(getStartDegree() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getStartDegree() + 90f), getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
+        c.drawText(getMinSpeedText(), getWidthPa()/2f - textPaint.getTextSize() + padding
+                , textPaint.getTextSize() + padding, textPaint);
+        c.restore();
+        if (getEndDegree()%360 <= 90)
+            textPaint.setTextAlign(Paint.Align.RIGHT);
+        else if (getEndDegree()%360 <= 180)
+            textPaint.setTextAlign(Paint.Align.LEFT);
+        else if (getEndDegree()%360 <= 270)
+            textPaint.setTextAlign(Paint.Align.CENTER);
+        else
+            textPaint.setTextAlign(Paint.Align.RIGHT);
+        c.save();
+        c.rotate(getEndDegree() + 90f, getWidth()/2f, getHeight()/2f);
+        c.rotate(-(getEndDegree() + 90f), getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
+        c.drawText(getMaxSpeedText(), getWidthPa()/2f + textPaint.getTextSize() + padding
+                , textPaint.getTextSize() + padding, textPaint);
+        c.restore();
     }
 }
