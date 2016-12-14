@@ -14,6 +14,7 @@ import com.github.anastr.speedviewlib.PointerSpeedometer;
 import com.github.anastr.speedviewlib.RaySpeedometer;
 import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.Speedometer;
+import com.github.anastr.speedviewlib.TubeSpeedometer;
 
 import java.util.Locale;
 import java.util.Random;
@@ -63,7 +64,7 @@ public class CreateProgrammatically extends AppCompatActivity {
 
     public void addRandomSpeedometer(View view) {
         Random mad = new Random();
-        switch (mad.nextInt(5)) {
+        switch (mad.nextInt(6)) {
             case 0:
                 speedometer = new SpeedView(this);
                 break;
@@ -78,6 +79,9 @@ public class CreateProgrammatically extends AppCompatActivity {
                 break;
             case 4:
                 speedometer = new PointerSpeedometer(this);
+                break;
+            case 5:
+                speedometer = new TubeSpeedometer(this);
                 break;
         }
         rootSpeedometer.removeAllViews();

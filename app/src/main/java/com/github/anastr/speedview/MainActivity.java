@@ -38,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void openTubeSpeedometerActivity(View view) {
+        Intent intent = new Intent (MainActivity.this, TubeSpeedometerActivity.class);
+        startActivity(intent);
+    }
+
     public void openWorkWithNoteActivity(View view) {
         Intent intent = new Intent (MainActivity.this, WorkWithNoteActivity.class);
         startActivity(intent);

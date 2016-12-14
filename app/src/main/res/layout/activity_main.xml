@@ -47,6 +47,12 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="openTubeSpeedometerActivity"
+            android:text="Tube Speedometer"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:onClick="openWorkWithNoteActivity"
             android:text="Work With Note"/>
 
