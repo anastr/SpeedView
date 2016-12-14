@@ -127,4 +127,10 @@
         <attr name="speedometerColor" />
         <attr name="pointerColor" format="color"/>
     </declare-styleable>
+
+    <declare-styleable name="TubeSpeedometer" parent="Speedometer">
+
+        <attr name="speedometerColor" />
+        <attr name="withEffects3D" format="boolean" />
+    </declare-styleable>
 </resources>
