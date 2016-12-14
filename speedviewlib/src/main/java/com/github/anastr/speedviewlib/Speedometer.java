@@ -1134,4 +1134,34 @@ abstract public class Speedometer extends View {
                 , textPaint.getTextSize() + padding, textPaint);
         c.restore();
     }
+
+    /**
+     * check if correct speed in <b>Low Speed Section</b>.
+     * @return true if correct speed in Low Speed Section.
+     *
+     * @see #setLowSpeedPercent(int)
+     */
+    public boolean isInLowSection() {
+        return (endDegree - startDegree)*getLowSpeedOffset() + startDegree >= degree;
+    }
+
+    /**
+     * check if correct speed in <b>Medium Speed Section</b>.
+     * @return true if correct speed in Medium Speed Section
+     * , and it is not in Low Speed Section.
+     *
+     * @see #setMediumSpeedPercent(int)
+     */
+    public boolean isInMediumSection() {
+        return (endDegree - startDegree)*getMediumSpeedOffset() + startDegree >= degree && !isInLowSection();
+    }
+
+    /**
+     * check if correct speed in <b>High Speed Section</b>.
+     * @return true if correct speed in High Speed Section
+     * , and it is not in Low Speed Section or Medium Speed Section.
+     */
+    public boolean isInHighSection() {
+        return degree > (endDegree - startDegree)*getMediumSpeedOffset() + startDegree;
+    }
 }
