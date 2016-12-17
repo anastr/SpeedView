@@ -11,17 +11,17 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
 public class DeluxeSpeedView extends Speedometer {
 
-    private Path indicatorPath = new Path(),
-            markPath = new Path(),
+    private Path markPath = new Path(),
             smallMarkPath = new Path();
     private Paint centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
-            indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             smallMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
@@ -63,6 +63,7 @@ public class DeluxeSpeedView extends Speedometer {
         smallMarkPaint.setStyle(Paint.Style.STROKE);
 
         setLayerType(LAYER_TYPE_SOFTWARE, null);
+        setIndicator(Indicator.Indicators.NormalSmallIndicator);
         setWithEffects(withEffects);
     }
 
@@ -92,16 +93,6 @@ public class DeluxeSpeedView extends Speedometer {
         float risk = getSpeedometerWidth()/2f + padding;
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
-        float indW = w/32f;
-
-        indicatorPath.reset();
-        indicatorPath.moveTo(w/2f, getHeightPa()/5f + padding);
-        float indicatorBottom = getHeightPa()*3f/5f + padding;
-        indicatorPath.lineTo(w/2f -indW, indicatorBottom);
-        indicatorPath.lineTo(w/2f +indW, indicatorBottom);
-        RectF rectF = new RectF(w/2f -indW, indicatorBottom -indW, w/2f +indW, indicatorBottom +indW);
-        indicatorPath.addArc(rectF, 0f, 180f);
-
         float markH = getHeightPa()/28f;
         markPath.reset();
         markPath.moveTo(w/2f, padding);
@@ -118,7 +109,6 @@ public class DeluxeSpeedView extends Speedometer {
     }
 
     private void initDraw() {
-        indicatorPaint.setColor(getIndicatorColor());
         speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
         smallMarkPaint.setColor(getMarkColor());
@@ -130,10 +120,7 @@ public class DeluxeSpeedView extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        canvas.save();
-        canvas.rotate(90f +getDegree(), getWidth()/2f, getHeight()/2f);
-        canvas.drawPath(indicatorPath, indicatorPaint);
-        canvas.restore();
+        drawIndicator(canvas);
         canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidthPa()/12f, centerCirclePaint);
 
         String speedText = getSpeedText();
@@ -212,20 +199,25 @@ public class DeluxeSpeedView extends Speedometer {
 
     public void setWithEffects(boolean withEffects) {
         this.withEffects = withEffects;
+        indicatorEffects(withEffects);
         if (withEffects && !isInEditMode()) {
-            indicatorPaint.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.SOLID));
             markPaint.setMaskFilter(new BlurMaskFilter(5, BlurMaskFilter.Blur.SOLID));
             speedBackgroundPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.SOLID));
             centerCirclePaint.setMaskFilter(new BlurMaskFilter(10, BlurMaskFilter.Blur.SOLID));
         }
         else {
-            indicatorPaint.setMaskFilter(null);
             markPaint.setMaskFilter(null);
             speedBackgroundPaint.setMaskFilter(null);
             centerCirclePaint.setMaskFilter(null);
         }
         updateBackgroundBitmap();
         invalidate();
+    }
+
+    @Override
+    public void setIndicator(Indicator.Indicators indicator) {
+        super.setIndicator(indicator);
+        indicatorEffects(withEffects);
     }
 
     public int getSpeedBackgroundColor() {

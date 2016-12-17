@@ -11,6 +11,8 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
@@ -198,6 +200,7 @@ public class RaySpeedometer extends Speedometer {
 
     public void setWithEffects(boolean withEffects) {
         this.withEffects = withEffects;
+        indicatorEffects(withEffects);
         if (withEffects && !isInEditMode()) {
             rayPaint.setMaskFilter(new BlurMaskFilter(3, BlurMaskFilter.Blur.SOLID));
             markPaint.setMaskFilter(new BlurMaskFilter(5, BlurMaskFilter.Blur.SOLID));
@@ -210,6 +213,12 @@ public class RaySpeedometer extends Speedometer {
         }
         updateBackgroundBitmap();
         invalidate();
+    }
+
+    @Override
+    public void setIndicator(Indicator.Indicators indicator) {
+        super.setIndicator(indicator);
+        indicatorEffects(withEffects);
     }
 
     public int getSpeedBackgroundColor() {

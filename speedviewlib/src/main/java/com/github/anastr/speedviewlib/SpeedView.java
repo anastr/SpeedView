@@ -9,14 +9,15 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
 public class SpeedView extends Speedometer {
 
-    private Path indicatorPath = new Path(),
-            markPath = new Path();
+    private Path markPath = new Path();
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -43,6 +44,7 @@ public class SpeedView extends Speedometer {
     private void init() {
         speedometerPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
+        setIndicator(Indicator.Indicators.NormalIndicator);
     }
 
     @Override
@@ -51,16 +53,6 @@ public class SpeedView extends Speedometer {
 
         float risk = getSpeedometerWidth()/2f + padding;
         speedometerRect.set(risk, risk, w -risk, h -risk);
-
-        float indW = w/32f;
-
-        indicatorPath.reset();
-        indicatorPath.moveTo(w/2f, padding);
-        float indicatorBottom = getHeightPa()*2f/3f + padding;
-        indicatorPath.lineTo(w/2f -indW, indicatorBottom);
-        indicatorPath.lineTo(w/2f +indW, indicatorBottom);
-        RectF rectF = new RectF(w/2f -indW, indicatorBottom -indW, w/2f +indW, indicatorBottom +indW);
-        indicatorPath.addArc(rectF, 0f, 180f);
 
         float markH = getHeightPa()/28f;
         markPath.reset();
@@ -74,6 +66,7 @@ public class SpeedView extends Speedometer {
     private void initDraw() {
         speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
+        paint.setColor(getCenterCircleColor());
     }
 
     @Override
@@ -81,12 +74,7 @@ public class SpeedView extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        paint.setColor(getIndicatorColor());
-        canvas.save();
-        canvas.rotate(90f +getDegree(), getWidth()/2f, getHeight()/2f);
-        canvas.drawPath(indicatorPath, paint);
-        canvas.restore();
-        paint.setColor(getCenterCircleColor());
+        drawIndicator(canvas);
         canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidthPa()/12f, paint);
 
         float speedTextPadding = dpTOpx(1);

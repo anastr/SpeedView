@@ -14,6 +14,12 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
+import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+import com.github.anastr.speedviewlib.components.Indicators.NoIndicator;
+import com.github.anastr.speedviewlib.components.Indicators.NormalIndicator;
+import com.github.anastr.speedviewlib.components.Indicators.NormalSmallIndicator;
+import com.github.anastr.speedviewlib.components.Indicators.SpindleIndicator;
+import com.github.anastr.speedviewlib.components.Indicators.TriangleIndicator;
 import com.github.anastr.speedviewlib.components.note.Note;
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 
@@ -28,11 +34,13 @@ import java.util.Random;
 @SuppressWarnings("unused")
 abstract public class Speedometer extends View {
 
+    private Indicator indicator;
     protected Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     protected TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
             textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
             unitTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private float speedometerWidth = dpTOpx(30f);
+    private float indicatorWidth = dpTOpx(12f);
     private float speedTextSize = dpTOpx(18f);
     private float textSize = dpTOpx(10f);
     private float unitTextSize = dpTOpx(15f);
@@ -139,6 +147,8 @@ abstract public class Speedometer extends View {
     }
 
     private void init() {
+        indicator = new NoIndicator(this);
+
         speedAnimator = ValueAnimator.ofFloat(0f, 1f);
         trembleAnimator = ValueAnimator.ofFloat(0f, 1f);
         realSpeedAnimator = ValueAnimator.ofFloat(0f, 1f);
@@ -175,6 +185,7 @@ abstract public class Speedometer extends View {
         lowSpeedPercent = a.getInt(R.styleable.Speedometer_lowSpeedPercent, lowSpeedPercent);
         mediumSpeedPercent = a.getInt(R.styleable.Speedometer_mediumSpeedPercent, mediumSpeedPercent);
         speedometerTextRightToLeft = a.getBoolean(R.styleable.Speedometer_speedometerTextRightToLeft, speedometerTextRightToLeft);
+        indicatorWidth = a.getDimension(R.styleable.Speedometer_indicatorWidth, indicatorWidth);
         degree = startDegree;
         a.recycle();
         this.unit =  (unit != null) ? unit : this.unit;
@@ -197,6 +208,7 @@ abstract public class Speedometer extends View {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
         updatePadding();
+        indicator.onSizeChange(getWidthPa(), getHeightPa());
     }
 
     private void checkStartAndEndDegree() {
@@ -242,6 +254,7 @@ abstract public class Speedometer extends View {
 
     private void updatePadding() {
         padding = Math.max(Math.max(getPaddingLeft(), getPaddingRight()), Math.max(getPaddingTop(), getPaddingBottom()));
+        indicator.noticePaddingChange(padding);
     }
 
     @Override
@@ -260,6 +273,10 @@ abstract public class Speedometer extends View {
                 onSpeedChangeListener.onSpeedChange(this, isSpeedUp, trembleAnimator.isRunning());
             }
         }
+    }
+
+    protected void drawIndicator(Canvas canvas) {
+        indicator.draw(canvas, degree);
     }
 
     /**
@@ -706,6 +723,7 @@ abstract public class Speedometer extends View {
         this.indicatorColor = indicatorColor;
         if (!attachedToWindow)
             return;
+        indicator.setIndicatorColor(indicatorColor);
         invalidate();
     }
 
@@ -906,6 +924,7 @@ abstract public class Speedometer extends View {
         this.speedometerWidth = speedometerWidth;
         if (!attachedToWindow)
             return;
+        indicator.setSpeedometerWidth(speedometerWidth);
         updateBackgroundBitmap();
         invalidate();
     }
@@ -1025,15 +1044,15 @@ abstract public class Speedometer extends View {
     /**
      * @return View width without padding.
      */
-    protected float getWidthPa() {
-        return getWidth() - (padding*2f);
+    public int getWidthPa() {
+        return getWidth() - (padding*2);
     }
 
     /**
      * @return View height without padding.
      */
-    protected float getHeightPa() {
-        return getHeight() - (padding*2f);
+    public int getHeightPa() {
+        return getHeight() - (padding*2);
     }
 
     @Override
@@ -1163,5 +1182,50 @@ abstract public class Speedometer extends View {
      */
     public boolean isInHighSection() {
         return degree > (endDegree - startDegree)*getMediumSpeedOffset() + startDegree;
+    }
+
+    public int getPadding() {
+        return padding;
+    }
+
+    public float getIndicatorWidth() {
+        return indicatorWidth;
+    }
+
+    public void setIndicatorWidth(float indicatorWidth) {
+        this.indicatorWidth = indicatorWidth;
+        indicator.setIndicatorWidth(indicatorWidth);
+    }
+
+    protected void indicatorEffects(boolean withEffects) {
+        indicator.withEffects(withEffects);
+    }
+
+    /**
+     * change indicator shape.
+     * @param indicator new indicator.
+     */
+    public void setIndicator (Indicator.Indicators indicator) {
+        switch (indicator) {
+            case NoIndicator:
+                this.indicator = new NoIndicator(this);
+                break;
+
+            case NormalIndicator:
+                this.indicator = new NormalIndicator(this);
+                break;
+
+            case NormalSmallIndicator:
+                this.indicator = new NormalSmallIndicator(this);
+                break;
+
+            case TriangleIndicator:
+                this.indicator = new TriangleIndicator(this);
+                break;
+
+            case SpindleIndicator:
+                this.indicator = new SpindleIndicator(this);
+                break;
+        }
     }
 }

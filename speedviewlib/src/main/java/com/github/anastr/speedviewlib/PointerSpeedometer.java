@@ -15,18 +15,18 @@ import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
 public class PointerSpeedometer extends Speedometer {
 
-    private Path indicatorPath = new Path(),
-            markPath = new Path();
+    private Path markPath = new Path();
     private Paint speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             pointerPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             pointerBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
-            indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
@@ -50,6 +50,7 @@ public class PointerSpeedometer extends Speedometer {
 
     @Override
     protected void defaultValues() {
+        super.setIndicatorWidth(dpTOpx(16f));
         super.setIndicatorColor(Color.WHITE);
         super.setMarkColor(Color.WHITE);
         super.setTextColor(Color.WHITE);
@@ -69,6 +70,7 @@ public class PointerSpeedometer extends Speedometer {
         markPaint.setStrokeWidth(dpTOpx(2));
         speedTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         unitTextPaint.setTextAlign(Paint.Align.LEFT);
+        setIndicator(Indicator.Indicators.SpindleIndicator);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -96,12 +98,6 @@ public class PointerSpeedometer extends Speedometer {
         float risk = getSpeedometerWidth()/2f + dpTOpx(8) + padding;
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
-        float indW = w/20f;
-        indicatorPath.reset();
-        indicatorPath.moveTo(w/2f, h/2f);
-        indicatorPath.quadTo(w/2f -indW, getHeightPa()*.34f + padding, w/2f, getHeightPa()*.18f + padding);
-        indicatorPath.quadTo(w/2f +indW, getHeightPa()*.34f + padding, w/2f, h/2f);
-
         markPath.reset();
         markPath.moveTo(w/2f, getSpeedometerWidth() + dpTOpx(8) + dpTOpx(4) + padding);
         markPath.lineTo(w/2f, getSpeedometerWidth() + dpTOpx(8) + dpTOpx(4) + padding + w/60);
@@ -114,7 +110,6 @@ public class PointerSpeedometer extends Speedometer {
         speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         speedometerPaint.setShader(updateSweep());
         markPaint.setColor(getMarkColor());
-        indicatorPaint.setColor(getIndicatorColor());
         circlePaint.setColor(getCenterCircleColor());
         unitTextPaint.setColor(getSpeedTextColor());
     }
@@ -132,8 +127,9 @@ public class PointerSpeedometer extends Speedometer {
                 , getSpeedometerWidth()/2f + dpTOpx(8), pointerBackPaint);
         canvas.drawCircle(getWidth()/2f, getSpeedometerWidth()/2f + dpTOpx(8) + padding
                 , getSpeedometerWidth()/2f + dpTOpx(1), pointerPaint);
-        canvas.drawPath(indicatorPath, indicatorPaint);
         canvas.restore();
+
+        drawIndicator(canvas);
 
         int c = getCenterCircleColor();
         circlePaint.setColor(Color.argb(120, Color.red(c), Color.green(c), Color.blue(c)));
