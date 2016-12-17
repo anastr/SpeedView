@@ -40,6 +40,7 @@ public class TubeSpeedometer extends Speedometer {
         super.setMediumSpeedColor(Color.parseColor("#FFC107"));
         super.setHighSpeedColor(Color.parseColor("#F44336"));
         super.setSpeedometerWidth(dpTOpx(40f));
+        super.setBackgroundCircleColor(Color.TRANSPARENT);
     }
 
     private void init() {
