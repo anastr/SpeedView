@@ -28,109 +28,42 @@
         <attr name="speedometerTextRightToLeft" format="boolean" />
 
         <attr name="minSpeed" format="integer" />
+        <attr name="indicatorWidth" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">
-        <attr name="indicatorColor" />
-        <attr name="centerCircleColor" />
-        <attr name="markColor" />
-        <attr name="lowSpeedColor" />
-        <attr name="mediumSpeedColor" />
-        <attr name="highSpeedColor" />
-        <attr name="textColor" />
-        <attr name="backgroundCircleColor" />
-        <attr name="speedTextColor"/>
-        <attr name="speedometerWidth" />
-        <attr name="maxSpeed" />
-        <attr name="withTremble" />
-        <attr name="speedTextSize" />
-        <attr name="textSize" />
-        <attr name="unit" />
     </declare-styleable>
 
     <declare-styleable name="DeluxeSpeedView" parent="Speedometer">
-        <attr name="indicatorColor" />
-        <attr name="centerCircleColor" />
-        <attr name="markColor" />
-        <attr name="lowSpeedColor" />
-        <attr name="mediumSpeedColor" />
-        <attr name="highSpeedColor" />
-        <attr name="textColor" />
-        <attr name="backgroundCircleColor" />
-        <attr name="speedTextColor" />
-        <attr name="speedometerWidth" />
-        <attr name="maxSpeed" />
-        <attr name="withTremble" />
-        <attr name="speedTextSize" />
-        <attr name="textSize" />
-        <attr name="unit" />
 
         <attr name="speedBackgroundColor" format="color" />
         <attr name="withEffects" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="AwesomeSpeedometer" parent="Speedometer">
-        <attr name="indicatorColor" />
-        <attr name="centerCircleColor" />
-        <attr name="markColor" />
-        <attr name="textColor" />
-        <attr name="backgroundCircleColor" />
-        <attr name="speedTextColor"/>
-        <attr name="speedometerWidth" />
-        <attr name="maxSpeed" />
-        <attr name="withTremble" />
-        <attr name="speedTextSize" />
-        <attr name="textSize" />
-        <attr name="unit" />
-
         <attr name="speedometerColor" />
-        <attr name="indicatorWidth" format="dimension"/>
         <attr name="trianglesColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="RaySpeedometer" parent="DeluxeSpeedView">
-        <attr name="markColor" />
-        <attr name="lowSpeedColor" />
-        <attr name="mediumSpeedColor" />
-        <attr name="highSpeedColor" />
-        <attr name="textColor" />
-        <attr name="backgroundCircleColor" />
-        <attr name="speedTextColor" />
-        <attr name="speedometerWidth" />
-        <attr name="maxSpeed" />
-        <attr name="withTremble" />
-        <attr name="speedTextSize" />
-        <attr name="textSize" />
-        <attr name="unit" />
-
-        <attr name="speedBackgroundColor"/>
-        <attr name="withEffects"/>
+        <attr name="speedBackgroundColor" />
+        <attr name="withEffects" />
         <attr name="rayColor" format="color"/>
         <attr name="degreeBetweenMark" format="integer"/>
         <attr name="markWidth" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="PointerSpeedometer" parent="Speedometer">
-        <attr name="indicatorColor" />
-        <attr name="centerCircleColor" />
-        <attr name="markColor" />
-        <attr name="textColor" />
-        <attr name="backgroundCircleColor" />
-        <attr name="speedTextColor" />
-        <attr name="speedometerWidth" />
-        <attr name="maxSpeed" />
-        <attr name="withTremble" />
-        <attr name="speedTextSize" />
-        <attr name="textSize" />
-        <attr name="unit" />
-
         <attr name="speedometerColor" />
         <attr name="pointerColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="TubeSpeedometer" parent="Speedometer">
-
         <attr name="speedometerColor" />
         <attr name="withEffects3D" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ImageSpeedometer" parent="Speedometer">
+        <attr name="imageSpeedometer" format="reference" />
     </declare-styleable>
 </resources>
