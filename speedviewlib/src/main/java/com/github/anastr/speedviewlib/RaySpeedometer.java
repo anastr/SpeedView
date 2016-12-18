@@ -141,6 +141,8 @@ public class RaySpeedometer extends Speedometer {
         }
         canvas.restore();
 
+        drawIndicator(canvas);
+
         String speedText = getSpeedText();
         float speedTextPadding = dpTOpx(1);
         float unitTextPadding = dpTOpx(1f);

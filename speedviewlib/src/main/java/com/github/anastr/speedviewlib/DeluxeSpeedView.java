@@ -55,6 +55,7 @@ public class DeluxeSpeedView extends Speedometer {
         super.setHighSpeedColor(Color.parseColor("#9b2020"));
         super.setTextColor(Color.WHITE);
         super.setBackgroundCircleColor(Color.parseColor("#212121"));
+        setIndicator(Indicator.Indicators.NormalSmallIndicator);
     }
 
     private void init() {
@@ -63,7 +64,6 @@ public class DeluxeSpeedView extends Speedometer {
         smallMarkPaint.setStyle(Paint.Style.STROKE);
 
         setLayerType(LAYER_TYPE_SOFTWARE, null);
-        setIndicator(Indicator.Indicators.NormalSmallIndicator);
         setWithEffects(withEffects);
     }
 

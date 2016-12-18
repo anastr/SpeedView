@@ -10,6 +10,10 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
+/**
+ * this Library build By Anas Altair
+ * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
+ */
 public class TubeSpeedometer extends Speedometer {
 
     private Paint tubePaint = new Paint(Paint.ANTI_ALIAS_FLAG)
@@ -112,6 +116,8 @@ public class TubeSpeedometer extends Speedometer {
 
         float sweepAngle = (getEndDegree() - getStartDegree())*getPercentSpeed()/100f;
         canvas.drawArc(speedometerRect,  getStartDegree(), sweepAngle, false, tubePaint);
+
+        drawIndicator(canvas);
 
         float speedTextPadding = dpTOpx(1);
         if (isSpeedometerTextRightToLeft()) {

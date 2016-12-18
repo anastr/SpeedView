@@ -56,6 +56,7 @@ public class AwesomeSpeedometer extends Speedometer {
         super.setIndicatorColor(Color.parseColor("#00e6e6"));
         super.setTextColor(Color.parseColor("#ffc260"));
         super.setSpeedTextColor(Color.WHITE);
+        setIndicator(Indicator.Indicators.TriangleIndicator);
     }
 
     private void init() {
@@ -64,7 +65,6 @@ public class AwesomeSpeedometer extends Speedometer {
         ringPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextSize(dpTOpx(10));
         textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        setIndicator(Indicator.Indicators.TriangleIndicator);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {

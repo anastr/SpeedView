@@ -39,12 +39,12 @@ public class SpeedView extends Speedometer {
     @Override
     protected void defaultValues() {
         super.setBackgroundCircleColor(Color.TRANSPARENT);
+        setIndicator(Indicator.Indicators.NormalIndicator);
     }
 
     private void init() {
         speedometerPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
-        setIndicator(Indicator.Indicators.NormalIndicator);
     }
 
     @Override

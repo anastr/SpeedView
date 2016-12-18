@@ -186,6 +186,9 @@ abstract public class Speedometer extends View {
         mediumSpeedPercent = a.getInt(R.styleable.Speedometer_mediumSpeedPercent, mediumSpeedPercent);
         speedometerTextRightToLeft = a.getBoolean(R.styleable.Speedometer_speedometerTextRightToLeft, speedometerTextRightToLeft);
         indicatorWidth = a.getDimension(R.styleable.Speedometer_indicatorWidth, indicatorWidth);
+        int ind = a.getInt(R.styleable.Speedometer_indicator, -1);
+        if (ind != -1)
+            setIndicator(Indicator.Indicators.values()[ind]);
         degree = startDegree;
         a.recycle();
         this.unit =  (unit != null) ? unit : this.unit;
@@ -208,7 +211,7 @@ abstract public class Speedometer extends View {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
         updatePadding();
-        indicator.onSizeChange(getWidthPa(), getHeightPa());
+        indicator.onSizeChange(this);
     }
 
     private void checkStartAndEndDegree() {

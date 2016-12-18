@@ -29,6 +29,14 @@
 
         <attr name="minSpeed" format="integer" />
         <attr name="indicatorWidth" format="dimension" />
+
+        <attr name="indicator" format="enum" >
+            <enum name="NoIndicator" value="0" />
+            <enum name="NormalIndicator" value="1" />
+            <enum name="NormalSmallIndicator" value="2" />
+            <enum name="TriangleIndicator" value="3" />
+            <enum name="SpindleIndicator" value="4" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">

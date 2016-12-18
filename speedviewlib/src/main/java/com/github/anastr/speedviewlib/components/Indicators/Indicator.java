@@ -22,14 +22,7 @@ public abstract class Indicator {
     private boolean inEditMode;
 
     protected Indicator (Speedometer speedometer) {
-        this.density = speedometer.getContext().getResources().getDisplayMetrics().density;
-        this.indicatorWidth = speedometer.getIndicatorWidth();
-        this.viewWidth = speedometer.getWidthPa();
-        this.viewHeight = speedometer.getHeightPa();
-        this.speedometerWidth = speedometer.getSpeedometerWidth();
-        this.indicatorColor = speedometer.getIndicatorColor();
-        this.padding = speedometer.getPadding();
-        this.inEditMode = speedometer.isInEditMode();
+        updateData(speedometer);
         init();
     }
 
@@ -45,13 +38,22 @@ public abstract class Indicator {
 
     /**
      * must call in {@code speedometer.onSizeChanged()}
-     * @param w new speedometer width without padding.
-     * @param h new speedometer height without padding.
+     * @param speedometer target speedometer.
      */
-    public void onSizeChange(int w, int h) {
-        this.viewWidth = w;
-        this.viewHeight = h;
+    public void onSizeChange(Speedometer speedometer) {
+        updateData(speedometer);
         updateIndicator();
+    }
+
+    public void updateData(Speedometer speedometer) {
+        this.density = speedometer.getContext().getResources().getDisplayMetrics().density;
+        this.indicatorWidth = speedometer.getIndicatorWidth();
+        this.viewWidth = speedometer.getWidthPa();
+        this.viewHeight = speedometer.getHeightPa();
+        this.speedometerWidth = speedometer.getSpeedometerWidth();
+        this.indicatorColor = speedometer.getIndicatorColor();
+        this.padding = speedometer.getPadding();
+        this.inEditMode = speedometer.isInEditMode();
     }
 
     public float dpTOpx(float dp) {

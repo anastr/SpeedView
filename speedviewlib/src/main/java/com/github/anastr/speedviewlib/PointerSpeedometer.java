@@ -60,6 +60,7 @@ public class PointerSpeedometer extends Speedometer {
         super.setSpeedometerWidth(dpTOpx(10f));
         super.setBackgroundCircleColor(Color.parseColor("#48cce9"));
         super.setUnitTextSize(dpTOpx(11f));
+        setIndicator(Indicator.Indicators.SpindleIndicator);
     }
 
     private void init() {
@@ -70,7 +71,6 @@ public class PointerSpeedometer extends Speedometer {
         markPaint.setStrokeWidth(dpTOpx(2));
         speedTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         unitTextPaint.setTextAlign(Paint.Align.LEFT);
-        setIndicator(Indicator.Indicators.SpindleIndicator);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
