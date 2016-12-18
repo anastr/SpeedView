@@ -106,4 +106,133 @@ public class ImageSpeedometer extends Speedometer {
         this.imageSpeedometer = imageSpeedometer;
         updateBackgroundBitmap();
     }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code Color.TRANSPARENT} always.
+     */
+    @Deprecated
+    @Override
+    public int getLowSpeedColor() {
+        return Color.TRANSPARENT;
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @param lowSpeedColor nothing.
+     */
+    @Deprecated
+    @Override
+    public void setLowSpeedColor(int lowSpeedColor) {
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code Color.TRANSPARENT} always.
+     */
+    @Deprecated
+    @Override
+    public int getMediumSpeedColor() {
+        return Color.TRANSPARENT;
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @param mediumSpeedColor nothing.
+     */
+    @Deprecated
+    @Override
+    public void setMediumSpeedColor(int mediumSpeedColor) {
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code Color.TRANSPARENT} always.
+     */
+    @Deprecated
+    @Override
+    public int getHighSpeedColor() {
+        return Color.TRANSPARENT;
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @param highSpeedColor nothing.
+     */
+    @Deprecated
+    @Override
+    public void setHighSpeedColor(int highSpeedColor) {
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code 0} always.
+     */
+    @Deprecated
+    @Override
+    public int getLowSpeedPercent() {
+        return 0;
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @param lowSpeedPercent nothing.
+     */
+    @Deprecated
+    @Override
+    public void setLowSpeedPercent(int lowSpeedPercent) {
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code 0} always.
+     */
+    @Deprecated
+    @Override
+    public int getMediumSpeedPercent() {
+        return 0;
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @param mediumSpeedPercent nothing.
+     */
+    @Deprecated
+    @Override
+    public void setMediumSpeedPercent(int mediumSpeedPercent) {
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code 0} always.
+     */
+    @Override
+    public float getTextSize() {
+        return 0;
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @param textSize nothing.
+     */
+    @Override
+    public void setTextSize(float textSize) {
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @return {@code 0} always.
+     */
+    @Override
+    public int getTextColor() {
+        return 0;
+    }
+
+    /**
+     * this Speedometer doesn't use this method.
+     * @param textColor nothing.
+     */
+    @Override
+    public void setTextColor(int textColor) {
+    }
 }
