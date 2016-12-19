@@ -43,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void openImageSpeedometerActivity(View view) {
+        Intent intent = new Intent (MainActivity.this, ImageSpeedometerActivity.class);
+        startActivity(intent);
+    }
+
     public void openWorkWithNoteActivity(View view) {
         Intent intent = new Intent (MainActivity.this, WorkWithNoteActivity.class);
         startActivity(intent);
