@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 
 /**
@@ -102,6 +103,23 @@ public class ImageSpeedometer extends Speedometer {
         return imageSpeedometer;
     }
 
+    /**
+     * set background speedometer image, Preferably be square.
+     * @param imageResource image id.
+     * @see #setImageSpeedometer(Drawable)
+     */
+    public void setImageSpeedometer (int imageResource) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            setImageSpeedometer(getContext().getDrawable(imageResource));
+        else
+            setImageSpeedometer(getContext().getResources().getDrawable(imageResource));
+    }
+
+    /**
+     * set background speedometer image, Preferably be square.
+     * @param imageSpeedometer image drawable.
+     * @see #setImageSpeedometer(int)
+     */
     public void setImageSpeedometer(Drawable imageSpeedometer) {
         this.imageSpeedometer = imageSpeedometer;
         updateBackgroundBitmap();
