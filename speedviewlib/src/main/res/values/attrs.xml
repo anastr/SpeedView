@@ -36,6 +36,9 @@
             <enum name="NormalSmallIndicator" value="2" />
             <enum name="TriangleIndicator" value="3" />
             <enum name="SpindleIndicator" value="4" />
+            <enum name="LineIndicator" value="5" />
+            <enum name="HalfLineIndicator" value="6" />
+            <enum name="QuarterLineIndicator" value="7" />
         </attr>
     </declare-styleable>
 

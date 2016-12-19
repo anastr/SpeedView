@@ -45,7 +45,7 @@ public abstract class Indicator {
         updateIndicator();
     }
 
-    public void updateData(Speedometer speedometer) {
+    private void updateData(Speedometer speedometer) {
         this.density = speedometer.getContext().getResources().getDisplayMetrics().density;
         this.indicatorWidth = speedometer.getIndicatorWidth();
         this.viewWidth = speedometer.getWidthPa();
@@ -122,8 +122,8 @@ public abstract class Indicator {
     }
 
     public enum Indicators {
-        NoIndicator, NormalIndicator, NormalSmallIndicator
-        , TriangleIndicator, SpindleIndicator
+        NoIndicator, NormalIndicator, NormalSmallIndicator, TriangleIndicator
+        , SpindleIndicator, LineIndicator, HalfLineIndicator, QuarterLineIndicator
     }
 
 }
