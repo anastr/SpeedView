@@ -14,13 +14,11 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.github.anastr.speedviewlib.components.Indicators.HalfLineIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 import com.github.anastr.speedviewlib.components.Indicators.LineIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.NoIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.NormalIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.NormalSmallIndicator;
-import com.github.anastr.speedviewlib.components.Indicators.QuarterLineIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.SpindleIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.TriangleIndicator;
 import com.github.anastr.speedviewlib.components.note.Note;
@@ -1229,13 +1227,13 @@ abstract public class Speedometer extends View {
                 this.indicator = new SpindleIndicator(this);
                 break;
             case LineIndicator:
-                this.indicator = new LineIndicator(this);
+                this.indicator = new LineIndicator(this, LineIndicator.LINE);
                 break;
             case HalfLineIndicator:
-                this.indicator = new HalfLineIndicator(this);
+                this.indicator = new LineIndicator(this, LineIndicator.HALF_LINE);
                 break;
             case QuarterLineIndicator:
-                this.indicator = new QuarterLineIndicator(this);
+                this.indicator = new LineIndicator(this, LineIndicator.QUARTER_LINE);
                 break;
         }
     }

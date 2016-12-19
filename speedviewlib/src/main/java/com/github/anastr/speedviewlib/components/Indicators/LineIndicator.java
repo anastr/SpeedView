@@ -14,9 +14,14 @@ import com.github.anastr.speedviewlib.Speedometer;
 public class LineIndicator extends Indicator {
 
     private Path indicatorPath = new Path();
+    public static final float LINE = 1f
+            , HALF_LINE = .5f
+            , QUARTER_LINE = .25f;
+    private float mode;
 
-    public LineIndicator(Speedometer speedometer) {
+    public LineIndicator(Speedometer speedometer, float mode) {
         super(speedometer);
+        this.mode = mode;
         updateIndicator();
     }
 
@@ -32,7 +37,7 @@ public class LineIndicator extends Indicator {
     protected void updateIndicator() {
         indicatorPath.reset();
         indicatorPath.moveTo(getCenterX(), getPadding());
-        indicatorPath.lineTo(getCenterX(), getCenterY());
+        indicatorPath.lineTo(getCenterX(), getCenterY() * mode);
 
         indicatorPaint.setStyle(Paint.Style.STROKE);
         indicatorPaint.setStrokeWidth(getIndicatorWidth());
