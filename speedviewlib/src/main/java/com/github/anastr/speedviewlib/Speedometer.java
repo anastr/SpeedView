@@ -839,6 +839,7 @@ abstract public class Speedometer extends View {
     public void setSpeedTextColor(int speedTextColor) {
         this.speedTextColor = speedTextColor;
         speedTextPaint.setColor(speedTextColor);
+        unitTextPaint.setColor(speedTextColor);
         if (!attachedToWindow)
             return;
         invalidate();
