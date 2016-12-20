@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -106,7 +107,7 @@ abstract public class Speedometer extends View {
     /** to contain all drawing that doesn't change */
     protected Bitmap backgroundBitmap;
     protected Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    protected int padding = 0;
+    private int padding = 0;
 
     /** low speed area, started from {@link #startDegree} */
     private int lowSpeedPercent = 60;
@@ -277,6 +278,9 @@ abstract public class Speedometer extends View {
 
     private void updatePadding() {
         padding = Math.max(Math.max(getPaddingLeft(), getPaddingRight()), Math.max(getPaddingTop(), getPaddingBottom()));
+        super.setPadding(padding, padding, padding, padding);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+            super.setPaddingRelative(padding, padding, padding, padding);
         indicator.noticePaddingChange(padding);
     }
 

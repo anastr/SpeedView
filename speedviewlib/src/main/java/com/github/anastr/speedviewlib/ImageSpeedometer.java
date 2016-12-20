@@ -66,7 +66,7 @@ public class ImageSpeedometer extends Speedometer {
         else
             speedTextPaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(getSpeedText()
-                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + padding, speedTextPaint);
+                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
 
         drawNotes(canvas);
     }
@@ -77,7 +77,7 @@ public class ImageSpeedometer extends Speedometer {
             return null;
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - padding, circleBackPaint);
+        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
 
         if (imageSpeedometer != null) {
             imageSpeedometer.setBounds(getPadding(), getPadding()
@@ -94,7 +94,7 @@ public class ImageSpeedometer extends Speedometer {
             unitTextPaint.setTextAlign(Paint.Align.LEFT);
 
         c.drawText(getUnit()
-                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + padding, unitTextPaint);
+                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
 
         return backgroundBitmap;
     }

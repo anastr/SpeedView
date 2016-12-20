@@ -3,7 +3,7 @@ Dynamic Speedometer, Gauge for Android. **amazing**, **powerful**, and _multi sh
 
 `minSdkVersion=11`
 
-Library Size just ~ 24 Kb.
+Library Size just ~ 34 Kb.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-blue.svg?style=true)](https://android-arsenal.com/details/1/4169)
 [![API](https://img.shields.io/badge/API-+11-red.svg?style=flat)](#)
@@ -14,6 +14,8 @@ Library Size just ~ 24 Kb.
 <img src="/images/AwesomeSpeedometer.gif" width="30%" /><br/>
 <img src="/images/RaySpeedometer.gif" width="30%" />
 <img src="/images/PointerSpeedometer.gif" width="30%" />
+<img src="/images/TubeSpeedometer.gif" width="30%" />
+<img src="/images/ImageSpeedometer.gif" width="30%" />
 
 # Download
 
@@ -22,7 +24,7 @@ Library Size just ~ 24 Kb.
 ```gradle
 
 dependencies {
-	    compile 'com.github.anastr:speedviewlib:1.1.1'
+	    compile 'com.github.anastr:speedviewlib:1.1.2'
 }
 
 ```
@@ -33,7 +35,7 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.2</version>
   <type>pom</type>
 </dependency>
 ```
@@ -66,7 +68,7 @@ for more control, see The most important methods at [Get Started - Wiki](https:/
 and also you can see **advanced usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage) and [Work With Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).<br>
 <img src="/images/usage/StartEndDegree.png" width="40%" />
 <img src="/images/usage/WorkWithNote.gif" width="35%" />
-we have 5 Speedometers : <br>
+we have 7 Speedometers : <br>
 ======================
 Name | Screenshot
 --- | ---
@@ -75,6 +77,8 @@ Name | Screenshot
 [3. AwesomeSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/3.-AwesomeSpeedometer) | <img src="/images/AwesomeSpeedometer.png" width="25%" />
 [4. RaySpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/4.-RaySpeedometer) | <img src="/images/RaySpeedometer.png" width="25%" />
 [5. PointerSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/5.-PointerSpeedometer) | <img src="/images/PointerSpeedometer.png" width="25%" />
+[6. TubeSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/6.-TubeSpeedometer) | <img src="/images/TubeSpeedometer.png" width="25%" />
+[7. ImageSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/7.-ImageSpeedometer) | <img src="/images/ImageSpeedometer.png" width="25%" />
 
 ## Coming Soon ...
 i well try to draw this Speedometer.

@@ -99,20 +99,22 @@ public class RaySpeedometer extends Speedometer {
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
         markPath.reset();
-        markPath.moveTo(w/2f, padding);
-        markPath.lineTo(w/2f, getSpeedometerWidth() + padding);
+        markPath.moveTo(w/2f, getPadding());
+        markPath.lineTo(w/2f, getSpeedometerWidth() + getPadding());
 
         ray1Path.reset();
         ray1Path.moveTo(w/2f, h/2f);
-        ray1Path.lineTo(w/2f, getHeightPa()/3.2f + padding); ray1Path.moveTo(w/2f, getHeightPa()/3.2f + padding);
-        ray1Path.lineTo(w/2.2f, getHeightPa()/3f + padding); ray1Path.moveTo(w/2.2f, getHeightPa()/3f + padding);
-        ray1Path.lineTo(w/2.1f, getHeightPa()/4.5f + padding);
+        ray1Path.lineTo(w/2f, getHeightPa()/3.2f + getPadding());
+        ray1Path.moveTo(w/2f, getHeightPa()/3.2f + getPadding());
+        ray1Path.lineTo(w/2.2f, getHeightPa()/3f + getPadding());
+        ray1Path.moveTo(w/2.2f, getHeightPa()/3f + getPadding());
+        ray1Path.lineTo(w/2.1f, getHeightPa()/4.5f + getPadding());
 
         ray2Path.reset();
         ray2Path.moveTo(w/2f, h/2f);
-        ray2Path.lineTo(w/2f, getHeightPa()/3.2f + padding); ray2Path.moveTo(w/2f, getHeightPa()/3.2f + padding);
-        ray2Path.lineTo(w/2.2f, getHeightPa()/3.8f + padding); ray2Path.moveTo(w/2f, getHeightPa()/3.2f + padding);
-        ray2Path.lineTo(w/1.8f, getHeightPa()/3.8f + padding);
+        ray2Path.lineTo(w/2f, getHeightPa()/3.2f + getPadding()); ray2Path.moveTo(w/2f, getHeightPa()/3.2f + getPadding());
+        ray2Path.lineTo(w/2.2f, getHeightPa()/3.8f + getPadding()); ray2Path.moveTo(w/2f, getHeightPa()/3.2f + getPadding());
+        ray2Path.lineTo(w/1.8f, getHeightPa()/3.8f + getPadding());
 
         updateBackgroundBitmap();
     }
@@ -179,7 +181,7 @@ public class RaySpeedometer extends Speedometer {
             return null;
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - padding, circleBackPaint);
+        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
 
         c.save();
         for (int i=0; i<6; i++) {

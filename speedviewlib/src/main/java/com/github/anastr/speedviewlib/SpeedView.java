@@ -51,13 +51,13 @@ public class SpeedView extends Speedometer {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        float risk = getSpeedometerWidth()/2f + padding;
+        float risk = getSpeedometerWidth()/2f + getPadding();
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
         float markH = getHeightPa()/28f;
         markPath.reset();
-        markPath.moveTo(w/2f, padding);
-        markPath.lineTo(w/2f, markH + padding);
+        markPath.moveTo(w/2f, getPadding());
+        markPath.lineTo(w/2f, markH + getPadding());
         markPaint.setStrokeWidth(markH/3f);
 
         updateBackgroundBitmap();
@@ -85,7 +85,7 @@ public class SpeedView extends Speedometer {
         else
             speedTextPaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(getSpeedText()
-                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + padding, speedTextPaint);
+                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
 
         drawNotes(canvas);
     }
@@ -97,7 +97,7 @@ public class SpeedView extends Speedometer {
         initDraw();
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - padding, circleBackPaint);
+        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
 
         speedometerPaint.setColor(getHighSpeedColor());
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, speedometerPaint);
@@ -128,7 +128,7 @@ public class SpeedView extends Speedometer {
             unitTextPaint.setTextAlign(Paint.Align.LEFT);
 
         c.drawText(getUnit()
-                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + padding, unitTextPaint);
+                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
 
         return backgroundBitmap;
     }

@@ -88,19 +88,19 @@ public class AwesomeSpeedometer extends Speedometer {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        float risk = getSpeedometerWidth()/2f + padding;
+        float risk = getSpeedometerWidth()/2f + getPadding();
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
         float markH = getHeightPa()/22f;
         markPath.reset();
-        markPath.moveTo(w/2f, padding);
-        markPath.lineTo(w/2f, markH + padding);
+        markPath.moveTo(w/2f, getPadding());
+        markPath.lineTo(w/2f, markH + getPadding());
         markPaint.setStrokeWidth(markH/5f);
 
         trianglesPath.reset();
-        trianglesPath.moveTo(w/2f, padding + getHeightPa()/20f);
-        trianglesPath.lineTo(w/2f -(w/40f), padding);
-        trianglesPath.lineTo(w/2f +(w/40f), padding);
+        trianglesPath.moveTo(w/2f, getPadding() + getHeightPa()/20f);
+        trianglesPath.lineTo(w/2f -(w/40f), getPadding());
+        trianglesPath.lineTo(w/2f +(w/40f), getPadding());
 
         updateGradient();
         updateBackgroundBitmap();
@@ -151,7 +151,7 @@ public class AwesomeSpeedometer extends Speedometer {
         initDraw();
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - padding, circleBackPaint);
+        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
 
         c.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
 
@@ -162,7 +162,7 @@ public class AwesomeSpeedometer extends Speedometer {
             if (i % 40 == 0) {
                 c.drawPath(trianglesPath, trianglesPaint);
                 c.drawText(String.format(getLocale(), "%d", (int)getSpeedAtDegree(i + getStartDegree()))
-                        , getWidth()/2f, getHeightPa()/20f +textPaint.getTextSize() + padding, textPaint);
+                        , getWidth()/2f, getHeightPa()/20f +textPaint.getTextSize() + getPadding(), textPaint);
             }
             else {
                 if (i % 20 == 0)

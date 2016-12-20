@@ -90,19 +90,19 @@ public class DeluxeSpeedView extends Speedometer {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        float risk = getSpeedometerWidth()/2f + padding;
+        float risk = getSpeedometerWidth()/2f + getPadding();
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
         float markH = getHeightPa()/28f;
         markPath.reset();
-        markPath.moveTo(w/2f, padding);
-        markPath.lineTo(w/2f, markH + padding);
+        markPath.moveTo(w/2f, getPadding());
+        markPath.lineTo(w/2f, markH + getPadding());
         markPaint.setStrokeWidth(markH/3f);
 
         float smallMarkH = getHeightPa()/20f;
         smallMarkPath.reset();
-        smallMarkPath.moveTo(w/2f, getSpeedometerWidth() + padding);
-        smallMarkPath.lineTo(w/2f, getSpeedometerWidth() + padding + smallMarkH);
+        smallMarkPath.moveTo(w/2f, getSpeedometerWidth() + getPadding());
+        smallMarkPath.lineTo(w/2f, getSpeedometerWidth() + getPadding() + smallMarkH);
         smallMarkPaint.setStrokeWidth(3);
 
         updateBackgroundBitmap();
@@ -127,8 +127,8 @@ public class DeluxeSpeedView extends Speedometer {
         float speedTextPadding = dpTOpx(1);
         float unitTextPadding = dpTOpx(1f);
         float unitW = unitTextPadding + unitTextPaint.measureText(getUnit()) + 5;
-        speedBackgroundRect.top = getHeightPa()*.9f + padding - Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize());
-        speedBackgroundRect.bottom = getHeightPa()*.9f + padding + 4f;
+        speedBackgroundRect.top = getHeightPa()*.9f + getPadding() - Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize());
+        speedBackgroundRect.bottom = getHeightPa()*.9f + getPadding() + 4f;
         if (isSpeedometerTextRightToLeft()) {
             unitTextPaint.setTextAlign(Paint.Align.RIGHT);
             speedBackgroundRect.left = getWidth()/2f - unitW;
@@ -146,9 +146,9 @@ public class DeluxeSpeedView extends Speedometer {
         canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
 
         canvas.drawText(speedText
-                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + padding, speedTextPaint);
+                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
         canvas.drawText(getUnit()
-                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + padding, unitTextPaint);
+                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
 
         drawNotes(canvas);
     }
@@ -160,7 +160,7 @@ public class DeluxeSpeedView extends Speedometer {
         initDraw();
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - padding, circleBackPaint);
+        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
 
         speedometerPaint.setColor(getHighSpeedColor());
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, speedometerPaint);
