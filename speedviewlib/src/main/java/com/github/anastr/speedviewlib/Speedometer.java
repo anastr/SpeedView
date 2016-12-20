@@ -123,6 +123,8 @@ abstract public class Speedometer extends View {
 
     /** Number expresses the Acceleration, between (0, 1] */
     private float accelerate = .5f;
+    /** Number expresses the Deceleration, between (0, 1] */
+    private float decelerate = .5f;
 
     public Speedometer(Context context) {
         super(context);
@@ -191,6 +193,7 @@ abstract public class Speedometer extends View {
         speedometerTextRightToLeft = a.getBoolean(R.styleable.Speedometer_speedometerTextRightToLeft, speedometerTextRightToLeft);
         indicatorWidth = a.getDimension(R.styleable.Speedometer_indicatorWidth, indicatorWidth);
         accelerate = a.getFloat(R.styleable.Speedometer_accelerate, accelerate);
+        decelerate = a.getFloat(R.styleable.Speedometer_decelerate, decelerate);
         int ind = a.getInt(R.styleable.Speedometer_indicator, -1);
         if (ind != -1)
             setIndicator(Indicator.Indicators.values()[ind]);
@@ -200,6 +203,7 @@ abstract public class Speedometer extends View {
         checkStartAndEndDegree();
         checkSpeedometerPercent();
         checkAccelerate();
+        checkDecelerate();
         initAttributeValue();
     }
 
@@ -243,6 +247,11 @@ abstract public class Speedometer extends View {
     private void checkAccelerate() {
         if (accelerate > 1f || accelerate <= 0)
             throw new IllegalArgumentException("accelerate must be between (0, 1]");
+    }
+
+    private void checkDecelerate() {
+        if (decelerate > 1f || decelerate <= 0)
+            throw new IllegalArgumentException("decelerate must be between (0, 1]");
     }
 
     /**
@@ -463,7 +472,7 @@ abstract public class Speedometer extends View {
      * <br>
      * when <b>speed up</b> : speed value well increase <i>slowly</i> by {@link #accelerate}.
      * <br>
-     * when <b>slow down</b> : speed value will decrease <i>rapidly</i>.
+     * when <b>slow down</b> : speed value will decrease <i>rapidly</i> by {@link #decelerate}.
      * @param speed correct speed to move.
      *
      * @see #speedTo(int)
@@ -496,7 +505,7 @@ abstract public class Speedometer extends View {
                 }
                 else {
                     float per = getPercentSpeed()+.005f;
-                    degree -= 2f*per/100 +.2f;
+                    degree -= (decelerate * 6f) * per/100f +.2f;
                 }
                 postInvalidate();
                 if (finalSpeed == correctIntSpeed)
@@ -1216,6 +1225,21 @@ abstract public class Speedometer extends View {
     public void setAccelerate(float accelerate) {
         this.accelerate = accelerate;
         checkAccelerate();
+    }
+
+    public float getDecelerate() {
+        return decelerate;
+    }
+
+    /**
+     * change decelerate, used by {@link #realSpeedTo(int)} {@link #speedUp()}
+     * and {@link #slowDown()} methods.<br>
+     * must be between {@code (0, 1]}, default value 0.5f.
+     * @param decelerate new decelerate.
+     * @throws IllegalArgumentException if {@code decelerate} out of range.
+     */
+    public void setDecelerate(float decelerate) {
+        this.decelerate = decelerate;
     }
 
     public float getIndicatorWidth() {
