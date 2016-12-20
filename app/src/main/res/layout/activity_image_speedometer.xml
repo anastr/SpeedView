@@ -19,7 +19,8 @@
         android:layout_gravity="center_horizontal"
         app:imageSpeedometer="@drawable/for_image_speedometer"
         app:indicator="LineIndicator"
-        app:indicatorColor="#a750bcff"/>
+        app:indicatorColor="#a750bcff"
+        app:speedTextColor="#fff"/>
 
     <LinearLayout
         android:orientation="horizontal"

@@ -1,5 +1,6 @@
 package com.github.anastr.speedview;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,11 +11,13 @@ import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.AwesomeSpeedometer;
 import com.github.anastr.speedviewlib.DeluxeSpeedView;
+import com.github.anastr.speedviewlib.ImageSpeedometer;
 import com.github.anastr.speedviewlib.PointerSpeedometer;
 import com.github.anastr.speedviewlib.RaySpeedometer;
 import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.Speedometer;
 import com.github.anastr.speedviewlib.TubeSpeedometer;
+import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 
 import java.util.Locale;
 import java.util.Random;
@@ -64,7 +67,7 @@ public class CreateProgrammatically extends AppCompatActivity {
 
     public void addRandomSpeedometer(View view) {
         Random mad = new Random();
-        switch (mad.nextInt(6)) {
+        switch (mad.nextInt(7)) {
             case 0:
                 speedometer = new SpeedView(this);
                 break;
@@ -82,6 +85,13 @@ public class CreateProgrammatically extends AppCompatActivity {
                 break;
             case 5:
                 speedometer = new TubeSpeedometer(this);
+                break;
+            case 6:
+                speedometer = new ImageSpeedometer(this);
+                speedometer.setIndicator(Indicator.Indicators.HalfLineIndicator);
+                speedometer.setIndicatorWidth(speedometer.dpTOpx(5f));
+                speedometer.setSpeedTextColor(Color.WHITE);
+                ((ImageSpeedometer)speedometer).setImageSpeedometer(R.drawable.for_image_speedometer);
                 break;
         }
         rootSpeedometer.removeAllViews();
