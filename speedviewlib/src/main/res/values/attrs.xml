@@ -40,6 +40,8 @@
             <enum name="HalfLineIndicator" value="6" />
             <enum name="QuarterLineIndicator" value="7" />
         </attr>
+
+        <attr name="accelerate" format="float" />
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">

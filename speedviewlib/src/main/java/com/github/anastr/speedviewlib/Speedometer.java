@@ -121,6 +121,9 @@ abstract public class Speedometer extends View {
     /** object to set text digits locale */
     private Locale locale = Locale.getDefault();
 
+    /** Number expresses the Acceleration, between (0, 1] */
+    private float accelerate = .5f;
+
     public Speedometer(Context context) {
         super(context);
         init();
@@ -187,6 +190,7 @@ abstract public class Speedometer extends View {
         mediumSpeedPercent = a.getInt(R.styleable.Speedometer_mediumSpeedPercent, mediumSpeedPercent);
         speedometerTextRightToLeft = a.getBoolean(R.styleable.Speedometer_speedometerTextRightToLeft, speedometerTextRightToLeft);
         indicatorWidth = a.getDimension(R.styleable.Speedometer_indicatorWidth, indicatorWidth);
+        accelerate = a.getFloat(R.styleable.Speedometer_accelerate, accelerate);
         int ind = a.getInt(R.styleable.Speedometer_indicator, -1);
         if (ind != -1)
             setIndicator(Indicator.Indicators.values()[ind]);
@@ -195,6 +199,7 @@ abstract public class Speedometer extends View {
         this.unit =  (unit != null) ? unit : this.unit;
         checkStartAndEndDegree();
         checkSpeedometerPercent();
+        checkAccelerate();
         initAttributeValue();
     }
 
@@ -233,6 +238,11 @@ abstract public class Speedometer extends View {
             throw new IllegalArgumentException("lowSpeedPercent must be between [0, 100]");
         if (mediumSpeedPercent > 100 || mediumSpeedPercent < 0)
             throw new IllegalArgumentException("mediumSpeedPercent must be between [0, 100]");
+    }
+
+    private void checkAccelerate() {
+        if (accelerate > 1f || accelerate <= 0)
+            throw new IllegalArgumentException("accelerate must be between (0, 1]");
     }
 
     /**
@@ -451,7 +461,7 @@ abstract public class Speedometer extends View {
     /**
      * to make speedometer some real.
      * <br>
-     * when <b>speed up</b> : speed value well increase <i>slowly</i>.
+     * when <b>speed up</b> : speed value well increase <i>slowly</i> by {@link #accelerate}.
      * <br>
      * when <b>slow down</b> : speed value will decrease <i>rapidly</i>.
      * @param speed correct speed to move.
@@ -482,7 +492,7 @@ abstract public class Speedometer extends View {
             public void onAnimationUpdate(ValueAnimator animation) {
                 if (isSpeedUp) {
                     float per = 100.005f-getPercentSpeed();
-                    degree += .8f*per/100;
+                    degree += (accelerate * 2f) * per/100f;
                 }
                 else {
                     float per = getPercentSpeed()+.005f;
@@ -1190,6 +1200,22 @@ abstract public class Speedometer extends View {
 
     public int getPadding() {
         return padding;
+    }
+
+    public float getAccelerate() {
+        return accelerate;
+    }
+
+    /**
+     * change accelerate, used by {@link #realSpeedTo(int)} {@link #speedUp()}
+     * and {@link #slowDown()} methods.<br>
+     * must be between {@code (0, 1]}, default value 0.5f.
+     * @param accelerate new accelerate.
+     * @throws IllegalArgumentException if {@code accelerate} out of range.
+     */
+    public void setAccelerate(float accelerate) {
+        this.accelerate = accelerate;
+        checkAccelerate();
     }
 
     public float getIndicatorWidth() {
