@@ -9,6 +9,7 @@ import com.github.anastr.speedviewlib.Speedometer;
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
+@SuppressWarnings("unused,WeakerAccess")
 public abstract class Indicator {
 
     protected Paint indicatorPaint =  new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -87,11 +88,11 @@ public abstract class Indicator {
     }
 
     public float getCenterX() {
-        return viewWidth /2f;
+        return (2*padding + viewWidth) /2f;
     }
 
     public float getCenterY() {
-        return viewHeight /2f;
+        return (2*padding + viewHeight) /2f;
     }
 
     public int getPadding() {
