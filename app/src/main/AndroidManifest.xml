@@ -24,7 +24,8 @@
         <activity android:name=".WorkWithNoteActivity" />
         <activity android:name=".CreateProgrammatically" />
         <activity android:name=".TubeSpeedometerActivity" />
-        <activity android:name=".ImageSpeedometerActivity"></activity>
+        <activity android:name=".ImageSpeedometerActivity" />
+        <activity android:name=".WorkWithIndicatorActivity"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,67 +7,13 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="com.github.anastr.speedview.MainActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <ListView
+        android:id="@+id/list"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+    </ListView>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="openSpeedViewActivity"
-            android:text="Speed View"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="openDeluxeSpeedActivity"
-            android:text="Deluxe Speed View"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="openAwesomeSpeedometerActivity"
-            android:text="Awesome Speedometer View"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="openRaySpeedometerActivity"
-            android:text="Ray Speedometer View"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="openPointerSpeedometerActivity"
-            android:text="Pointer Speedometer"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="openTubeSpeedometerActivity"
-            android:text="Tube Speedometer"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="openImageSpeedometerActivity"
-            android:text="Image Speedometer"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="openWorkWithNoteActivity"
-            android:text="Work With Note"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="openCreateProgrammatically"
-            android:text="Create Speedometer Programmatically"/>
-
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>
