@@ -15,7 +15,6 @@ Library Size just ~ 34 Kb.
 <img src="/images/RaySpeedometer.gif" width="30%" />
 <img src="/images/PointerSpeedometer.gif" width="30%" />
 <img src="/images/TubeSpeedometer.gif" width="30%" />
-<img src="/images/ImageSpeedometer.gif" width="30%" />
 
 # Download
 
@@ -39,7 +38,7 @@ for **maven**
   <type>pom</type>
 </dependency>
 ```
-
+[Get Started](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) with _Speedometer Library_.
 # Simple Usage
 add Speedometer to your `Layout.xml`.<br>
 ```xml
@@ -70,15 +69,100 @@ and also you can see **advanced usage** in [Usage - Wiki](https://github.com/ana
 <img src="/images/usage/WorkWithNote.gif" width="35%" />
 we have 7 Speedometers : <br>
 ======================
-Name | Screenshot
---- | ---
-[1. SpeedView - Wiki](https://github.com/anastr/SpeedView/wiki/1.-SpeedView) | <img src="/images/SpeedView3.png" width="25%" />
-[2. DeluxeSpeedView - Wiki](https://github.com/anastr/SpeedView/wiki/2.-DeluxeSpeedView) | <img src="/images/DeluxeSpeedView2.png" width="25%" />
-[3. AwesomeSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/3.-AwesomeSpeedometer) | <img src="/images/AwesomeSpeedometer.png" width="25%" />
-[4. RaySpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/4.-RaySpeedometer) | <img src="/images/RaySpeedometer.png" width="25%" />
-[5. PointerSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/5.-PointerSpeedometer) | <img src="/images/PointerSpeedometer.png" width="25%" />
-[6. TubeSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/6.-TubeSpeedometer) | <img src="/images/TubeSpeedometer.png" width="25%" />
-[7. ImageSpeedometer - Wiki](https://github.com/anastr/SpeedView/wiki/7.-ImageSpeedometer) | <img src="/images/ImageSpeedometer.png" width="25%" />
+<table style="width:100%">
+  <tr>
+    <th>Name</th>
+    <th>Screenshot</th> 
+    <th>XML Layout</th>
+  </tr>
+  <tr>
+    <td width="24%"> <a href="https://github.com/anastr/SpeedView/wiki/1.-SpeedView">1. SpeedView - Wiki</a></td>
+    <td width="22%"><img src="/images/SpeedView3.png"/></td> 
+    <td>
+      <pre><textarea>
+<com.github.anastr.speedviewlib.SpeedView
+        android:id="@+id/speedView"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+      </textarea></pre>
+    </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/anastr/SpeedView/wiki/2.-DeluxeSpeedView">2. DeluxeSpeedView - Wiki</a></td>
+    <td><img src="/images/DeluxeSpeedView2.png"/></td> 
+    <td>
+      <pre><textarea>
+<com.github.anastr.speedviewlib.DeluxeSpeedView
+        android:id="@+id/deluxeSpeedView"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+      </textarea></pre>
+    </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/anastr/SpeedView/wiki/3.-AwesomeSpeedometer">3. AwesomeSpeedometer - Wiki</a></td>
+    <td><img src="/images/AwesomeSpeedometer.png"/></td> 
+    <td>
+      <pre><textarea>
+<com.github.anastr.speedviewlib.AwesomeSpeedometer
+        android:id="@+id/awesomeSpeedometer"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+      </textarea></pre>
+    </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/anastr/SpeedView/wiki/4.-RaySpeedometer">4. RaySpeedometer - Wiki</a></td>
+    <td><img src="/images/RaySpeedometer.png"/></td> 
+    <td>
+      <pre><textarea>
+<com.github.anastr.speedviewlib.RaySpeedometer
+        android:id="@+id/raySpeedometer"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+      </textarea></pre>
+    </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/anastr/SpeedView/wiki/5.-PointerSpeedometer">5. PointerSpeedometer - Wiki</a></td>
+    <td><img src="/images/PointerSpeedometer.png"/></td> 
+    <td>
+      <pre><textarea>
+<com.github.anastr.speedviewlib.PointerSpeedometer
+        android:id="@+id/pointerSpeedometer"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+      </textarea></pre>
+    </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/anastr/SpeedView/wiki/6.-TubeSpeedometer">6. TubeSpeedometer - Wiki</a></td>
+    <td><img src="/images/TubeSpeedometer.png"/></td> 
+    <td>
+      <pre><textarea>
+<com.github.anastr.speedviewlib.TubeSpeedometer
+        android:id="@+id/tubeSpeedometer"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+      </textarea></pre>
+    </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/anastr/SpeedView/wiki/7.-ImageSpeedometer">7. ImageSpeedometer - Wiki</a></td>
+    <td><img src="/images/ImageSpeedometer.png"/></td> 
+    <td>
+      <pre><textarea>
+<com.github.anastr.speedviewlib.ImageSpeedometer
+        android:id="@+id/imageSpeedometer"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:imageSpeedometer="@drawable/your_image" />
+      </textarea></pre>
+    </td>
+  </tr>
+</table>
+
+
 
 ## Coming Soon ...
 i well try to draw this Speedometer.
