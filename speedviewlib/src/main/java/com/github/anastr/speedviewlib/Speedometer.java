@@ -113,6 +113,11 @@ abstract public class Speedometer extends View {
     private int lowSpeedPercent = 60;
     /** medium speed area, started from {@link #startDegree} */
     private int mediumSpeedPercent = 87;
+    // TODO add Sections:
+    // public static final int LOW_SECTION = 1;
+    // public static final int MEDIUM_SECTION = 2;
+    // public static final int HIGH_SECTION = 3;
+    // private section = LOW_SECTION;
 
     private boolean speedometerTextRightToLeft = false;
 
@@ -184,6 +189,7 @@ abstract public class Speedometer extends View {
         speedTextSize = a.getDimension(R.styleable.Speedometer_speedTextSize, speedTextSize);
         textSize = a.getDimension(R.styleable.Speedometer_textSize, textSize);
         String unit = a.getString(R.styleable.Speedometer_unit);
+        this.unit =  (unit != null) ? unit : this.unit;
         unitTextSize = a.getDimension(R.styleable.Speedometer_unitTextSize, unitTextSize);
         trembleDegree = a.getFloat(R.styleable.Speedometer_trembleDegree, trembleDegree);
         trembleDuration = a.getInt(R.styleable.Speedometer_trembleDuration, trembleDuration);
@@ -200,11 +206,11 @@ abstract public class Speedometer extends View {
             setIndicator(Indicator.Indicators.values()[ind]);
         degree = startDegree;
         a.recycle();
-        this.unit =  (unit != null) ? unit : this.unit;
         checkStartAndEndDegree();
         checkSpeedometerPercent();
         checkAccelerate();
         checkDecelerate();
+        checkTrembleData();
         initAttributeValue();
     }
 
@@ -255,6 +261,13 @@ abstract public class Speedometer extends View {
             throw new IllegalArgumentException("decelerate must be between (0, 1]");
     }
 
+    private void checkTrembleData() {
+        if (trembleDegree < 0)
+            throw new IllegalArgumentException("trembleDegree  can't be Negative");
+        if (trembleDuration < 0)
+            throw new IllegalArgumentException("trembleDuration  can't be Negative");
+    }
+
     /**
      * convert dp to <b>pixel</b>.
      * @param dp to convert.
@@ -299,6 +312,7 @@ abstract public class Speedometer extends View {
             if (onSpeedChangeListener != null){
                 onSpeedChangeListener.onSpeedChange(this, isSpeedUp, trembleAnimator.isRunning());
             }
+            // TODO add onSectionChangeListener
         }
     }
 
@@ -566,40 +580,36 @@ abstract public class Speedometer extends View {
     /**
      * default : 4 degree.
      * @param trembleDegree a degree to increases and decreases the indicator around correct speed.
-     *                      should be between ]0, 10]
-     * @throws IllegalArgumentException If trembleDegree is out of range.
+     * @throws IllegalArgumentException If trembleDegree is Negative.
      */
     public void setTrembleDegree (float trembleDegree) {
-        if (trembleDegree <= 0 || trembleDegree > 10)
-            throw new IllegalArgumentException("trembleDegree should be > 0 and <= 10");
         this.trembleDegree = trembleDegree;
+        checkTrembleData();
     }
 
     /**
      * default : 1000 millisecond.
-     * @param trembleDuration tremble Animation duration in millisecond,
-     *                        should be {@code > 0 and <= 6000}, else well be ignore.
+     * @param trembleDuration tremble Animation duration in millisecond.
+     * @throws IllegalArgumentException If trembleDuration is Negative.
      */
     public void setTrembleDuration (int trembleDuration) {
-        if (trembleDuration <= 0 || trembleDuration > 6000)
-            return;
         this.trembleDuration = trembleDuration;
+        checkTrembleData();
     }
 
     /**
      * tremble control.
      * @param trembleDegree a degree to increases and decreases the indicator around correct speed.
-     *                      should be between ]0, 10]
-     * @param trembleDuration tremble Animation duration in millisecond,
-     *                        should be {@code > 0 and <= 6000}, else well be ignore.
+     * @param trembleDuration tremble Animation duration in millisecond.
      *
      * @see #setTrembleDegree(float)
      * @see #setTrembleDuration(int)
-     * @throws IllegalArgumentException If trembleDegree is out of its range.
+     * @throws IllegalArgumentException If trembleDegree OR trembleDuration is Negative.
      */
     public void setTrembleData (float trembleDegree, int trembleDuration) {
         setTrembleDegree(trembleDegree);
         setTrembleDuration(trembleDuration);
+        checkTrembleData();
     }
 
     /**
@@ -1292,4 +1302,5 @@ abstract public class Speedometer extends View {
                 break;
         }
     }
+    // TODO add setIndicator (Indicator indicator) method
 }
