@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
+import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 import com.github.anastr.speedviewlib.components.Indicators.LineIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.NoIndicator;
@@ -1301,6 +1302,14 @@ abstract public class Speedometer extends View {
                 this.indicator = new LineIndicator(this, LineIndicator.QUARTER_LINE);
                 break;
         }
+    }
+
+    /**
+     * add custom indicator.
+     * @param imageIndicator new indicator.
+     */
+    public void setImageIndicator(ImageIndicator imageIndicator) {
+        this.indicator = imageIndicator;
     }
     // TODO add setIndicator (Indicator indicator) method
 }
