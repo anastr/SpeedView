@@ -396,11 +396,27 @@ abstract public class Speedometer extends View {
      *
      * @see #speedTo(int)
      * @see #speedTo(int, long)
+     * @see #speedPercentTo(int, long)
      * @see #realSpeedTo(int)
      */
     public void speedPercentTo(int percent) {
+        speedTo(percent, 2000);
+    }
+
+    /**
+     * move speed to percent value.
+     * @param percent percent value to move, must be between [0,100].
+     * @param moveDuration The length of the animation, in milliseconds.
+     *                     This value cannot be negative.
+     *
+     * @see #speedTo(int)
+     * @see #speedTo(int, long)
+     * @see #speedPercentTo(int)
+     * @see #realSpeedTo(int)
+     */
+    public void speedPercentTo(int percent, long moveDuration) {
         percent = (percent > 100) ? 100 : (percent < 0) ? 0 : percent;
-        speedTo(percent * (maxSpeed - minSpeed) / 100 + minSpeed);
+        speedTo(percent * (maxSpeed - minSpeed) / 100 + minSpeed, moveDuration);
     }
 
     /**
