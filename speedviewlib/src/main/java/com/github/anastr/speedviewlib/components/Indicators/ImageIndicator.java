@@ -1,17 +1,16 @@
 package com.github.anastr.speedviewlib.components.Indicators;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-
-import com.github.anastr.speedviewlib.Speedometer;
 
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
 @SuppressWarnings("unused,WeakerAccess")
-public class ImageIndicator extends Indicator {
+public class ImageIndicator extends Indicator<ImageIndicator> {
 
     private Bitmap bitmapIndicator;
     private int width, height;
@@ -19,48 +18,48 @@ public class ImageIndicator extends Indicator {
     /**
      * create indicator from resources, the indicator direction must be up.<br>
      * center indicator position will be center of speedometer.
-     * @param speedometer target speedometer.
+     * @param context you can use {@code getApplicationContext()}.
      * @param resource the image id.
      */
-    public ImageIndicator(Speedometer speedometer, int resource) {
-        this(speedometer, BitmapFactory.decodeResource(speedometer.getContext().getResources(), resource));
+    public ImageIndicator(Context context, int resource) {
+        this(context, BitmapFactory.decodeResource(context.getResources(), resource));
     }
 
     /**
      * create indicator from resources, the indicator direction must be up.<br>
      * center indicator position will be center of speedometer.
-     * @param speedometer target speedometer.
+     * @param context you can use {@code getApplicationContext()}.
      * @param resource the image id.
      * @param width the custom width of the indicator.
      * @param height the custom height of the indicator.
      * @throws IllegalArgumentException if {@code width <= 0 OR height <= 0}.
      */
-    public ImageIndicator(Speedometer speedometer, int resource, int width, int height) {
-        this(speedometer, BitmapFactory.decodeResource(speedometer.getContext().getResources(), resource)
+    public ImageIndicator(Context context, int resource, int width, int height) {
+        this(context, BitmapFactory.decodeResource(context.getResources(), resource)
                 , width, height);
     }
 
     /**
      * create indicator from bitmap, the indicator direction must be up.<br>
      * center indicator position will be center of speedometer.
-     * @param speedometer target speedometer.
+     * @param context you can use {@code getApplicationContext()}.
      * @param bitmapIndicator the indicator.
      */
-    public ImageIndicator(Speedometer speedometer, Bitmap bitmapIndicator) {
-        this(speedometer, bitmapIndicator, bitmapIndicator.getWidth(), bitmapIndicator.getHeight());
+    public ImageIndicator(Context context, Bitmap bitmapIndicator) {
+        this(context, bitmapIndicator, bitmapIndicator.getWidth(), bitmapIndicator.getHeight());
     }
 
     /**
      * create indicator from bitmap, the indicator direction must be up.<br>
      * center indicator position will be center of speedometer.
-     * @param speedometer target speedometer.
+     * @param context you can use {@code getApplicationContext()}.
      * @param bitmapIndicator the indicator.
      * @param width the custom width of the indicator.
      * @param height the custom height of the indicator.
      * @throws IllegalArgumentException if {@code width <= 0 OR height <= 0}.
      */
-    public ImageIndicator(Speedometer speedometer, Bitmap bitmapIndicator, int width, int height) {
-        super(speedometer);
+    public ImageIndicator(Context context, Bitmap bitmapIndicator, int width, int height) {
+        super(context);
         this.bitmapIndicator = bitmapIndicator;
         this.width = width;
         this.height = height;
@@ -68,6 +67,11 @@ public class ImageIndicator extends Indicator {
             throw new IllegalArgumentException("width must be bigger than 0");
         if (height <= 0)
             throw new IllegalArgumentException("height must be bigger than 0");
+    }
+
+    @Override
+    protected float getDefaultIndicatorWidth() {
+        return 0f;
     }
 
     @Override

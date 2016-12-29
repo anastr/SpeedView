@@ -1,5 +1,6 @@
 package com.github.anastr.speedviewlib.components.Indicators;
 
+import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,19 +8,22 @@ import android.graphics.LinearGradient;
 import android.graphics.Path;
 import android.graphics.Shader;
 
-import com.github.anastr.speedviewlib.Speedometer;
-
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
-public class TriangleIndicator extends Indicator {
+public class TriangleIndicator extends Indicator<TriangleIndicator> {
 
     private Path indicatorPath = new Path();
 
-    public TriangleIndicator(Speedometer speedometer) {
-        super(speedometer);
+    public TriangleIndicator(Context context) {
+        super(context);
         updateIndicator();
+    }
+
+    @Override
+    protected float getDefaultIndicatorWidth() {
+        return dpTOpx(25f);
     }
 
     @Override

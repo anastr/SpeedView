@@ -15,7 +15,7 @@ import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
-import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+import com.github.anastr.speedviewlib.components.Indicators.SpindleIndicator;
 
 /**
  * this Library build By Anas Altair
@@ -50,6 +50,7 @@ public class PointerSpeedometer extends Speedometer {
 
     @Override
     protected void defaultValues() {
+        super.setIndicator(new SpindleIndicator(getContext()));
         super.setIndicatorWidth(dpTOpx(16f));
         super.setIndicatorColor(Color.WHITE);
         super.setMarkColor(Color.WHITE);
@@ -60,7 +61,6 @@ public class PointerSpeedometer extends Speedometer {
         super.setSpeedometerWidth(dpTOpx(10f));
         super.setBackgroundCircleColor(Color.parseColor("#48cce9"));
         super.setUnitTextSize(dpTOpx(11f));
-        setIndicator(Indicator.Indicators.SpindleIndicator);
     }
 
     private void init() {

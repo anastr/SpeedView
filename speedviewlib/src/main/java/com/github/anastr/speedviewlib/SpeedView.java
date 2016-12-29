@@ -9,7 +9,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
-import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+import com.github.anastr.speedviewlib.components.Indicators.NormalIndicator;
 
 /**
  * this Library build By Anas Altair
@@ -38,8 +38,8 @@ public class SpeedView extends Speedometer {
 
     @Override
     protected void defaultValues() {
+        super.setIndicator(new NormalIndicator(getContext()));
         super.setBackgroundCircleColor(Color.TRANSPARENT);
-        setIndicator(Indicator.Indicators.NormalIndicator);
     }
 
     private void init() {

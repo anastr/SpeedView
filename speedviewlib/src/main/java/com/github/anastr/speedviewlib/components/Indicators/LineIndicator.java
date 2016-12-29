@@ -1,17 +1,16 @@
 package com.github.anastr.speedviewlib.components.Indicators;
 
+import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.github.anastr.speedviewlib.Speedometer;
-
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
-public class LineIndicator extends Indicator {
+public class LineIndicator extends Indicator<LineIndicator> {
 
     private Path indicatorPath = new Path();
     public static final float LINE = 1f
@@ -19,10 +18,15 @@ public class LineIndicator extends Indicator {
             , QUARTER_LINE = .25f;
     private float mode;
 
-    public LineIndicator(Speedometer speedometer, float mode) {
-        super(speedometer);
+    public LineIndicator(Context context, float mode) {
+        super(context);
         this.mode = mode;
         updateIndicator();
+    }
+
+    @Override
+    protected float getDefaultIndicatorWidth() {
+        return dpTOpx(8f);
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+import com.github.anastr.speedviewlib.components.Indicators.NormalSmallIndicator;
 
 /**
  * this Library build By Anas Altair
@@ -48,6 +49,7 @@ public class DeluxeSpeedView extends Speedometer {
 
     @Override
     protected void defaultValues() {
+        super.setIndicator(new NormalSmallIndicator(getContext()));
         super.setIndicatorColor(Color.parseColor("#00ffec"));
         super.setCenterCircleColor(Color.parseColor("#e0e0e0"));
         super.setLowSpeedColor(Color.parseColor("#37872f"));
@@ -55,7 +57,6 @@ public class DeluxeSpeedView extends Speedometer {
         super.setHighSpeedColor(Color.parseColor("#9b2020"));
         super.setTextColor(Color.WHITE);
         super.setBackgroundCircleColor(Color.parseColor("#212121"));
-        setIndicator(Indicator.Indicators.NormalSmallIndicator);
     }
 
     private void init() {

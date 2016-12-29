@@ -13,7 +13,7 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
-import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+import com.github.anastr.speedviewlib.components.Indicators.TriangleIndicator;
 
 /**
  * this Library build By Anas Altair
@@ -50,13 +50,13 @@ public class AwesomeSpeedometer extends Speedometer {
         super.setStartDegree(135);
         super.setEndDegree(135+320);
 
+        super.setIndicator(new TriangleIndicator(getContext()));
         super.setIndicatorWidth(dpTOpx(25f));
         super.setSpeedometerWidth(dpTOpx(60));
         super.setBackgroundCircleColor(Color.parseColor("#212121"));
         super.setIndicatorColor(Color.parseColor("#00e6e6"));
         super.setTextColor(Color.parseColor("#ffc260"));
         super.setSpeedTextColor(Color.WHITE);
-        setIndicator(Indicator.Indicators.TriangleIndicator);
     }
 
     private void init() {

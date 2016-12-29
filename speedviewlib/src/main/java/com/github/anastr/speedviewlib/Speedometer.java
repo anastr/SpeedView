@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 import com.github.anastr.speedviewlib.components.Indicators.LineIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.NoIndicator;
@@ -43,7 +42,6 @@ abstract public class Speedometer extends View {
             textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
             unitTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private float speedometerWidth = dpTOpx(30f);
-    private float indicatorWidth = dpTOpx(12f);
     private float speedTextSize = dpTOpx(18f);
     private float textSize = dpTOpx(10f);
     private float unitTextSize = dpTOpx(15f);
@@ -55,8 +53,7 @@ abstract public class Speedometer extends View {
     /** the min range in speedometer, {@code default = 0} */
     private int minSpeed = 0;
 
-    private int indicatorColor = Color.RED
-            , centerCircleColor = Color.DKGRAY
+    private int centerCircleColor = Color.DKGRAY
             , markColor = Color.WHITE
             , lowSpeedColor = Color.GREEN
             , mediumSpeedColor = Color.YELLOW
@@ -160,7 +157,7 @@ abstract public class Speedometer extends View {
     }
 
     private void init() {
-        indicator = new NoIndicator(this);
+        indicator = new NoIndicator(getContext());
 
         speedAnimator = ValueAnimator.ofFloat(0f, 1f);
         trembleAnimator = ValueAnimator.ofFloat(0f, 1f);
@@ -174,7 +171,7 @@ abstract public class Speedometer extends View {
     private void initAttributeSet(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.Speedometer, 0, 0);
 
-        indicatorColor = a.getColor(R.styleable.Speedometer_indicatorColor, indicatorColor);
+        setIndicatorColor(a.getColor(R.styleable.Speedometer_indicatorColor, indicator.getIndicatorColor()));
         centerCircleColor = a.getColor(R.styleable.Speedometer_centerCircleColor, centerCircleColor);
         markColor = a.getColor(R.styleable.Speedometer_markColor, markColor);
         lowSpeedColor = a.getColor(R.styleable.Speedometer_lowSpeedColor, lowSpeedColor);
@@ -199,7 +196,7 @@ abstract public class Speedometer extends View {
         lowSpeedPercent = a.getInt(R.styleable.Speedometer_lowSpeedPercent, lowSpeedPercent);
         mediumSpeedPercent = a.getInt(R.styleable.Speedometer_mediumSpeedPercent, mediumSpeedPercent);
         speedometerTextRightToLeft = a.getBoolean(R.styleable.Speedometer_speedometerTextRightToLeft, speedometerTextRightToLeft);
-        indicatorWidth = a.getDimension(R.styleable.Speedometer_indicatorWidth, indicatorWidth);
+        setIndicatorWidth(a.getDimension(R.styleable.Speedometer_indicatorWidth, indicator.getIndicatorWidth()));
         accelerate = a.getFloat(R.styleable.Speedometer_accelerate, accelerate);
         decelerate = a.getFloat(R.styleable.Speedometer_decelerate, decelerate);
         int ind = a.getInt(R.styleable.Speedometer_indicator, -1);
@@ -754,14 +751,13 @@ abstract public class Speedometer extends View {
     }
 
     public int getIndicatorColor() {
-        return indicatorColor;
+        return indicator.getIndicatorColor();
     }
 
     public void setIndicatorColor(int indicatorColor) {
-        this.indicatorColor = indicatorColor;
+        indicator.setIndicatorColor(indicatorColor);
         if (!attachedToWindow)
             return;
-        indicator.setIndicatorColor(indicatorColor);
         invalidate();
     }
 
@@ -963,7 +959,7 @@ abstract public class Speedometer extends View {
         this.speedometerWidth = speedometerWidth;
         if (!attachedToWindow)
             return;
-        indicator.setSpeedometerWidth(speedometerWidth);
+        indicator.noticeSpeedometerWidthChange(speedometerWidth);
         updateBackgroundBitmap();
         invalidate();
     }
@@ -1259,12 +1255,14 @@ abstract public class Speedometer extends View {
     }
 
     public float getIndicatorWidth() {
-        return indicatorWidth;
+        return indicator.getIndicatorWidth();
     }
 
     public void setIndicatorWidth(float indicatorWidth) {
-        this.indicatorWidth = indicatorWidth;
         indicator.setIndicatorWidth(indicatorWidth);
+        if (!attachedToWindow)
+            return;
+        invalidate();
     }
 
     protected void indicatorEffects(boolean withEffects) {
@@ -1272,44 +1270,49 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * change indicator shape.
-     * @param indicator new indicator.
+     * change indicator shape.<br>
+     * this method will get bach indicatorColor and indicatorWidth to default.
+     * @param indicator new indicator (Enum value).
      */
     public void setIndicator (Indicator.Indicators indicator) {
         switch (indicator) {
             case NoIndicator:
-                this.indicator = new NoIndicator(this);
+                this.indicator = new NoIndicator(getContext());
                 break;
             case NormalIndicator:
-                this.indicator = new NormalIndicator(this);
+                this.indicator = new NormalIndicator(getContext());
                 break;
             case NormalSmallIndicator:
-                this.indicator = new NormalSmallIndicator(this);
+                this.indicator = new NormalSmallIndicator(getContext());
                 break;
             case TriangleIndicator:
-                this.indicator = new TriangleIndicator(this);
+                this.indicator = new TriangleIndicator(getContext());
                 break;
             case SpindleIndicator:
-                this.indicator = new SpindleIndicator(this);
+                this.indicator = new SpindleIndicator(getContext());
                 break;
             case LineIndicator:
-                this.indicator = new LineIndicator(this, LineIndicator.LINE);
+                this.indicator = new LineIndicator(getContext(), LineIndicator.LINE);
                 break;
             case HalfLineIndicator:
-                this.indicator = new LineIndicator(this, LineIndicator.HALF_LINE);
+                this.indicator = new LineIndicator(getContext(), LineIndicator.HALF_LINE);
                 break;
             case QuarterLineIndicator:
-                this.indicator = new LineIndicator(this, LineIndicator.QUARTER_LINE);
+                this.indicator = new LineIndicator(getContext(), LineIndicator.QUARTER_LINE);
                 break;
         }
+        this.indicator.setTargetSpeedometer(this);
     }
 
     /**
      * add custom indicator.
-     * @param imageIndicator new indicator.
+     * @param indicator new indicator.
      */
-    public void setImageIndicator(ImageIndicator imageIndicator) {
-        this.indicator = imageIndicator;
+    public void setIndicator(Indicator indicator) {
+        this.indicator = indicator;
+        if(!attachedToWindow)
+            return;
+        this.indicator.setTargetSpeedometer(this);
+        invalidate();
     }
-    // TODO add setIndicator (Indicator indicator) method
 }
