@@ -23,6 +23,7 @@ import com.github.anastr.speedviewlib.components.Indicators.NormalSmallIndicator
 import com.github.anastr.speedviewlib.components.Indicators.SpindleIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.TriangleIndicator;
 import com.github.anastr.speedviewlib.components.note.Note;
+import com.github.anastr.speedviewlib.util.OnSectionChangeListener;
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 
 import java.util.ArrayList;
@@ -81,6 +82,7 @@ abstract public class Speedometer extends View {
     private ValueAnimator speedAnimator, trembleAnimator, realSpeedAnimator;
     private boolean canceled = false;
     private OnSpeedChangeListener onSpeedChangeListener;
+    private OnSectionChangeListener onSectionChangeListener;
     /** this animatorListener to call {@link #tremble()} method when animator done */
     private Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
         @Override
@@ -111,11 +113,11 @@ abstract public class Speedometer extends View {
     private int lowSpeedPercent = 60;
     /** medium speed area, started from {@link #startDegree} */
     private int mediumSpeedPercent = 87;
-    // TODO add Sections:
-    // public static final int LOW_SECTION = 1;
-    // public static final int MEDIUM_SECTION = 2;
-    // public static final int HIGH_SECTION = 3;
-    // private section = LOW_SECTION;
+
+     public static final byte LOW_SECTION = 1;
+     public static final byte MEDIUM_SECTION = 2;
+     public static final byte HIGH_SECTION = 3;
+     private byte section = LOW_SECTION;
 
     private boolean speedometerTextRightToLeft = false;
 
@@ -303,6 +305,7 @@ abstract public class Speedometer extends View {
             canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
 
         correctSpeed = getSpeedAtDegree(degree);
+        // check onSpeedChangeEvent.
         int newSpeed = (int) correctSpeed;
         if (newSpeed != correctIntSpeed) {
             boolean isSpeedUp = newSpeed > correctIntSpeed;
@@ -310,7 +313,12 @@ abstract public class Speedometer extends View {
             if (onSpeedChangeListener != null){
                 onSpeedChangeListener.onSpeedChange(this, isSpeedUp, trembleAnimator.isRunning());
             }
-            // TODO add onSectionChangeListener
+        }
+        // check onSectionChangeEvent.
+        byte newSection = getSection();
+        if (section != newSection) {
+            onSectionChangeEvent(section, newSection);
+            section = newSection;
         }
     }
 
@@ -339,6 +347,16 @@ abstract public class Speedometer extends View {
                 canvas.restore();
             }
         }
+    }
+
+    /**
+     * Implement this method to handle section change event.
+     * @param oldSection where indicator came from.
+     * @param newSection where indicator move to.
+     */
+    protected void onSectionChangeEvent(byte oldSection, byte newSection) {
+        if (onSectionChangeListener != null)
+            onSectionChangeListener.onSectionChangeListener(oldSection, newSection);
     }
 
     /**
@@ -1268,6 +1286,19 @@ abstract public class Speedometer extends View {
      */
     public void setDecelerate(float decelerate) {
         this.decelerate = decelerate;
+    }
+
+    /**
+     * @return correct section,
+     * use in condition {@code if (speedometer.getSection() == speedometer.LOW_SECTION)}.
+     */
+    public byte getSection() {
+        if (isInLowSection())
+            return LOW_SECTION;
+        else if (isInMediumSection())
+            return MEDIUM_SECTION;
+        else
+            return HIGH_SECTION;
     }
 
     public float getIndicatorWidth() {

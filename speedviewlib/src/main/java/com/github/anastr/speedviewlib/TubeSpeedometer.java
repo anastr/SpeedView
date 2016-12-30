@@ -69,6 +69,7 @@ public class TubeSpeedometer extends Speedometer {
 
     private void initAttributeValue() {
         tubeBacPaint.setColor(speedometerColor);
+        tubePaint.setColor(getLowSpeedColor());
     }
 
     @Override
@@ -98,15 +99,20 @@ public class TubeSpeedometer extends Speedometer {
         tubeBacPaint.setMaskFilter(embossMaskFilterBac);
     }
 
-    private void initDraw() {
-        tubePaint.setStrokeWidth(getSpeedometerWidth());
-        tubeBacPaint.setStrokeWidth(getSpeedometerWidth());
-        if (isInLowSection())
+    @Override
+    protected void onSectionChangeEvent(byte oldSection, byte newSection) {
+        super.onSectionChangeEvent(oldSection, newSection);
+        if (newSection == LOW_SECTION)
             tubePaint.setColor(getLowSpeedColor());
-        else if (isInMediumSection())
+        else if (newSection == MEDIUM_SECTION)
             tubePaint.setColor(getMediumSpeedColor());
         else
             tubePaint.setColor(getHighSpeedColor());
+    }
+
+    private void initDraw() {
+        tubePaint.setStrokeWidth(getSpeedometerWidth());
+        tubeBacPaint.setStrokeWidth(getSpeedometerWidth());
     }
 
     @Override
