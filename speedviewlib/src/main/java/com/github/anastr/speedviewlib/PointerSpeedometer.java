@@ -69,7 +69,8 @@ public class PointerSpeedometer extends Speedometer {
         markPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStrokeCap(Paint.Cap.ROUND);
         markPaint.setStrokeWidth(dpTOpx(2));
-        speedTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        if (speedTextPaint.getTypeface() == null)
+            speedTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         unitTextPaint.setTextAlign(Paint.Align.LEFT);
     }
 

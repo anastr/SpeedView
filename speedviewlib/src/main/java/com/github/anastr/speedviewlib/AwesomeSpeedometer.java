@@ -64,7 +64,8 @@ public class AwesomeSpeedometer extends Speedometer {
         textPaint.setTextAlign(Paint.Align.CENTER);
         ringPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextSize(dpTOpx(10));
-        textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        if (textPaint.getTypeface() == null)
+            textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {

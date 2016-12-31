@@ -43,6 +43,9 @@
 
         <attr name="accelerate" format="float" />
         <attr name="decelerate" format="float" />
+
+        <attr name="speedTextTypeface" format="string" />
+        <attr name="textTypeface" format="string" />
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">

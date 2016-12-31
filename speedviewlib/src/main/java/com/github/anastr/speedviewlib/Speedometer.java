@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -197,6 +198,12 @@ abstract public class Speedometer extends View {
         setIndicatorWidth(a.getDimension(R.styleable.Speedometer_indicatorWidth, indicator.getIndicatorWidth()));
         accelerate = a.getFloat(R.styleable.Speedometer_accelerate, accelerate);
         decelerate = a.getFloat(R.styleable.Speedometer_decelerate, decelerate);
+        String speedTypefacePath = a.getString(R.styleable.Speedometer_speedTextTypeface);
+        if (speedTypefacePath != null)
+            setSpeedTextTypeface(Typeface.createFromAsset(getContext().getAssets(), speedTypefacePath));
+        String typefacePath = a.getString(R.styleable.Speedometer_textTypeface);
+        if (typefacePath != null)
+            setTextTypeface(Typeface.createFromAsset(getContext().getAssets(), typefacePath));
         int ind = a.getInt(R.styleable.Speedometer_indicator, -1);
         if (ind != -1)
             setIndicator(Indicator.Indicators.values()[ind]);
@@ -1279,6 +1286,31 @@ abstract public class Speedometer extends View {
 
     public int getPadding() {
         return padding;
+    }
+
+    /**
+     * change typeface for <b>speed and unit</b> text.
+     * @param typeface Maybe null. The typeface to be installed.
+     */
+    public void setSpeedTextTypeface(Typeface typeface) {
+        speedTextPaint.setTypeface(typeface);
+        unitTextPaint.setTypeface(typeface);
+        if (!attachedToWindow)
+            return;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    /**
+     * change typeface for att texts without speed and unit text.
+     * @param typeface Maybe null. The typeface to be installed.
+     */
+    public void setTextTypeface(Typeface typeface) {
+        textPaint.setTypeface(typeface);
+        if (!attachedToWindow)
+            return;
+        updateBackgroundBitmap();
+        invalidate();
     }
 
     public float getAccelerate() {
