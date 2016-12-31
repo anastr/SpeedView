@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.RectF;
 
 /**
  * this Library build By Anas Altair
@@ -14,6 +15,7 @@ public class ImageIndicator extends Indicator<ImageIndicator> {
 
     private Bitmap bitmapIndicator;
     private int width, height;
+    private RectF bitmapRect = new RectF();
 
     /**
      * create indicator from resources, the indicator direction must be up.<br>
@@ -78,7 +80,9 @@ public class ImageIndicator extends Indicator<ImageIndicator> {
     public void draw(Canvas canvas, float degree) {
         canvas.save();
         canvas.rotate(90f + degree, getCenterX(), getCenterY());
-        canvas.drawBitmap(bitmapIndicator, getCenterX() - (width/2f), getCenterY() - (height /2f), indicatorPaint);
+        bitmapRect.set(getCenterX() - (width/2f), getCenterY() - (height/2f)
+                , getCenterX() + (width/2f), getCenterY() + (height/2f));
+        canvas.drawBitmap(bitmapIndicator, null, bitmapRect, indicatorPaint);
         canvas.restore();
     }
 

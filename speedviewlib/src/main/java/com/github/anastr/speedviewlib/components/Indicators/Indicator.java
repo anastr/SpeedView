@@ -134,4 +134,32 @@ public abstract class Indicator<I extends Indicator> {
         , SpindleIndicator, LineIndicator, HalfLineIndicator, QuarterLineIndicator
     }
 
+    /**
+     * create new {@link Indicator} with default values.
+     * @param context required.
+     * @param indicator new indicator (Enum value).
+     * @return new indicator object.
+     */
+    public static Indicator createIndicator (Context context, Indicators indicator) {
+        switch (indicator) {
+            case NoIndicator :
+                return new NoIndicator(context);
+            case NormalIndicator :
+                return new NormalIndicator(context);
+            case NormalSmallIndicator :
+                return new NormalSmallIndicator(context);
+            case TriangleIndicator :
+                return new TriangleIndicator(context);
+            case SpindleIndicator :
+                return new SpindleIndicator(context);
+            case LineIndicator :
+                return new LineIndicator(context, LineIndicator.LINE);
+            case HalfLineIndicator :
+                return new LineIndicator(context, LineIndicator.HALF_LINE);
+            case QuarterLineIndicator :
+                return new LineIndicator(context, LineIndicator.QUARTER_LINE);
+            default :
+                return new NormalIndicator(context);
+        }
+    }
 }

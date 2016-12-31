@@ -16,12 +16,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
-import com.github.anastr.speedviewlib.components.Indicators.LineIndicator;
+import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.NoIndicator;
-import com.github.anastr.speedviewlib.components.Indicators.NormalIndicator;
-import com.github.anastr.speedviewlib.components.Indicators.NormalSmallIndicator;
-import com.github.anastr.speedviewlib.components.Indicators.SpindleIndicator;
-import com.github.anastr.speedviewlib.components.Indicators.TriangleIndicator;
 import com.github.anastr.speedviewlib.components.note.Note;
 import com.github.anastr.speedviewlib.util.OnSectionChangeListener;
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
@@ -592,6 +588,9 @@ abstract public class Speedometer extends View {
         trembleAnimator.start();
     }
 
+    /**
+     * @return correct degree where indicator must be.
+     */
     protected float getDegree() {
         return degree;
     }
@@ -821,6 +820,10 @@ abstract public class Speedometer extends View {
         return lowSpeedColor;
     }
 
+    /**
+     * change the color of Low Section.
+     * @param lowSpeedColor new color.
+     */
     public void setLowSpeedColor(int lowSpeedColor) {
         this.lowSpeedColor = lowSpeedColor;
         if (!attachedToWindow)
@@ -833,6 +836,10 @@ abstract public class Speedometer extends View {
         return mediumSpeedColor;
     }
 
+    /**
+     * change the color of Medium Section.
+     * @param mediumSpeedColor new color.
+     */
     public void setMediumSpeedColor(int mediumSpeedColor) {
         this.mediumSpeedColor = mediumSpeedColor;
         if (!attachedToWindow)
@@ -845,6 +852,10 @@ abstract public class Speedometer extends View {
         return highSpeedColor;
     }
 
+    /**
+     * change the color of High Section.
+     * @param highSpeedColor new color.
+     */
     public void setHighSpeedColor(int highSpeedColor) {
         this.highSpeedColor = highSpeedColor;
         if (!attachedToWindow)
@@ -858,8 +869,8 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * change all text color without <b>speed text</b>.
-     * @param textColor new color
+     * change all text color without <b>speed, unit text</b>.
+     * @param textColor new color.
      *
      * @see #setSpeedTextColor(int)
      */
@@ -868,6 +879,7 @@ abstract public class Speedometer extends View {
         textPaint.setColor(textColor);
         if (!attachedToWindow)
             return;
+        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -877,7 +889,7 @@ abstract public class Speedometer extends View {
 
     /**
      * change just speed text color.
-     * @param speedTextColor new color
+     * @param speedTextColor new color.
      *
      * @see #setTextColor(int)
      */
@@ -896,9 +908,9 @@ abstract public class Speedometer extends View {
 
     /**
      * Circle Background Color,
-     * you can set at {@code Color.TRANSPARENT}
+     * you can set it {@code Color.TRANSPARENT}
      * to remove circle background.
-     * @param backgroundCircleColor new Circle Background Color
+     * @param backgroundCircleColor new Circle Background Color.
      */
     public void setBackgroundCircleColor(int backgroundCircleColor) {
         this.backgroundCircleColor = backgroundCircleColor;
@@ -915,7 +927,7 @@ abstract public class Speedometer extends View {
 
     /**
      * change all text size without <b>speed text</b>.
-     * @param textSize new size in pixel
+     * @param textSize new size in pixel.
      *
      * @see #dpTOpx(float)
      * @see #setSpeedTextSize(float)
@@ -935,7 +947,7 @@ abstract public class Speedometer extends View {
 
     /**
      * change just speed text size.
-     * @param speedTextSize new size in pixel
+     * @param speedTextSize new size in pixel.
      *
      * @see #dpTOpx(float)
      * @see #setTextSize(float)
@@ -951,7 +963,7 @@ abstract public class Speedometer extends View {
 
     /**
      * change just unit text size.
-     * @param unitTextSize new size in pixel
+     * @param unitTextSize new size in pixel.
      *
      * @see #dpTOpx(float)
      * @see #setSpeedTextSize(float)
@@ -975,8 +987,8 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * text after speed text.
-     * @param unit speed unit
+     * the text after speed text.
+     * @param unit unit text.
      */
     public void setUnit(String unit) {
         this.unit = unit;
@@ -989,6 +1001,10 @@ abstract public class Speedometer extends View {
         return speedometerWidth;
     }
 
+    /**
+     * change the width of speedometer's bar.
+     * @param speedometerWidth new width in pixel.
+     */
     public void setSpeedometerWidth(float speedometerWidth) {
         this.speedometerWidth = speedometerWidth;
         if (!attachedToWindow)
@@ -999,11 +1015,19 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * this well call when (int) speed change.
-     * @param onSpeedChangeListener The callback that will run.
+     * Register a callback to be invoked when speed value changed (in integer).
+     * @param onSpeedChangeListener maybe null, The callback that will run.
      */
     public void setOnSpeedChangeListener(OnSpeedChangeListener onSpeedChangeListener) {
         this.onSpeedChangeListener = onSpeedChangeListener;
+    }
+
+    /**
+     * Register a callback to be invoked when section changed.
+     * @param onSectionChangeListener maybe null, The callback that will run.
+     */
+    public void setOnSectionChangeListener(OnSectionChangeListener onSectionChangeListener) {
+        this.onSectionChangeListener = onSectionChangeListener;
     }
 
     protected int getStartDegree() {
@@ -1055,7 +1079,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * to change low speed area.
+     * to change low speed area (low section).
      * @param lowSpeedPercent the long of low speed area as percent,
      *                        must be between {@code [0,100]}.
      * @throws IllegalArgumentException if {@code lowSpeedPercent} out of range.
@@ -1079,7 +1103,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * to change medium speed area.
+     * to change medium speed area (medium section).
      * @param mediumSpeedPercent the long of medium speed area as percent,
      *                        must be between {@code [0,100]}.
      * @throws IllegalArgumentException if {@code mediumSpeedPercent} out of range.
@@ -1290,7 +1314,7 @@ abstract public class Speedometer extends View {
 
     /**
      * @return correct section,
-     * use in condition {@code if (speedometer.getSection() == speedometer.LOW_SECTION)}.
+     * used in condition : {@code if (speedometer.getSection() == speedometer.LOW_SECTION)}.
      */
     public byte getSection() {
         if (isInLowSection())
@@ -1305,6 +1329,12 @@ abstract public class Speedometer extends View {
         return indicator.getIndicatorWidth();
     }
 
+    /**
+     * change indicator width, this value have several meaning
+     * between {@link Indicator.Indicators}, it will be ignore
+     * if using {@link ImageIndicator}.
+     * @param indicatorWidth new width in pixel.
+     */
     public void setIndicatorWidth(float indicatorWidth) {
         indicator.setIndicatorWidth(indicatorWidth);
         if (!attachedToWindow)
@@ -1312,6 +1342,10 @@ abstract public class Speedometer extends View {
         invalidate();
     }
 
+    /**
+     * call this method to apply/remove blur effect for indicator.
+     * @param withEffects effect.
+     */
     protected void indicatorEffects(boolean withEffects) {
         indicator.withEffects(withEffects);
     }
@@ -1322,32 +1356,7 @@ abstract public class Speedometer extends View {
      * @param indicator new indicator (Enum value).
      */
     public void setIndicator (Indicator.Indicators indicator) {
-        switch (indicator) {
-            case NoIndicator:
-                this.indicator = new NoIndicator(getContext());
-                break;
-            case NormalIndicator:
-                this.indicator = new NormalIndicator(getContext());
-                break;
-            case NormalSmallIndicator:
-                this.indicator = new NormalSmallIndicator(getContext());
-                break;
-            case TriangleIndicator:
-                this.indicator = new TriangleIndicator(getContext());
-                break;
-            case SpindleIndicator:
-                this.indicator = new SpindleIndicator(getContext());
-                break;
-            case LineIndicator:
-                this.indicator = new LineIndicator(getContext(), LineIndicator.LINE);
-                break;
-            case HalfLineIndicator:
-                this.indicator = new LineIndicator(getContext(), LineIndicator.HALF_LINE);
-                break;
-            case QuarterLineIndicator:
-                this.indicator = new LineIndicator(getContext(), LineIndicator.QUARTER_LINE);
-                break;
-        }
+        this.indicator = Indicator.createIndicator(getContext(), indicator);
         this.indicator.setTargetSpeedometer(this);
     }
 
