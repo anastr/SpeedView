@@ -155,9 +155,9 @@ public class DeluxeSpeedView extends Speedometer {
     }
 
     @Override
-    protected Bitmap updateBackgroundBitmap() {
+    protected void updateBackgroundBitmap() {
         if (getWidth() == 0 || getHeight() == 0)
-            return null;
+            return ;
         initDraw();
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
@@ -190,8 +190,6 @@ public class DeluxeSpeedView extends Speedometer {
         c.restore();
 
         drawDefaultMinAndMaxSpeedPosition(c);
-
-        return backgroundBitmap;
     }
 
     public boolean isWithEffects() {

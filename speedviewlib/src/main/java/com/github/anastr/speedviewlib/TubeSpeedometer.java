@@ -139,9 +139,9 @@ public class TubeSpeedometer extends Speedometer {
     }
 
     @Override
-    protected Bitmap updateBackgroundBitmap() {
+    protected void updateBackgroundBitmap() {
         if (getWidth() == 0 || getHeight() == 0)
-            return null;
+            return;
         initDraw();
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
@@ -161,8 +161,6 @@ public class TubeSpeedometer extends Speedometer {
 
         c.drawText(getUnit()
                 , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
-
-        return backgroundBitmap;
     }
 
     public int getSpeedometerColor() {

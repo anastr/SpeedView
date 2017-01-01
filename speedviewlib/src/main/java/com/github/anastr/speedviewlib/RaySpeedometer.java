@@ -176,9 +176,9 @@ public class RaySpeedometer extends Speedometer {
     }
 
     @Override
-    protected Bitmap updateBackgroundBitmap() {
+    protected void updateBackgroundBitmap() {
         if (getWidth() == 0 || getHeight() == 0)
-            return null;
+            return;
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
         c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
@@ -194,8 +194,6 @@ public class RaySpeedometer extends Speedometer {
         c.restore();
 
         drawDefaultMinAndMaxSpeedPosition(c);
-
-        return backgroundBitmap;
     }
 
     public boolean isWithEffects() {

@@ -146,9 +146,9 @@ public class AwesomeSpeedometer extends Speedometer {
     }
 
     @Override
-    protected Bitmap updateBackgroundBitmap() {
+    protected void updateBackgroundBitmap() {
         if (getWidth() == 0 || getHeight() == 0)
-            return null;
+            return ;
         initDraw();
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
@@ -174,9 +174,6 @@ public class AwesomeSpeedometer extends Speedometer {
             }
         }
         c.restore();
-
-
-        return backgroundBitmap;
     }
 
     @Override
@@ -266,43 +263,5 @@ public class AwesomeSpeedometer extends Speedometer {
     @Deprecated
     @Override
     public void setHighSpeedColor(int highSpeedColor) {
-    }
-
-    /**
-     * this Speedometer doesn't use this method.
-     * @return {@code 0} always.
-     */
-    @Deprecated
-    @Override
-    public int getLowSpeedPercent() {
-        return 0;
-    }
-
-    /**
-     * this Speedometer doesn't use this method.
-     * @param lowSpeedPercent nothing.
-     */
-    @Deprecated
-    @Override
-    public void setLowSpeedPercent(int lowSpeedPercent) {
-    }
-
-    /**
-     * this Speedometer doesn't use this method.
-     * @return {@code 0} always.
-     */
-    @Deprecated
-    @Override
-    public int getMediumSpeedPercent() {
-        return 0;
-    }
-
-    /**
-     * this Speedometer doesn't use this method.
-     * @param mediumSpeedPercent nothing.
-     */
-    @Deprecated
-    @Override
-    public void setMediumSpeedPercent(int mediumSpeedPercent) {
     }
 }

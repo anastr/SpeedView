@@ -46,10 +46,6 @@ abstract public class Speedometer extends View {
     /** the text after speedText */
     private String unit = "Km/h";
     private boolean withTremble = true;
-    /** the max range in speedometer, {@code default = 100} */
-    private int maxSpeed = 100;
-    /** the min range in speedometer, {@code default = 0} */
-    private int minSpeed = 0;
 
     private int centerCircleColor = Color.DKGRAY
             , markColor = Color.WHITE
@@ -60,12 +56,16 @@ abstract public class Speedometer extends View {
             , backgroundCircleColor = Color.WHITE
             , speedTextColor = Color.BLACK;
 
+    /** the max range in speedometer, {@code default = 100} */
+    private int maxSpeed = 100;
+    /** the min range in speedometer, {@code default = 0} */
+    private int minSpeed = 0;
     /**
      * the last speed which you set by {@link #speedTo(int)}
      * or {@link #speedTo(int, long)} or {@link #speedPercentTo(int)},
      * or if you stop speedometer By {@link #stop()} method.
      */
-    private int speed = 0;
+    private int speed = minSpeed;
     /** what is speed now in <b>int</b> */
     private int correctIntSpeed = 0;
     /** what is speed now in <b>float</b> */
@@ -111,13 +111,14 @@ abstract public class Speedometer extends View {
     /** medium speed area, started from {@link #startDegree} */
     private int mediumSpeedPercent = 87;
 
-     public static final byte LOW_SECTION = 1;
-     public static final byte MEDIUM_SECTION = 2;
-     public static final byte HIGH_SECTION = 3;
-     private byte section = LOW_SECTION;
+    public static final byte LOW_SECTION = 1;
+    public static final byte MEDIUM_SECTION = 2;
+    public static final byte HIGH_SECTION = 3;
+    private byte section = LOW_SECTION;
 
     private boolean speedometerTextRightToLeft = false;
 
+    /** array to contain all notes that will be draw */
     private ArrayList<Note> notes = new ArrayList<>();
     private boolean attachedToWindow = false;
 
@@ -144,15 +145,6 @@ abstract public class Speedometer extends View {
         super(context, attrs, defStyleAttr);
         init();
         initAttributeSet(context, attrs);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-        int size = (width > height) ? height : width;
-        setMeasuredDimension(size, size);
     }
 
     private void init() {
@@ -228,6 +220,15 @@ abstract public class Speedometer extends View {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+        int size = (width > height) ? height : width;
+        setMeasuredDimension(size, size);
+    }
+
+    @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
         updatePadding();
@@ -289,8 +290,16 @@ abstract public class Speedometer extends View {
         return px / getContext().getResources().getDisplayMetrics().density;
     }
 
+    /**
+     *  add default values inside this method,
+     * call super setting method to set default value,
+     * Ex :
+     * <pre>
+     *     super.setBackgroundCircleColor(Color.TRANSPARENT);
+     * </pre>
+     */
     abstract protected void defaultValues();
-    abstract protected Bitmap updateBackgroundBitmap();
+    abstract protected void updateBackgroundBitmap();
 
     private void updatePadding() {
         padding = Math.max(Math.max(getPaddingLeft(), getPaddingRight()), Math.max(getPaddingTop(), getPaddingBottom()));
@@ -1284,6 +1293,19 @@ abstract public class Speedometer extends View {
         return degree > (endDegree - startDegree)*getMediumSpeedOffset() + startDegree;
     }
 
+    /**
+     * @return correct section,
+     * used in condition : {@code if (speedometer.getSection() == speedometer.LOW_SECTION)}.
+     */
+    public byte getSection() {
+        if (isInLowSection())
+            return LOW_SECTION;
+        else if (isInMediumSection())
+            return MEDIUM_SECTION;
+        else
+            return HIGH_SECTION;
+    }
+
     public int getPadding() {
         return padding;
     }
@@ -1342,19 +1364,6 @@ abstract public class Speedometer extends View {
      */
     public void setDecelerate(float decelerate) {
         this.decelerate = decelerate;
-    }
-
-    /**
-     * @return correct section,
-     * used in condition : {@code if (speedometer.getSection() == speedometer.LOW_SECTION)}.
-     */
-    public byte getSection() {
-        if (isInLowSection())
-            return LOW_SECTION;
-        else if (isInMediumSection())
-            return MEDIUM_SECTION;
-        else
-            return HIGH_SECTION;
     }
 
     public float getIndicatorWidth() {
