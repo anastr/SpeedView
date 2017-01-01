@@ -430,7 +430,7 @@ abstract public class Speedometer extends View {
      * @see #realSpeedTo(int)
      */
     public void speedPercentTo(int percent) {
-        speedTo(percent, 2000);
+        speedPercentTo(percent, 2000);
     }
 
     /**
