@@ -126,9 +126,9 @@ abstract public class Speedometer extends View {
     private Locale locale = Locale.getDefault();
 
     /** Number expresses the Acceleration, between (0, 1] */
-    private float accelerate = .5f;
+    private float accelerate = .1f;
     /** Number expresses the Deceleration, between (0, 1] */
-    private float decelerate = .5f;
+    private float decelerate = .3f;
 
     public Speedometer(Context context) {
         super(context);
@@ -563,11 +563,11 @@ abstract public class Speedometer extends View {
             public void onAnimationUpdate(ValueAnimator animation) {
                 if (isSpeedUp) {
                     float per = 100.005f-getPercentSpeed();
-                    degree += (accelerate * 2f) * per/100f;
+                    degree += (accelerate * 10f) * per/100f;
                 }
                 else {
                     float per = getPercentSpeed()+.005f;
-                    degree -= (decelerate * 6f) * per/100f +.2f;
+                    degree -= (decelerate * 10f) * per/100f +.2f;
                 }
                 postInvalidate();
                 if (finalSpeed == correctIntSpeed)
@@ -1342,7 +1342,7 @@ abstract public class Speedometer extends View {
     /**
      * change accelerate, used by {@link #realSpeedTo(int)} {@link #speedUp()}
      * and {@link #slowDown()} methods.<br>
-     * must be between {@code (0, 1]}, default value 0.5f.
+     * must be between {@code (0, 1]}, default value 0.1f.
      * @param accelerate new accelerate.
      * @throws IllegalArgumentException if {@code accelerate} out of range.
      */
@@ -1358,7 +1358,7 @@ abstract public class Speedometer extends View {
     /**
      * change decelerate, used by {@link #realSpeedTo(int)} {@link #speedUp()}
      * and {@link #slowDown()} methods.<br>
-     * must be between {@code (0, 1]}, default value 0.5f.
+     * must be between {@code (0, 1]}, default value 0.3f.
      * @param decelerate new decelerate.
      * @throws IllegalArgumentException if {@code decelerate} out of range.
      */
