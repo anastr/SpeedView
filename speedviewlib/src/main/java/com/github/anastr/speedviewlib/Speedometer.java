@@ -804,7 +804,7 @@ abstract public class Speedometer extends View {
     }
 
     public void setIndicatorColor(int indicatorColor) {
-        indicator.setIndicatorColor(indicatorColor);
+        indicator.noticeIndicatorColorChange(indicatorColor);
         if (!attachedToWindow)
             return;
         invalidate();
@@ -1060,9 +1060,12 @@ abstract public class Speedometer extends View {
     public void setStartDegree(int startDegree) {
         this.startDegree = startDegree;
         checkStartAndEndDegree();
+        cancelSpeedAnimator();
+        degree = getDegreeAtSpeed(speed);
         if (!attachedToWindow)
             return;
         updateBackgroundBitmap();
+        tremble();
         invalidate();
     }
 
@@ -1080,9 +1083,12 @@ abstract public class Speedometer extends View {
     public void setEndDegree(int endDegree) {
         this.endDegree = endDegree;
         checkStartAndEndDegree();
+        cancelSpeedAnimator();
+        degree = getDegreeAtSpeed(speed);
         if (!attachedToWindow)
             return;
         updateBackgroundBitmap();
+        tremble();
         invalidate();
     }
 
@@ -1377,7 +1383,7 @@ abstract public class Speedometer extends View {
      * @param indicatorWidth new width in pixel.
      */
     public void setIndicatorWidth(float indicatorWidth) {
-        indicator.setIndicatorWidth(indicatorWidth);
+        indicator.noticeIndicatorWidthChange(indicatorWidth);
         if (!attachedToWindow)
             return;
         invalidate();
