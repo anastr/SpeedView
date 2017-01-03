@@ -89,20 +89,6 @@ public class AwesomeSpeedometer extends Speedometer {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        float risk = getSpeedometerWidth()/2f + getPadding();
-        speedometerRect.set(risk, risk, w -risk, h -risk);
-
-        float markH = getHeightPa()/22f;
-        markPath.reset();
-        markPath.moveTo(w/2f, getPadding());
-        markPath.lineTo(w/2f, markH + getPadding());
-        markPaint.setStrokeWidth(markH/5f);
-
-        trianglesPath.reset();
-        trianglesPath.moveTo(w/2f, getPadding() + getHeightPa()/20f);
-        trianglesPath.lineTo(w/2f -(w/40f), getPadding());
-        trianglesPath.lineTo(w/2f +(w/40f), getPadding());
-
         updateGradient();
         updateBackgroundBitmap();
     }
@@ -154,6 +140,19 @@ public class AwesomeSpeedometer extends Speedometer {
         Canvas c = new Canvas(backgroundBitmap);
         c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
 
+        float markH = getHeightPa()/22f;
+        markPath.reset();
+        markPath.moveTo(getWidth()/2f, getPadding());
+        markPath.lineTo(getWidth()/2f, markH + getPadding());
+        markPaint.setStrokeWidth(markH/5f);
+
+        trianglesPath.reset();
+        trianglesPath.moveTo(getWidth()/2f, getPadding() + getHeightPa()/20f);
+        trianglesPath.lineTo(getWidth()/2f -(getWidth()/40f), getPadding());
+        trianglesPath.lineTo(getWidth()/2f +(getWidth()/40f), getPadding());
+
+        float risk = getSpeedometerWidth()/2f + getPadding();
+        speedometerRect.set(risk, risk, getWidth() -risk, getHeight() -risk);
         c.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
 
         c.save();

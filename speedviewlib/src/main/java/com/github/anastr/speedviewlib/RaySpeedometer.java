@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
@@ -25,8 +26,7 @@ public class RaySpeedometer extends Speedometer {
     private Paint markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             rayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private RectF speedometerRect = new RectF(),
-            speedBackgroundRect = new RectF();
+    private RectF speedBackgroundRect = new RectF();
     private int speedBackgroundColor = Color.WHITE;
 
     private boolean withEffects = true;
@@ -86,7 +86,8 @@ public class RaySpeedometer extends Speedometer {
         rayPaint.setStyle(Paint.Style.STROKE);
         rayPaint.setStrokeWidth(dpTOpx(1.8f));
 
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        if (Build.VERSION.SDK_INT >= 11)
+            setLayerType(LAYER_TYPE_SOFTWARE, null);
         setWithEffects(withEffects);
     }
 
@@ -95,26 +96,9 @@ public class RaySpeedometer extends Speedometer {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        float risk = getSpeedometerWidth()/2f;
-        speedometerRect.set(risk, risk, w -risk, h -risk);
-
         markPath.reset();
         markPath.moveTo(w/2f, getPadding());
         markPath.lineTo(w/2f, getSpeedometerWidth() + getPadding());
-
-        ray1Path.reset();
-        ray1Path.moveTo(w/2f, h/2f);
-        ray1Path.lineTo(w/2f, getHeightPa()/3.2f + getPadding());
-        ray1Path.moveTo(w/2f, getHeightPa()/3.2f + getPadding());
-        ray1Path.lineTo(w/2.2f, getHeightPa()/3f + getPadding());
-        ray1Path.moveTo(w/2.2f, getHeightPa()/3f + getPadding());
-        ray1Path.lineTo(w/2.1f, getHeightPa()/4.5f + getPadding());
-
-        ray2Path.reset();
-        ray2Path.moveTo(w/2f, h/2f);
-        ray2Path.lineTo(w/2f, getHeightPa()/3.2f + getPadding()); ray2Path.moveTo(w/2f, getHeightPa()/3.2f + getPadding());
-        ray2Path.lineTo(w/2.2f, getHeightPa()/3.8f + getPadding()); ray2Path.moveTo(w/2f, getHeightPa()/3.2f + getPadding());
-        ray2Path.lineTo(w/1.8f, getHeightPa()/3.8f + getPadding());
 
         updateBackgroundBitmap();
     }
@@ -182,6 +166,22 @@ public class RaySpeedometer extends Speedometer {
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
         c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
+
+        ray1Path.reset();
+        ray1Path.moveTo(getWidth()/2f, getHeight()/2f);
+        ray1Path.lineTo(getWidth()/2f, getHeightPa()/3.2f + getPadding());
+        ray1Path.moveTo(getWidth()/2f, getHeightPa()/3.2f + getPadding());
+        ray1Path.lineTo(getWidth()/2.2f, getHeightPa()/3f + getPadding());
+        ray1Path.moveTo(getWidth()/2.2f, getHeightPa()/3f + getPadding());
+        ray1Path.lineTo(getWidth()/2.1f, getHeightPa()/4.5f + getPadding());
+
+        ray2Path.reset();
+        ray2Path.moveTo(getWidth()/2f, getHeight()/2f);
+        ray2Path.lineTo(getWidth()/2f, getHeightPa()/3.2f + getPadding());
+        ray2Path.moveTo(getWidth()/2f, getHeightPa()/3.2f + getPadding());
+        ray2Path.lineTo(getWidth()/2.2f, getHeightPa()/3.8f + getPadding());
+        ray2Path.moveTo(getWidth()/2f, getHeightPa()/3.2f + getPadding());
+        ray2Path.lineTo(getWidth()/1.8f, getHeightPa()/3.8f + getPadding());
 
         c.save();
         for (int i=0; i<6; i++) {

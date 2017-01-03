@@ -24,6 +24,9 @@ public abstract class Indicator<I extends Indicator> {
     private int padding;
     private boolean inEditMode;
 
+//    private boolean isSmallSpeedometer = false;
+    private float centerX, centerY;
+
     protected Indicator (Context context) {
         this.density = context.getResources().getDisplayMetrics().density;
         init();
@@ -55,11 +58,19 @@ public abstract class Indicator<I extends Indicator> {
     }
 
     private void updateData(Speedometer speedometer) {
-        this.viewWidth = speedometer.getWidthPa();
-        this.viewHeight = speedometer.getHeightPa();
+        this.viewWidth = speedometer.getWidth();
+        this.viewHeight = speedometer.getHeight();
         this.speedometerWidth = speedometer.getSpeedometerWidth();
         this.padding = speedometer.getPadding();
         this.inEditMode = speedometer.isInEditMode();
+//        this.isSmallSpeedometer = ;
+        noticeCenterChange();
+    }
+
+    private void noticeCenterChange() {
+        centerX = viewWidth/2f;
+        centerY = viewHeight/2f;
+//        centerY = isSmallSpeedometer ? viewHeight-padding : viewHeight/2f;
     }
 
     public float dpTOpx(float dp) {
@@ -72,16 +83,21 @@ public abstract class Indicator<I extends Indicator> {
 
     public I setIndicatorWidth(float indicatorWidth) {
         this.indicatorWidth = indicatorWidth;
-        updateIndicator();
         return (I) this;
     }
 
+    /**
+     * @return width of Speedometer View without padding.
+     */
     public float getViewWidth() {
-        return viewWidth;
+        return viewWidth - (padding*2f);
     }
 
+    /**
+     * @return height of Speedometer View without padding.
+     */
     public float getViewHeight() {
-        return viewHeight;
+        return viewHeight - (padding*2f);
     }
 
     public int getIndicatorColor() {
@@ -90,16 +106,15 @@ public abstract class Indicator<I extends Indicator> {
 
     public I setIndicatorColor(int indicatorColor) {
         this.indicatorColor = indicatorColor;
-        updateIndicator();
         return (I) this;
     }
 
     public float getCenterX() {
-        return (2*padding + viewWidth) /2f;
+        return centerX;
     }
 
     public float getCenterY() {
-        return (2*padding + viewHeight) /2f;
+        return centerY;
     }
 
     public int getPadding() {
@@ -110,6 +125,16 @@ public abstract class Indicator<I extends Indicator> {
         return speedometerWidth;
     }
 
+    public void noticeIndicatorWidthChange(float indicatorWidth) {
+        this.indicatorWidth = indicatorWidth;
+        updateIndicator();
+    }
+
+    public void noticeIndicatorColorChange(int indicatorColor) {
+        this.indicatorColor = indicatorColor;
+        updateIndicator();
+    }
+
     public void noticeSpeedometerWidthChange(float speedometerWidth) {
         this.speedometerWidth = speedometerWidth;
         updateIndicator();
@@ -117,6 +142,7 @@ public abstract class Indicator<I extends Indicator> {
 
     public void noticePaddingChange(int newPadding) {
         this.padding = newPadding;
+        noticeCenterChange();
         updateIndicator();
     }
 

@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 
 /**
@@ -51,7 +52,8 @@ public class TubeSpeedometer extends Speedometer {
         tubePaint.setStyle(Paint.Style.STROKE);
         tubeBacPaint.setStyle(Paint.Style.STROKE);
 
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        if (Build.VERSION.SDK_INT >= 11)
+            setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -75,9 +77,6 @@ public class TubeSpeedometer extends Speedometer {
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-
-        float risk = getSpeedometerWidth()/2f + getPadding();
-        speedometerRect.set(risk, risk, w -risk, h -risk);
 
         updateEmboss();
         updateBackgroundBitmap();
@@ -146,6 +145,9 @@ public class TubeSpeedometer extends Speedometer {
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
         c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
+
+        float risk = getSpeedometerWidth()/2f + getPadding();
+        speedometerRect.set(risk, risk, getWidth() -risk, getHeight() -risk);
 
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, tubeBacPaint);
 

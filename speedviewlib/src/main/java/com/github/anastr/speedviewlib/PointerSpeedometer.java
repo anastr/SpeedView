@@ -99,10 +99,6 @@ public class PointerSpeedometer extends Speedometer {
         float risk = getSpeedometerWidth()/2f + dpTOpx(8) + getPadding();
         speedometerRect.set(risk, risk, w -risk, h -risk);
 
-        markPath.reset();
-        markPath.moveTo(w/2f, getSpeedometerWidth() + dpTOpx(8) + dpTOpx(4) + getPadding());
-        markPath.lineTo(w/2f, getSpeedometerWidth() + dpTOpx(8) + dpTOpx(4) + getPadding() + w/60);
-
         updateRadial();
         updateBackgroundBitmap();
     }
@@ -160,6 +156,10 @@ public class PointerSpeedometer extends Speedometer {
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
         c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
+
+        markPath.reset();
+        markPath.moveTo(getWidth()/2f, getSpeedometerWidth() + dpTOpx(8) + dpTOpx(4) + getPadding());
+        markPath.lineTo(getWidth()/2f, getSpeedometerWidth() + dpTOpx(8) + dpTOpx(4) + getPadding() + getWidth()/60);
 
         c.save();
         c.rotate(90f + getStartDegree(), getWidth()/2f, getHeight()/2f);

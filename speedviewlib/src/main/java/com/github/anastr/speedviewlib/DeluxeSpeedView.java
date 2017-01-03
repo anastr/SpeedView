@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
@@ -64,7 +65,8 @@ public class DeluxeSpeedView extends Speedometer {
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
 
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        if (Build.VERSION.SDK_INT >= 11)
+            setLayerType(LAYER_TYPE_SOFTWARE, null);
         setWithEffects(withEffects);
     }
 
@@ -90,22 +92,6 @@ public class DeluxeSpeedView extends Speedometer {
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-
-        float risk = getSpeedometerWidth()/2f + getPadding();
-        speedometerRect.set(risk, risk, w -risk, h -risk);
-
-        float markH = getHeightPa()/28f;
-        markPath.reset();
-        markPath.moveTo(w/2f, getPadding());
-        markPath.lineTo(w/2f, markH + getPadding());
-        markPaint.setStrokeWidth(markH/3f);
-
-        float smallMarkH = getHeightPa()/20f;
-        smallMarkPath.reset();
-        smallMarkPath.moveTo(w/2f, getSpeedometerWidth() + getPadding());
-        smallMarkPath.lineTo(w/2f, getSpeedometerWidth() + getPadding() + smallMarkH);
-        smallMarkPaint.setStrokeWidth(3);
-
         updateBackgroundBitmap();
     }
 
@@ -162,6 +148,21 @@ public class DeluxeSpeedView extends Speedometer {
         backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(backgroundBitmap);
         c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
+
+        float smallMarkH = getHeightPa()/20f;
+        smallMarkPath.reset();
+        smallMarkPath.moveTo(getWidth()/2f, getSpeedometerWidth() + getPadding());
+        smallMarkPath.lineTo(getWidth()/2f, getSpeedometerWidth() + getPadding() + smallMarkH);
+        smallMarkPaint.setStrokeWidth(3);
+
+        float markH = getHeightPa()/28f;
+        markPath.reset();
+        markPath.moveTo(getWidth()/2f, getPadding());
+        markPath.lineTo(getWidth()/2f, markH + getPadding());
+        markPaint.setStrokeWidth(markH/3f);
+
+        float risk = getSpeedometerWidth()/2f + getPadding();
+        speedometerRect.set(risk, risk, getWidth() -risk, getHeight() -risk);
 
         speedometerPaint.setColor(getHighSpeedColor());
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, speedometerPaint);

@@ -2,6 +2,7 @@ package com.github.anastr.speedviewlib;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -81,25 +82,7 @@ abstract public class Speedometer extends View {
     private OnSpeedChangeListener onSpeedChangeListener;
     private OnSectionChangeListener onSectionChangeListener;
     /** this animatorListener to call {@link #tremble()} method when animator done */
-    private Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
-        @Override
-        public void onAnimationStart(Animator animation) {
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            if (!canceled)
-                tremble();
-        }
-
-        @Override
-        public void onAnimationCancel(Animator animation) {
-        }
-
-        @Override
-        public void onAnimationRepeat(Animator animation) {
-        }
-    };
+    private Animator.AnimatorListener animatorListener;
 
     /** to contain all drawing that doesn't change */
     protected Bitmap backgroundBitmap;
@@ -150,9 +133,30 @@ abstract public class Speedometer extends View {
     private void init() {
         indicator = new NoIndicator(getContext());
 
-        speedAnimator = ValueAnimator.ofFloat(0f, 1f);
-        trembleAnimator = ValueAnimator.ofFloat(0f, 1f);
-        realSpeedAnimator = ValueAnimator.ofFloat(0f, 1f);
+        if (Build.VERSION.SDK_INT >= 11) {
+            speedAnimator = ValueAnimator.ofFloat(0f, 1f);
+            trembleAnimator = ValueAnimator.ofFloat(0f, 1f);
+            realSpeedAnimator = ValueAnimator.ofFloat(0f, 1f);
+            animatorListener = new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (!canceled)
+                        tremble();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            };
+        }
 
         speedTextPaint.setTextAlign(Paint.Align.CENTER);
 
@@ -306,7 +310,8 @@ abstract public class Speedometer extends View {
         super.setPadding(padding, padding, padding, padding);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
             super.setPaddingRelative(padding, padding, padding, padding);
-        indicator.noticePaddingChange(padding);
+        if (indicator != null)
+            indicator.noticePaddingChange(padding);
     }
 
     @Override
@@ -323,7 +328,10 @@ abstract public class Speedometer extends View {
             boolean isSpeedUp = newSpeed > correctIntSpeed;
             correctIntSpeed = newSpeed;
             if (onSpeedChangeListener != null){
-                onSpeedChangeListener.onSpeedChange(this, isSpeedUp, trembleAnimator.isRunning());
+                boolean byTremble = false;
+                if (Build.VERSION.SDK_INT >= 11)
+                    byTremble = trembleAnimator.isRunning();
+                onSpeedChangeListener.onSpeedChange(this, isSpeedUp, byTremble);
             }
         }
         // check onSectionChangeEvent.
@@ -375,7 +383,10 @@ abstract public class Speedometer extends View {
      * stop speedometer and run tremble if {@link #withTremble} is true.
      * use this method just when you wont to stop {@code speedTo and realSpeedTo}.
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void stop() {
+        if (Build.VERSION.SDK_INT < 11)
+            return;
         if (!speedAnimator.isRunning() && !realSpeedAnimator.isRunning())
             return;
         speed = (int) correctSpeed;
@@ -391,13 +402,19 @@ abstract public class Speedometer extends View {
         cancelTremble();
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void cancelTremble() {
+        if (Build.VERSION.SDK_INT < 11)
+            return;
         canceled = true;
         trembleAnimator.cancel();
         canceled = false;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void cancelSpeedMove() {
+        if (Build.VERSION.SDK_INT < 11)
+            return;
         canceled = true;
         speedAnimator.cancel();
         realSpeedAnimator.cancel();
@@ -418,6 +435,15 @@ abstract public class Speedometer extends View {
      */
     protected float getSpeedAtDegree (float degree) {
         return (degree - startDegree) * (maxSpeed - minSpeed) /(endDegree - startDegree) + minSpeed;
+    }
+
+    public void setIndicatorAt(int speed) {
+        speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
+        this.speed = speed;
+        cancelSpeedAnimator();
+        degree = getDegreeAtSpeed(speed);
+        invalidate();
+        tremble();
     }
 
     /**
@@ -484,6 +510,7 @@ abstract public class Speedometer extends View {
      * @see #speedPercentTo(int)
      * @see #realSpeedTo(int)
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void speedTo(int speed, long moveDuration) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
@@ -491,6 +518,10 @@ abstract public class Speedometer extends View {
         float newDegree = getDegreeAtSpeed(speed);
         if (newDegree == degree)
             return;
+        if (Build.VERSION.SDK_INT < 11){
+            setIndicatorAt(speed);
+            return;
+        }
 
         cancelSpeedAnimator();
         speedAnimator = ValueAnimator.ofFloat(degree, newDegree);
@@ -543,6 +574,7 @@ abstract public class Speedometer extends View {
      * @see #speedUp()
      * @see #slowDown()
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void realSpeedTo(int speed) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
@@ -550,6 +582,10 @@ abstract public class Speedometer extends View {
         float newDegree = getDegreeAtSpeed(speed);
         if (newDegree == degree)
             return;
+        if (Build.VERSION.SDK_INT < 11) {
+            setIndicatorAt(speed);
+            return;
+        }
 
         cancelSpeedAnimator();
         realSpeedAnimator = ValueAnimator.ofInt((int)degree, (int)newDegree);
@@ -581,9 +617,10 @@ abstract public class Speedometer extends View {
     /**
      * check if {@link #withTremble} true, and run tremble.
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void tremble() {
         cancelTremble();
-        if (!isWithTremble())
+        if (!isWithTremble() || Build.VERSION.SDK_INT < 11)
             return;
         Random random = new Random();
         float mad = trembleDegree * random.nextFloat() * ((random.nextBoolean()) ? -1 :1);
@@ -1404,7 +1441,10 @@ abstract public class Speedometer extends View {
      */
     public void setIndicator (Indicator.Indicators indicator) {
         this.indicator = Indicator.createIndicator(getContext(), indicator);
+        if(!attachedToWindow)
+            return;
         this.indicator.setTargetSpeedometer(this);
+        invalidate();
     }
 
     /**
