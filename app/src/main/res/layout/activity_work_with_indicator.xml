@@ -34,12 +34,27 @@
         app:mediumSpeedColor="#ba682d"
         app:highSpeedColor="#c2308d" />
 
-    <Spinner
-        android:id="@+id/spinner"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="10dp"
-        android:background="#a8ff83"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:background="#a8ff83"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="image"
+            android:onClick="imageIndicator"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

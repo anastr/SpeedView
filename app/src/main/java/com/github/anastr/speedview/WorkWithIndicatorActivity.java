@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.Speedometer;
+import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
         spinner.setAdapter(dataAdapter);
+        spinner.setSelection(1);
 
         SeekBar seekBarWidth = (SeekBar) findViewById(R.id.seekBar);
         assert seekBarWidth != null;
@@ -100,6 +102,11 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
 
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
-        speedometer.setIndicator(Indicator.Indicators.NoIndicator);
+    }
+
+    public void imageIndicator(View view) {
+        ImageIndicator imageIndicator = new ImageIndicator(getApplicationContext(), R.drawable.image_indicator1
+                , (int)speedometer.dpTOpx(speedometer.getWidth()), (int)speedometer.dpTOpx(speedometer.getHeight()));
+        speedometer.setIndicator(imageIndicator);
     }
 }
