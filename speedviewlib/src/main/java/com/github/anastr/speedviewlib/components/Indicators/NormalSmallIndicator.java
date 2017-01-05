@@ -35,8 +35,8 @@ public class NormalSmallIndicator extends Indicator<NormalSmallIndicator> {
     @Override
     protected void updateIndicator() {
         indicatorPath.reset();
-        indicatorPath.moveTo(getCenterX(), getViewHeight()/5f + getPadding());
-        float indicatorBottom = getViewHeight()*3f/5f + getPadding();
+        indicatorPath.moveTo(getCenterX(), getViewSize()/5f + getPadding());
+        float indicatorBottom = getViewSize()*3f/5f + getPadding();
         indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), indicatorBottom);
         indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), indicatorBottom);
         RectF rectF = new RectF(getCenterX() - getIndicatorWidth(), indicatorBottom - getIndicatorWidth()

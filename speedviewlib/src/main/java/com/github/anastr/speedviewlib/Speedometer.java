@@ -113,6 +113,11 @@ abstract public class Speedometer extends View {
     /** Number expresses the Deceleration, between (0, 1] */
     private float decelerate = .3f;
 
+    private Mode speedometerMode = Mode.NORMAL;
+
+    private float translatedDx = 0;
+    private float translatedDy = 0;
+
     public Speedometer(Context context) {
         super(context);
         init();
@@ -166,6 +171,9 @@ abstract public class Speedometer extends View {
     private void initAttributeSet(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.Speedometer, 0, 0);
 
+        int mode = a.getInt(R.styleable.Speedometer_speedometerMode, -1);
+        if (mode != -1 && mode != 0)
+            setSpeedometerMode(Mode.values()[mode]);
         setIndicatorColor(a.getColor(R.styleable.Speedometer_indicatorColor, indicator.getIndicatorColor()));
         centerCircleColor = a.getColor(R.styleable.Speedometer_centerCircleColor, centerCircleColor);
         markColor = a.getColor(R.styleable.Speedometer_markColor, markColor);
@@ -229,7 +237,7 @@ abstract public class Speedometer extends View {
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
         int size = (width > height) ? height : width;
-        setMeasuredDimension(size, size);
+        setMeasuredDimension(size/speedometerMode.divWidth, size/speedometerMode.divHeight);
     }
 
     @Override
@@ -248,6 +256,12 @@ abstract public class Speedometer extends View {
             throw new IllegalArgumentException("EndDegree must be bigger than StartDegree !");
         if (endDegree - startDegree > 360)
             throw new IllegalArgumentException("(EndDegree - StartDegree) must be smaller than 360 !");
+        if (startDegree < speedometerMode.minDegree)
+            throw new IllegalArgumentException("StartDegree must be bigger than " + speedometerMode.minDegree
+                    + " in " + speedometerMode + " Mode !");
+        if (endDegree > speedometerMode.maxDegree)
+            throw new IllegalArgumentException("EndDegree must be smaller than " + speedometerMode.maxDegree
+                    + " in " + speedometerMode + " Mode !");
     }
 
     private void checkSpeedometerPercent() {
@@ -317,6 +331,20 @@ abstract public class Speedometer extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (speedometerMode == Mode.RIGHT || speedometerMode == Mode.TOP_RIGHT
+                || speedometerMode == Mode.BOTTOM_RIGHT) {
+            translatedDx = - getSize() / 2f;
+            canvas.translate(translatedDx, 0);
+        }
+        else
+            translatedDx = 0;
+        if (speedometerMode == Mode.BOTTOM || speedometerMode == Mode.BOTTOM_LEFT
+                || speedometerMode == Mode.BOTTOM_RIGHT) {
+            translatedDy = - getSize() / 2f;
+            canvas.translate(0, translatedDy);
+        }
+        else
+            translatedDy = 0;
 
         if (backgroundBitmap != null)
             canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
@@ -367,6 +395,15 @@ abstract public class Speedometer extends View {
                 canvas.restore();
             }
         }
+    }
+
+    protected final Canvas createBackgroundBitmapCanvas() {
+        if (getWidth() == 0 || getHeight() == 0)
+            return new Canvas();
+        backgroundBitmap = Bitmap.createBitmap(getSize(), getSize(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(backgroundBitmap);
+        canvas.drawCircle(getSize()/2f, getSize()/2f, getSize()/2f - getPadding(), circleBackPaint);
+        return canvas;
     }
 
     /**
@@ -1207,6 +1244,24 @@ abstract public class Speedometer extends View {
         return getHeight() - (padding*2);
     }
 
+    /**
+     * @return size of speedometer.
+     */
+    public int getSize() {
+        if (speedometerMode == Mode.NORMAL)
+            return getWidth();
+        if (speedometerMode.isHalf)
+            return getWidth() > getHeight() ? getWidth() : getHeight();
+        return getWidth()*2;
+    }
+
+    /**
+     * @return size of speedometer without padding.
+     */
+    public int getSizePa() {
+        return getSize() - (padding*2);
+    }
+
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
@@ -1275,7 +1330,7 @@ abstract public class Speedometer extends View {
      * draw minSpeedText and maxSpeedText aat default Position.
      * @param c canvas to draw.
      */
-    protected void drawDefaultMinAndMaxSpeedPosition(Canvas c) {
+    protected void drawDefMinMaxSpeedPosition(Canvas c) {
         if (getStartDegree()%360 <= 90)
             textPaint.setTextAlign(Paint.Align.RIGHT);
         else if (getStartDegree()%360 <= 180)
@@ -1285,9 +1340,10 @@ abstract public class Speedometer extends View {
         else
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
-        c.rotate(getStartDegree() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getStartDegree() + 90f), getWidthPa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
-        c.drawText(getMinSpeedText(), getWidthPa()/2f - textPaint.getTextSize() + padding
+        c.rotate(getStartDegree() + 90f, getSize()/2f, getSize()/2f);
+        c.rotate(-(getStartDegree() + 90f)
+                , getSizePa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
+        c.drawText(getMinSpeedText(), getSizePa()/2f - textPaint.getTextSize() + padding
                 , textPaint.getTextSize() + padding, textPaint);
         c.restore();
         if (getEndDegree()%360 <= 90)
@@ -1299,9 +1355,10 @@ abstract public class Speedometer extends View {
         else
             textPaint.setTextAlign(Paint.Align.RIGHT);
         c.save();
-        c.rotate(getEndDegree() + 90f, getWidth()/2f, getHeight()/2f);
-        c.rotate(-(getEndDegree() + 90f), getWidthPa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
-        c.drawText(getMaxSpeedText(), getWidthPa()/2f + textPaint.getTextSize() + padding
+        c.rotate(getEndDegree() + 90f, getSize()/2f, getSize()/2f);
+        c.rotate(-(getEndDegree() + 90f)
+                , getSizePa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
+        c.drawText(getMaxSpeedText(), getSizePa()/2f + textPaint.getTextSize() + padding
                 , textPaint.getTextSize() + padding, textPaint);
         c.restore();
     }
@@ -1457,5 +1514,104 @@ abstract public class Speedometer extends View {
             return;
         this.indicator.setTargetSpeedometer(this);
         invalidate();
+    }
+
+    /**
+     * @return canvas translate dx.
+     */
+    protected final float getTranslatedDx() {
+        return translatedDx;
+    }
+
+    /**
+     * @return canvas translate dy.
+     */
+    protected final float getTranslatedDy() {
+        return translatedDy;
+    }
+
+    /**
+     * @return correct position of center X to use in drawing.
+     */
+    protected final float getViewCenterX() {
+        switch (speedometerMode) {
+            case LEFT:
+            case TOP_LEFT:
+            case BOTTOM_LEFT:
+                return getSize()/2f - (getWidth()/2f);
+            case RIGHT:
+            case TOP_RIGHT:
+            case BOTTOM_RIGHT:
+                return getSize()/2f + (getWidth()/2f);
+            default:
+                return getSize()/2f;
+        }
+    }
+
+    /**
+     * @return correct position of center Y to use in drawing.
+     */
+    protected final float getViewCenterY() {
+        switch (speedometerMode) {
+            case TOP:
+            case TOP_LEFT:
+            case TOP_RIGHT:
+                return getSize()/2f - (getHeight()/2f);
+            case BOTTOM:
+            case BOTTOM_LEFT:
+            case BOTTOM_RIGHT:
+                return getSize()/2f + (getHeight()/2f);
+            default:
+                return getSize()/2f;
+        }
+    }
+
+    /**
+     * change speedometer shape, style and indicator position.<br>
+     * this option will return {@link #startDegree} to the <b>minimum</b> value,
+     * and {@link #endDegree} to the <b>maximum</b> value
+     * if the speedometerMode doesn't equal to {@code Mode.NORMAL}.
+     * @param speedometerMode enum value.
+     */
+    public void setSpeedometerMode (Mode speedometerMode) {
+        this.speedometerMode = speedometerMode;
+        if (speedometerMode != Mode.NORMAL) {
+            startDegree = speedometerMode.minDegree;
+            endDegree = speedometerMode.maxDegree;
+        }
+        cancelSpeedAnimator();
+        degree = getDegreeAtSpeed(speed);
+        indicator.onSizeChange(this);
+        if(!attachedToWindow)
+            return;
+        requestLayout();
+        updateBackgroundBitmap();
+        tremble();
+        invalidate();
+    }
+
+    public enum Mode {
+        NORMAL(0, 360*2, false, 1, 1)
+        , LEFT(90, 270, true, 2, 1)
+        , TOP(180, 360, true, 1, 2)
+        , RIGHT(270, 450, true, 2, 1)
+        , BOTTOM(0, 180, true, 1, 2)
+        , TOP_LEFT(180, 270, false, 1, 1)
+        , TOP_RIGHT(270, 360, false, 1, 1)
+        , BOTTOM_RIGHT(0, 90, false, 1, 1)
+        , BOTTOM_LEFT(90, 180, false, 1, 1);
+
+        int minDegree;
+        int maxDegree;
+        boolean isHalf;
+        int divWidth;
+        int divHeight;
+        Mode (int minDegree, int maxDegree, boolean isHalf, int divWidth, int divHeight) {
+            this.minDegree = minDegree;
+            this.maxDegree = maxDegree;
+            this.isHalf = isHalf;
+            this.divWidth = divWidth;
+            this.divHeight = divHeight;
+        }
     }
 }

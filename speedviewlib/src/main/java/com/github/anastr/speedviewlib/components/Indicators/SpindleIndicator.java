@@ -35,9 +35,9 @@ public class SpindleIndicator extends Indicator<SpindleIndicator> {
     protected void updateIndicator() {
         indicatorPath.reset();
         indicatorPath.moveTo(getCenterX(), getCenterY());
-        indicatorPath.quadTo(getCenterX() - getIndicatorWidth(), getViewHeight()*.34f + getPadding()
-                , getCenterX(), getViewHeight()*.18f + getPadding());
-        indicatorPath.quadTo(getCenterX() + getIndicatorWidth(), getViewHeight()*.34f + getPadding()
+        indicatorPath.quadTo(getCenterX() - getIndicatorWidth(), getViewSize()*.34f + getPadding()
+                , getCenterX(), getViewSize()*.18f + getPadding());
+        indicatorPath.quadTo(getCenterX() + getIndicatorWidth(), getViewSize()*.34f + getPadding()
                 , getCenterX(), getCenterY());
 
         indicatorPaint.setColor(getIndicatorColor());

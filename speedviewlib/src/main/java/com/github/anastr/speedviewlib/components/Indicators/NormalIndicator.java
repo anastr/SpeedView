@@ -36,7 +36,7 @@ public class NormalIndicator extends Indicator<NormalIndicator> {
     protected void updateIndicator() {
         indicatorPath.reset();
         indicatorPath.moveTo(getCenterX(), getPadding());
-        float indicatorBottom = getViewHeight()*2f/3f + getPadding();
+        float indicatorBottom = getViewSize()*2f/3f + getPadding();
         indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), indicatorBottom);
         indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), indicatorBottom);
         RectF rectF = new RectF(getCenterX() - getIndicatorWidth(), indicatorBottom - getIndicatorWidth()

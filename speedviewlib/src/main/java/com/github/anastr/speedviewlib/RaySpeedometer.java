@@ -2,7 +2,6 @@ package com.github.anastr.speedviewlib;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -96,10 +95,7 @@ public class RaySpeedometer extends Speedometer {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        markPath.reset();
-        markPath.moveTo(w/2f, getPadding());
-        markPath.lineTo(w/2f, getSpeedometerWidth() + getPadding());
-
+        updateMarkPath();
         updateBackgroundBitmap();
     }
 
@@ -107,13 +103,40 @@ public class RaySpeedometer extends Speedometer {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        String speedText = getSpeedText();
+        float speedTextPadding = dpTOpx(1);
+        float unitTextPadding = dpTOpx(1f);
+        float unitW = unitTextPadding + unitTextPaint.measureText(getUnit()) + 5;
+        speedBackgroundRect.top = getSize()/2f - (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f);
+        speedBackgroundRect.bottom = getSize()/2f +(Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f)+4f;
+        if (isSpeedometerTextRightToLeft()) {
+            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
+            speedBackgroundRect.left = getSize()/2f - unitW;
+            unitTextPadding *= -1;
+            speedTextPaint.setTextAlign(Paint.Align.LEFT);
+            speedBackgroundRect.right = getSize() / 2f + speedTextPaint.measureText(speedText) + 5f + speedTextPadding;
+            speedTextPadding *= -1;
+        }
+        else {
+            unitTextPaint.setTextAlign(Paint.Align.LEFT);
+            speedBackgroundRect.right = getSize()/2f + unitW;
+            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
+            speedBackgroundRect.left = getSize() / 2f - speedTextPaint.measureText(speedText) - 5f - speedTextPadding;
+        }
+        canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
+
+        canvas.drawText(speedText, getSize()/2f - speedTextPadding
+                , getSize()/2f + (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f), speedTextPaint);
+        canvas.drawText(getUnit(), getSize()/2f + unitTextPadding
+                , getSize()/2f + (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f), unitTextPaint);
+
         canvas.save();
-        canvas.rotate(getStartDegree()+90f, getWidth()/2f, getHeight()/2f);
+        canvas.rotate(getStartDegree()+90f, getSize()/2f, getSize()/2f);
         for (int i = getStartDegree(); i < getEndDegree(); i+=degreeBetweenMark) {
             if (getDegree() <= i) {
                 markPaint.setColor(getMarkColor());
                 canvas.drawPath(markPath, markPaint);
-                canvas.rotate(degreeBetweenMark, getWidth()/2f, getHeight()/2f);
+                canvas.rotate(degreeBetweenMark, getSize()/2f, getSize()/2f);
                 continue;
             }
             if (i > (getEndDegree()- getStartDegree())*getMediumSpeedOffset() + getStartDegree())
@@ -123,69 +146,40 @@ public class RaySpeedometer extends Speedometer {
             else
                 markPaint.setColor(getLowSpeedColor());
             canvas.drawPath(markPath, markPaint);
-            canvas.rotate(degreeBetweenMark, getWidth()/2f, getHeight()/2f);
+            canvas.rotate(degreeBetweenMark, getSize()/2f, getSize()/2f);
         }
         canvas.restore();
 
         drawIndicator(canvas);
-
-        String speedText = getSpeedText();
-        float speedTextPadding = dpTOpx(1);
-        float unitTextPadding = dpTOpx(1f);
-        float unitW = unitTextPadding + unitTextPaint.measureText(getUnit()) + 5;
-        speedBackgroundRect.top = getHeight()/2f - (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f);
-        speedBackgroundRect.bottom = getHeight()/2f +(Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f)+4f;
-        if (isSpeedometerTextRightToLeft()) {
-            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
-            speedBackgroundRect.left = getWidth()/2f - unitW;
-            unitTextPadding *= -1;
-            speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedBackgroundRect.right = getWidth() / 2f + speedTextPaint.measureText(speedText) + 5f + speedTextPadding;
-            speedTextPadding *= -1;
-        }
-        else {
-            unitTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedBackgroundRect.right = getWidth()/2f + unitW;
-            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-            speedBackgroundRect.left = getWidth() / 2f - speedTextPaint.measureText(speedText) - 5f - speedTextPadding;
-        }
-        canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
-
-        canvas.drawText(speedText, getWidth()/2f - speedTextPadding
-                , getHeight()/2f + (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f), speedTextPaint);
-        canvas.drawText(getUnit(), getWidth()/2f + unitTextPadding
-                , getHeight()/2f + (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f), unitTextPaint);
 
         drawNotes(canvas);
     }
 
     @Override
     protected void updateBackgroundBitmap() {
-        if (getWidth() == 0 || getHeight() == 0)
-            return;
-        backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
+        Canvas c = createBackgroundBitmapCanvas();
+
+        updateMarkPath();
 
         ray1Path.reset();
-        ray1Path.moveTo(getWidth()/2f, getHeight()/2f);
-        ray1Path.lineTo(getWidth()/2f, getHeightPa()/3.2f + getPadding());
-        ray1Path.moveTo(getWidth()/2f, getHeightPa()/3.2f + getPadding());
-        ray1Path.lineTo(getWidth()/2.2f, getHeightPa()/3f + getPadding());
-        ray1Path.moveTo(getWidth()/2.2f, getHeightPa()/3f + getPadding());
-        ray1Path.lineTo(getWidth()/2.1f, getHeightPa()/4.5f + getPadding());
+        ray1Path.moveTo(getSize()/2f, getSize()/2f);
+        ray1Path.lineTo(getSize()/2f, getHeightPa()/3.2f + getPadding());
+        ray1Path.moveTo(getSize()/2f, getHeightPa()/3.2f + getPadding());
+        ray1Path.lineTo(getSize()/2.2f, getHeightPa()/3f + getPadding());
+        ray1Path.moveTo(getSize()/2.2f, getHeightPa()/3f + getPadding());
+        ray1Path.lineTo(getSize()/2.1f, getHeightPa()/4.5f + getPadding());
 
         ray2Path.reset();
-        ray2Path.moveTo(getWidth()/2f, getHeight()/2f);
-        ray2Path.lineTo(getWidth()/2f, getHeightPa()/3.2f + getPadding());
-        ray2Path.moveTo(getWidth()/2f, getHeightPa()/3.2f + getPadding());
-        ray2Path.lineTo(getWidth()/2.2f, getHeightPa()/3.8f + getPadding());
-        ray2Path.moveTo(getWidth()/2f, getHeightPa()/3.2f + getPadding());
-        ray2Path.lineTo(getWidth()/1.8f, getHeightPa()/3.8f + getPadding());
+        ray2Path.moveTo(getSize()/2f, getSize()/2f);
+        ray2Path.lineTo(getSize()/2f, getHeightPa()/3.2f + getPadding());
+        ray2Path.moveTo(getSize()/2f, getHeightPa()/3.2f + getPadding());
+        ray2Path.lineTo(getSize()/2.2f, getHeightPa()/3.8f + getPadding());
+        ray2Path.moveTo(getSize()/2f, getHeightPa()/3.2f + getPadding());
+        ray2Path.lineTo(getSize()/1.8f, getHeightPa()/3.8f + getPadding());
 
         c.save();
         for (int i=0; i<6; i++) {
-            c.rotate(58f, getWidth()/2f, getHeight()/2f);
+            c.rotate(58f, getSize()/2f, getSize()/2f);
             if (i % 2 == 0)
                 c.drawPath(ray1Path, rayPaint);
             else
@@ -193,7 +187,13 @@ public class RaySpeedometer extends Speedometer {
         }
         c.restore();
 
-        drawDefaultMinAndMaxSpeedPosition(c);
+        drawDefMinMaxSpeedPosition(c);
+    }
+
+    private void updateMarkPath() {
+        markPath.reset();
+        markPath.moveTo(getSize()/2f, getPadding());
+        markPath.lineTo(getSize()/2f, getSpeedometerWidth() + getPadding());
     }
 
     public boolean isWithEffects() {

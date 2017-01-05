@@ -1,7 +1,6 @@
 package com.github.anastr.speedviewlib;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -65,9 +64,6 @@ public class SpeedView extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        drawIndicator(canvas);
-        canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidthPa()/12f, paint);
-
         float speedTextPadding = dpTOpx(1);
         if (isSpeedometerTextRightToLeft()) {
             speedTextPaint.setTextAlign(Paint.Align.LEFT);
@@ -76,28 +72,27 @@ public class SpeedView extends Speedometer {
         else
             speedTextPaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(getSpeedText()
-                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
+                , getSize()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
+
+        drawIndicator(canvas);
+        canvas.drawCircle(getSize()/2f, getSize()/2f, getWidthPa()/12f, paint);
 
         drawNotes(canvas);
     }
 
     @Override
     protected void updateBackgroundBitmap() {
-        if (getWidth() == 0 || getHeight() == 0)
-            return ;
+        Canvas c = createBackgroundBitmapCanvas();
         initDraw();
-        backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
 
-        float markH = getHeightPa()/28f;
+        float markH = getSizePa()/28f;
         markPath.reset();
-        markPath.moveTo(getWidth()/2f, getPadding());
-        markPath.lineTo(getWidth()/2f, markH + getPadding());
+        markPath.moveTo(getSize()/2f, getPadding());
+        markPath.lineTo(getSize()/2f, markH + getPadding());
         markPaint.setStrokeWidth(markH/3f);
 
         float risk = getSpeedometerWidth()/2f + getPadding();
-        speedometerRect.set(risk, risk, getWidth() -risk, getHeight() -risk);
+        speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
 
         speedometerPaint.setColor(getHighSpeedColor());
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, speedometerPaint);
@@ -109,15 +104,15 @@ public class SpeedView extends Speedometer {
                 , (getEndDegree()- getStartDegree())*getLowSpeedOffset(), false, speedometerPaint);
 
         c.save();
-        c.rotate(90f + getStartDegree(), getWidth()/2f, getHeight()/2f);
+        c.rotate(90f + getStartDegree(), getSize()/2f, getSize()/2f);
         float everyDegree = (getEndDegree() - getStartDegree()) * .111f;
         for (float i = getStartDegree(); i < getEndDegree()-(2f*everyDegree); i+=everyDegree) {
-            c.rotate(everyDegree, getWidth()/2f, getHeight()/2f);
+            c.rotate(everyDegree, getSize()/2f, getSize()/2f);
             c.drawPath(markPath, markPaint);
         }
         c.restore();
 
-        drawDefaultMinAndMaxSpeedPosition(c);
+        drawDefMinMaxSpeedPosition(c);
 
         float unitTextPadding = dpTOpx(1);
         if (isSpeedometerTextRightToLeft()) {
@@ -128,6 +123,6 @@ public class SpeedView extends Speedometer {
             unitTextPaint.setTextAlign(Paint.Align.LEFT);
 
         c.drawText(getUnit()
-                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
+                , getSize()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
     }
 }

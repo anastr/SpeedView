@@ -2,7 +2,6 @@ package com.github.anastr.speedviewlib;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.EmbossMaskFilter;
@@ -119,11 +118,6 @@ public class TubeSpeedometer extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        float sweepAngle = (getEndDegree() - getStartDegree())*getPercentSpeed()/100f;
-        canvas.drawArc(speedometerRect,  getStartDegree(), sweepAngle, false, tubePaint);
-
-        drawIndicator(canvas);
-
         float speedTextPadding = dpTOpx(1);
         if (isSpeedometerTextRightToLeft()) {
             speedTextPaint.setTextAlign(Paint.Align.LEFT);
@@ -132,26 +126,27 @@ public class TubeSpeedometer extends Speedometer {
         else
             speedTextPaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(getSpeedText()
-                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
+                , getSize()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
+
+        float sweepAngle = (getEndDegree() - getStartDegree())*getPercentSpeed()/100f;
+        canvas.drawArc(speedometerRect,  getStartDegree(), sweepAngle, false, tubePaint);
+
+        drawIndicator(canvas);
 
         drawNotes(canvas);
     }
 
     @Override
     protected void updateBackgroundBitmap() {
-        if (getWidth() == 0 || getHeight() == 0)
-            return;
+        Canvas c = createBackgroundBitmapCanvas();
         initDraw();
-        backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
 
         float risk = getSpeedometerWidth()/2f + getPadding();
-        speedometerRect.set(risk, risk, getWidth() -risk, getHeight() -risk);
+        speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
 
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, tubeBacPaint);
 
-        drawDefaultMinAndMaxSpeedPosition(c);
+        drawDefMinMaxSpeedPosition(c);
 
         float unitTextPadding = dpTOpx(1);
         if (isSpeedometerTextRightToLeft()) {
@@ -162,7 +157,7 @@ public class TubeSpeedometer extends Speedometer {
             unitTextPaint.setTextAlign(Paint.Align.LEFT);
 
         c.drawText(getUnit()
-                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
+                , getSize()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
     }
 
     public int getSpeedometerColor() {
