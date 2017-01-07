@@ -64,11 +64,11 @@ abstract public class Speedometer extends View {
     /** the min range in speedometer, {@code default = 0} */
     private int minSpeed = 0;
     /**
-     * the last speed which you set by {@link #speedTo(int)}
-     * or {@link #speedTo(int, long)} or {@link #speedPercentTo(int)},
+     * the last speed which you set by {@link #speedTo(float)}
+     * or {@link #speedTo(float, long)} or {@link #speedPercentTo(int)},
      * or if you stop speedometer By {@link #stop()} method.
      */
-    private int speed = minSpeed;
+    private float speed = minSpeed;
     /** what is speed now in <b>int</b> */
     private int correctIntSpeed = 0;
     /** what is speed now in <b>float</b> */
@@ -125,6 +125,12 @@ abstract public class Speedometer extends View {
     private float unitSpeedInterval = dpTOpx(1);
     private boolean unitUnderSpeedText = false;
     private Bitmap speedUnitTextBitmap;
+
+    /** draw speed text as <b>integer</b> .*/
+    public static final byte INTEGER_FORMAT = 0;
+    /** draw speed text as <b>float</b>. */
+    public static final byte FLOAT_FORMAT = 1;
+    private byte speedTextFormat = FLOAT_FORMAT;
 
     public Speedometer(Context context) {
         super(context);
@@ -221,6 +227,10 @@ abstract public class Speedometer extends View {
         int position = a.getInt(R.styleable.Speedometer_speedTextPosition, -1);
         if (position != -1)
             setSpeedTextPosition(Position.values()[position]);
+        setIndicatorColor(a.getColor(R.styleable.Speedometer_indicatorColor, indicator.getIndicatorColor()));
+        byte format = (byte) a.getInt(R.styleable.Speedometer_speedTextFormat, -1);
+        if (format != -1)
+            setSpeedTextFormat(format);
         setIndicatorColor(a.getColor(R.styleable.Speedometer_indicatorColor, indicator.getIndicatorColor()));
         degree = startDegree;
         a.recycle();
@@ -484,10 +494,12 @@ abstract public class Speedometer extends View {
     }
 
     private float getMaxWidthForSpeedUnitText() {
+        String speedUnitText = speedTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", (float)maxSpeed)
+                : String.format(locale, "%d", maxSpeed);
         if (unitUnderSpeedText)
-            return Math.max(speedTextPaint.measureText(String.format(locale, "%.1f", (float)maxSpeed))
+            return Math.max(speedTextPaint.measureText(speedUnitText)
                     , unitTextPaint.measureText(getUnit()));
-        return speedTextPaint.measureText(String.format(locale, "%.1f", (float)maxSpeed))
+        return speedTextPaint.measureText(speedUnitText)
                 + unitTextPaint.measureText(getUnit()) + unitSpeedInterval;
     }
 
@@ -536,7 +548,7 @@ abstract public class Speedometer extends View {
             return;
         if (!speedAnimator.isRunning() && !realSpeedAnimator.isRunning())
             return;
-        speed = (int) correctSpeed;
+        speed = correctSpeed;
         cancelSpeedAnimator();
         tremble();
     }
@@ -588,7 +600,7 @@ abstract public class Speedometer extends View {
      * rotate indicator to correct speed without animation.
      * @param speed correct speed to move.
      */
-    public void setIndicatorAt(int speed) {
+    public void setIndicatorAt(float speed) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
         cancelSpeedAnimator();
@@ -601,10 +613,10 @@ abstract public class Speedometer extends View {
      * move speed to percent value.
      * @param percent percent value to move, must be between [0,100].
      *
-     * @see #speedTo(int)
-     * @see #speedTo(int, long)
+     * @see #speedTo(float)
+     * @see #speedTo(float, long)
      * @see #speedPercentTo(int, long)
-     * @see #realSpeedTo(int)
+     * @see #realSpeedTo(float)
      */
     public void speedPercentTo(int percent) {
         speedPercentTo(percent, 2000);
@@ -616,10 +628,10 @@ abstract public class Speedometer extends View {
      * @param moveDuration The length of the animation, in milliseconds.
      *                     This value cannot be negative.
      *
-     * @see #speedTo(int)
-     * @see #speedTo(int, long)
+     * @see #speedTo(float)
+     * @see #speedTo(float, long)
      * @see #speedPercentTo(int)
-     * @see #realSpeedTo(int)
+     * @see #realSpeedTo(float)
      */
     public void speedPercentTo(int percent, long moveDuration) {
         percent = (percent > 100) ? 100 : (percent < 0) ? 0 : percent;
@@ -633,16 +645,16 @@ abstract public class Speedometer extends View {
      * if {@code speed > maxSpeed} speed will change to {@link #maxSpeed},<br>
      * if {@code speed < minSpeed} speed will change to {@link #minSpeed}.<br>
      *
-     * it is the same {@link #speedTo(int, long)}
+     * it is the same {@link #speedTo(float, long)}
      * with default {@code moveDuration = 2000}.
      *
      * @param speed correct speed to move.
      *
-     * @see #speedTo(int, long)
+     * @see #speedTo(float, long)
      * @see #speedPercentTo(int)
-     * @see #realSpeedTo(int)
+     * @see #realSpeedTo(float)
      */
-    public void speedTo(int speed) {
+    public void speedTo(float speed) {
         speedTo(speed, 2000);
     }
 
@@ -657,12 +669,12 @@ abstract public class Speedometer extends View {
      * @param moveDuration The length of the animation, in milliseconds.
      *                     This value cannot be negative.
      *
-     * @see #speedTo(int)
+     * @see #speedTo(float)
      * @see #speedPercentTo(int)
-     * @see #realSpeedTo(int)
+     * @see #realSpeedTo(float)
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void speedTo(int speed, long moveDuration) {
+    public void speedTo(float speed, long moveDuration) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
 
@@ -693,7 +705,7 @@ abstract public class Speedometer extends View {
      * this method use {@code realSpeedTo()} to speed up
      * the speedometer to {@link #maxSpeed}.
      *
-     * @see #realSpeedTo(int)
+     * @see #realSpeedTo(float)
      * @see #slowDown()
      */
     public void speedUp() {
@@ -704,7 +716,7 @@ abstract public class Speedometer extends View {
      * this method use {@code #realSpeedTo()} to slow down
      * the speedometer to {@link #minSpeed}.
      *
-     * @see #realSpeedTo(int)
+     * @see #realSpeedTo(float)
      * @see #speedUp()
      */
     public void slowDown() {
@@ -719,14 +731,14 @@ abstract public class Speedometer extends View {
      * when <b>slow down</b> : speed value will decrease <i>rapidly</i> by {@link #decelerate}.
      * @param speed correct speed to move.
      *
-     * @see #speedTo(int)
-     * @see #speedTo(int, long)
+     * @see #speedTo(float)
+     * @see #speedTo(float, long)
      * @see #speedPercentTo(int)
      * @see #speedUp()
      * @see #slowDown()
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void realSpeedTo(int speed) {
+    public void realSpeedTo(float speed) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
 
@@ -744,7 +756,7 @@ abstract public class Speedometer extends View {
         realSpeedAnimator.setInterpolator(new LinearInterpolator());
         realSpeedAnimator.setDuration(Math.abs((long) ((newDegree - degree) * 10) ));
         final boolean isSpeedUp = speed > correctSpeed;
-        final int finalSpeed = speed;
+        final int finalSpeed = (int) speed;
         realSpeedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -847,12 +859,30 @@ abstract public class Speedometer extends View {
         checkTrembleData();
     }
 
+    public byte getSpeedTextFormat() {
+        return speedTextFormat;
+    }
+
+    /**
+     * change speed text's format [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}].
+     * @param speedTextFormat new format.
+     */
+    public void setSpeedTextFormat(byte speedTextFormat) {
+        this.speedTextFormat = speedTextFormat;
+        recreateSpeedUnitTextBitmap();
+        if (!attachedToWindow)
+            return;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
     /**
      * get correct speed as string to <b>Draw</b>.
      * @return correct speed to draw.
      */
     protected String getSpeedText() {
-        return String.format(locale, "%.1f", correctSpeed);
+        return speedTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", correctSpeed)
+                : String.format(locale, "%d", correctIntSpeed);
     }
 
     /**
@@ -890,13 +920,13 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * @return the last speed which you set by {@link #speedTo(int)}
-     * or {@link #speedTo(int, long)} or {@link #speedPercentTo(int)},
+     * @return the last speed which you set by {@link #speedTo(float)}
+     * or {@link #speedTo(float, long)} or {@link #speedPercentTo(int)},
      * or if you stop speedometer By {@link #stop()} method.
      *
      * @see #getCorrectSpeed()
      */
-    public int getSpeed() {
+    public float getSpeed() {
         return speed;
     }
 
@@ -934,7 +964,7 @@ abstract public class Speedometer extends View {
 
     /**
      * change max speed.<br>
-     * this method well call {@link #speedTo(int)} method
+     * this method well call {@link #speedTo(float)} method
      * to make the change smooth.<br>
      * if {@code maxSpeed <= minSpeed} will ignore.
      *
@@ -964,7 +994,7 @@ abstract public class Speedometer extends View {
 
     /**
      * change min speed.<br>
-     * this method well call {@link #speedTo(int)} method
+     * this method well call {@link #speedTo(float)} method
      * to make the change smooth.<br>
      * if {@code minSpeed >= maxSpeed} will ignore.
      *
@@ -1572,7 +1602,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * change accelerate, used by {@link #realSpeedTo(int)} {@link #speedUp()}
+     * change accelerate, used by {@link #realSpeedTo(float)} {@link #speedUp()}
      * and {@link #slowDown()} methods.<br>
      * must be between {@code (0, 1]}, default value 0.1f.
      * @param accelerate new accelerate.
@@ -1588,7 +1618,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * change decelerate, used by {@link #realSpeedTo(int)} {@link #speedUp()}
+     * change decelerate, used by {@link #realSpeedTo(float)} {@link #speedUp()}
      * and {@link #slowDown()} methods.<br>
      * must be between {@code (0, 1]}, default value 0.3f.
      * @param decelerate new decelerate.

@@ -72,6 +72,10 @@
         </attr>
         <attr name="unitUnderSpeedText" format="boolean" />
         <attr name="unitSpeedInterval" format="dimension" />
+        <attr name="speedTextFormat" format="enum" >
+            <enum name="INTEGER" value="0" />
+            <enum name="FLOAT" value="1" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">
