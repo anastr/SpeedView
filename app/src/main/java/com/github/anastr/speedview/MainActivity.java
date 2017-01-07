@@ -17,16 +17,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         ListView listView = (ListView) findViewById(R.id.list);
 
-        String[] values = new String[] { "Speed View",
-                "Deluxe Speed View",
-                "Awesome Speedometer View",
-                "Ray Speedometer View",
-                "Pointer Speedometer",
-                "Tube Speedometer",
-                "Image Speedometer",
+        String[] values = new String[] {
+                "1. Speed View",
+                "2. Deluxe Speed View",
+                "3. Awesome Speedometer View",
+                "4. Ray Speedometer View",
+                "5. Pointer Speedometer",
+                "6. Tube Speedometer",
+                "7. Image Speedometer",
                 "Work With Indicator",
                 "Work With Note",
-                "Create Speedometer Programmatically" };
+                "Create Speedometer Programmatically",
+                "Work With Start and End Degree",
+                "Work With Modes",
+                "Speed Text Position" };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, values);
@@ -68,6 +72,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 9:
                 intent.setClass(MainActivity.this, CreateProgrammatically.class);
+                break;
+            case 10:
+                intent.setClass(MainActivity.this, StartEndDegreeActivity.class);
+                break;
+            case 11:
+                intent.setClass(MainActivity.this, WorkWithModesActivity.class);
+                break;
+            case 12:
+                intent.setClass(MainActivity.this, SpeedTextPositionActivity.class);
                 break;
         }
         startActivity(intent);
