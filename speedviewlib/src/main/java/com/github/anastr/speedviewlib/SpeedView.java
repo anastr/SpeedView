@@ -64,15 +64,7 @@ public class SpeedView extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        float speedTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedTextPadding *= -1;
-        }
-        else
-            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(getSpeedText()
-                , getSize()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
+        drawSpeedUnitText(canvas);
 
         drawIndicator(canvas);
         canvas.drawCircle(getSize()/2f, getSize()/2f, getWidthPa()/12f, paint);
@@ -113,16 +105,5 @@ public class SpeedView extends Speedometer {
         c.restore();
 
         drawDefMinMaxSpeedPosition(c);
-
-        float unitTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
-            unitTextPadding *= -1;
-        }
-        else
-            unitTextPaint.setTextAlign(Paint.Align.LEFT);
-
-        c.drawText(getUnit()
-                , getSize()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
     }
 }

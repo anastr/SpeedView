@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -58,18 +57,8 @@ public class ImageSpeedometer extends Speedometer {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        float speedTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedTextPadding *= -1;
-        }
-        else
-            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(getSpeedText()
-                , getSize()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
-
+        drawSpeedUnitText(canvas);
         drawIndicator(canvas);
-
         drawNotes(canvas);
     }
 
@@ -78,21 +67,10 @@ public class ImageSpeedometer extends Speedometer {
         Canvas c = createBackgroundBitmapCanvas();
 
         if (imageSpeedometer != null) {
-            imageSpeedometer.setBounds(getPadding(), getPadding()
-                    , getSize() - getPadding(), getSize() - getPadding());
+            imageSpeedometer.setBounds((int)getViewLeft() + getPadding(),(int)getViewTop() +  getPadding()
+                    , (int)getViewRight() - getPadding(), (int)getViewBottom() - getPadding());
             imageSpeedometer.draw(c);
         }
-
-        float unitTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
-            unitTextPadding *= -1;
-        }
-        else
-            unitTextPaint.setTextAlign(Paint.Align.LEFT);
-
-        c.drawText(getUnit()
-                , getSize()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
     }
 
     public Drawable getImageSpeedometer() {

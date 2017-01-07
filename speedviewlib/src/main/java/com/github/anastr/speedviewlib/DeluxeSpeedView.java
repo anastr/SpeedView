@@ -27,8 +27,7 @@ public class DeluxeSpeedView extends Speedometer {
             markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             smallMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private RectF speedometerRect = new RectF(),
-            speedBackgroundRect = new RectF();
+    private RectF speedometerRect = new RectF();
     private int speedBackgroundColor = Color.WHITE;
 
     private boolean withEffects = true;
@@ -106,36 +105,15 @@ public class DeluxeSpeedView extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        drawIndicator(canvas);
-        canvas.drawCircle(getSize()/2f, getSize()/2f, getWidthPa()/12f, centerCirclePaint);
-
-        String speedText = getSpeedText();
-        float speedTextPadding = dpTOpx(1);
-        float unitTextPadding = dpTOpx(1f);
-        float unitW = unitTextPadding + unitTextPaint.measureText(getUnit()) + 5;
-        speedBackgroundRect.top = getHeightPa()*.9f + getPadding() - Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize());
-        speedBackgroundRect.bottom = getHeightPa()*.9f + getPadding() + 4f;
-        if (isSpeedometerTextRightToLeft()) {
-            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
-            speedBackgroundRect.left = getSize()/2f - unitW;
-            unitTextPadding *= -1;
-            speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedBackgroundRect.right = getSize() / 2f + speedTextPaint.measureText(speedText) + 5f + speedTextPadding;
-            speedTextPadding *= -1;
-        }
-        else {
-            unitTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedBackgroundRect.right = getSize()/2f + unitW;
-            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-            speedBackgroundRect.left = getSize() / 2f - speedTextPaint.measureText(speedText) - 5f - speedTextPadding;
-        }
+        RectF speedBackgroundRect = getSpeedUnitTextBounds();
+        speedBackgroundRect.left -= 2;
+        speedBackgroundRect.right += 2;
+        speedBackgroundRect.bottom += 2;
         canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
 
-        canvas.drawText(speedText
-                , getSize()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
-        canvas.drawText(getUnit()
-                , getSize()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
-
+        drawSpeedUnitText(canvas);
+        drawIndicator(canvas);
+        canvas.drawCircle(getSize()/2f, getSize()/2f, getWidthPa()/12f, centerCirclePaint);
         drawNotes(canvas);
     }
 

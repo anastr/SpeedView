@@ -58,6 +58,20 @@
             <enum name="BOTTOM_RIGHT" value="7" />
             <enum name="BOTTOM_LEFT" value="8" />
         </attr>
+
+        <attr name="speedTextPosition" format="enum" >
+            <enum name="TOP_LEFT" value="0" />
+            <enum name="TOP_CENTER" value="1" />
+            <enum name="TOP_RIGHT" value="2" />
+            <enum name="LEFT" value="3" />
+            <enum name="CENTER" value="4" />
+            <enum name="RIGHT" value="5" />
+            <enum name="BOTTOM_LEFT" value="6" />
+            <enum name="BOTTOM_CENTER" value="7" />
+            <enum name="BOTTOM_RIGHT" value="8" />
+        </attr>
+        <attr name="unitUnderSpeedText" format="boolean" />
+        <attr name="unitSpeedInterval" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">

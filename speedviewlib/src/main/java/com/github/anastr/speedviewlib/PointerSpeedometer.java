@@ -60,6 +60,7 @@ public class PointerSpeedometer extends Speedometer {
         super.setSpeedometerWidth(dpTOpx(10f));
         super.setBackgroundCircleColor(Color.parseColor("#48cce9"));
         super.setUnitTextSize(dpTOpx(11f));
+        super.setSpeedTextTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
     }
 
     private void init() {
@@ -68,9 +69,6 @@ public class PointerSpeedometer extends Speedometer {
         markPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStrokeCap(Paint.Cap.ROUND);
         markPaint.setStrokeWidth(dpTOpx(2));
-        if (speedTextPaint.getTypeface() == null)
-            speedTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        unitTextPaint.setTextAlign(Paint.Align.LEFT);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -107,7 +105,6 @@ public class PointerSpeedometer extends Speedometer {
         speedometerPaint.setShader(updateSweep());
         markPaint.setColor(getMarkColor());
         circlePaint.setColor(getCenterCircleColor());
-        unitTextPaint.setColor(getSpeedTextColor());
     }
 
     @Override
@@ -115,7 +112,7 @@ public class PointerSpeedometer extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        canvas.drawArc(speedometerRect, getStartDegree(), 270f, false, speedometerPaint);
+        canvas.drawArc(speedometerRect, getStartDegree(),  getEndDegree()- getStartDegree(), false, speedometerPaint);
 
         canvas.save();
         canvas.rotate(90 + getDegree(), getSize()/2f, getSize()/2f);
@@ -125,17 +122,7 @@ public class PointerSpeedometer extends Speedometer {
                 , getSpeedometerWidth()/2f + dpTOpx(1), pointerPaint);
         canvas.restore();
 
-
-        float speedTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedTextPadding *= -1;
-        }
-        else
-            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(getSpeedText()
-                , getSize()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
-
+        drawSpeedUnitText(canvas);
         drawIndicator(canvas);
 
         int c = getCenterCircleColor();
@@ -166,17 +153,6 @@ public class PointerSpeedometer extends Speedometer {
         c.restore();
 
         drawDefMinMaxSpeedPosition(c);
-
-        float unitTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
-            unitTextPadding *= -1;
-        }
-        else
-            unitTextPaint.setTextAlign(Paint.Align.LEFT);
-
-        c.drawText(getUnit()
-                , getSize()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
     }
 
     private SweepGradient updateSweep() {
@@ -184,10 +160,10 @@ public class PointerSpeedometer extends Speedometer {
         int color2 = Color.argb(220, Color.red(speedometerColor), Color.green(speedometerColor), Color.blue(speedometerColor));
         int color3 = Color.argb(70, Color.red(speedometerColor), Color.green(speedometerColor), Color.blue(speedometerColor));
         int endColor = Color.argb(15, Color.red(speedometerColor), Color.green(speedometerColor), Color.blue(speedometerColor));
-        float position = getPercentSpeed()*.75f/100f;
+        float position = getOffsetSpeed() * (getEndDegree() - getStartDegree())/360f;
         SweepGradient sweepGradient = new SweepGradient(getSize()/2f, getSize()/2f
                 , new int[]{startColor, color2, speedometerColor, color3, endColor, startColor}
-                , new float[]{0f, position/2f, position, position, .9f, 1f});
+                , new float[]{0f, position/2f, position, position, .99f, 1f});
         Matrix matrix = new Matrix();
         matrix.postRotate(getStartDegree(), getSize()/2f, getSize()/2f);
         sweepGradient.setLocalMatrix(matrix);

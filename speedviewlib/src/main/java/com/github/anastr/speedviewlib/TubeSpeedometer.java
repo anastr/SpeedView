@@ -118,21 +118,11 @@ public class TubeSpeedometer extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        float speedTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedTextPadding *= -1;
-        }
-        else
-            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(getSpeedText()
-                , getSize()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
-
-        float sweepAngle = (getEndDegree() - getStartDegree())*getPercentSpeed()/100f;
+        float sweepAngle = (getEndDegree() - getStartDegree())*getOffsetSpeed();
         canvas.drawArc(speedometerRect,  getStartDegree(), sweepAngle, false, tubePaint);
 
+        drawSpeedUnitText(canvas);
         drawIndicator(canvas);
-
         drawNotes(canvas);
     }
 
@@ -147,17 +137,6 @@ public class TubeSpeedometer extends Speedometer {
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, tubeBacPaint);
 
         drawDefMinMaxSpeedPosition(c);
-
-        float unitTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
-            unitTextPadding *= -1;
-        }
-        else
-            unitTextPaint.setTextAlign(Paint.Align.LEFT);
-
-        c.drawText(getUnit()
-                , getSize()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
     }
 
     public int getSpeedometerColor() {

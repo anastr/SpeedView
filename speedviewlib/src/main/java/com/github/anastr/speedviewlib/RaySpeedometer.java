@@ -25,7 +25,6 @@ public class RaySpeedometer extends Speedometer {
     private Paint markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             rayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private RectF speedBackgroundRect = new RectF();
     private int speedBackgroundColor = Color.WHITE;
 
     private boolean withEffects = true;
@@ -103,33 +102,6 @@ public class RaySpeedometer extends Speedometer {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        String speedText = getSpeedText();
-        float speedTextPadding = dpTOpx(1);
-        float unitTextPadding = dpTOpx(1f);
-        float unitW = unitTextPadding + unitTextPaint.measureText(getUnit()) + 5;
-        speedBackgroundRect.top = getSize()/2f - (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f);
-        speedBackgroundRect.bottom = getSize()/2f +(Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f)+4f;
-        if (isSpeedometerTextRightToLeft()) {
-            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
-            speedBackgroundRect.left = getSize()/2f - unitW;
-            unitTextPadding *= -1;
-            speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedBackgroundRect.right = getSize() / 2f + speedTextPaint.measureText(speedText) + 5f + speedTextPadding;
-            speedTextPadding *= -1;
-        }
-        else {
-            unitTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedBackgroundRect.right = getSize()/2f + unitW;
-            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-            speedBackgroundRect.left = getSize() / 2f - speedTextPaint.measureText(speedText) - 5f - speedTextPadding;
-        }
-        canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
-
-        canvas.drawText(speedText, getSize()/2f - speedTextPadding
-                , getSize()/2f + (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f), speedTextPaint);
-        canvas.drawText(getUnit(), getSize()/2f + unitTextPadding
-                , getSize()/2f + (Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize())/2f), unitTextPaint);
-
         canvas.save();
         canvas.rotate(getStartDegree()+90f, getSize()/2f, getSize()/2f);
         for (int i = getStartDegree(); i < getEndDegree(); i+=degreeBetweenMark) {
@@ -150,8 +122,14 @@ public class RaySpeedometer extends Speedometer {
         }
         canvas.restore();
 
-        drawIndicator(canvas);
+        RectF speedBackgroundRect = getSpeedUnitTextBounds();
+        speedBackgroundRect.left -= 2;
+        speedBackgroundRect.right += 2;
+        speedBackgroundRect.bottom += 2;
+        canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
 
+        drawSpeedUnitText(canvas);
+        drawIndicator(canvas);
         drawNotes(canvas);
     }
 

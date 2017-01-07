@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.TextPaint;
@@ -17,8 +18,8 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator;
+import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 import com.github.anastr.speedviewlib.components.Indicators.NoIndicator;
 import com.github.anastr.speedviewlib.components.note.Note;
 import com.github.anastr.speedviewlib.util.OnSectionChangeListener;
@@ -36,9 +37,10 @@ import java.util.Random;
 abstract public class Speedometer extends View {
 
     private Indicator indicator;
-    protected Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    protected TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
-            textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
+    private Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            speedUnitTextBitmapPaint =  new Paint(Paint.ANTI_ALIAS_FLAG);
+    protected TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
             unitTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private float speedometerWidth = dpTOpx(30f);
     private float speedTextSize = dpTOpx(18f);
@@ -74,7 +76,7 @@ abstract public class Speedometer extends View {
     /** a degree to increases and decreases the indicator around correct speed */
     private float trembleDegree = 4f;
     private int trembleDuration = 1000;
-    protected int startDegree = 135, endDegree = 135+270;
+    private int startDegree = 135, endDegree = 135+270;
     /** to rotate indicator */
     private float degree = startDegree;
     private ValueAnimator speedAnimator, trembleAnimator, realSpeedAnimator;
@@ -85,8 +87,8 @@ abstract public class Speedometer extends View {
     private Animator.AnimatorListener animatorListener;
 
     /** to contain all drawing that doesn't change */
-    protected Bitmap backgroundBitmap;
-    protected Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private Bitmap backgroundBitmap;
+    private Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private int padding = 0;
 
     /** low speed area, started from {@link #startDegree} */
@@ -117,6 +119,12 @@ abstract public class Speedometer extends View {
 
     private float translatedDx = 0;
     private float translatedDy = 0;
+
+    private Position speedTextPosition = Position.BOTTOM_CENTER;
+    /** space between unitText and speedText */
+    private float unitSpeedInterval = dpTOpx(1);
+    private boolean unitUnderSpeedText = false;
+    private Bitmap speedUnitTextBitmap;
 
     public Speedometer(Context context) {
         super(context);
@@ -162,9 +170,6 @@ abstract public class Speedometer extends View {
                 }
             };
         }
-
-        speedTextPaint.setTextAlign(Paint.Align.CENTER);
-
         defaultValues();
     }
 
@@ -202,6 +207,8 @@ abstract public class Speedometer extends View {
         setIndicatorWidth(a.getDimension(R.styleable.Speedometer_indicatorWidth, indicator.getIndicatorWidth()));
         accelerate = a.getFloat(R.styleable.Speedometer_accelerate, accelerate);
         decelerate = a.getFloat(R.styleable.Speedometer_decelerate, decelerate);
+        unitUnderSpeedText = a.getBoolean(R.styleable.Speedometer_unitUnderSpeedText, unitUnderSpeedText);
+        unitSpeedInterval = a.getDimension(R.styleable.Speedometer_unitSpeedInterval, unitSpeedInterval);
         String speedTypefacePath = a.getString(R.styleable.Speedometer_speedTextTypeface);
         if (speedTypefacePath != null)
             setSpeedTextTypeface(Typeface.createFromAsset(getContext().getAssets(), speedTypefacePath));
@@ -211,6 +218,10 @@ abstract public class Speedometer extends View {
         int ind = a.getInt(R.styleable.Speedometer_indicator, -1);
         if (ind != -1)
             setIndicator(Indicator.Indicators.values()[ind]);
+        int position = a.getInt(R.styleable.Speedometer_speedTextPosition, -1);
+        if (position != -1)
+            setSpeedTextPosition(Position.values()[position]);
+        setIndicatorColor(a.getColor(R.styleable.Speedometer_indicatorColor, indicator.getIndicatorColor()));
         degree = startDegree;
         a.recycle();
         checkStartAndEndDegree();
@@ -229,6 +240,15 @@ abstract public class Speedometer extends View {
         unitTextPaint.setTextSize(unitTextSize);
         textPaint.setColor(textColor);
         textPaint.setTextSize(textSize);
+        if (unitUnderSpeedText) {
+            speedTextPaint.setTextAlign(Paint.Align.CENTER);
+            unitTextPaint.setTextAlign(Paint.Align.CENTER);
+        }
+        else {
+            speedTextPaint.setTextAlign(Paint.Align.LEFT);
+            unitTextPaint.setTextAlign(Paint.Align.LEFT);
+        }
+        recreateSpeedUnitTextBitmap();
     }
 
     @Override
@@ -370,11 +390,27 @@ abstract public class Speedometer extends View {
         }
     }
 
+    /**
+     * draw speed and unit text at correct {@link #speedTextPosition},
+     * this method must call in subSpeedometer's {@code onDraw} method.
+     * @param canvas view canvas to draw.
+     */
+    protected void drawSpeedUnitText(Canvas canvas) {
+        RectF r = getSpeedUnitTextBounds();
+        canvas.drawBitmap(updateSpeedUnitTextBitmap(), r.left, r.top, speedUnitTextBitmapPaint);
+    }
+
+    /**
+     * draw indicator at correct {@link #degree},
+     * this method must call in subSpeedometer's {@code onDraw} method.
+     * @param canvas view canvas to draw.
+     */
     protected void drawIndicator(Canvas canvas) {
         indicator.draw(canvas, degree);
     }
 
     /**
+     * draw Notes,
      * every Speedometer must call this method at End of it's {@code onDraw()} method.
      * @param canvas view canvas to draw notes.
      */
@@ -397,6 +433,80 @@ abstract public class Speedometer extends View {
         }
     }
 
+    /**
+     * fixable method to create {@link #speedUnitTextBitmap}
+     * to avoid create it every frame in {@code onDraw} method.
+     */
+    private void recreateSpeedUnitTextBitmap() {
+        speedUnitTextBitmap = Bitmap.createBitmap((int) getMaxWidthForSpeedUnitText()
+                , (int) getSpeedUnitTextHeight(), Bitmap.Config.ARGB_8888);
+    }
+
+    /**
+     * clear {@link #speedUnitTextBitmap} and draw speed and unit Text
+     * taking into consideration {@link #speedometerTextRightToLeft} and {@link #unitUnderSpeedText}.
+     * @return {@link #speedUnitTextBitmap} after update.
+     */
+    private Bitmap updateSpeedUnitTextBitmap() {
+        speedUnitTextBitmap.eraseColor(Color.TRANSPARENT);
+        Canvas c = new Canvas(speedUnitTextBitmap);
+
+        if (unitUnderSpeedText) {
+            c.drawText(getSpeedText(), speedUnitTextBitmap.getWidth()/2f
+                    , speedTextPaint.getTextSize(), speedTextPaint);
+            c.drawText(getUnit(), speedUnitTextBitmap.getWidth()/2f
+                    , speedTextPaint.getTextSize() + unitSpeedInterval + unitTextPaint.getTextSize(), unitTextPaint);
+            return speedUnitTextBitmap;
+        }
+        else {
+            float speedX = 0f;
+            float unitX = speedTextPaint.measureText(getSpeedText()) + unitSpeedInterval;
+            if (isSpeedometerTextRightToLeft()) {
+                speedX = unitTextPaint.measureText(getUnit()) + unitSpeedInterval;
+                unitX = 0f;
+            }
+            c.drawText(getSpeedText(), speedX, c.getHeight() - .1f, speedTextPaint);
+            c.drawText(getUnit(), unitX, c.getHeight() - .1f, unitTextPaint);
+            return speedUnitTextBitmap;
+        }
+    }
+
+    /**
+     * speed-unit text position and size.
+     * @return correct speed-unit's rect.
+     */
+    protected RectF getSpeedUnitTextBounds() {
+        float left = getWidthPa()*speedTextPosition.x -translatedDx + padding
+                - speedUnitTextBitmap.getWidth()*speedTextPosition.width;
+        float top = getHeightPa()*speedTextPosition.y -translatedDy + padding
+                - speedUnitTextBitmap.getHeight()*speedTextPosition.height;
+        return new RectF(left, top, left + getSpeedUnitTextWidth(), top + getSpeedUnitTextHeight());
+    }
+
+    private float getMaxWidthForSpeedUnitText() {
+        if (unitUnderSpeedText)
+            return Math.max(speedTextPaint.measureText(String.format(locale, "%.1f", (float)maxSpeed))
+                    , unitTextPaint.measureText(getUnit()));
+        return speedTextPaint.measureText(String.format(locale, "%.1f", (float)maxSpeed))
+                + unitTextPaint.measureText(getUnit()) + unitSpeedInterval;
+    }
+
+    private float getSpeedUnitTextWidth() {
+        if (unitUnderSpeedText)
+            return Math.max(speedTextPaint.measureText(getSpeedText()), unitTextPaint.measureText(getUnit()));
+        return speedTextPaint.measureText(getSpeedText()) + unitTextPaint.measureText(getUnit()) + unitSpeedInterval;
+    }
+
+    private float getSpeedUnitTextHeight() {
+        if (unitUnderSpeedText)
+            return speedTextPaint.getTextSize() + unitTextPaint.getTextSize() + unitSpeedInterval;
+        return Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize());
+    }
+
+    /**
+     * create canvas to draw {@link #backgroundBitmap}.
+     * @return {@link #backgroundBitmap}'s canvas.
+     */
     protected final Canvas createBackgroundBitmapCanvas() {
         if (getWidth() == 0 || getHeight() == 0)
             return new Canvas();
@@ -474,6 +584,10 @@ abstract public class Speedometer extends View {
         return (degree - startDegree) * (maxSpeed - minSpeed) /(endDegree - startDegree) + minSpeed;
     }
 
+    /**
+     * rotate indicator to correct speed without animation.
+     * @param speed correct speed to move.
+     */
     public void setIndicatorAt(int speed) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
@@ -799,7 +913,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * what is speed now in <b>int</b>.
+     * what is speed now in <b>integer</b>.
      * @return correct speed in Integer
      * @see #getCorrectSpeed()
      */
@@ -830,6 +944,7 @@ abstract public class Speedometer extends View {
         if (maxSpeed <= minSpeed)
             return;
         this.maxSpeed = maxSpeed;
+        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         updateBackgroundBitmap();
@@ -871,6 +986,13 @@ abstract public class Speedometer extends View {
      */
     public float getPercentSpeed() {
         return (correctSpeed - minSpeed) * 100f / (float)(maxSpeed - minSpeed);
+    }
+
+    /**
+     * @return offset speed, between [0,1].
+     */
+    public float getOffsetSpeed() {
+        return (correctSpeed - minSpeed) / (float)(maxSpeed - minSpeed);
     }
 
     public int getIndicatorColor() {
@@ -1016,7 +1138,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * change all text size without <b>speed text</b>.
+     * change all text size without <b>speed and unit text</b>.
      * @param textSize new size in pixel.
      *
      * @see #dpTOpx(float)
@@ -1046,6 +1168,7 @@ abstract public class Speedometer extends View {
     public void setSpeedTextSize(float speedTextSize) {
         this.speedTextSize = speedTextSize;
         speedTextPaint.setTextSize(speedTextSize);
+        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         invalidate();
@@ -1062,6 +1185,7 @@ abstract public class Speedometer extends View {
     public void setUnitTextSize(float unitTextSize) {
         this.unitTextSize = unitTextSize;
         unitTextPaint.setTextSize(unitTextSize);
+        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         updateBackgroundBitmap();
@@ -1072,6 +1196,9 @@ abstract public class Speedometer extends View {
         return unitTextSize;
     }
 
+    /**
+     * @return unit text.
+     */
     public String getUnit() {
         return unit;
     }
@@ -1082,6 +1209,7 @@ abstract public class Speedometer extends View {
      */
     public void setUnit(String unit) {
         this.unit = unit;
+        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         invalidate();
@@ -1327,7 +1455,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * draw minSpeedText and maxSpeedText aat default Position.
+     * draw minSpeedText and maxSpeedText at default Position.
      * @param c canvas to draw.
      */
     protected void drawDefMinMaxSpeedPosition(Canvas c) {
@@ -1421,6 +1549,10 @@ abstract public class Speedometer extends View {
             return;
         updateBackgroundBitmap();
         invalidate();
+    }
+
+    public Typeface getSpeedTextTypeface() {
+        return speedTextPaint.getTypeface();
     }
 
     /**
@@ -1566,6 +1698,65 @@ abstract public class Speedometer extends View {
         }
     }
 
+    protected final float getViewLeft() {
+        return getViewCenterX() - getWidth()/2f;
+    }
+
+    protected final float getViewTop() {
+        return getViewCenterY() - getHeight()/2f;
+    }
+
+    protected final float getViewRight() {
+        return getViewCenterX() + getWidth()/2f;
+    }
+
+    protected final float getViewBottom() {
+        return getViewCenterY() + getHeight()/2f;
+    }
+
+    public float getUnitSpeedInterval() {
+        return unitSpeedInterval;
+    }
+
+    /**
+     * change space between speedText and UnitText.
+     * @param unitSpeedInterval new space in pixel.
+     */
+    public void setUnitSpeedInterval(float unitSpeedInterval) {
+        this.unitSpeedInterval = unitSpeedInterval;
+        recreateSpeedUnitTextBitmap();
+        if (!attachedToWindow)
+            return;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    public boolean isUnitUnderSpeedText() {
+        return unitUnderSpeedText;
+    }
+
+    /**
+     * to make unit text under speed text.
+     * @param unitUnderSpeedText if true: drawing unit text <b>under</b> speed text.
+     *                           false: drawing unit text and speed text <b>side by side</b>.
+     */
+    public void setUnitUnderSpeedText(boolean unitUnderSpeedText) {
+        this.unitUnderSpeedText = unitUnderSpeedText;
+        if (unitUnderSpeedText) {
+            speedTextPaint.setTextAlign(Paint.Align.CENTER);
+            unitTextPaint.setTextAlign(Paint.Align.CENTER);
+        }
+        else {
+            speedTextPaint.setTextAlign(Paint.Align.LEFT);
+            unitTextPaint.setTextAlign(Paint.Align.LEFT);
+        }
+        recreateSpeedUnitTextBitmap();
+        if (!attachedToWindow)
+            return;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
     /**
      * change speedometer shape, style and indicator position.<br>
      * this option will return {@link #startDegree} to the <b>minimum</b> value,
@@ -1591,15 +1782,15 @@ abstract public class Speedometer extends View {
     }
 
     public enum Mode {
-        NORMAL(0, 360*2, false, 1, 1)
-        , LEFT(90, 270, true, 2, 1)
-        , TOP(180, 360, true, 1, 2)
-        , RIGHT(270, 450, true, 2, 1)
-        , BOTTOM(0, 180, true, 1, 2)
-        , TOP_LEFT(180, 270, false, 1, 1)
-        , TOP_RIGHT(270, 360, false, 1, 1)
-        , BOTTOM_RIGHT(0, 90, false, 1, 1)
-        , BOTTOM_LEFT(90, 180, false, 1, 1);
+        NORMAL         (0 ,360*2, false, 1, 1)
+        , LEFT         (90 , 270, true , 2, 1)
+        , TOP          (180, 360, true , 1, 2)
+        , RIGHT        (270, 450, true , 2, 1)
+        , BOTTOM       (0  , 180, true , 1, 2)
+        , TOP_LEFT     (180, 270, false, 1, 1)
+        , TOP_RIGHT    (270, 360, false, 1, 1)
+        , BOTTOM_RIGHT (0  , 90 , false, 1, 1)
+        , BOTTOM_LEFT  (90 , 180, false, 1, 1);
 
         int minDegree;
         int maxDegree;
@@ -1612,6 +1803,42 @@ abstract public class Speedometer extends View {
             this.isHalf = isHalf;
             this.divWidth = divWidth;
             this.divHeight = divHeight;
+        }
+    }
+
+    /**
+     * change position of speed and unit text.
+     * @param position new Position (enum value).
+     */
+    public void setSpeedTextPosition (Position position) {
+        this.speedTextPosition = position;
+        if(!attachedToWindow)
+            return;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    public enum Position {
+        TOP_LEFT        (.1f, .1f, 0f , 0f)
+        , TOP_CENTER    (.5f, .1f, .5f, 0f)
+        , TOP_RIGHT     (.9f, .1f, 1f , 0f)
+        , LEFT          (.1f, .5f, 0f , .5f)
+        , CENTER        (.5f, .5f, .5f, .5f)
+        , RIGHT         (.9f, .5f, 1f , .5f)
+        , BOTTOM_LEFT   (.1f, .9f, 0f , 1f)
+        , BOTTOM_CENTER (.5f, .9f, .5f, 1f)
+        , BOTTOM_RIGHT  (.9f, .9f, 1f , 1f);
+
+        float x;
+        float y;
+        float width;
+        float height;
+
+        Position(float x, float y, float width, float height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
         }
     }
 }
