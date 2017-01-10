@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_work_with_indicator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:ignore="SmallSp"
+    tools:context="com.github.anastr.speedview.WorkWithIndicatorActivity">
+
+    <com.github.anastr.speedviewlib.SpeedView
+        android:id="@+id/speedometer"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:speedTextSize="11sp"
+        app:unitTextSize="8sp"
+        app:textSize="8sp"
+        app:startDegree="110"
+        app:endDegree="430"
+        app:lowSpeedPercent="50"
+        app:mediumSpeedPercent="78"
+        app:speedometerWidth="45dp"
+        app:indicator="NormalIndicator"
+        app:indicatorWidth="20dp"
+        app:centerCircleColor="#0000"
+        app:indicatorColor="#df4346"
+        app:lowSpeedColor="#4bbbc7"
+        app:mediumSpeedColor="#ba682d"
+        app:highSpeedColor="#c2308d" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:background="#a8ff83"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="image"
+            android:onClick="imageIndicator"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="width : "/>
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:max="80"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/textWidth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

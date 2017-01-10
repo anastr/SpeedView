@@ -2,6 +2,7 @@ package com.github.anastr.speedviewlib.components.note;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -19,6 +20,26 @@ public class ImageNote extends Note<ImageNote> {
 
     /**
      * @param context you can use {@code getApplicationContext()} method.
+     * @param resource the image id.
+     */
+    public ImageNote(Context context, int resource) {
+        this(context, BitmapFactory.decodeResource(context.getResources(), resource));
+    }
+
+    /**
+     * @param context you can use {@code getApplicationContext()} method.
+     * @param resource the image id.
+     * @param width set custom width.
+     * @param height set custom height.
+     * @throws IllegalArgumentException if {@code width <= 0 OR height <= 0}.
+     */
+    public ImageNote(Context context, int resource, int width, int height) {
+        this(context, BitmapFactory.decodeResource(context.getResources(), resource)
+                , width, height);
+    }
+
+    /**
+     * @param context you can use {@code getApplicationContext()} method.
      * @param image to display.
      */
     public ImageNote(Context context, Bitmap image) {
@@ -30,6 +51,7 @@ public class ImageNote extends Note<ImageNote> {
      * @param image to display.
      * @param width set custom width.
      * @param height set custom height.
+     * @throws IllegalArgumentException if {@code width <= 0 OR height <= 0}.
      */
     public ImageNote(Context context, Bitmap image, int width, int height) {
         super(context);
@@ -38,6 +60,10 @@ public class ImageNote extends Note<ImageNote> {
         this.image = image;
         this.width = width;
         this.height = height;
+        if (width <= 0)
+            throw new IllegalArgumentException("width must be bigger than 0");
+        if (height <= 0)
+            throw new IllegalArgumentException("height must be bigger than 0");
     }
 
     @Override

@@ -5,7 +5,8 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -56,47 +57,20 @@ public class ImageSpeedometer extends Speedometer {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        drawSpeedUnitText(canvas);
         drawIndicator(canvas);
-
-        float speedTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedTextPadding *= -1;
-        }
-        else
-            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(getSpeedText()
-                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
-
         drawNotes(canvas);
     }
 
     @Override
-    protected Bitmap updateBackgroundBitmap() {
-        if (getWidth() == 0 || getHeight() == 0)
-            return null;
-        backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
+    protected void updateBackgroundBitmap() {
+        Canvas c = createBackgroundBitmapCanvas();
 
         if (imageSpeedometer != null) {
-            imageSpeedometer.setBounds(getPadding(), getPadding()
-                    , getWidth() - getPadding(), getHeight() - getPadding());
+            imageSpeedometer.setBounds((int)getViewLeft() + getPadding(),(int)getViewTop() +  getPadding()
+                    , (int)getViewRight() - getPadding(), (int)getViewBottom() - getPadding());
             imageSpeedometer.draw(c);
         }
-
-        float unitTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
-            unitTextPadding *= -1;
-        }
-        else
-            unitTextPaint.setTextAlign(Paint.Align.LEFT);
-
-        c.drawText(getUnit()
-                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
-
-        return backgroundBitmap;
     }
 
     public Drawable getImageSpeedometer() {
@@ -123,6 +97,15 @@ public class ImageSpeedometer extends Speedometer {
     public void setImageSpeedometer(Drawable imageSpeedometer) {
         this.imageSpeedometer = imageSpeedometer;
         updateBackgroundBitmap();
+    }
+
+    /**
+     * set background speedometer image, Preferably be square.
+     * @param bitmapImage image bitmap.
+     * @see #setImageSpeedometer(int)
+     */
+    public void setImageSpeedometer (Bitmap bitmapImage) {
+        setImageSpeedometer(new BitmapDrawable(getContext().getResources(), bitmapImage));
     }
 
     /**
@@ -184,46 +167,17 @@ public class ImageSpeedometer extends Speedometer {
 
     /**
      * this Speedometer doesn't use this method.
-     * @return {@code 0} always.
+     * @param typeface nothing.
      */
     @Deprecated
     @Override
-    public int getLowSpeedPercent() {
-        return 0;
-    }
-
-    /**
-     * this Speedometer doesn't use this method.
-     * @param lowSpeedPercent nothing.
-     */
-    @Deprecated
-    @Override
-    public void setLowSpeedPercent(int lowSpeedPercent) {
-    }
+    public void setTextTypeface(Typeface typeface) {}
 
     /**
      * this Speedometer doesn't use this method.
      * @return {@code 0} always.
      */
     @Deprecated
-    @Override
-    public int getMediumSpeedPercent() {
-        return 0;
-    }
-
-    /**
-     * this Speedometer doesn't use this method.
-     * @param mediumSpeedPercent nothing.
-     */
-    @Deprecated
-    @Override
-    public void setMediumSpeedPercent(int mediumSpeedPercent) {
-    }
-
-    /**
-     * this Speedometer doesn't use this method.
-     * @return {@code 0} always.
-     */
     @Override
     public float getTextSize() {
         return 0;
@@ -233,6 +187,7 @@ public class ImageSpeedometer extends Speedometer {
      * this Speedometer doesn't use this method.
      * @param textSize nothing.
      */
+    @Deprecated
     @Override
     public void setTextSize(float textSize) {
     }
@@ -241,6 +196,7 @@ public class ImageSpeedometer extends Speedometer {
      * this Speedometer doesn't use this method.
      * @return {@code 0} always.
      */
+    @Deprecated
     @Override
     public int getTextColor() {
         return 0;
@@ -250,6 +206,7 @@ public class ImageSpeedometer extends Speedometer {
      * this Speedometer doesn't use this method.
      * @param textColor nothing.
      */
+    @Deprecated
     @Override
     public void setTextColor(int textColor) {
     }

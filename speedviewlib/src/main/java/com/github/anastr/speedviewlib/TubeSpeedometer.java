@@ -2,12 +2,12 @@ package com.github.anastr.speedviewlib;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 
 /**
@@ -51,7 +51,8 @@ public class TubeSpeedometer extends Speedometer {
         tubePaint.setStyle(Paint.Style.STROKE);
         tubeBacPaint.setStyle(Paint.Style.STROKE);
 
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        if (Build.VERSION.SDK_INT >= 11)
+            setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -69,14 +70,12 @@ public class TubeSpeedometer extends Speedometer {
 
     private void initAttributeValue() {
         tubeBacPaint.setColor(speedometerColor);
+        tubePaint.setColor(getLowSpeedColor());
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-
-        float risk = getSpeedometerWidth()/2f + getPadding();
-        speedometerRect.set(risk, risk, w -risk, h -risk);
 
         updateEmboss();
         updateBackgroundBitmap();
@@ -98,15 +97,20 @@ public class TubeSpeedometer extends Speedometer {
         tubeBacPaint.setMaskFilter(embossMaskFilterBac);
     }
 
-    private void initDraw() {
-        tubePaint.setStrokeWidth(getSpeedometerWidth());
-        tubeBacPaint.setStrokeWidth(getSpeedometerWidth());
-        if (isInLowSection())
+    @Override
+    protected void onSectionChangeEvent(byte oldSection, byte newSection) {
+        super.onSectionChangeEvent(oldSection, newSection);
+        if (newSection == LOW_SECTION)
             tubePaint.setColor(getLowSpeedColor());
-        else if (isInMediumSection())
+        else if (newSection == MEDIUM_SECTION)
             tubePaint.setColor(getMediumSpeedColor());
         else
             tubePaint.setColor(getHighSpeedColor());
+    }
+
+    private void initDraw() {
+        tubePaint.setStrokeWidth(getSpeedometerWidth());
+        tubeBacPaint.setStrokeWidth(getSpeedometerWidth());
     }
 
     @Override
@@ -114,49 +118,25 @@ public class TubeSpeedometer extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        float sweepAngle = (getEndDegree() - getStartDegree())*getPercentSpeed()/100f;
+        float sweepAngle = (getEndDegree() - getStartDegree())*getOffsetSpeed();
         canvas.drawArc(speedometerRect,  getStartDegree(), sweepAngle, false, tubePaint);
 
+        drawSpeedUnitText(canvas);
         drawIndicator(canvas);
-
-        float speedTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedTextPadding *= -1;
-        }
-        else
-            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(getSpeedText()
-                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
-
         drawNotes(canvas);
     }
 
     @Override
-    protected Bitmap updateBackgroundBitmap() {
-        if (getWidth() == 0 || getHeight() == 0)
-            return null;
+    protected void updateBackgroundBitmap() {
+        Canvas c = createBackgroundBitmapCanvas();
         initDraw();
-        backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
+
+        float risk = getSpeedometerWidth()/2f + getPadding();
+        speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
 
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, tubeBacPaint);
 
-        drawDefaultMinAndMaxSpeedPosition(c);
-
-        float unitTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
-            unitTextPadding *= -1;
-        }
-        else
-            unitTextPaint.setTextAlign(Paint.Align.LEFT);
-
-        c.drawText(getUnit()
-                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
-
-        return backgroundBitmap;
+        drawDefMinMaxSpeedPosition(c);
     }
 
     public int getSpeedometerColor() {

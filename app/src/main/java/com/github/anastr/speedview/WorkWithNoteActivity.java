@@ -1,7 +1,5 @@
 package com.github.anastr.speedview;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -89,9 +87,8 @@ public class WorkWithNoteActivity extends AppCompatActivity {
     }
 
     public void noteImageNote(View view) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         ImageNote imageNote = new ImageNote(getApplicationContext()
-                , bitmap );
+                , R.mipmap.ic_launcher );
 
         speedView.addNote(imageNote, 1000);
     }

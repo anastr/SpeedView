@@ -1,17 +1,21 @@
 package com.github.anastr.speedviewlib.components.Indicators;
 
+import android.content.Context;
 import android.graphics.Canvas;
-
-import com.github.anastr.speedviewlib.Speedometer;
 
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
-public class NoIndicator extends Indicator {
+public class NoIndicator extends Indicator<NoIndicator> {
 
-    public NoIndicator(Speedometer speedometer) {
-        super(speedometer);
+    public NoIndicator(Context context) {
+        super(context);
+    }
+
+    @Override
+    protected float getDefaultIndicatorWidth() {
+        return 0f;
     }
 
     @Override

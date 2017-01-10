@@ -1,23 +1,27 @@
 package com.github.anastr.speedviewlib.components.Indicators;
 
+import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.RectF;
 
-import com.github.anastr.speedviewlib.Speedometer;
-
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
-public class NormalSmallIndicator extends Indicator {
+public class NormalSmallIndicator extends Indicator<NormalSmallIndicator> {
 
     private Path indicatorPath = new Path();
 
-    public NormalSmallIndicator(Speedometer speedometer) {
-        super(speedometer);
+    public NormalSmallIndicator(Context context) {
+        super(context);
         updateIndicator();
+    }
+
+    @Override
+    protected float getDefaultIndicatorWidth() {
+        return dpTOpx(12f);
     }
 
     @Override
@@ -31,8 +35,8 @@ public class NormalSmallIndicator extends Indicator {
     @Override
     protected void updateIndicator() {
         indicatorPath.reset();
-        indicatorPath.moveTo(getCenterX(), getViewHeight()/5f + getPadding());
-        float indicatorBottom = getViewHeight()*3f/5f + getPadding();
+        indicatorPath.moveTo(getCenterX(), getViewSize()/5f + getPadding());
+        float indicatorBottom = getViewSize()*3f/5f + getPadding();
         indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), indicatorBottom);
         indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), indicatorBottom);
         RectF rectF = new RectF(getCenterX() - getIndicatorWidth(), indicatorBottom - getIndicatorWidth()

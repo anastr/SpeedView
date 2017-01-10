@@ -1,7 +1,6 @@
 package com.github.anastr.speedviewlib;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,7 +8,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
-import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+import com.github.anastr.speedviewlib.components.Indicators.NormalIndicator;
 
 /**
  * this Library build By Anas Altair
@@ -38,8 +37,8 @@ public class SpeedView extends Speedometer {
 
     @Override
     protected void defaultValues() {
+        super.setIndicator(new NormalIndicator(getContext()));
         super.setBackgroundCircleColor(Color.TRANSPARENT);
-        setIndicator(Indicator.Indicators.NormalIndicator);
     }
 
     private void init() {
@@ -50,15 +49,6 @@ public class SpeedView extends Speedometer {
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-
-        float risk = getSpeedometerWidth()/2f + getPadding();
-        speedometerRect.set(risk, risk, w -risk, h -risk);
-
-        float markH = getHeightPa()/28f;
-        markPath.reset();
-        markPath.moveTo(w/2f, getPadding());
-        markPath.lineTo(w/2f, markH + getPadding());
-        markPaint.setStrokeWidth(markH/3f);
 
         updateBackgroundBitmap();
     }
@@ -74,30 +64,27 @@ public class SpeedView extends Speedometer {
         super.onDraw(canvas);
         initDraw();
 
-        drawIndicator(canvas);
-        canvas.drawCircle(getWidth()/2f, getHeight()/2f, getWidthPa()/12f, paint);
+        drawSpeedUnitText(canvas);
 
-        float speedTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            speedTextPaint.setTextAlign(Paint.Align.LEFT);
-            speedTextPadding *= -1;
-        }
-        else
-            speedTextPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(getSpeedText()
-                , getWidth()/2f - speedTextPadding, getHeightPa()*.9f + getPadding(), speedTextPaint);
+        drawIndicator(canvas);
+        canvas.drawCircle(getSize()/2f, getSize()/2f, getWidthPa()/12f, paint);
 
         drawNotes(canvas);
     }
 
     @Override
-    protected Bitmap updateBackgroundBitmap() {
-        if (getWidth() == 0 || getHeight() == 0)
-            return null;
+    protected void updateBackgroundBitmap() {
+        Canvas c = createBackgroundBitmapCanvas();
         initDraw();
-        backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(backgroundBitmap);
-        c.drawCircle(getWidth()/2f, getHeight()/2f, getWidth()/2f - getPadding(), circleBackPaint);
+
+        float markH = getSizePa()/28f;
+        markPath.reset();
+        markPath.moveTo(getSize()/2f, getPadding());
+        markPath.lineTo(getSize()/2f, markH + getPadding());
+        markPaint.setStrokeWidth(markH/3f);
+
+        float risk = getSpeedometerWidth()/2f + getPadding();
+        speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
 
         speedometerPaint.setColor(getHighSpeedColor());
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, speedometerPaint);
@@ -109,27 +96,14 @@ public class SpeedView extends Speedometer {
                 , (getEndDegree()- getStartDegree())*getLowSpeedOffset(), false, speedometerPaint);
 
         c.save();
-        c.rotate(90f + getStartDegree(), getWidth()/2f, getHeight()/2f);
+        c.rotate(90f + getStartDegree(), getSize()/2f, getSize()/2f);
         float everyDegree = (getEndDegree() - getStartDegree()) * .111f;
         for (float i = getStartDegree(); i < getEndDegree()-(2f*everyDegree); i+=everyDegree) {
-            c.rotate(everyDegree, getWidth()/2f, getHeight()/2f);
+            c.rotate(everyDegree, getSize()/2f, getSize()/2f);
             c.drawPath(markPath, markPaint);
         }
         c.restore();
 
-        drawDefaultMinAndMaxSpeedPosition(c);
-
-        float unitTextPadding = dpTOpx(1);
-        if (isSpeedometerTextRightToLeft()) {
-            unitTextPaint.setTextAlign(Paint.Align.RIGHT);
-            unitTextPadding *= -1;
-        }
-        else
-            unitTextPaint.setTextAlign(Paint.Align.LEFT);
-
-        c.drawText(getUnit()
-                , getWidth()/2f + unitTextPadding, getHeightPa()*.9f + getPadding(), unitTextPaint);
-
-        return backgroundBitmap;
+        drawDefMinMaxSpeedPosition(c);
     }
 }

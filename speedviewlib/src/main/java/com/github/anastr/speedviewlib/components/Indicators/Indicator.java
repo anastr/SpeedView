@@ -1,6 +1,8 @@
 package com.github.anastr.speedviewlib.components.Indicators;
 
+import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.github.anastr.speedviewlib.Speedometer;
@@ -9,26 +11,26 @@ import com.github.anastr.speedviewlib.Speedometer;
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
-@SuppressWarnings("unused,WeakerAccess")
-public abstract class Indicator {
+@SuppressWarnings("unchecked,unused,WeakerAccess")
+public abstract class Indicator<I extends Indicator> {
 
     protected Paint indicatorPaint =  new Paint(Paint.ANTI_ALIAS_FLAG);
     private float density;
     private float indicatorWidth;
-    private float viewWidth;
-    private float viewHeight;
+    private float viewSize;
     private float speedometerWidth;
-    private int indicatorColor;
+    private int indicatorColor = Color.parseColor("#2196F3");
     private int padding;
     private boolean inEditMode;
 
-    protected Indicator (Speedometer speedometer) {
-        updateData(speedometer);
+    protected Indicator (Context context) {
+        this.density = context.getResources().getDisplayMetrics().density;
         init();
     }
 
     private void init() {
         indicatorPaint.setColor(indicatorColor);
+        indicatorWidth = getDefaultIndicatorWidth();
     }
 
     public abstract void draw(Canvas canvas, float degree);
@@ -36,23 +38,24 @@ public abstract class Indicator {
     protected abstract void updateIndicator();
     /** if indicator have effects like BlurMaskFilter */
     protected abstract void setWithEffects(boolean withEffects);
+    protected abstract float getDefaultIndicatorWidth();
 
     /**
      * must call in {@code speedometer.onSizeChanged()}
      * @param speedometer target speedometer.
      */
     public void onSizeChange(Speedometer speedometer) {
+        setTargetSpeedometer(speedometer);
+    }
+
+    public void setTargetSpeedometer(Speedometer speedometer) {
         updateData(speedometer);
         updateIndicator();
     }
 
     private void updateData(Speedometer speedometer) {
-        this.density = speedometer.getContext().getResources().getDisplayMetrics().density;
-        this.indicatorWidth = speedometer.getIndicatorWidth();
-        this.viewWidth = speedometer.getWidthPa();
-        this.viewHeight = speedometer.getHeightPa();
+        this.viewSize = speedometer.getSize();
         this.speedometerWidth = speedometer.getSpeedometerWidth();
-        this.indicatorColor = speedometer.getIndicatorColor();
         this.padding = speedometer.getPadding();
         this.inEditMode = speedometer.isInEditMode();
     }
@@ -65,34 +68,33 @@ public abstract class Indicator {
         return indicatorWidth;
     }
 
-    public void setIndicatorWidth(float indicatorWidth) {
+    public I setIndicatorWidth(float indicatorWidth) {
         this.indicatorWidth = indicatorWidth;
-        updateIndicator();
+        return (I) this;
     }
 
-    public float getViewWidth() {
-        return viewWidth;
-    }
-
-    public float getViewHeight() {
-        return viewHeight;
+    /**
+     * @return size of Speedometer View without padding.
+     */
+    public float getViewSize() {
+        return viewSize - (padding*2f);
     }
 
     public int getIndicatorColor() {
         return indicatorColor;
     }
 
-    public void setIndicatorColor(int indicatorColor) {
+    public I setIndicatorColor(int indicatorColor) {
         this.indicatorColor = indicatorColor;
-        updateIndicator();
+        return (I) this;
     }
 
     public float getCenterX() {
-        return (2*padding + viewWidth) /2f;
+        return viewSize /2f;
     }
 
     public float getCenterY() {
-        return (2*padding + viewHeight) /2f;
+        return viewSize /2f;
     }
 
     public int getPadding() {
@@ -103,7 +105,17 @@ public abstract class Indicator {
         return speedometerWidth;
     }
 
-    public void setSpeedometerWidth(float speedometerWidth) {
+    public void noticeIndicatorWidthChange(float indicatorWidth) {
+        this.indicatorWidth = indicatorWidth;
+        updateIndicator();
+    }
+
+    public void noticeIndicatorColorChange(int indicatorColor) {
+        this.indicatorColor = indicatorColor;
+        updateIndicator();
+    }
+
+    public void noticeSpeedometerWidthChange(float speedometerWidth) {
         this.speedometerWidth = speedometerWidth;
         updateIndicator();
     }
@@ -127,4 +139,32 @@ public abstract class Indicator {
         , SpindleIndicator, LineIndicator, HalfLineIndicator, QuarterLineIndicator
     }
 
+    /**
+     * create new {@link Indicator} with default values.
+     * @param context required.
+     * @param indicator new indicator (Enum value).
+     * @return new indicator object.
+     */
+    public static Indicator createIndicator (Context context, Indicators indicator) {
+        switch (indicator) {
+            case NoIndicator :
+                return new NoIndicator(context);
+            case NormalIndicator :
+                return new NormalIndicator(context);
+            case NormalSmallIndicator :
+                return new NormalSmallIndicator(context);
+            case TriangleIndicator :
+                return new TriangleIndicator(context);
+            case SpindleIndicator :
+                return new SpindleIndicator(context);
+            case LineIndicator :
+                return new LineIndicator(context, LineIndicator.LINE);
+            case HalfLineIndicator :
+                return new LineIndicator(context, LineIndicator.HALF_LINE);
+            case QuarterLineIndicator :
+                return new LineIndicator(context, LineIndicator.QUARTER_LINE);
+            default :
+                return new NormalIndicator(context);
+        }
+    }
 }

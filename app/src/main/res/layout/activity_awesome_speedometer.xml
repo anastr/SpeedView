@@ -22,6 +22,10 @@
         app:trianglesColor="#25b9b4"
         app:indicatorColor="#d7c717"
         app:textColor="#84ff84"
+        app:speedTextSize="20dp"
+        app:unitTextSize="18dp"
+        app:textTypeface="fonts/Xolonium-Bold.otf"
+        app:speedTextTypeface="fonts/Xolonium-Bold.otf"
         android:layout_gravity="center_horizontal"/>
 
     <LinearLayout
