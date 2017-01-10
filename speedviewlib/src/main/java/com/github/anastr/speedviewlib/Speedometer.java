@@ -739,6 +739,7 @@ abstract public class Speedometer extends View {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void realSpeedTo(float speed) {
+        boolean oldIsSpeedUp = this.speed > correctSpeed;
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
 
@@ -749,13 +750,15 @@ abstract public class Speedometer extends View {
             setIndicatorAt(speed);
             return;
         }
+        final boolean isSpeedUp = speed > correctSpeed;
+        if (realSpeedAnimator.isRunning() && oldIsSpeedUp == isSpeedUp)
+            return;
 
         cancelSpeedAnimator();
         realSpeedAnimator = ValueAnimator.ofInt((int)degree, (int)newDegree);
         realSpeedAnimator.setRepeatCount(ValueAnimator.INFINITE);
         realSpeedAnimator.setInterpolator(new LinearInterpolator());
         realSpeedAnimator.setDuration(Math.abs((long) ((newDegree - degree) * 10) ));
-        final boolean isSpeedUp = speed > correctSpeed;
         final int finalSpeed = (int) speed;
         realSpeedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -1271,7 +1274,8 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * Register a callback to be invoked when section changed.
+     * Register a callback to be invoked when
+     * <a href="https://github.com/anastr/SpeedView/wiki/Usage#control-division-of-the-speedometer">section</a> changed.
      * @param onSectionChangeListener maybe null, The callback that will run.
      */
     public void setOnSectionChangeListener(OnSectionChangeListener onSectionChangeListener) {
@@ -1313,6 +1317,27 @@ abstract public class Speedometer extends View {
      * @throws IllegalArgumentException if the difference between {@code endDegree and startDegree} bigger than 360.
      */
     public void setEndDegree(int endDegree) {
+        this.endDegree = endDegree;
+        checkStartAndEndDegree();
+        cancelSpeedAnimator();
+        degree = getDegreeAtSpeed(speed);
+        if (!attachedToWindow)
+            return;
+        updateBackgroundBitmap();
+        tremble();
+        invalidate();
+    }
+
+    /**
+     * change start and end of speedometer.
+     * @param startDegree the start of speedometer.
+     * @param endDegree the end of speedometer.
+     * @throws IllegalArgumentException if {@code startDegree OR endDegree} negative.
+     * @throws IllegalArgumentException if {@code startDegree >= endDegree}.
+     * @throws IllegalArgumentException if the difference between {@code endDegree and startDegree} bigger than 360.
+     */
+    public void setStartEndDegree (int startDegree, int endDegree) {
+        this.startDegree = startDegree;
         this.endDegree = endDegree;
         checkStartAndEndDegree();
         cancelSpeedAnimator();
@@ -1433,7 +1458,8 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * Display new Note for 3 seconds.
+     * Display new <a href="https://github.com/anastr/SpeedView/wiki/Notes">Note</a>
+     * for 3 seconds.
      * @param note to display.
      */
     public void addNote(Note note) {
@@ -1441,7 +1467,8 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * Display new Note for custom seconds.
+     * Display new <a href="https://github.com/anastr/SpeedView/wiki/Notes">Note</a>
+     * for custom seconds.
      * @param note to display.
      * @param showTimeMillisecond time to remove Note.
      */
@@ -1461,7 +1488,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * remove All Notes.
+     * remove All <a href="https://github.com/anastr/SpeedView/wiki/Notes">Notes</a>.
      */
     public void removeAllNotes() {
         notes.clear();
@@ -1654,7 +1681,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * change indicator shape.<br>
+     * change <a href="https://github.com/anastr/SpeedView/wiki/Indicators">indicator shape</a>.<br>
      * this method will get bach indicatorColor and indicatorWidth to default.
      * @param indicator new indicator (Enum value).
      */
@@ -1667,7 +1694,7 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * add custom indicator.
+     * add custom <a href="https://github.com/anastr/SpeedView/wiki/Indicators">indicator</a>.
      * @param indicator new indicator.
      */
     public void setIndicator(Indicator indicator) {
