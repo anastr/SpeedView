@@ -11,6 +11,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.base.Speedometer;
+import com.github.anastr.speedviewlib.base.SpeedometerDefault;
+
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
@@ -33,8 +36,14 @@ public class ImageSpeedometer extends Speedometer {
     }
 
     @Override
+    protected SpeedometerDefault getSpeedometerDefault() {
+        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
+        speedometerDefault.backgroundCircleColor = Color.TRANSPARENT;
+        return speedometerDefault;
+    }
+
+    @Override
     protected void defaultValues() {
-        super.setBackgroundCircleColor(Color.TRANSPARENT);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {

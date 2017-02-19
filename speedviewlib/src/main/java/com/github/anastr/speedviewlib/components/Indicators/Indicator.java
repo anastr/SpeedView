@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.github.anastr.speedviewlib.Speedometer;
+import com.github.anastr.speedviewlib.base.Speedometer;
 
 /**
  * this Library build By Anas Altair

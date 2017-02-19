@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.github.anastr.speedviewlib.Speedometer;
+import com.github.anastr.speedviewlib.base.Speedometer;
 
 import java.util.Locale;
 

@@ -11,7 +11,9 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+import com.github.anastr.speedviewlib.base.SpeedometerDefault;
 
 /**
  * this Library build By Anas Altair
@@ -49,9 +51,15 @@ public class RaySpeedometer extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        super.setMarkColor(Color.BLACK);
         super.setTextColor(Color.WHITE);
-        super.setBackgroundCircleColor(Color.parseColor("#212121"));
+    }
+
+    @Override
+    protected SpeedometerDefault getSpeedometerDefault() {
+        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
+        speedometerDefault.backgroundCircleColor = Color.parseColor("#212121");
+        speedometerDefault.markColor = Color.BLACK;
+        return speedometerDefault;
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {

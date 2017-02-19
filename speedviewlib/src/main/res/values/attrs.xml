@@ -1,36 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="Speedometer">
-        <attr name="indicatorColor" format="color" />
-        <attr name="centerCircleColor" format="color" />
-        <attr name="markColor" format="color" />
-        <attr name="lowSpeedColor" format="color" />
-        <attr name="mediumSpeedColor" format="color" />
-        <attr name="highSpeedColor" format="color" />
-        <attr name="textColor" format="color" />
-        <attr name="backgroundCircleColor" format="color" />
-        <attr name="speedTextColor" format="color"/>
-        <attr name="speedometerColor" format="color"/>
-        <attr name="speedometerWidth" format="dimension" />
-        <attr name="maxSpeed" format="integer" />
-        <attr name="withTremble" format="boolean" />
-        <attr name="speedTextSize" format="dimension" />
-        <attr name="textSize" format="dimension" />
-        <attr name="unit" format="string" />
+    <declare-styleable name="Gauge">
+        <attr name="sv_textColor" format="color" />
+        <attr name="sv_speedTextColor" format="color"/>
+        <attr name="sv_withTremble" format="boolean" />
+        <attr name="sv_speedTextSize" format="dimension" />
+        <attr name="sv_textSize" format="dimension" />
+        <attr name="sv_unit" format="string" />
 
-        <attr name="unitTextSize" format="dimension"/>
-        <attr name="trembleDegree" format="float" />
-        <attr name="trembleDuration" format="integer" />
-        <attr name="startDegree" format="integer" />
-        <attr name="endDegree" format="integer" />
-        <attr name="lowSpeedPercent" format="integer" />
-        <attr name="mediumSpeedPercent" format="integer" />
-        <attr name="speedometerTextRightToLeft" format="boolean" />
+        <attr name="sv_unitTextSize" format="dimension"/>
+        <attr name="sv_trembleDegree" format="float" />
+        <attr name="sv_trembleDuration" format="integer" />
+        <attr name="sv_lowSpeedPercent" format="integer" />
+        <attr name="sv_mediumSpeedPercent" format="integer" />
+        <attr name="sv_textRightToLeft" format="boolean" />
 
-        <attr name="minSpeed" format="integer" />
-        <attr name="indicatorWidth" format="dimension" />
+        <attr name="sv_minSpeed" format="integer" />
+        <attr name="sv_maxSpeed" format="integer" />
 
-        <attr name="indicator" format="enum" >
+        <attr name="sv_accelerate" format="float" />
+        <attr name="sv_decelerate" format="float" />
+
+        <attr name="sv_speedTextTypeface" format="string" />
+        <attr name="sv_textTypeface" format="string" />
+
+        <attr name="sv_speedTextPosition" format="enum" >
+            <enum name="TOP_LEFT" value="0" />
+            <enum name="TOP_CENTER" value="1" />
+            <enum name="TOP_RIGHT" value="2" />
+            <enum name="LEFT" value="3" />
+            <enum name="CENTER" value="4" />
+            <enum name="RIGHT" value="5" />
+            <enum name="BOTTOM_LEFT" value="6" />
+            <enum name="BOTTOM_CENTER" value="7" />
+            <enum name="BOTTOM_RIGHT" value="8" />
+        </attr>
+        <attr name="sv_unitUnderSpeedText" format="boolean" />
+        <attr name="sv_unitSpeedInterval" format="dimension" />
+        <attr name="sv_speedTextFormat" format="enum" >
+            <enum name="INTEGER" value="0" />
+            <enum name="FLOAT" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="Speedometer"  parent="Gauge">
+        <attr name="sv_indicatorColor" format="color" />
+        <attr name="sv_centerCircleColor" format="color" />
+        <attr name="sv_markColor" format="color" />
+        <attr name="sv_lowSpeedColor" format="color" />
+        <attr name="sv_mediumSpeedColor" format="color" />
+        <attr name="sv_highSpeedColor" format="color" />
+        <attr name="sv_backgroundCircleColor" format="color" />
+        <attr name="sv_speedometerColor" format="color"/>
+        <attr name="sv_speedometerWidth" format="dimension" />
+
+        <attr name="sv_startDegree" format="integer" />
+        <attr name="sv_endDegree" format="integer" />
+
+        <attr name="sv_indicatorWidth" format="dimension" />
+
+        <attr name="sv_indicator" format="enum" >
             <enum name="NoIndicator" value="0" />
             <enum name="NormalIndicator" value="1" />
             <enum name="NormalSmallIndicator" value="2" />
@@ -41,13 +70,7 @@
             <enum name="QuarterLineIndicator" value="7" />
         </attr>
 
-        <attr name="accelerate" format="float" />
-        <attr name="decelerate" format="float" />
-
-        <attr name="speedTextTypeface" format="string" />
-        <attr name="textTypeface" format="string" />
-
-        <attr name="speedometerMode" format="enum" >
+        <attr name="sv_speedometerMode" format="enum" >
             <enum name="NORMAL" value="0" />
             <enum name="LEFT" value="1" />
             <enum name="TOP" value="2" />
@@ -59,23 +82,7 @@
             <enum name="BOTTOM_LEFT" value="8" />
         </attr>
 
-        <attr name="speedTextPosition" format="enum" >
-            <enum name="TOP_LEFT" value="0" />
-            <enum name="TOP_CENTER" value="1" />
-            <enum name="TOP_RIGHT" value="2" />
-            <enum name="LEFT" value="3" />
-            <enum name="CENTER" value="4" />
-            <enum name="RIGHT" value="5" />
-            <enum name="BOTTOM_LEFT" value="6" />
-            <enum name="BOTTOM_CENTER" value="7" />
-            <enum name="BOTTOM_RIGHT" value="8" />
-        </attr>
-        <attr name="unitUnderSpeedText" format="boolean" />
-        <attr name="unitSpeedInterval" format="dimension" />
-        <attr name="speedTextFormat" format="enum" >
-            <enum name="INTEGER" value="0" />
-            <enum name="FLOAT" value="1" />
-        </attr>
+        <attr name="sv_cutPadding" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">
@@ -83,34 +90,34 @@
 
     <declare-styleable name="DeluxeSpeedView" parent="Speedometer">
 
-        <attr name="speedBackgroundColor" format="color" />
-        <attr name="withEffects" format="boolean" />
+        <attr name="sv_speedBackgroundColor" format="color" />
+        <attr name="sv_withEffects" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="AwesomeSpeedometer" parent="Speedometer">
-        <attr name="speedometerColor" />
-        <attr name="trianglesColor" format="color"/>
+        <attr name="sv_speedometerColor" />
+        <attr name="sv_trianglesColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="RaySpeedometer" parent="DeluxeSpeedView">
-        <attr name="speedBackgroundColor" />
-        <attr name="withEffects" />
-        <attr name="rayColor" format="color"/>
-        <attr name="degreeBetweenMark" format="integer"/>
-        <attr name="markWidth" format="dimension"/>
+        <attr name="sv_speedBackgroundColor" />
+        <attr name="sv_withEffects" />
+        <attr name="sv_rayColor" format="color"/>
+        <attr name="sv_degreeBetweenMark" format="integer"/>
+        <attr name="sv_markWidth" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="PointerSpeedometer" parent="Speedometer">
-        <attr name="speedometerColor" />
-        <attr name="pointerColor" format="color"/>
+        <attr name="sv_speedometerColor" />
+        <attr name="sv_pointerColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="TubeSpeedometer" parent="Speedometer">
-        <attr name="speedometerColor" />
-        <attr name="withEffects3D" format="boolean" />
+        <attr name="sv_speedometerColor" />
+        <attr name="sv_withEffects3D" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="ImageSpeedometer" parent="Speedometer">
-        <attr name="imageSpeedometer" format="reference" />
+        <attr name="sv_imageSpeedometer" format="reference" />
     </declare-styleable>
 </resources>

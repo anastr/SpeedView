@@ -1,4 +1,4 @@
-package com.github.anastr.speedviewlib;
+package com.github.anastr.speedviewlib.base;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -18,14 +18,10 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator;
-import com.github.anastr.speedviewlib.components.Indicators.Indicator;
-import com.github.anastr.speedviewlib.components.Indicators.NoIndicator;
-import com.github.anastr.speedviewlib.components.note.Note;
+import com.github.anastr.speedviewlib.R;
 import com.github.anastr.speedviewlib.util.OnSectionChangeListener;
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
@@ -34,15 +30,12 @@ import java.util.Random;
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
 @SuppressWarnings("unused")
-abstract public class Speedometer extends View {
+public abstract class Gauge extends View {
 
-    private Indicator indicator;
-    private Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
-            speedUnitTextBitmapPaint =  new Paint(Paint.ANTI_ALIAS_FLAG);
+    private Paint speedUnitTextBitmapPaint =  new Paint(Paint.ANTI_ALIAS_FLAG);
     protected TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
             unitTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-    private float speedometerWidth = dpTOpx(30f);
     private float speedTextSize = dpTOpx(18f);
     private float textSize = dpTOpx(10f);
     private float unitTextSize = dpTOpx(15f);
@@ -50,13 +43,7 @@ abstract public class Speedometer extends View {
     private String unit = "Km/h";
     private boolean withTremble = true;
 
-    private int centerCircleColor = Color.DKGRAY
-            , markColor = Color.WHITE
-            , lowSpeedColor = Color.GREEN
-            , mediumSpeedColor = Color.YELLOW
-            , highSpeedColor = Color.RED
-            , textColor = Color.BLACK
-            , backgroundCircleColor = Color.WHITE
+    private int textColor = Color.BLACK
             , speedTextColor = Color.BLACK;
 
     /** the max range in speedometer, {@code default = 100} */
@@ -76,9 +63,7 @@ abstract public class Speedometer extends View {
     /** a degree to increases and decreases the indicator around correct speed */
     private float trembleDegree = 4f;
     private int trembleDuration = 1000;
-    private int startDegree = 135, endDegree = 135+270;
-    /** to rotate indicator */
-    private float degree = startDegree;
+
     private ValueAnimator speedAnimator, trembleAnimator, realSpeedAnimator;
     private boolean canceled = false;
     private OnSpeedChangeListener onSpeedChangeListener;
@@ -87,13 +72,13 @@ abstract public class Speedometer extends View {
     private Animator.AnimatorListener animatorListener;
 
     /** to contain all drawing that doesn't change */
-    private Bitmap backgroundBitmap;
+    protected Bitmap backgroundBitmap;
     private Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private int padding = 0;
 
-    /** low speed area, started from {@link #startDegree} */
+    /** low speed area */
     private int lowSpeedPercent = 60;
-    /** medium speed area, started from {@link #startDegree} */
+    /** medium speed area */
     private int mediumSpeedPercent = 87;
 
     public static final byte LOW_SECTION = 1;
@@ -103,9 +88,10 @@ abstract public class Speedometer extends View {
 
     private boolean speedometerTextRightToLeft = false;
 
-    /** array to contain all notes that will be draw */
-    private ArrayList<Note> notes = new ArrayList<>();
     private boolean attachedToWindow = false;
+
+    protected float translatedDx = 0;
+    protected float translatedDy = 0;
 
     /** object to set text digits locale */
     private Locale locale = Locale.getDefault();
@@ -114,11 +100,6 @@ abstract public class Speedometer extends View {
     private float accelerate = .1f;
     /** Number expresses the Deceleration, between (0, 1] */
     private float decelerate = .3f;
-
-    private Mode speedometerMode = Mode.NORMAL;
-
-    private float translatedDx = 0;
-    private float translatedDy = 0;
 
     private Position speedTextPosition = Position.BOTTOM_CENTER;
     /** space between unitText and speedText */
@@ -132,25 +113,22 @@ abstract public class Speedometer extends View {
     public static final byte FLOAT_FORMAT = 1;
     private byte speedTextFormat = FLOAT_FORMAT;
 
-    public Speedometer(Context context) {
-        super(context);
-        init();
+    public Gauge(Context context) {
+        this(context, null);
     }
 
-    public Speedometer(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-        initAttributeSet(context, attrs);
+    public Gauge(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public Speedometer(Context context, AttributeSet attrs, int defStyleAttr) {
+    public Gauge(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
         initAttributeSet(context, attrs);
+        initAttributeValue();
     }
 
     private void init() {
-        indicator = new NoIndicator(getContext());
 
         if (Build.VERSION.SDK_INT >= 11) {
             speedAnimator = ValueAnimator.ofFloat(0f, 1f);
@@ -180,70 +158,49 @@ abstract public class Speedometer extends View {
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.Speedometer, 0, 0);
+        if (attrs == null)
+            return;
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.Gauge, 0, 0);
 
-        int mode = a.getInt(R.styleable.Speedometer_speedometerMode, -1);
-        if (mode != -1 && mode != 0)
-            setSpeedometerMode(Mode.values()[mode]);
-        setIndicatorColor(a.getColor(R.styleable.Speedometer_indicatorColor, indicator.getIndicatorColor()));
-        centerCircleColor = a.getColor(R.styleable.Speedometer_centerCircleColor, centerCircleColor);
-        markColor = a.getColor(R.styleable.Speedometer_markColor, markColor);
-        lowSpeedColor = a.getColor(R.styleable.Speedometer_lowSpeedColor, lowSpeedColor);
-        mediumSpeedColor = a.getColor(R.styleable.Speedometer_mediumSpeedColor, mediumSpeedColor);
-        highSpeedColor = a.getColor(R.styleable.Speedometer_highSpeedColor, highSpeedColor);
-        textColor = a.getColor(R.styleable.Speedometer_textColor, textColor);
-        backgroundCircleColor = a.getColor(R.styleable.Speedometer_backgroundCircleColor, backgroundCircleColor);
-        speedTextColor = a.getColor(R.styleable.Speedometer_speedTextColor, speedTextColor);
-        speedometerWidth = a.getDimension(R.styleable.Speedometer_speedometerWidth, speedometerWidth);
-        maxSpeed = a.getInt(R.styleable.Speedometer_maxSpeed, maxSpeed);
-        minSpeed = a.getInt(R.styleable.Speedometer_minSpeed, minSpeed);
-        withTremble = a.getBoolean(R.styleable.Speedometer_withTremble, withTremble);
-        speedTextSize = a.getDimension(R.styleable.Speedometer_speedTextSize, speedTextSize);
-        textSize = a.getDimension(R.styleable.Speedometer_textSize, textSize);
-        String unit = a.getString(R.styleable.Speedometer_unit);
+        textColor = a.getColor(R.styleable.Gauge_sv_textColor, textColor);
+        speedTextColor = a.getColor(R.styleable.Gauge_sv_speedTextColor, speedTextColor);
+        maxSpeed = a.getInt(R.styleable.Gauge_sv_maxSpeed, maxSpeed);
+        minSpeed = a.getInt(R.styleable.Gauge_sv_minSpeed, minSpeed);
+        withTremble = a.getBoolean(R.styleable.Gauge_sv_withTremble, withTremble);
+        speedTextSize = a.getDimension(R.styleable.Gauge_sv_speedTextSize, speedTextSize);
+        textSize = a.getDimension(R.styleable.Gauge_sv_textSize, textSize);
+        String unit = a.getString(R.styleable.Gauge_sv_unit);
         this.unit =  (unit != null) ? unit : this.unit;
-        unitTextSize = a.getDimension(R.styleable.Speedometer_unitTextSize, unitTextSize);
-        trembleDegree = a.getFloat(R.styleable.Speedometer_trembleDegree, trembleDegree);
-        trembleDuration = a.getInt(R.styleable.Speedometer_trembleDuration, trembleDuration);
-        startDegree = a.getInt(R.styleable.Speedometer_startDegree, startDegree);
-        endDegree = a.getInt(R.styleable.Speedometer_endDegree, endDegree);
-        lowSpeedPercent = a.getInt(R.styleable.Speedometer_lowSpeedPercent, lowSpeedPercent);
-        mediumSpeedPercent = a.getInt(R.styleable.Speedometer_mediumSpeedPercent, mediumSpeedPercent);
-        speedometerTextRightToLeft = a.getBoolean(R.styleable.Speedometer_speedometerTextRightToLeft, speedometerTextRightToLeft);
-        setIndicatorWidth(a.getDimension(R.styleable.Speedometer_indicatorWidth, indicator.getIndicatorWidth()));
-        accelerate = a.getFloat(R.styleable.Speedometer_accelerate, accelerate);
-        decelerate = a.getFloat(R.styleable.Speedometer_decelerate, decelerate);
-        unitUnderSpeedText = a.getBoolean(R.styleable.Speedometer_unitUnderSpeedText, unitUnderSpeedText);
-        unitSpeedInterval = a.getDimension(R.styleable.Speedometer_unitSpeedInterval, unitSpeedInterval);
-        String speedTypefacePath = a.getString(R.styleable.Speedometer_speedTextTypeface);
+        unitTextSize = a.getDimension(R.styleable.Gauge_sv_unitTextSize, unitTextSize);
+        trembleDegree = a.getFloat(R.styleable.Gauge_sv_trembleDegree, trembleDegree);
+        trembleDuration = a.getInt(R.styleable.Gauge_sv_trembleDuration, trembleDuration);
+        lowSpeedPercent = a.getInt(R.styleable.Gauge_sv_lowSpeedPercent, lowSpeedPercent);
+        mediumSpeedPercent = a.getInt(R.styleable.Gauge_sv_mediumSpeedPercent, mediumSpeedPercent);
+        speedometerTextRightToLeft = a.getBoolean(R.styleable.Gauge_sv_textRightToLeft, speedometerTextRightToLeft);
+        accelerate = a.getFloat(R.styleable.Gauge_sv_accelerate, accelerate);
+        decelerate = a.getFloat(R.styleable.Gauge_sv_decelerate, decelerate);
+        unitUnderSpeedText = a.getBoolean(R.styleable.Gauge_sv_unitUnderSpeedText, unitUnderSpeedText);
+        unitSpeedInterval = a.getDimension(R.styleable.Gauge_sv_unitSpeedInterval, unitSpeedInterval);
+        String speedTypefacePath = a.getString(R.styleable.Gauge_sv_speedTextTypeface);
         if (speedTypefacePath != null)
             setSpeedTextTypeface(Typeface.createFromAsset(getContext().getAssets(), speedTypefacePath));
-        String typefacePath = a.getString(R.styleable.Speedometer_textTypeface);
+        String typefacePath = a.getString(R.styleable.Gauge_sv_textTypeface);
         if (typefacePath != null)
             setTextTypeface(Typeface.createFromAsset(getContext().getAssets(), typefacePath));
-        int ind = a.getInt(R.styleable.Speedometer_indicator, -1);
-        if (ind != -1)
-            setIndicator(Indicator.Indicators.values()[ind]);
-        int position = a.getInt(R.styleable.Speedometer_speedTextPosition, -1);
+        int position = a.getInt(R.styleable.Gauge_sv_speedTextPosition, -1);
         if (position != -1)
             setSpeedTextPosition(Position.values()[position]);
-        setIndicatorColor(a.getColor(R.styleable.Speedometer_indicatorColor, indicator.getIndicatorColor()));
-        byte format = (byte) a.getInt(R.styleable.Speedometer_speedTextFormat, -1);
+        byte format = (byte) a.getInt(R.styleable.Gauge_sv_speedTextFormat, -1);
         if (format != -1)
             setSpeedTextFormat(format);
-        setIndicatorColor(a.getColor(R.styleable.Speedometer_indicatorColor, indicator.getIndicatorColor()));
-        degree = startDegree;
         a.recycle();
-        checkStartAndEndDegree();
         checkSpeedometerPercent();
         checkAccelerate();
         checkDecelerate();
         checkTrembleData();
-        initAttributeValue();
     }
 
     private void initAttributeValue() {
-        circleBackPaint.setColor(backgroundCircleColor);
         speedTextPaint.setColor(speedTextColor);
         speedTextPaint.setTextSize(speedTextSize);
         unitTextPaint.setColor(speedTextColor);
@@ -262,36 +219,9 @@ abstract public class Speedometer extends View {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-        int size = (width > height) ? height : width;
-        setMeasuredDimension(size/speedometerMode.divWidth, size/speedometerMode.divHeight);
-    }
-
-    @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
         updatePadding();
-        indicator.onSizeChange(this);
-    }
-
-    private void checkStartAndEndDegree() {
-        if (startDegree < 0)
-            throw new IllegalArgumentException("StartDegree can\'t be Negative");
-        if (endDegree < 0)
-            throw new IllegalArgumentException("EndDegree can\'t be Negative");
-        if (startDegree >= endDegree)
-            throw new IllegalArgumentException("EndDegree must be bigger than StartDegree !");
-        if (endDegree - startDegree > 360)
-            throw new IllegalArgumentException("(EndDegree - StartDegree) must be smaller than 360 !");
-        if (startDegree < speedometerMode.minDegree)
-            throw new IllegalArgumentException("StartDegree must be bigger than " + speedometerMode.minDegree
-                    + " in " + speedometerMode + " Mode !");
-        if (endDegree > speedometerMode.maxDegree)
-            throw new IllegalArgumentException("EndDegree must be smaller than " + speedometerMode.maxDegree
-                    + " in " + speedometerMode + " Mode !");
     }
 
     private void checkSpeedometerPercent() {
@@ -354,32 +284,15 @@ abstract public class Speedometer extends View {
         super.setPadding(padding, padding, padding, padding);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
             super.setPaddingRelative(padding, padding, padding, padding);
-        if (indicator != null)
-            indicator.noticePaddingChange(padding);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if (speedometerMode == Mode.RIGHT || speedometerMode == Mode.TOP_RIGHT
-                || speedometerMode == Mode.BOTTOM_RIGHT) {
-            translatedDx = - getSize() / 2f;
-            canvas.translate(translatedDx, 0);
-        }
-        else
-            translatedDx = 0;
-        if (speedometerMode == Mode.BOTTOM || speedometerMode == Mode.BOTTOM_LEFT
-                || speedometerMode == Mode.BOTTOM_RIGHT) {
-            translatedDy = - getSize() / 2f;
-            canvas.translate(0, translatedDy);
-        }
-        else
-            translatedDy = 0;
+        canvas.translate(translatedDx, translatedDy);
 
         if (backgroundBitmap != null)
             canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
 
-        correctSpeed = getSpeedAtDegree(degree);
         // check onSpeedChangeEvent.
         int newSpeed = (int) correctSpeed;
         if (newSpeed != correctIntSpeed) {
@@ -411,39 +324,6 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * draw indicator at correct {@link #degree},
-     * this method must call in subSpeedometer's {@code onDraw} method.
-     * @param canvas view canvas to draw.
-     */
-    protected void drawIndicator(Canvas canvas) {
-        indicator.draw(canvas, degree);
-    }
-
-    /**
-     * draw Notes,
-     * every Speedometer must call this method at End of it's {@code onDraw()} method.
-     * @param canvas view canvas to draw notes.
-     */
-    protected void drawNotes(Canvas canvas) {
-        for (Note note : notes) {
-            if (note.getPosition() == Note.Position.CenterSpeedometer)
-                note.draw(canvas, getWidth()/2f, getHeight()/2f);
-            else {
-                float y = 0f;
-                if (note.getPosition() == Note.Position.CenterIndicator)
-                    y = getHeightPa()/4f + padding;
-                else if (note.getPosition() == Note.Position.TopIndicator)
-                    y = padding;
-                canvas.save();
-                canvas.rotate(90f +getDegree(), getWidth()/2f, getHeight()/2f);
-                canvas.rotate(-(90f +getDegree()), getWidth()/2f, y);
-                note.draw(canvas, getWidth()/2f, y);
-                canvas.restore();
-            }
-        }
-    }
-
-    /**
      * fixable method to create {@link #speedUnitTextBitmap}
      * to avoid create it every frame in {@code onDraw} method.
      */
@@ -462,9 +342,9 @@ abstract public class Speedometer extends View {
         Canvas c = new Canvas(speedUnitTextBitmap);
 
         if (unitUnderSpeedText) {
-            c.drawText(getSpeedText(), speedUnitTextBitmap.getWidth()/2f
+            c.drawText(getSpeedText(), speedUnitTextBitmap.getWidth() *.5f
                     , speedTextPaint.getTextSize(), speedTextPaint);
-            c.drawText(getUnit(), speedUnitTextBitmap.getWidth()/2f
+            c.drawText(getUnit(), speedUnitTextBitmap.getWidth() *.5f
                     , speedTextPaint.getTextSize() + unitSpeedInterval + unitTextPaint.getTextSize(), unitTextPaint);
             return speedUnitTextBitmap;
         }
@@ -503,12 +383,18 @@ abstract public class Speedometer extends View {
                 + unitTextPaint.measureText(getUnit()) + unitSpeedInterval;
     }
 
+    /**
+     * @return the width of speed & unit text.
+     */
     private float getSpeedUnitTextWidth() {
         if (unitUnderSpeedText)
             return Math.max(speedTextPaint.measureText(getSpeedText()), unitTextPaint.measureText(getUnit()));
         return speedTextPaint.measureText(getSpeedText()) + unitTextPaint.measureText(getUnit()) + unitSpeedInterval;
     }
 
+    /**
+     * @return the height of speed & unit text.
+     */
     private float getSpeedUnitTextHeight() {
         if (unitUnderSpeedText)
             return speedTextPaint.getTextSize() + unitTextPaint.getTextSize() + unitSpeedInterval;
@@ -519,13 +405,11 @@ abstract public class Speedometer extends View {
      * create canvas to draw {@link #backgroundBitmap}.
      * @return {@link #backgroundBitmap}'s canvas.
      */
-    protected final Canvas createBackgroundBitmapCanvas() {
+    protected Canvas createBackgroundBitmapCanvas() {
         if (getWidth() == 0 || getHeight() == 0)
             return new Canvas();
-        backgroundBitmap = Bitmap.createBitmap(getSize(), getSize(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(backgroundBitmap);
-        canvas.drawCircle(getSize()/2f, getSize()/2f, getSize()/2f - getPadding(), circleBackPaint);
-        return canvas;
+        backgroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        return new Canvas(backgroundBitmap);
     }
 
     /**
@@ -556,7 +440,7 @@ abstract public class Speedometer extends View {
     /**
      * cancel all animators without call {@link #tremble()}.
      */
-    private void cancelSpeedAnimator() {
+    protected void cancelSpeedAnimator() {
         cancelSpeedMove();
         cancelTremble();
     }
@@ -581,30 +465,14 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * @param speed to know the degree at it.
-     * @return correct Degree at that speed.
-     */
-    protected float getDegreeAtSpeed (float speed) {
-        return (speed - minSpeed) * (endDegree - startDegree) /(maxSpeed - minSpeed) + startDegree;
-    }
-
-    /**
-     * @param degree to know the speed at it.
-     * @return correct speed at that degree.
-     */
-    protected float getSpeedAtDegree (float degree) {
-        return (degree - startDegree) * (maxSpeed - minSpeed) /(endDegree - startDegree) + minSpeed;
-    }
-
-    /**
      * rotate indicator to correct speed without animation.
      * @param speed correct speed to move.
      */
-    public void setIndicatorAt(float speed) {
+    public void setSpeedAt(float speed) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
+        this.correctSpeed = speed;
         cancelSpeedAnimator();
-        degree = getDegreeAtSpeed(speed);
         invalidate();
         tremble();
     }
@@ -634,8 +502,7 @@ abstract public class Speedometer extends View {
      * @see #realSpeedTo(float)
      */
     public void speedPercentTo(int percent, long moveDuration) {
-        percent = (percent > 100) ? 100 : (percent < 0) ? 0 : percent;
-        speedTo(percent * (maxSpeed - minSpeed) / 100 + minSpeed, moveDuration);
+        speedTo(getSpeedValue(percent), moveDuration);
     }
 
     /**
@@ -676,24 +543,23 @@ abstract public class Speedometer extends View {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void speedTo(float speed, long moveDuration) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
+        if (speed == this.speed)
+            return;
         this.speed = speed;
 
-        float newDegree = getDegreeAtSpeed(speed);
-        if (newDegree == degree)
-            return;
         if (Build.VERSION.SDK_INT < 11){
-            setIndicatorAt(speed);
+            setSpeedAt(speed);
             return;
         }
 
         cancelSpeedAnimator();
-        speedAnimator = ValueAnimator.ofFloat(degree, newDegree);
+        speedAnimator = ValueAnimator.ofFloat(correctSpeed, speed);
         speedAnimator.setInterpolator(new DecelerateInterpolator());
         speedAnimator.setDuration(moveDuration);
         speedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                degree = (float) speedAnimator.getAnimatedValue();
+                correctSpeed = (float) speedAnimator.getAnimatedValue();
                 postInvalidate();
             }
         });
@@ -724,6 +590,14 @@ abstract public class Speedometer extends View {
     }
 
     /**
+     * move speed to percent value by using {@link #realSpeedTo(float)} method.
+     * @param percent percent value to move, must be between [0,100].
+     */
+    public void realSpeedPercentTo(float percent) {
+        realSpeedTo(getSpeedValue(percent));
+    }
+
+    /**
      * to make speedometer some real.
      * <br>
      * when <b>speed up</b> : speed value well increase <i>slowly</i> by {@link #accelerate}.
@@ -741,13 +615,12 @@ abstract public class Speedometer extends View {
     public void realSpeedTo(float speed) {
         boolean oldIsSpeedUp = this.speed > correctSpeed;
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
+        if (speed == this.speed)
+            return;
         this.speed = speed;
 
-        float newDegree = getDegreeAtSpeed(speed);
-        if (newDegree == degree)
-            return;
         if (Build.VERSION.SDK_INT < 11) {
-            setIndicatorAt(speed);
+            setSpeedAt(speed);
             return;
         }
         final boolean isSpeedUp = speed > correctSpeed;
@@ -755,21 +628,21 @@ abstract public class Speedometer extends View {
             return;
 
         cancelSpeedAnimator();
-        realSpeedAnimator = ValueAnimator.ofInt((int)degree, (int)newDegree);
+        realSpeedAnimator = ValueAnimator.ofInt((int)correctSpeed, (int)speed);
         realSpeedAnimator.setRepeatCount(ValueAnimator.INFINITE);
         realSpeedAnimator.setInterpolator(new LinearInterpolator());
-        realSpeedAnimator.setDuration(Math.abs((long) ((newDegree - degree) * 10) ));
+        realSpeedAnimator.setDuration(Math.abs((long) ((speed - correctSpeed) * 10) ));
         final int finalSpeed = (int) speed;
         realSpeedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 if (isSpeedUp) {
                     float per = 100.005f-getPercentSpeed();
-                    degree += (accelerate * 10f) * per/100f;
+                    correctSpeed += (accelerate * 10f) * per *.01f;
                 }
                 else {
                     float per = getPercentSpeed()+.005f;
-                    degree -= (decelerate * 10f) * per/100f +.2f;
+                    correctSpeed -= (decelerate * 10f) * per *.01f +.2f;
                 }
                 postInvalidate();
                 if (finalSpeed == correctIntSpeed)
@@ -784,22 +657,21 @@ abstract public class Speedometer extends View {
      * check if {@link #withTremble} true, and run tremble.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void tremble() {
+    protected void tremble() {
         cancelTremble();
         if (!isWithTremble() || Build.VERSION.SDK_INT < 11)
             return;
         Random random = new Random();
         float mad = trembleDegree * random.nextFloat() * ((random.nextBoolean()) ? -1 :1);
-        float originalDegree = getDegreeAtSpeed(speed);
-        mad = (originalDegree+mad > endDegree) ? endDegree - originalDegree
-                : (originalDegree+mad < startDegree) ? startDegree - originalDegree : mad;
-        trembleAnimator = ValueAnimator.ofFloat(degree, originalDegree +mad);
+        mad = (speed + mad > maxSpeed) ? maxSpeed - speed
+                : (speed + mad < minSpeed) ? minSpeed - speed : mad;
+        trembleAnimator = ValueAnimator.ofFloat(correctSpeed, speed + mad);
         trembleAnimator.setInterpolator(new DecelerateInterpolator());
         trembleAnimator.setDuration(trembleDuration);
         trembleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                degree = (float) trembleAnimator.getAnimatedValue();
+                correctSpeed = (float) trembleAnimator.getAnimatedValue();
                 postInvalidate();
             }
         });
@@ -808,10 +680,12 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * @return correct degree where indicator must be.
+     * @param percentSpeed between [0, 100].
+     * @return speed value at correct percentSpeed.
      */
-    protected float getDegree() {
-        return degree;
+    private float getSpeedValue(float percentSpeed) {
+        percentSpeed = (percentSpeed > 100) ? 100 : (percentSpeed < 0) ? 0 : percentSpeed;
+        return percentSpeed * (maxSpeed - minSpeed) *.01f + minSpeed;
     }
 
     @Override
@@ -833,8 +707,7 @@ abstract public class Speedometer extends View {
      * @throws IllegalArgumentException If trembleDegree is Negative.
      */
     public void setTrembleDegree (float trembleDegree) {
-        this.trembleDegree = trembleDegree;
-        checkTrembleData();
+        setTrembleData(trembleDegree, trembleDuration);
     }
 
     /**
@@ -843,8 +716,7 @@ abstract public class Speedometer extends View {
      * @throws IllegalArgumentException If trembleDuration is Negative.
      */
     public void setTrembleDuration (int trembleDuration) {
-        this.trembleDuration = trembleDuration;
-        checkTrembleData();
+        setTrembleData(trembleDegree, trembleDuration);
     }
 
     /**
@@ -857,8 +729,8 @@ abstract public class Speedometer extends View {
      * @throws IllegalArgumentException If trembleDegree OR trembleDuration is Negative.
      */
     public void setTrembleData (float trembleDegree, int trembleDuration) {
-        setTrembleDegree(trembleDegree);
-        setTrembleDuration(trembleDuration);
+        this.trembleDegree = trembleDegree;
+        this.trembleDuration = trembleDuration;
         checkTrembleData();
     }
 
@@ -1028,87 +900,6 @@ abstract public class Speedometer extends View {
         return (correctSpeed - minSpeed) / (float)(maxSpeed - minSpeed);
     }
 
-    public int getIndicatorColor() {
-        return indicator.getIndicatorColor();
-    }
-
-    public void setIndicatorColor(int indicatorColor) {
-        indicator.noticeIndicatorColorChange(indicatorColor);
-        if (!attachedToWindow)
-            return;
-        invalidate();
-    }
-
-    public int getCenterCircleColor() {
-        return centerCircleColor;
-    }
-
-    public void setCenterCircleColor(int centerCircleColor) {
-        this.centerCircleColor = centerCircleColor;
-        if (!attachedToWindow)
-            return;
-        invalidate();
-    }
-
-    public int getMarkColor() {
-        return markColor;
-    }
-
-    public void setMarkColor(int markColor) {
-        this.markColor = markColor;
-        if (!attachedToWindow)
-            return;
-        invalidate();
-    }
-
-    public int getLowSpeedColor() {
-        return lowSpeedColor;
-    }
-
-    /**
-     * change the color of Low Section.
-     * @param lowSpeedColor new color.
-     */
-    public void setLowSpeedColor(int lowSpeedColor) {
-        this.lowSpeedColor = lowSpeedColor;
-        if (!attachedToWindow)
-            return;
-        updateBackgroundBitmap();
-        invalidate();
-    }
-
-    public int getMediumSpeedColor() {
-        return mediumSpeedColor;
-    }
-
-    /**
-     * change the color of Medium Section.
-     * @param mediumSpeedColor new color.
-     */
-    public void setMediumSpeedColor(int mediumSpeedColor) {
-        this.mediumSpeedColor = mediumSpeedColor;
-        if (!attachedToWindow)
-            return;
-        updateBackgroundBitmap();
-        invalidate();
-    }
-
-    public int getHighSpeedColor() {
-        return highSpeedColor;
-    }
-
-    /**
-     * change the color of High Section.
-     * @param highSpeedColor new color.
-     */
-    public void setHighSpeedColor(int highSpeedColor) {
-        this.highSpeedColor = highSpeedColor;
-        if (!attachedToWindow)
-            return;
-        updateBackgroundBitmap();
-        invalidate();
-    }
-
     public int getTextColor() {
         return textColor;
     }
@@ -1144,25 +935,6 @@ abstract public class Speedometer extends View {
         unitTextPaint.setColor(speedTextColor);
         if (!attachedToWindow)
             return;
-        invalidate();
-    }
-
-    public int getBackgroundCircleColor() {
-        return backgroundCircleColor;
-    }
-
-    /**
-     * Circle Background Color,
-     * you can set it {@code Color.TRANSPARENT}
-     * to remove circle background.
-     * @param backgroundCircleColor new Circle Background Color.
-     */
-    public void setBackgroundCircleColor(int backgroundCircleColor) {
-        this.backgroundCircleColor = backgroundCircleColor;
-        circleBackPaint.setColor(backgroundCircleColor);
-        if (!attachedToWindow)
-            return;
-        updateBackgroundBitmap();
         invalidate();
     }
 
@@ -1248,23 +1020,6 @@ abstract public class Speedometer extends View {
         invalidate();
     }
 
-    public float getSpeedometerWidth() {
-        return speedometerWidth;
-    }
-
-    /**
-     * change the width of speedometer's bar.
-     * @param speedometerWidth new width in pixel.
-     */
-    public void setSpeedometerWidth(float speedometerWidth) {
-        this.speedometerWidth = speedometerWidth;
-        if (!attachedToWindow)
-            return;
-        indicator.noticeSpeedometerWidthChange(speedometerWidth);
-        updateBackgroundBitmap();
-        invalidate();
-    }
-
     /**
      * Register a callback to be invoked when speed value changed (in integer).
      * @param onSpeedChangeListener maybe null, The callback that will run.
@@ -1282,79 +1037,12 @@ abstract public class Speedometer extends View {
         this.onSectionChangeListener = onSectionChangeListener;
     }
 
-    protected int getStartDegree() {
-        return startDegree;
-    }
-
-    /**
-     * change the start of speedometer (at {@link #minSpeed}).
-     * @param startDegree the start of speedometer.
-     * @throws IllegalArgumentException if {@code startDegree} negative.
-     * @throws IllegalArgumentException if {@code startDegree >= endDegree}.
-     * @throws IllegalArgumentException if the difference between {@code endDegree and startDegree} bigger than 360.
-     */
-    public void setStartDegree(int startDegree) {
-        this.startDegree = startDegree;
-        checkStartAndEndDegree();
-        cancelSpeedAnimator();
-        degree = getDegreeAtSpeed(speed);
-        if (!attachedToWindow)
-            return;
-        updateBackgroundBitmap();
-        tremble();
-        invalidate();
-    }
-
-    protected int getEndDegree() {
-        return endDegree;
-    }
-
-    /**
-     * change the end of speedometer (at {@link #maxSpeed}).
-     * @param endDegree the end of speedometer.
-     * @throws IllegalArgumentException if {@code endDegree} negative.
-     * @throws IllegalArgumentException if {@code endDegree <= startDegree}.
-     * @throws IllegalArgumentException if the difference between {@code endDegree and startDegree} bigger than 360.
-     */
-    public void setEndDegree(int endDegree) {
-        this.endDegree = endDegree;
-        checkStartAndEndDegree();
-        cancelSpeedAnimator();
-        degree = getDegreeAtSpeed(speed);
-        if (!attachedToWindow)
-            return;
-        updateBackgroundBitmap();
-        tremble();
-        invalidate();
-    }
-
-    /**
-     * change start and end of speedometer.
-     * @param startDegree the start of speedometer.
-     * @param endDegree the end of speedometer.
-     * @throws IllegalArgumentException if {@code startDegree OR endDegree} negative.
-     * @throws IllegalArgumentException if {@code startDegree >= endDegree}.
-     * @throws IllegalArgumentException if the difference between {@code endDegree and startDegree} bigger than 360.
-     */
-    public void setStartEndDegree (int startDegree, int endDegree) {
-        this.startDegree = startDegree;
-        this.endDegree = endDegree;
-        checkStartAndEndDegree();
-        cancelSpeedAnimator();
-        degree = getDegreeAtSpeed(speed);
-        if (!attachedToWindow)
-            return;
-        updateBackgroundBitmap();
-        tremble();
-        invalidate();
-    }
-
     public int getLowSpeedPercent() {
         return lowSpeedPercent;
     }
 
     public float getLowSpeedOffset() {
-        return lowSpeedPercent/100f;
+        return lowSpeedPercent *.01f;
     }
 
     /**
@@ -1378,7 +1066,7 @@ abstract public class Speedometer extends View {
     }
 
     public float getMediumSpeedOffset() {
-        return mediumSpeedPercent/100f;
+        return mediumSpeedPercent *.01f;
     }
 
     /**
@@ -1427,24 +1115,6 @@ abstract public class Speedometer extends View {
         return getHeight() - (padding*2);
     }
 
-    /**
-     * @return size of speedometer.
-     */
-    public int getSize() {
-        if (speedometerMode == Mode.NORMAL)
-            return getWidth();
-        if (speedometerMode.isHalf)
-            return getWidth() > getHeight() ? getWidth() : getHeight();
-        return getWidth()*2;
-    }
-
-    /**
-     * @return size of speedometer without padding.
-     */
-    public int getSizePa() {
-        return getSize() - (padding*2);
-    }
-
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
@@ -1455,44 +1125,6 @@ abstract public class Speedometer extends View {
     public void setPaddingRelative(int start, int top, int end, int bottom) {
         super.setPaddingRelative(start, top, end, bottom);
         updatePadding();
-    }
-
-    /**
-     * Display new <a href="https://github.com/anastr/SpeedView/wiki/Notes">Note</a>
-     * for 3 seconds.
-     * @param note to display.
-     */
-    public void addNote(Note note) {
-        addNote(note, 3000);
-    }
-
-    /**
-     * Display new <a href="https://github.com/anastr/SpeedView/wiki/Notes">Note</a>
-     * for custom seconds.
-     * @param note to display.
-     * @param showTimeMillisecond time to remove Note.
-     */
-    public void addNote(final Note note, long showTimeMillisecond) {
-        note.build(getWidth());
-        notes.add(note);
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (attachedToWindow) {
-                    notes.remove(note);
-                    postInvalidate();
-                }
-            }
-        }, showTimeMillisecond);
-        invalidate();
-    }
-
-    /**
-     * remove All <a href="https://github.com/anastr/SpeedView/wiki/Notes">Notes</a>.
-     */
-    public void removeAllNotes() {
-        notes.clear();
-        invalidate();
     }
 
     public Locale getLocale() {
@@ -1512,50 +1144,13 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * draw minSpeedText and maxSpeedText at default Position.
-     * @param c canvas to draw.
-     */
-    protected void drawDefMinMaxSpeedPosition(Canvas c) {
-        if (getStartDegree()%360 <= 90)
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getStartDegree()%360 <= 180)
-            textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getStartDegree()%360 <= 270)
-            textPaint.setTextAlign(Paint.Align.CENTER);
-        else
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        c.save();
-        c.rotate(getStartDegree() + 90f, getSize()/2f, getSize()/2f);
-        c.rotate(-(getStartDegree() + 90f)
-                , getSizePa()/2f - textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
-        c.drawText(getMinSpeedText(), getSizePa()/2f - textPaint.getTextSize() + padding
-                , textPaint.getTextSize() + padding, textPaint);
-        c.restore();
-        if (getEndDegree()%360 <= 90)
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        else if (getEndDegree()%360 <= 180)
-            textPaint.setTextAlign(Paint.Align.LEFT);
-        else if (getEndDegree()%360 <= 270)
-            textPaint.setTextAlign(Paint.Align.CENTER);
-        else
-            textPaint.setTextAlign(Paint.Align.RIGHT);
-        c.save();
-        c.rotate(getEndDegree() + 90f, getSize()/2f, getSize()/2f);
-        c.rotate(-(getEndDegree() + 90f)
-                , getSizePa()/2f + textPaint.getTextSize() + padding, textPaint.getTextSize() + padding);
-        c.drawText(getMaxSpeedText(), getSizePa()/2f + textPaint.getTextSize() + padding
-                , textPaint.getTextSize() + padding, textPaint);
-        c.restore();
-    }
-
-    /**
      * check if correct speed in <b>Low Speed Section</b>.
      * @return true if correct speed in Low Speed Section.
      *
      * @see #setLowSpeedPercent(int)
      */
     public boolean isInLowSection() {
-        return (endDegree - startDegree)*getLowSpeedOffset() + startDegree >= degree;
+        return (maxSpeed - minSpeed)*getLowSpeedOffset() + minSpeed >= correctSpeed;
     }
 
     /**
@@ -1566,7 +1161,7 @@ abstract public class Speedometer extends View {
      * @see #setMediumSpeedPercent(int)
      */
     public boolean isInMediumSection() {
-        return (endDegree - startDegree)*getMediumSpeedOffset() + startDegree >= degree && !isInLowSection();
+        return (maxSpeed - minSpeed)*getMediumSpeedOffset() + minSpeed >= correctSpeed && !isInLowSection();
     }
 
     /**
@@ -1575,7 +1170,7 @@ abstract public class Speedometer extends View {
      * , and it is not in Low Speed Section or Medium Speed Section.
      */
     public boolean isInHighSection() {
-        return degree > (endDegree - startDegree)*getMediumSpeedOffset() + startDegree;
+        return correctSpeed > (maxSpeed - minSpeed)*getMediumSpeedOffset() + minSpeed;
     }
 
     /**
@@ -1593,6 +1188,10 @@ abstract public class Speedometer extends View {
 
     public int getPadding() {
         return padding;
+    }
+
+    public boolean isAttachedToWindow() {
+        return attachedToWindow;
     }
 
     /**
@@ -1655,56 +1254,6 @@ abstract public class Speedometer extends View {
         this.decelerate = decelerate;
     }
 
-    public float getIndicatorWidth() {
-        return indicator.getIndicatorWidth();
-    }
-
-    /**
-     * change indicator width, this value have several meaning
-     * between {@link Indicator.Indicators}, it will be ignore
-     * if using {@link ImageIndicator}.
-     * @param indicatorWidth new width in pixel.
-     */
-    public void setIndicatorWidth(float indicatorWidth) {
-        indicator.noticeIndicatorWidthChange(indicatorWidth);
-        if (!attachedToWindow)
-            return;
-        invalidate();
-    }
-
-    /**
-     * call this method to apply/remove blur effect for indicator.
-     * @param withEffects effect.
-     */
-    protected void indicatorEffects(boolean withEffects) {
-        indicator.withEffects(withEffects);
-    }
-
-    /**
-     * change <a href="https://github.com/anastr/SpeedView/wiki/Indicators">indicator shape</a>.<br>
-     * this method will get bach indicatorColor and indicatorWidth to default.
-     * @param indicator new indicator (Enum value).
-     */
-    public void setIndicator (Indicator.Indicators indicator) {
-        this.indicator = Indicator.createIndicator(getContext(), indicator);
-        if(!attachedToWindow)
-            return;
-        this.indicator.setTargetSpeedometer(this);
-        invalidate();
-    }
-
-    /**
-     * add custom <a href="https://github.com/anastr/SpeedView/wiki/Indicators">indicator</a>.
-     * @param indicator new indicator.
-     */
-    public void setIndicator(Indicator indicator) {
-        this.indicator = indicator;
-        if(!attachedToWindow)
-            return;
-        this.indicator.setTargetSpeedometer(this);
-        invalidate();
-    }
-
     /**
      * @return canvas translate dx.
      */
@@ -1717,58 +1266,6 @@ abstract public class Speedometer extends View {
      */
     protected final float getTranslatedDy() {
         return translatedDy;
-    }
-
-    /**
-     * @return correct position of center X to use in drawing.
-     */
-    protected final float getViewCenterX() {
-        switch (speedometerMode) {
-            case LEFT:
-            case TOP_LEFT:
-            case BOTTOM_LEFT:
-                return getSize()/2f - (getWidth()/2f);
-            case RIGHT:
-            case TOP_RIGHT:
-            case BOTTOM_RIGHT:
-                return getSize()/2f + (getWidth()/2f);
-            default:
-                return getSize()/2f;
-        }
-    }
-
-    /**
-     * @return correct position of center Y to use in drawing.
-     */
-    protected final float getViewCenterY() {
-        switch (speedometerMode) {
-            case TOP:
-            case TOP_LEFT:
-            case TOP_RIGHT:
-                return getSize()/2f - (getHeight()/2f);
-            case BOTTOM:
-            case BOTTOM_LEFT:
-            case BOTTOM_RIGHT:
-                return getSize()/2f + (getHeight()/2f);
-            default:
-                return getSize()/2f;
-        }
-    }
-
-    protected final float getViewLeft() {
-        return getViewCenterX() - getWidth()/2f;
-    }
-
-    protected final float getViewTop() {
-        return getViewCenterY() - getHeight()/2f;
-    }
-
-    protected final float getViewRight() {
-        return getViewCenterX() + getWidth()/2f;
-    }
-
-    protected final float getViewBottom() {
-        return getViewCenterY() + getHeight()/2f;
     }
 
     public float getUnitSpeedInterval() {
@@ -1815,55 +1312,6 @@ abstract public class Speedometer extends View {
     }
 
     /**
-     * change speedometer shape, style and indicator position.<br>
-     * this option will return {@link #startDegree} to the <b>minimum</b> value,
-     * and {@link #endDegree} to the <b>maximum</b> value
-     * if the speedometerMode doesn't equal to {@code Mode.NORMAL}.
-     * @param speedometerMode enum value.
-     */
-    public void setSpeedometerMode (Mode speedometerMode) {
-        this.speedometerMode = speedometerMode;
-        if (speedometerMode != Mode.NORMAL) {
-            startDegree = speedometerMode.minDegree;
-            endDegree = speedometerMode.maxDegree;
-        }
-        cancelSpeedAnimator();
-        degree = getDegreeAtSpeed(speed);
-        indicator.onSizeChange(this);
-        if(!attachedToWindow)
-            return;
-        requestLayout();
-        updateBackgroundBitmap();
-        tremble();
-        invalidate();
-    }
-
-    public enum Mode {
-        NORMAL         (0 ,360*2, false, 1, 1)
-        , LEFT         (90 , 270, true , 2, 1)
-        , TOP          (180, 360, true , 1, 2)
-        , RIGHT        (270, 450, true , 2, 1)
-        , BOTTOM       (0  , 180, true , 1, 2)
-        , TOP_LEFT     (180, 270, false, 1, 1)
-        , TOP_RIGHT    (270, 360, false, 1, 1)
-        , BOTTOM_RIGHT (0  , 90 , false, 1, 1)
-        , BOTTOM_LEFT  (90 , 180, false, 1, 1);
-
-        int minDegree;
-        int maxDegree;
-        boolean isHalf;
-        int divWidth;
-        int divHeight;
-        Mode (int minDegree, int maxDegree, boolean isHalf, int divWidth, int divHeight) {
-            this.minDegree = minDegree;
-            this.maxDegree = maxDegree;
-            this.isHalf = isHalf;
-            this.divWidth = divWidth;
-            this.divHeight = divHeight;
-        }
-    }
-
-    /**
      * change position of speed and unit text.
      * @param position new Position (enum value).
      */
@@ -1886,10 +1334,10 @@ abstract public class Speedometer extends View {
         , BOTTOM_CENTER (.5f, .9f, .5f, 1f)
         , BOTTOM_RIGHT  (.9f, .9f, 1f , 1f);
 
-        float x;
-        float y;
-        float width;
-        float height;
+        final float x;
+        final float y;
+        final float width;
+        final float height;
 
         Position(float x, float y, float width, float height) {
             this.x = x;

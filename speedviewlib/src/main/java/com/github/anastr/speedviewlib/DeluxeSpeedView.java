@@ -11,8 +11,10 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 import com.github.anastr.speedviewlib.components.Indicators.NormalSmallIndicator;
+import com.github.anastr.speedviewlib.base.SpeedometerDefault;
 
 /**
  * this Library build By Anas Altair
@@ -48,14 +50,20 @@ public class DeluxeSpeedView extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        super.setIndicator(new NormalSmallIndicator(getContext()));
-        super.setIndicatorColor(Color.parseColor("#00ffec"));
-        super.setCenterCircleColor(Color.parseColor("#e0e0e0"));
-        super.setLowSpeedColor(Color.parseColor("#37872f"));
-        super.setMediumSpeedColor(Color.parseColor("#a38234"));
-        super.setHighSpeedColor(Color.parseColor("#9b2020"));
         super.setTextColor(Color.WHITE);
-        super.setBackgroundCircleColor(Color.parseColor("#212121"));
+    }
+
+    @Override
+    protected SpeedometerDefault getSpeedometerDefault() {
+        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
+        speedometerDefault.indicator = new NormalSmallIndicator(getContext())
+                .setIndicatorColor(Color.parseColor("#00ffec"));
+        speedometerDefault.backgroundCircleColor = Color.parseColor("#212121");
+        speedometerDefault.centerCircleColor = Color.parseColor("#e0e0e0");
+        speedometerDefault.lowSpeedColor = Color.parseColor("#37872f");
+        speedometerDefault.mediumSpeedColor = Color.parseColor("#a38234");
+        speedometerDefault.highSpeedColor = Color.parseColor("#9b2020");
+        return speedometerDefault;
     }
 
     private void init() {

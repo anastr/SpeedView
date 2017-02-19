@@ -10,6 +10,9 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.base.Speedometer;
+import com.github.anastr.speedviewlib.base.SpeedometerDefault;
+
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
@@ -40,11 +43,17 @@ public class TubeSpeedometer extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        super.setLowSpeedColor(Color.parseColor("#00BCD4"));
-        super.setMediumSpeedColor(Color.parseColor("#FFC107"));
-        super.setHighSpeedColor(Color.parseColor("#F44336"));
-        super.setSpeedometerWidth(dpTOpx(40f));
-        super.setBackgroundCircleColor(Color.TRANSPARENT);
+    }
+
+    @Override
+    protected SpeedometerDefault getSpeedometerDefault() {
+        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
+        speedometerDefault.backgroundCircleColor = Color.TRANSPARENT;
+        speedometerDefault.lowSpeedColor = Color.parseColor("#00BCD4");
+        speedometerDefault.mediumSpeedColor = Color.parseColor("#FFC107");
+        speedometerDefault.highSpeedColor = Color.parseColor("#F44336");
+        speedometerDefault.speedometerWidth = dpTOpx(40f);
+        return speedometerDefault;
     }
 
     private void init() {

@@ -14,7 +14,9 @@ import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.components.Indicators.SpindleIndicator;
+import com.github.anastr.speedviewlib.base.SpeedometerDefault;
 
 /**
  * this Library build By Anas Altair
@@ -49,18 +51,23 @@ public class PointerSpeedometer extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        super.setIndicator(new SpindleIndicator(getContext()));
-        super.setIndicatorWidth(dpTOpx(16f));
-        super.setIndicatorColor(Color.WHITE);
-        super.setMarkColor(Color.WHITE);
         super.setTextColor(Color.WHITE);
-        super.setCenterCircleColor(Color.WHITE);
         super.setSpeedTextColor(Color.WHITE);
         super.setSpeedTextSize(dpTOpx(24f));
-        super.setSpeedometerWidth(dpTOpx(10f));
-        super.setBackgroundCircleColor(Color.parseColor("#48cce9"));
         super.setUnitTextSize(dpTOpx(11f));
         super.setSpeedTextTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+    }
+
+    @Override
+    protected SpeedometerDefault getSpeedometerDefault() {
+        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
+        speedometerDefault.indicator = new SpindleIndicator(getContext())
+                .setIndicatorWidth(dpTOpx(16f))
+                .setIndicatorColor(Color.WHITE);
+        speedometerDefault.backgroundCircleColor = Color.parseColor("#48cce9");
+        speedometerDefault.centerCircleColor = Color.WHITE;
+        speedometerDefault.speedometerWidth = dpTOpx(10f);
+        return speedometerDefault;
     }
 
     private void init() {
