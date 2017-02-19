@@ -18,12 +18,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:padding="20dp"
-        app:speedTextSize="23dp"
-        app:lowSpeedColor="#64DD17"
-        app:mediumSpeedColor="#FFAB00"
-        app:highSpeedColor="#F44336"
-        app:indicatorColor="#03A9F4"
-        app:centerCircleColor="#795548"/>
+        app:sv_speedTextSize="23dp"
+        app:sv_lowSpeedColor="#64DD17"
+        app:sv_mediumSpeedColor="#FFAB00"
+        app:sv_highSpeedColor="#F44336"
+        app:sv_indicatorColor="#03A9F4"
+        app:sv_centerCircleColor="#795548"/>
 
     <LinearLayout
         android:orientation="horizontal"

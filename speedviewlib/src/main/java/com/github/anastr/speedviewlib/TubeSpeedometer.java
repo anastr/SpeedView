@@ -71,8 +71,8 @@ public class TubeSpeedometer extends Speedometer {
         }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AwesomeSpeedometer, 0, 0);
 
-        speedometerColor = a.getColor(R.styleable.TubeSpeedometer_speedometerColor, speedometerColor);
-        withEffects3D = a.getBoolean(R.styleable.TubeSpeedometer_withEffects3D, withEffects3D);
+        speedometerColor = a.getColor(R.styleable.TubeSpeedometer_sv_speedometerColor, speedometerColor);
+        withEffects3D = a.getBoolean(R.styleable.TubeSpeedometer_sv_withEffects3D, withEffects3D);
         a.recycle();
         initAttributeValue();
     }
@@ -140,7 +140,7 @@ public class TubeSpeedometer extends Speedometer {
         Canvas c = createBackgroundBitmapCanvas();
         initDraw();
 
-        float risk = getSpeedometerWidth()/2f + getPadding();
+        float risk = getSpeedometerWidth() *.5f + getPadding();
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
 
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, tubeBacPaint);

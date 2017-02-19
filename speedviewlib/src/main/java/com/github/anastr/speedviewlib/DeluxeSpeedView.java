@@ -83,8 +83,8 @@ public class DeluxeSpeedView extends Speedometer {
         }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DeluxeSpeedView, 0, 0);
 
-        speedBackgroundColor = a.getColor(R.styleable.DeluxeSpeedView_speedBackgroundColor, speedBackgroundColor);
-        withEffects = a.getBoolean(R.styleable.DeluxeSpeedView_withEffects, withEffects);
+        speedBackgroundColor = a.getColor(R.styleable.DeluxeSpeedView_sv_speedBackgroundColor, speedBackgroundColor);
+        withEffects = a.getBoolean(R.styleable.DeluxeSpeedView_sv_withEffects, withEffects);
         a.recycle();
         setWithEffects(withEffects);
         initAttributeValue();
@@ -121,7 +121,7 @@ public class DeluxeSpeedView extends Speedometer {
 
         drawSpeedUnitText(canvas);
         drawIndicator(canvas);
-        canvas.drawCircle(getSize()/2f, getSize()/2f, getWidthPa()/12f, centerCirclePaint);
+        canvas.drawCircle(getSize() *.5f, getSize() *.5f, getWidthPa()/12f, centerCirclePaint);
         drawNotes(canvas);
     }
 
@@ -132,17 +132,17 @@ public class DeluxeSpeedView extends Speedometer {
 
         float smallMarkH = getHeightPa()/20f;
         smallMarkPath.reset();
-        smallMarkPath.moveTo(getSize()/2f, getSpeedometerWidth() + getPadding());
-        smallMarkPath.lineTo(getSize()/2f, getSpeedometerWidth() + getPadding() + smallMarkH);
+        smallMarkPath.moveTo(getSize() *.5f, getSpeedometerWidth() + getPadding());
+        smallMarkPath.lineTo(getSize() *.5f, getSpeedometerWidth() + getPadding() + smallMarkH);
         smallMarkPaint.setStrokeWidth(3);
 
         float markH = getHeightPa()/28f;
         markPath.reset();
-        markPath.moveTo(getSize()/2f, getPadding());
-        markPath.lineTo(getSize()/2f, markH + getPadding());
+        markPath.moveTo(getSize() *.5f, getPadding());
+        markPath.lineTo(getSize() *.5f, markH + getPadding());
         markPaint.setStrokeWidth(markH/3f);
 
-        float risk = getSpeedometerWidth()/2f + getPadding();
+        float risk = getSpeedometerWidth() *.5f + getPadding();
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
 
         speedometerPaint.setColor(getHighSpeedColor());
@@ -155,18 +155,18 @@ public class DeluxeSpeedView extends Speedometer {
                 , (getEndDegree()- getStartDegree())*getLowSpeedOffset(), false, speedometerPaint);
 
         c.save();
-        c.rotate(90f + getStartDegree(), getSize()/2f, getSize()/2f);
+        c.rotate(90f + getStartDegree(), getSize() *.5f, getSize() *.5f);
         float everyDegree = (getEndDegree() - getStartDegree()) * .111f;
         for (float i = getStartDegree(); i < getEndDegree()-(2f*everyDegree); i+=everyDegree) {
-            c.rotate(everyDegree, getSize()/2f, getSize()/2f);
+            c.rotate(everyDegree, getSize() *.5f, getSize() *.5f);
             c.drawPath(markPath, markPaint);
         }
         c.restore();
 
         c.save();
-        c.rotate(90f + getStartDegree(), getSize()/2f, getSize()/2f);
+        c.rotate(90f + getStartDegree(), getSize() *.5f, getSize() *.5f);
         for (float i = getStartDegree(); i < getEndDegree() - 10f; i+=10f) {
-            c.rotate(10f, getSize()/2f, getSize()/2f);
+            c.rotate(10f, getSize() *.5f, getSize() *.5f);
             c.drawPath(smallMarkPath, smallMarkPaint);
         }
         c.restore();

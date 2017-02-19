@@ -48,6 +48,11 @@ public abstract class Indicator<I extends Indicator> {
         setTargetSpeedometer(speedometer);
     }
 
+    /**
+     * to change indicator's data,
+     * this method called by the library.
+     * @param speedometer target speedometer.
+     */
     public void setTargetSpeedometer(Speedometer speedometer) {
         updateData(speedometer);
         updateIndicator();
@@ -89,10 +94,16 @@ public abstract class Indicator<I extends Indicator> {
         return (I) this;
     }
 
+    /**
+     * @return x center of speedometer.
+     */
     public float getCenterX() {
         return viewSize /2f;
     }
 
+    /**
+     * @return y center of speedometer.
+     */
     public float getCenterY() {
         return viewSize /2f;
     }
@@ -134,6 +145,7 @@ public abstract class Indicator<I extends Indicator> {
         return inEditMode;
     }
 
+    /** indicator's shape */
     public enum Indicators {
         NoIndicator, NormalIndicator, NormalSmallIndicator, TriangleIndicator
         , SpindleIndicator, LineIndicator, HalfLineIndicator, QuarterLineIndicator

@@ -84,8 +84,8 @@ public class AwesomeSpeedometer extends Speedometer {
         }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AwesomeSpeedometer, 0, 0);
 
-        speedometerColor = a.getColor(R.styleable.AwesomeSpeedometer_speedometerColor, speedometerColor);
-        trianglesColor = a.getColor(R.styleable.AwesomeSpeedometer_trianglesColor, trianglesColor);
+        speedometerColor = a.getColor(R.styleable.AwesomeSpeedometer_sv_speedometerColor, speedometerColor);
+        trianglesColor = a.getColor(R.styleable.AwesomeSpeedometer_sv_trianglesColor, trianglesColor);
         a.recycle();
         initAttributeValue();
     }
@@ -103,14 +103,14 @@ public class AwesomeSpeedometer extends Speedometer {
     }
 
     private void updateGradient() {
-        float stop = (getWidthPa()/2f - getSpeedometerWidth()) / (getWidthPa()/2f);
+        float stop = (getWidthPa() *.5f - getSpeedometerWidth()) / (getWidthPa() *.5f);
         float stop2 = stop+((1f-stop)*.1f);
         float stop3 = stop+((1f-stop)*.36f);
         float stop4 = stop+((1f-stop)*.64f);
         float stop5 = stop+((1f-stop)*.9f);
         int []colors = new int[]{getBackgroundCircleColor(), speedometerColor, getBackgroundCircleColor()
                 , getBackgroundCircleColor(), speedometerColor, speedometerColor};
-        Shader radialGradient = new RadialGradient(getSize() / 2f, getSize() / 2f, getWidthPa() / 2f
+        Shader radialGradient = new RadialGradient(getSize() *.5f, getSize() *.5f, getWidthPa() *.5f
                 , colors, new float[]{stop, stop2, stop3, stop4, stop5, 1f}, Shader.TileMode.CLAMP);
         ringPaint.setShader(radialGradient);
     }
@@ -139,27 +139,27 @@ public class AwesomeSpeedometer extends Speedometer {
 
         float markH = getHeightPa()/22f;
         markPath.reset();
-        markPath.moveTo(getSize()/2f, getPadding());
-        markPath.lineTo(getSize()/2f, markH + getPadding());
+        markPath.moveTo(getSize() *.5f, getPadding());
+        markPath.lineTo(getSize() *.5f, markH + getPadding());
         markPaint.setStrokeWidth(markH/5f);
 
         trianglesPath.reset();
-        trianglesPath.moveTo(getSize()/2f, getPadding() + getHeightPa()/20f);
-        trianglesPath.lineTo(getSize()/2f -(getSize()/40f), getPadding());
-        trianglesPath.lineTo(getSize()/2f +(getSize()/40f), getPadding());
+        trianglesPath.moveTo(getSize() *.5f, getPadding() + getHeightPa()/20f);
+        trianglesPath.lineTo(getSize() *.5f -(getSize()/40f), getPadding());
+        trianglesPath.lineTo(getSize() *.5f +(getSize()/40f), getPadding());
 
-        float risk = getSpeedometerWidth()/2f + getPadding();
+        float risk = getSpeedometerWidth() *.5f + getPadding();
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
         c.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
 
         c.save();
-        c.rotate(getStartDegree()+90f, getSize()/2f, getSize()/2f);
+        c.rotate(getStartDegree()+90f, getSize() *.5f, getSize() *.5f);
         for (float i = 0; i <= getEndDegree() - getStartDegree(); i+=4f) {
-            c.rotate(4f, getSize()/2f, getSize()/2f);
+            c.rotate(4f, getSize() *.5f, getSize() *.5f);
             if (i % 40 == 0) {
                 c.drawPath(trianglesPath, trianglesPaint);
                 c.drawText(String.format(getLocale(), "%d", (int)getSpeedAtDegree(i + getStartDegree()))
-                        , getSize()/2f, getHeightPa()/20f +textPaint.getTextSize() + getPadding(), textPaint);
+                        , getSize() *.5f, getHeightPa()/20f +textPaint.getTextSize() + getPadding(), textPaint);
             }
             else {
                 if (i % 20 == 0)
@@ -175,7 +175,7 @@ public class AwesomeSpeedometer extends Speedometer {
     @Override
     public void setSpeedometerWidth(float speedometerWidth) {
         super.setSpeedometerWidth(speedometerWidth);
-        float risk = speedometerWidth/2f;
+        float risk = speedometerWidth *.5f;
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
         updateGradient();
         updateBackgroundBitmap();

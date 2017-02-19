@@ -17,10 +17,10 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        app:imageSpeedometer="@drawable/for_image_speedometer"
-        app:indicator="LineIndicator"
-        app:indicatorColor="#a750bcff"
-        app:speedTextColor="#fff"/>
+        app:sv_imageSpeedometer="@drawable/for_image_speedometer"
+        app:sv_indicator="LineIndicator"
+        app:sv_indicatorColor="#a750bcff"
+        app:sv_speedTextColor="#fff"/>
 
     <LinearLayout
         android:orientation="horizontal"

@@ -15,6 +15,11 @@ import android.graphics.RectF;
 @SuppressWarnings("unchecked,unused,WeakerAccess")
 public abstract class Note<N extends Note> {
 
+    /** This value used with the {@code speedometer.addNote(Note, int)} property
+     *  to keep the note on the speedometer.
+     *  <p>but it well be removed when call {@code speedometer.removeAllNotes()}.</p>*/
+    public static final int INFINITE = -1;
+
     private float density;
 
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG)
@@ -44,6 +49,12 @@ public abstract class Note<N extends Note> {
         return dp * density;
     }
 
+    /**
+     *  draw inside note's dialog.
+     * @param canvas canvas to draw.
+     * @param leftX left x position to start drawing.
+     * @param topY top y position to start drawing.
+     */
     protected abstract void drawContains(Canvas canvas, float leftX, float topY);
 
     /**
@@ -129,22 +140,25 @@ public abstract class Note<N extends Note> {
     }
 
     public void draw(Canvas canvas, float posX, float posY) {
-        if (align == Align.Left) {
-            canvas.drawBitmap(backgroundBitmap, posX - noteW, posY - (noteH/2f), paint);
-            drawContains(canvas, posX - noteW + paddingLeft, posY - (noteH/2f) + paddingTop);
+        switch (align) {
+            case Left:
+                canvas.drawBitmap(backgroundBitmap, posX - noteW, posY - (noteH / 2f), paint);
+                drawContains(canvas, posX - noteW + paddingLeft, posY - (noteH / 2f) + paddingTop);
+                break;
+            case Top:
+                canvas.drawBitmap(backgroundBitmap, posX - (noteW / 2f), posY - noteH, paint);
+                drawContains(canvas, posX - (containsW / 2f), posY - noteH + paddingTop);
+                break;
+            case Right:
+                canvas.drawBitmap(backgroundBitmap, posX, posY - (noteH / 2f), paint);
+                drawContains(canvas, posX + triangleHeight + paddingLeft, posY - (noteH / 2f) + paddingTop);
+                break;
+            case Bottom:
+                canvas.drawBitmap(backgroundBitmap, posX - (noteW / 2f), posY, paint);
+                drawContains(canvas, posX - (containsW / 2f), posY + triangleHeight + paddingTop);
+                break;
         }
-        else if (align == Align.Top) {
-            canvas.drawBitmap(backgroundBitmap, posX - (noteW/2f), posY - noteH, paint);
-            drawContains(canvas, posX - (containsW/2f), posY - noteH + paddingTop);
-        }
-        else if (align == Align.Right) {
-            canvas.drawBitmap(backgroundBitmap, posX, posY - (noteH/2f), paint);
-            drawContains(canvas, posX + triangleHeight + paddingLeft, posY - (noteH/2f) + paddingTop);
-        }
-        else if (align == Align.Bottom) {
-            canvas.drawBitmap(backgroundBitmap, posX - (noteW/2f), posY, paint);
-            drawContains(canvas, posX - (containsW/2f), posY + triangleHeight + paddingTop);
-        }
+
     }
 
     public int getBackgroundColor() {

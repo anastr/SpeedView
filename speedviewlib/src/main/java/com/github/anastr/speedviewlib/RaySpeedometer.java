@@ -69,11 +69,11 @@ public class RaySpeedometer extends Speedometer {
         }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.RaySpeedometer, 0, 0);
 
-        rayColor = a.getColor(R.styleable.RaySpeedometer_rayColor, rayColor);
-        int degreeBetweenMark = a.getInt(R.styleable.RaySpeedometer_degreeBetweenMark, this.degreeBetweenMark);
-        markWidth = a.getDimension(R.styleable.RaySpeedometer_markWidth, markWidth);
-        speedBackgroundColor = a.getColor(R.styleable.RaySpeedometer_speedBackgroundColor, speedBackgroundColor);
-        withEffects = a.getBoolean(R.styleable.RaySpeedometer_withEffects, withEffects);
+        rayColor = a.getColor(R.styleable.RaySpeedometer_sv_rayColor, rayColor);
+        int degreeBetweenMark = a.getInt(R.styleable.RaySpeedometer_sv_degreeBetweenMark, this.degreeBetweenMark);
+        markWidth = a.getDimension(R.styleable.RaySpeedometer_sv_markWidth, markWidth);
+        speedBackgroundColor = a.getColor(R.styleable.RaySpeedometer_sv_speedBackgroundColor, speedBackgroundColor);
+        withEffects = a.getBoolean(R.styleable.RaySpeedometer_sv_withEffects, withEffects);
         a.recycle();
         setWithEffects(withEffects);
         if (degreeBetweenMark > 0 && degreeBetweenMark <= 20)
@@ -111,12 +111,12 @@ public class RaySpeedometer extends Speedometer {
         super.onDraw(canvas);
 
         canvas.save();
-        canvas.rotate(getStartDegree()+90f, getSize()/2f, getSize()/2f);
+        canvas.rotate(getStartDegree()+90f, getSize() *.5f, getSize() *.5f);
         for (int i = getStartDegree(); i < getEndDegree(); i+=degreeBetweenMark) {
             if (getDegree() <= i) {
                 markPaint.setColor(getMarkColor());
                 canvas.drawPath(markPath, markPaint);
-                canvas.rotate(degreeBetweenMark, getSize()/2f, getSize()/2f);
+                canvas.rotate(degreeBetweenMark, getSize() *.5f, getSize() *.5f);
                 continue;
             }
             if (i > (getEndDegree()- getStartDegree())*getMediumSpeedOffset() + getStartDegree())
@@ -126,7 +126,7 @@ public class RaySpeedometer extends Speedometer {
             else
                 markPaint.setColor(getLowSpeedColor());
             canvas.drawPath(markPath, markPaint);
-            canvas.rotate(degreeBetweenMark, getSize()/2f, getSize()/2f);
+            canvas.rotate(degreeBetweenMark, getSize() *.5f, getSize()/2f);
         }
         canvas.restore();
 
@@ -165,7 +165,7 @@ public class RaySpeedometer extends Speedometer {
 
         c.save();
         for (int i=0; i<6; i++) {
-            c.rotate(58f, getSize()/2f, getSize()/2f);
+            c.rotate(58f, getSize() *.5f, getSize() *.5f);
             if (i % 2 == 0)
                 c.drawPath(ray1Path, rayPaint);
             else
@@ -178,8 +178,8 @@ public class RaySpeedometer extends Speedometer {
 
     private void updateMarkPath() {
         markPath.reset();
-        markPath.moveTo(getSize()/2f, getPadding());
-        markPath.lineTo(getSize()/2f, getSpeedometerWidth() + getPadding());
+        markPath.moveTo(getSize() *.5f, getPadding());
+        markPath.lineTo(getSize() *.5f, getSpeedometerWidth() + getPadding());
     }
 
     public boolean isWithEffects() {

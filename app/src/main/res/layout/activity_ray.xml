@@ -16,15 +16,15 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        app:backgroundCircleColor="#f0ff4c"
-        app:markColor="#414141"
-        app:textColor="#000"
-        app:rayColor="#d8ff0000"
-        app:lowSpeedColor="#3ada00"
-        app:mediumSpeedColor="#ff7700"
-        app:highSpeedColor="#ce0000"
-        app:degreeBetweenMark="5"
-        app:markWidth="3dp"/>
+        app:sv_backgroundCircleColor="#f0ff4c"
+        app:sv_markColor="#414141"
+        app:sv_textColor="#000"
+        app:sv_rayColor="#d8ff0000"
+        app:sv_lowSpeedColor="#3ada00"
+        app:sv_mediumSpeedColor="#ff7700"
+        app:sv_highSpeedColor="#ce0000"
+        app:sv_degreeBetweenMark="5"
+        app:sv_markWidth="3dp"/>
 
     <LinearLayout
         android:orientation="horizontal"

@@ -75,7 +75,7 @@ public class SpeedView extends Speedometer {
         drawSpeedUnitText(canvas);
 
         drawIndicator(canvas);
-        canvas.drawCircle(getSize()/2f, getSize()/2f, getWidthPa()/12f, paint);
+        canvas.drawCircle(getSize() *.5f, getSize() *.5f, getWidthPa()/12f, paint);
 
         drawNotes(canvas);
     }
@@ -87,11 +87,11 @@ public class SpeedView extends Speedometer {
 
         float markH = getSizePa()/28f;
         markPath.reset();
-        markPath.moveTo(getSize()/2f, getPadding());
-        markPath.lineTo(getSize()/2f, markH + getPadding());
+        markPath.moveTo(getSize() *.5f, getPadding());
+        markPath.lineTo(getSize() *.5f, markH + getPadding());
         markPaint.setStrokeWidth(markH/3f);
 
-        float risk = getSpeedometerWidth()/2f + getPadding();
+        float risk = getSpeedometerWidth() *.5f + getPadding();
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
 
         speedometerPaint.setColor(getHighSpeedColor());
@@ -104,10 +104,10 @@ public class SpeedView extends Speedometer {
                 , (getEndDegree()- getStartDegree())*getLowSpeedOffset(), false, speedometerPaint);
 
         c.save();
-        c.rotate(90f + getStartDegree(), getSize()/2f, getSize()/2f);
+        c.rotate(90f + getStartDegree(), getSize() *.5f, getSize() *.5f);
         float everyDegree = (getEndDegree() - getStartDegree()) * .111f;
         for (float i = getStartDegree(); i < getEndDegree()-(2f*everyDegree); i+=everyDegree) {
-            c.rotate(everyDegree, getSize()/2f, getSize()/2f);
+            c.rotate(everyDegree, getSize() *.5f, getSize() *.5f);
             c.drawPath(markPath, markPaint);
         }
         c.restore();
