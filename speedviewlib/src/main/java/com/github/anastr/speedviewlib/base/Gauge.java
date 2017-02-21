@@ -1346,8 +1346,4 @@ public abstract class Gauge extends View {
             this.height = height;
         }
     }
-
-    public enum Orientation {
-        HORIZONTAL, VERTICAL
-    }
 }
