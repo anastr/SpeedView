@@ -29,8 +29,7 @@ public class AwesomeSpeedometer extends Speedometer {
             trianglesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
 
-    private int speedometerColor = Color.parseColor("#00e6e6")
-            , trianglesColor = Color.parseColor("#3949ab");
+    private int speedometerColor = Color.parseColor("#00e6e6");
 
     public AwesomeSpeedometer(Context context) {
         this(context, null);
@@ -75,23 +74,17 @@ public class AwesomeSpeedometer extends Speedometer {
         textPaint.setTextAlign(Paint.Align.CENTER);
         ringPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextSize(dpTOpx(10));
+        trianglesPaint.setColor(Color.parseColor("#3949ab"));
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
-        if (attrs == null) {
-            initAttributeValue();
+        if (attrs == null)
             return;
-        }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AwesomeSpeedometer, 0, 0);
 
         speedometerColor = a.getColor(R.styleable.AwesomeSpeedometer_sv_speedometerColor, speedometerColor);
-        trianglesColor = a.getColor(R.styleable.AwesomeSpeedometer_sv_trianglesColor, trianglesColor);
+        trianglesPaint.setColor(a.getColor(R.styleable.AwesomeSpeedometer_sv_trianglesColor, trianglesPaint.getColor()));
         a.recycle();
-        initAttributeValue();
-    }
-
-    private void initAttributeValue() {
-        trianglesPaint.setColor(trianglesColor);
     }
 
     @Override
@@ -194,11 +187,10 @@ public class AwesomeSpeedometer extends Speedometer {
     }
 
     public int getTrianglesColor() {
-        return trianglesColor;
+        return trianglesPaint.getColor();
     }
 
     public void setTrianglesColor(int trianglesColor) {
-        this.trianglesColor = trianglesColor;
         trianglesPaint.setColor(trianglesColor);
         updateBackgroundBitmap();
         invalidate();

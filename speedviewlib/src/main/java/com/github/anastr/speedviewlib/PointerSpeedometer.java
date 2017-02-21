@@ -65,7 +65,6 @@ public class PointerSpeedometer extends Speedometer {
                 .setIndicatorWidth(dpTOpx(16f))
                 .setIndicatorColor(Color.WHITE);
         speedometerDefault.backgroundCircleColor = Color.parseColor("#48cce9");
-        speedometerDefault.centerCircleColor = Color.WHITE;
         speedometerDefault.speedometerWidth = dpTOpx(10f);
         return speedometerDefault;
     }
@@ -76,6 +75,7 @@ public class PointerSpeedometer extends Speedometer {
         markPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStrokeCap(Paint.Cap.ROUND);
         markPaint.setStrokeWidth(dpTOpx(2));
+        circlePaint.setColor(Color.WHITE);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -87,6 +87,7 @@ public class PointerSpeedometer extends Speedometer {
 
         speedometerColor = a.getColor(R.styleable.PointerSpeedometer_sv_speedometerColor, speedometerColor);
         pointerColor = a.getColor(R.styleable.PointerSpeedometer_sv_pointerColor, pointerColor);
+        circlePaint.setColor(a.getColor(R.styleable.PointerSpeedometer_sv_centerCircleColor, circlePaint.getColor()));
         a.recycle();
         initAttributeValue();
     }
@@ -111,7 +112,6 @@ public class PointerSpeedometer extends Speedometer {
         speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         speedometerPaint.setShader(updateSweep());
         markPaint.setColor(getMarkColor());
-        circlePaint.setColor(getCenterCircleColor());
     }
 
     @Override
@@ -203,6 +203,22 @@ public class PointerSpeedometer extends Speedometer {
         this.pointerColor = pointerColor;
         pointerPaint.setColor(pointerColor);
         updateRadial();
+        invalidate();
+    }
+
+    public int getCenterCircleColor() {
+        return circlePaint.getColor();
+    }
+
+    /**
+     * change the color of the center circle (if exist),
+     * <b>this option is not available for all Speedometers</b>.
+     * @param centerCircleColor new color.
+     */
+    public void setCenterCircleColor(int centerCircleColor) {
+        circlePaint.setColor(centerCircleColor);
+        if (!isAttachedToWindow())
+            return;
         invalidate();
     }
 

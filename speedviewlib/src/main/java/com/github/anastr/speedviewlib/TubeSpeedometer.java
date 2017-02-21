@@ -23,8 +23,6 @@ public class TubeSpeedometer extends Speedometer {
             ,tubeBacPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
 
-    private int speedometerColor = Color.parseColor("#757575");
-
     private boolean withEffects3D = true;
 
     public TubeSpeedometer(Context context) {
@@ -59,27 +57,21 @@ public class TubeSpeedometer extends Speedometer {
     private void init() {
         tubePaint.setStyle(Paint.Style.STROKE);
         tubeBacPaint.setStyle(Paint.Style.STROKE);
+        tubeBacPaint.setColor(Color.parseColor("#757575"));
+        tubePaint.setColor(getLowSpeedColor());
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
-        if (attrs == null) {
-            initAttributeValue();
+        if (attrs == null)
             return;
-        }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AwesomeSpeedometer, 0, 0);
 
-        speedometerColor = a.getColor(R.styleable.TubeSpeedometer_sv_speedometerColor, speedometerColor);
+        tubeBacPaint.setColor(a.getColor(R.styleable.TubeSpeedometer_sv_speedometerBackColor, tubeBacPaint.getColor()));
         withEffects3D = a.getBoolean(R.styleable.TubeSpeedometer_sv_withEffects3D, withEffects3D);
         a.recycle();
-        initAttributeValue();
-    }
-
-    private void initAttributeValue() {
-        tubeBacPaint.setColor(speedometerColor);
-        tubePaint.setColor(getLowSpeedColor());
     }
 
     @Override
@@ -149,11 +141,10 @@ public class TubeSpeedometer extends Speedometer {
     }
 
     public int getSpeedometerColor() {
-        return speedometerColor;
+        return tubeBacPaint.getColor();
     }
 
     public void setSpeedometerColor(int speedometerColor) {
-        this.speedometerColor = speedometerColor;
         updateBackgroundBitmap();
         invalidate();
     }

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <attr name="sv_speedometerBackColor" format="color"/>
+    <attr name="sv_speedometerColor" format="color"/>
+    <attr name="sv_centerCircleColor" format="color" />
+
+    <attr name="sv_speedBackgroundColor" format="color" />
+    <attr name="sv_withEffects" format="boolean" />
+
     <declare-styleable name="Gauge">
         <attr name="sv_textColor" format="color" />
         <attr name="sv_speedTextColor" format="color"/>
@@ -45,13 +53,11 @@
 
     <declare-styleable name="Speedometer"  parent="Gauge">
         <attr name="sv_indicatorColor" format="color" />
-        <attr name="sv_centerCircleColor" format="color" />
         <attr name="sv_markColor" format="color" />
         <attr name="sv_lowSpeedColor" format="color" />
         <attr name="sv_mediumSpeedColor" format="color" />
         <attr name="sv_highSpeedColor" format="color" />
         <attr name="sv_backgroundCircleColor" format="color" />
-        <attr name="sv_speedometerColor" format="color"/>
         <attr name="sv_speedometerWidth" format="dimension" />
 
         <attr name="sv_startDegree" format="integer" />
@@ -86,12 +92,13 @@
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">
+        <attr name="sv_centerCircleColor" />
     </declare-styleable>
 
     <declare-styleable name="DeluxeSpeedView" parent="Speedometer">
-
-        <attr name="sv_speedBackgroundColor" format="color" />
-        <attr name="sv_withEffects" format="boolean" />
+        <attr name="sv_centerCircleColor" />
+        <attr name="sv_speedBackgroundColor" />
+        <attr name="sv_withEffects" />
     </declare-styleable>
 
     <declare-styleable name="AwesomeSpeedometer" parent="Speedometer">
@@ -99,7 +106,7 @@
         <attr name="sv_trianglesColor" format="color"/>
     </declare-styleable>
 
-    <declare-styleable name="RaySpeedometer" parent="DeluxeSpeedView">
+    <declare-styleable name="RaySpeedometer" parent="Speedometer">
         <attr name="sv_speedBackgroundColor" />
         <attr name="sv_withEffects" />
         <attr name="sv_rayColor" format="color"/>
@@ -108,12 +115,13 @@
     </declare-styleable>
 
     <declare-styleable name="PointerSpeedometer" parent="Speedometer">
+        <attr name="sv_centerCircleColor" />
         <attr name="sv_speedometerColor" />
         <attr name="sv_pointerColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="TubeSpeedometer" parent="Speedometer">
-        <attr name="sv_speedometerColor" />
+        <attr name="sv_speedometerBackColor" />
         <attr name="sv_withEffects3D" format="boolean" />
     </declare-styleable>
 

@@ -27,8 +27,7 @@ public abstract class Speedometer extends Gauge {
     private Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private float speedometerWidth = dpTOpx(30f);
 
-    private int centerCircleColor = Color.DKGRAY
-            , markColor = Color.WHITE
+    private int markColor = Color.WHITE
             , lowSpeedColor = Color.GREEN
             , mediumSpeedColor = Color.YELLOW
             , highSpeedColor = Color.RED
@@ -70,7 +69,6 @@ public abstract class Speedometer extends Gauge {
                 indicator = speedometerDefault.indicator;
             if (speedometerDefault.speedometerWidth >= 0)
                 speedometerWidth = speedometerDefault.speedometerWidth;
-            centerCircleColor = speedometerDefault.centerCircleColor;
             markColor = speedometerDefault.markColor;
             lowSpeedColor = speedometerDefault.lowSpeedColor;
             mediumSpeedColor = speedometerDefault.mediumSpeedColor;
@@ -89,7 +87,6 @@ public abstract class Speedometer extends Gauge {
         int mode = a.getInt(R.styleable.Speedometer_sv_speedometerMode, -1);
         if (mode != -1 && mode != 0)
             setSpeedometerMode(Mode.values()[mode]);
-        centerCircleColor = a.getColor(R.styleable.Speedometer_sv_centerCircleColor, centerCircleColor);
         markColor = a.getColor(R.styleable.Speedometer_sv_markColor, markColor);
         lowSpeedColor = a.getColor(R.styleable.Speedometer_sv_lowSpeedColor, lowSpeedColor);
         mediumSpeedColor = a.getColor(R.styleable.Speedometer_sv_mediumSpeedColor, mediumSpeedColor);
@@ -240,22 +237,6 @@ public abstract class Speedometer extends Gauge {
      */
     public void setIndicatorColor(int indicatorColor) {
         indicator.noticeIndicatorColorChange(indicatorColor);
-        if (!isAttachedToWindow())
-            return;
-        invalidate();
-    }
-
-    public int getCenterCircleColor() {
-        return centerCircleColor;
-    }
-
-    /**
-     * change the color of the center circle (if exist),
-     * <b>this option is not available for all Speedometers</b>.
-     * @param centerCircleColor new color.
-     */
-    public void setCenterCircleColor(int centerCircleColor) {
-        this.centerCircleColor = centerCircleColor;
         if (!isAttachedToWindow())
             return;
         invalidate();

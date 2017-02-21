@@ -1348,6 +1348,6 @@ public abstract class Gauge extends View {
     }
 
     public enum Orientation {
-        VERTICAL, HORIZONTAL
+        HORIZONTAL, VERTICAL
     }
 }
