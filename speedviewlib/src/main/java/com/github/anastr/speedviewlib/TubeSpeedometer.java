@@ -67,7 +67,7 @@ public class TubeSpeedometer extends Speedometer {
     private void initAttributeSet(Context context, AttributeSet attrs) {
         if (attrs == null)
             return;
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AwesomeSpeedometer, 0, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TubeSpeedometer, 0, 0);
 
         tubeBacPaint.setColor(a.getColor(R.styleable.TubeSpeedometer_sv_speedometerBackColor, tubeBacPaint.getColor()));
         withEffects3D = a.getBoolean(R.styleable.TubeSpeedometer_sv_withEffects3D, withEffects3D);
