@@ -16,6 +16,7 @@
     <declare-styleable name="Gauge">
         <attr name="sv_textColor" format="color" />
         <attr name="sv_speedTextColor" format="color"/>
+        <attr name="sv_unitTextColor" format="color"/>
         <attr name="sv_withTremble" format="boolean" />
         <attr name="sv_speedTextSize" format="dimension" />
         <attr name="sv_textSize" format="dimension" />

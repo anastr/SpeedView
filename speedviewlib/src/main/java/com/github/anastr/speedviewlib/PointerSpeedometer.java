@@ -53,6 +53,7 @@ public class PointerSpeedometer extends Speedometer {
     protected void defaultValues() {
         super.setTextColor(Color.WHITE);
         super.setSpeedTextColor(Color.WHITE);
+        super.setUnitTextColor(Color.WHITE);
         super.setSpeedTextSize(dpTOpx(24f));
         super.setUnitTextSize(dpTOpx(11f));
         super.setSpeedTextTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));

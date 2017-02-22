@@ -36,15 +36,9 @@ public abstract class Gauge extends View {
     protected TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private TextPaint speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG),
             unitTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-    private float speedTextSize = dpTOpx(18f);
-    private float textSize = dpTOpx(10f);
-    private float unitTextSize = dpTOpx(15f);
     /** the text after speedText */
     private String unit = "Km/h";
     private boolean withTremble = true;
-
-    private int textColor = Color.BLACK
-            , speedTextColor = Color.BLACK;
 
     /** the max range in speedometer, {@code default = 100} */
     private int maxSpeed = 100;
@@ -135,6 +129,12 @@ public abstract class Gauge extends View {
     }
 
     private void init() {
+        textPaint.setColor(Color.BLACK);
+        textPaint.setTextSize(dpTOpx(10f));
+        speedTextPaint.setColor(Color.BLACK);
+        speedTextPaint.setTextSize(dpTOpx(18f));
+        unitTextPaint.setColor(Color.BLACK);
+        unitTextPaint.setTextSize(dpTOpx(15f));
 
         if (Build.VERSION.SDK_INT >= 11) {
             speedAnimator = ValueAnimator.ofFloat(0f, 1f);
@@ -168,16 +168,17 @@ public abstract class Gauge extends View {
             return;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.Gauge, 0, 0);
 
-        textColor = a.getColor(R.styleable.Gauge_sv_textColor, textColor);
-        speedTextColor = a.getColor(R.styleable.Gauge_sv_speedTextColor, speedTextColor);
         maxSpeed = a.getInt(R.styleable.Gauge_sv_maxSpeed, maxSpeed);
         minSpeed = a.getInt(R.styleable.Gauge_sv_minSpeed, minSpeed);
         withTremble = a.getBoolean(R.styleable.Gauge_sv_withTremble, withTremble);
-        speedTextSize = a.getDimension(R.styleable.Gauge_sv_speedTextSize, speedTextSize);
-        textSize = a.getDimension(R.styleable.Gauge_sv_textSize, textSize);
+        textPaint.setColor(a.getColor(R.styleable.Gauge_sv_textColor, textPaint.getColor()));
+        textPaint.setTextSize(a.getDimension(R.styleable.Gauge_sv_textSize, textPaint.getTextSize()));
+        speedTextPaint.setColor(a.getColor(R.styleable.Gauge_sv_speedTextColor, speedTextPaint.getColor()));
+        speedTextPaint.setTextSize(a.getDimension(R.styleable.Gauge_sv_speedTextSize, speedTextPaint.getTextSize()));
+        unitTextPaint.setColor(a.getColor(R.styleable.Gauge_sv_unitTextColor, unitTextPaint.getColor()));
+        unitTextPaint.setTextSize(a.getDimension(R.styleable.Gauge_sv_unitTextSize, unitTextPaint.getTextSize()));
         String unit = a.getString(R.styleable.Gauge_sv_unit);
         this.unit =  (unit != null) ? unit : this.unit;
-        unitTextSize = a.getDimension(R.styleable.Gauge_sv_unitTextSize, unitTextSize);
         trembleDegree = a.getFloat(R.styleable.Gauge_sv_trembleDegree, trembleDegree);
         trembleDuration = a.getInt(R.styleable.Gauge_sv_trembleDuration, trembleDuration);
         lowSpeedPercent = a.getInt(R.styleable.Gauge_sv_lowSpeedPercent, lowSpeedPercent);
@@ -208,12 +209,6 @@ public abstract class Gauge extends View {
     }
 
     private void initAttributeValue() {
-        speedTextPaint.setColor(speedTextColor);
-        speedTextPaint.setTextSize(speedTextSize);
-        unitTextPaint.setColor(speedTextColor);
-        unitTextPaint.setTextSize(unitTextSize);
-        textPaint.setColor(textColor);
-        textPaint.setTextSize(textSize);
         if (unitUnderSpeedText) {
             speedTextPaint.setTextAlign(Paint.Align.CENTER);
             unitTextPaint.setTextAlign(Paint.Align.CENTER);
@@ -915,7 +910,7 @@ public abstract class Gauge extends View {
     }
 
     public int getTextColor() {
-        return textColor;
+        return textPaint.getColor();
     }
 
     /**
@@ -923,9 +918,9 @@ public abstract class Gauge extends View {
      * @param textColor new color.
      *
      * @see #setSpeedTextColor(int)
+     * @see #setUnitTextColor(int)
      */
     public void setTextColor(int textColor) {
-        this.textColor = textColor;
         textPaint.setColor(textColor);
         if (!attachedToWindow)
             return;
@@ -934,26 +929,43 @@ public abstract class Gauge extends View {
     }
 
     public int getSpeedTextColor() {
-        return speedTextColor;
+        return speedTextPaint.getColor();
     }
 
     /**
      * change just speed text color.
      * @param speedTextColor new color.
      *
+     * @see #setUnitTextColor(int)
      * @see #setTextColor(int)
      */
     public void setSpeedTextColor(int speedTextColor) {
-        this.speedTextColor = speedTextColor;
         speedTextPaint.setColor(speedTextColor);
-        unitTextPaint.setColor(speedTextColor);
+        if (!attachedToWindow)
+            return;
+        invalidate();
+    }
+
+    public int getUnitTextColor() {
+        return unitTextPaint.getColor();
+    }
+
+    /**
+     * change just unit text color.
+     * @param unitTextColor new color.
+     *
+     * @see #setSpeedTextColor(int)
+     * @see #setTextColor(int)
+     */
+    public void setUnitTextColor(int unitTextColor) {
+        unitTextPaint.setColor(unitTextColor);
         if (!attachedToWindow)
             return;
         invalidate();
     }
 
     public float getTextSize() {
-        return textSize;
+        return textPaint.getTextSize();
     }
 
     /**
@@ -965,7 +977,6 @@ public abstract class Gauge extends View {
      * @see #setUnitTextSize(float)
      */
     public void setTextSize(float textSize) {
-        this.textSize = textSize;
         textPaint.setTextSize(textSize);
         if (!attachedToWindow)
             return;
@@ -973,7 +984,7 @@ public abstract class Gauge extends View {
     }
 
     public float getSpeedTextSize() {
-        return speedTextSize;
+        return speedTextPaint.getTextSize();
     }
 
     /**
@@ -985,7 +996,6 @@ public abstract class Gauge extends View {
      * @see #setUnitTextSize(float)
      */
     public void setSpeedTextSize(float speedTextSize) {
-        this.speedTextSize = speedTextSize;
         speedTextPaint.setTextSize(speedTextSize);
         recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
@@ -1002,7 +1012,6 @@ public abstract class Gauge extends View {
      * @see #setTextSize(float)
      */
     public void setUnitTextSize(float unitTextSize) {
-        this.unitTextSize = unitTextSize;
         unitTextPaint.setTextSize(unitTextSize);
         recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
@@ -1012,7 +1021,7 @@ public abstract class Gauge extends View {
     }
 
     public float getUnitTextSize() {
-        return unitTextSize;
+        return unitTextPaint.getTextSize();
     }
 
     /**

@@ -50,6 +50,7 @@ public class AwesomeSpeedometer extends Speedometer {
 
         super.setTextColor(Color.parseColor("#ffc260"));
         super.setSpeedTextColor(Color.WHITE);
+        super.setUnitTextColor(Color.WHITE);
         super.setTextTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         super.setSpeedTextPosition(Position.CENTER);
         super.setUnitUnderSpeedText(true);

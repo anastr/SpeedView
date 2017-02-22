@@ -20,7 +20,8 @@
         app:sv_imageSpeedometer="@drawable/for_image_speedometer"
         app:sv_indicator="LineIndicator"
         app:sv_indicatorColor="#a750bcff"
-        app:sv_speedTextColor="#fff"/>
+        app:sv_speedTextColor="#fff"
+        app:sv_unitTextColor="#fff"/>
 
     <LinearLayout
         android:orientation="horizontal"
