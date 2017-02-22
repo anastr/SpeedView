@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="sv_speedometerBackColor" format="color"/>
     <attr name="sv_speedometerColor" format="color"/>
+    <attr name="sv_speedometerBackColor" format="color"/>
     <attr name="sv_centerCircleColor" format="color" />
 
     <attr name="sv_speedBackgroundColor" format="color" />
     <attr name="sv_withEffects" format="boolean" />
+
+    <attr name="sv_orientation" format="enum" >
+        <enum name="HORIZONTAL" value="0" />
+        <enum name="VERTICAL" value="1" />
+    </attr>
 
     <declare-styleable name="Gauge">
         <attr name="sv_textColor" format="color" />
@@ -128,4 +133,11 @@
     <declare-styleable name="ImageSpeedometer" parent="Speedometer">
         <attr name="sv_imageSpeedometer" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="LinearGauge" parent="Gauge">
+        <attr name="sv_orientation" />
+        <attr name="sv_speedometerColor" />
+        <attr name="sv_speedometerBackColor" />
+    </declare-styleable>
+
 </resources>
