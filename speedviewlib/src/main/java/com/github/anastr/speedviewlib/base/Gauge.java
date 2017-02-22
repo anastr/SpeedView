@@ -76,9 +76,9 @@ public abstract class Gauge extends View {
     private Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private int padding = 0;
-    /** view width without padding */
+    /** view width without paddingH */
     private int widthPa = 0;
-    /** View height without padding */
+    /** View height without paddingH */
     private int heightPa = 0;
 
     /** low speed area */
@@ -109,6 +109,7 @@ public abstract class Gauge extends View {
     private Position speedTextPosition = Position.BOTTOM_CENTER;
     /** space between unitText and speedText */
     private float unitSpeedInterval = dpTOpx(1);
+    private float speedTextPadding = dpTOpx(20f);
     private boolean unitUnderSpeedText = false;
     private Bitmap speedUnitTextBitmap;
 
@@ -186,6 +187,7 @@ public abstract class Gauge extends View {
         decelerate = a.getFloat(R.styleable.Gauge_sv_decelerate, decelerate);
         unitUnderSpeedText = a.getBoolean(R.styleable.Gauge_sv_unitUnderSpeedText, unitUnderSpeedText);
         unitSpeedInterval = a.getDimension(R.styleable.Gauge_sv_unitSpeedInterval, unitSpeedInterval);
+        speedTextPadding = a.getDimension(R.styleable.Gauge_sv_speedTextPadding, speedTextPadding);
         String speedTypefacePath = a.getString(R.styleable.Gauge_sv_speedTextTypeface);
         if (speedTypefacePath != null)
             setSpeedTextTypeface(Typeface.createFromAsset(getContext().getAssets(), speedTypefacePath));
@@ -285,7 +287,7 @@ public abstract class Gauge extends View {
     abstract protected void updateBackgroundBitmap();
 
     /**
-     * notice that padding or size have changed.
+     * notice that paddingH or size have changed.
      */
     private void updatePadding() {
         padding = Math.max(Math.max(getPaddingLeft(), getPaddingRight()), Math.max(getPaddingTop(), getPaddingBottom()));
@@ -377,9 +379,11 @@ public abstract class Gauge extends View {
      */
     protected RectF getSpeedUnitTextBounds() {
         float left = getWidthPa()*speedTextPosition.x -translatedDx + padding
-                - speedUnitTextBitmap.getWidth()*speedTextPosition.width;
+                - speedUnitTextBitmap.getWidth()*speedTextPosition.width
+                + speedTextPadding*speedTextPosition.paddingH;
         float top = getHeightPa()*speedTextPosition.y -translatedDy + padding
-                - speedUnitTextBitmap.getHeight()*speedTextPosition.height;
+                - speedUnitTextBitmap.getHeight()*speedTextPosition.height
+                + speedTextPadding*speedTextPosition.paddingV;
         return new RectF(left, top, left + getSpeedUnitTextWidth(), top + getSpeedUnitTextHeight());
     }
 
@@ -1112,14 +1116,14 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * @return View width without padding.
+     * @return View width without paddingH.
      */
     public int getWidthPa() {
         return widthPa;
     }
 
     /**
-     * @return View height without padding.
+     * @return View height without paddingH.
      */
     public int getHeightPa() {
         return heightPa;
@@ -1295,6 +1299,22 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    public float getSpeedTextPadding() {
+        return speedTextPadding;
+    }
+
+    /**
+     * change the Speed-Unit Text padding,
+     * this value will ignore if {@code {@link #speedTextPosition} == Position.CENTER}.
+     * @param speedTextPadding padding in pixel.
+     */
+    public void setSpeedTextPadding(float speedTextPadding) {
+        this.speedTextPadding = speedTextPadding;
+        if (!attachedToWindow)
+            return;
+        invalidate();
+    }
+
     public boolean isUnitUnderSpeedText() {
         return unitUnderSpeedText;
     }
@@ -1334,26 +1354,30 @@ public abstract class Gauge extends View {
     }
 
     public enum Position {
-        TOP_LEFT        (.1f, .1f, 0f , 0f)
-        , TOP_CENTER    (.5f, .1f, .5f, 0f)
-        , TOP_RIGHT     (.9f, .1f, 1f , 0f)
-        , LEFT          (.1f, .5f, 0f , .5f)
-        , CENTER        (.5f, .5f, .5f, .5f)
-        , RIGHT         (.9f, .5f, 1f , .5f)
-        , BOTTOM_LEFT   (.1f, .9f, 0f , 1f)
-        , BOTTOM_CENTER (.5f, .9f, .5f, 1f)
-        , BOTTOM_RIGHT  (.9f, .9f, 1f , 1f);
+        TOP_LEFT        (0f , 0f , 0f , 0f , 1 , 1 )
+        , TOP_CENTER    (.5f, 0f , .5f, 0f , 0 , 1 )
+        , TOP_RIGHT     (1f , 0f , 1f , 0f , -1, 1 )
+        , LEFT          (0f , .5f, 0f , .5f, 1 , 0 )
+        , CENTER        (.5f, .5f, .5f, .5f, 0 , 0 )
+        , RIGHT         (1f , .5f, 1f , .5f, -1, 0 )
+        , BOTTOM_LEFT   (0f , 1f , 0f , 1f , 1 , -1)
+        , BOTTOM_CENTER (.5f, 1f , .5f, 1f , 0 , -1)
+        , BOTTOM_RIGHT  (1f , 1f , 1f , 1f , -1, -1);
 
         final float x;
         final float y;
         final float width;
         final float height;
+        final int paddingH; // horizontal padding
+        final int paddingV; // vertical padding
 
-        Position(float x, float y, float width, float height) {
+        Position(float x, float y, float width, float height, int paddingH, int paddingV) {
             this.x = x;
             this.y = y;
             this.width = width;
             this.height = height;
+            this.paddingH = paddingH;
+            this.paddingV = paddingV;
         }
     }
 }

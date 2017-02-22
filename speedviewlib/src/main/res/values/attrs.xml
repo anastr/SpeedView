@@ -50,10 +50,12 @@
         </attr>
         <attr name="sv_unitUnderSpeedText" format="boolean" />
         <attr name="sv_unitSpeedInterval" format="dimension" />
+        <attr name="sv_speedTextPadding" format="dimension" />
         <attr name="sv_speedTextFormat" format="enum" >
             <enum name="INTEGER" value="0" />
             <enum name="FLOAT" value="1" />
         </attr>
+
     </declare-styleable>
 
     <declare-styleable name="Speedometer"  parent="Gauge">
