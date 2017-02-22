@@ -70,9 +70,9 @@ public abstract class Gauge extends View {
     private Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private int padding = 0;
-    /** view width without paddingH */
+    /** view width without padding */
     private int widthPa = 0;
-    /** View height without paddingH */
+    /** View height without padding */
     private int heightPa = 0;
 
     /** low speed area */
@@ -98,7 +98,7 @@ public abstract class Gauge extends View {
     /** Number expresses the Acceleration, between (0, 1] */
     private float accelerate = .1f;
     /** Number expresses the Deceleration, between (0, 1] */
-    private float decelerate = .3f;
+    private float decelerate = .1f;
 
     private Position speedTextPosition = Position.BOTTOM_CENTER;
     /** space between unitText and speedText */
@@ -282,7 +282,7 @@ public abstract class Gauge extends View {
     abstract protected void updateBackgroundBitmap();
 
     /**
-     * notice that paddingH or size have changed.
+     * notice that padding or size have changed.
      */
     private void updatePadding() {
         padding = Math.max(Math.max(getPaddingLeft(), getPaddingRight()), Math.max(getPaddingTop(), getPaddingBottom()));
@@ -641,20 +641,24 @@ public abstract class Gauge extends View {
         realSpeedAnimator.setRepeatCount(ValueAnimator.INFINITE);
         realSpeedAnimator.setInterpolator(new LinearInterpolator());
         realSpeedAnimator.setDuration(Math.abs((long) ((speed - correctSpeed) * 10) ));
-        final int finalSpeed = (int) speed;
+        final float finalSpeed = speed;
         realSpeedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 if (isSpeedUp) {
                     float per = 100.005f-getPercentSpeed();
                     correctSpeed += (accelerate * 10f) * per *.01f;
+                    if (correctSpeed > finalSpeed)
+                        correctSpeed = finalSpeed;
                 }
                 else {
                     float per = getPercentSpeed()+.005f;
-                    correctSpeed -= (decelerate * 10f) * per *.01f +.2f;
+                    correctSpeed -= (decelerate * 10f) * per *.01f +.1f;
+                    if (correctSpeed < finalSpeed)
+                        correctSpeed = finalSpeed;
                 }
                 postInvalidate();
-                if (finalSpeed == correctIntSpeed)
+                if (finalSpeed == correctSpeed)
                     stop();
             }
         });
@@ -1125,14 +1129,14 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * @return View width without paddingH.
+     * @return View width without padding.
      */
     public int getWidthPa() {
         return widthPa;
     }
 
     /**
-     * @return View height without paddingH.
+     * @return View height without padding.
      */
     public int getHeightPa() {
         return heightPa;
@@ -1269,7 +1273,7 @@ public abstract class Gauge extends View {
     /**
      * change decelerate, used by {@link #realSpeedTo(float)} {@link #speedUp()}
      * and {@link #slowDown()} methods.<br>
-     * must be between {@code (0, 1]}, default value 0.3f.
+     * must be between {@code (0, 1]}, default value 0.1f.
      * @param decelerate new decelerate.
      * @throws IllegalArgumentException if {@code decelerate} out of range.
      */
