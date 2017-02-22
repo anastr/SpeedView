@@ -74,7 +74,12 @@ public abstract class Gauge extends View {
     /** to contain all drawing that doesn't change */
     protected Bitmap backgroundBitmap;
     private Paint backgroundBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     private int padding = 0;
+    /** view width without padding */
+    private int widthPa = 0;
+    /** View height without padding */
+    private int heightPa = 0;
 
     /** low speed area */
     private int lowSpeedPercent = 60;
@@ -279,8 +284,13 @@ public abstract class Gauge extends View {
     abstract protected void defaultValues();
     abstract protected void updateBackgroundBitmap();
 
+    /**
+     * notice that padding or size have changed.
+     */
     private void updatePadding() {
         padding = Math.max(Math.max(getPaddingLeft(), getPaddingRight()), Math.max(getPaddingTop(), getPaddingBottom()));
+        widthPa  = getWidth() - padding*2;
+        heightPa = getHeight() - padding*2;
         super.setPadding(padding, padding, padding, padding);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
             super.setPaddingRelative(padding, padding, padding, padding);
@@ -1105,14 +1115,14 @@ public abstract class Gauge extends View {
      * @return View width without padding.
      */
     public int getWidthPa() {
-        return getWidth() - (padding*2);
+        return widthPa;
     }
 
     /**
      * @return View height without padding.
      */
     public int getHeightPa() {
-        return getHeight() - (padding*2);
+        return heightPa;
     }
 
     @Override
