@@ -271,7 +271,7 @@ public abstract class Gauge extends View {
     }
 
     /**
-     *  add default values inside this method,
+     * add default values inside this method,
      * call super setting method to set default value,
      * Ex :
      * <pre>
@@ -279,6 +279,9 @@ public abstract class Gauge extends View {
      * </pre>
      */
     abstract protected void defaultValues();
+    /**
+     * notice that {@link #backgroundBitmap} must recreate.
+     */
     abstract protected void updateBackgroundBitmap();
 
     /**
@@ -722,8 +725,8 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * default : 4 degree.
-     * @param trembleDegree a degree to increases and decreases the indicator around correct speed.
+     * default : 4 speed value.
+     * @param trembleDegree a speed value to increases and decreases the indicator around correct speed.
      * @throws IllegalArgumentException If trembleDegree is Negative.
      */
     public void setTrembleDegree (float trembleDegree) {
@@ -741,7 +744,7 @@ public abstract class Gauge extends View {
 
     /**
      * tremble control.
-     * @param trembleDegree a degree to increases and decreases the indicator around correct speed.
+     * @param trembleDegree a speed value to increases and decreases the indicator around correct speed.
      * @param trembleDuration tremble Animation duration in millisecond.
      *
      * @see #setTrembleDegree(float)
@@ -754,6 +757,9 @@ public abstract class Gauge extends View {
         checkTrembleData();
     }
 
+    /**
+     * @return speed text's format, [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}].
+     */
     public byte getSpeedTextFormat() {
         return speedTextFormat;
     }
@@ -797,9 +803,9 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * <b>if true</b> : the indicator automatically will be increases and decreases {@link #trembleDegree} degree
-     * around last speed you set,
-     * to add some reality to speedometer.<br>
+     * <b>if true</b> : the indicator automatically will be increases and decreases
+     * {@link #trembleDegree} speed value around last speed you set,
+     * used to add some reality to speedometer.<br>
      * <b>if false</b> : nothing will do.
      * @param withTremble to play tremble Animation
      *
@@ -810,6 +816,10 @@ public abstract class Gauge extends View {
         tremble();
     }
 
+    /**
+     * @return whether indicator could increases and decreases automatically
+     * around last speed about {@link #trembleDegree} speed value.
+     */
     public boolean isWithTremble() {
         return withTremble;
     }
@@ -923,6 +933,9 @@ public abstract class Gauge extends View {
         return (correctSpeed - minSpeed) / (float)(maxSpeed - minSpeed);
     }
 
+    /**
+     * @return all text color without <b>speed, unit text</b>.
+     */
     public int getTextColor() {
         return textPaint.getColor();
     }
@@ -942,6 +955,9 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    /**
+     * @return just speed text color.
+     */
     public int getSpeedTextColor() {
         return speedTextPaint.getColor();
     }
@@ -960,6 +976,9 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    /**
+     * @return just unit text color.
+     */
     public int getUnitTextColor() {
         return unitTextPaint.getColor();
     }
@@ -978,6 +997,9 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    /**
+     * @return all text size without <b>speed and unit text</b>.
+     */
     public float getTextSize() {
         return textPaint.getTextSize();
     }
@@ -997,6 +1019,9 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    /**
+     * @return just speed text size.
+     */
     public float getSpeedTextSize() {
         return speedTextPaint.getTextSize();
     }
@@ -1018,6 +1043,13 @@ public abstract class Gauge extends View {
     }
 
     /**
+     * @return just unit text size.
+     */
+    public float getUnitTextSize() {
+        return unitTextPaint.getTextSize();
+    }
+
+    /**
      * change just unit text size.
      * @param unitTextSize new size in pixel.
      *
@@ -1034,10 +1066,6 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
-    public float getUnitTextSize() {
-        return unitTextPaint.getTextSize();
-    }
-
     /**
      * @return unit text.
      */
@@ -1046,7 +1074,7 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * the text after speed text.
+     * unit text, the text after speed text.
      * @param unit unit text.
      */
     public void setUnit(String unit) {
@@ -1074,10 +1102,16 @@ public abstract class Gauge extends View {
         this.onSectionChangeListener = onSectionChangeListener;
     }
 
+    /**
+     * @return the long of low speed area (low section) as percent.
+     */
     public int getLowSpeedPercent() {
         return lowSpeedPercent;
     }
 
+    /**
+     * @return the long of low speed area (low section) as Offset [0, 1].
+     */
     public float getLowSpeedOffset() {
         return lowSpeedPercent *.01f;
     }
@@ -1098,10 +1132,16 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    /**
+     * @return the long of Medium speed area (Medium section) as percent.
+     */
     public int getMediumSpeedPercent() {
         return mediumSpeedPercent;
     }
 
+    /**
+     * @return the long of Medium speed area (Medium section) as Offset [0, 1].
+     */
     public float getMediumSpeedOffset() {
         return mediumSpeedPercent *.01f;
     }
@@ -1122,6 +1162,9 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    /**
+     * @return whether drawing unit text to left of speed text.
+     */
     public boolean isSpeedometerTextRightToLeft() {
         return speedometerTextRightToLeft;
     }
@@ -1164,6 +1207,9 @@ public abstract class Gauge extends View {
         updatePadding();
     }
 
+    /**
+     * @return digit's Locale.
+     */
     public Locale getLocale() {
         return locale;
     }
@@ -1227,8 +1273,18 @@ public abstract class Gauge extends View {
         return padding;
     }
 
+    /**
+     * @return whether this view attached to Layout or not.
+     */
     public boolean isAttachedToWindow() {
         return attachedToWindow;
+    }
+
+    /**
+     * @return typeface for <b>speed and unit</b> text.
+     */
+    public Typeface getSpeedTextTypeface() {
+        return speedTextPaint.getTypeface();
     }
 
     /**
@@ -1244,12 +1300,15 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
-    public Typeface getSpeedTextTypeface() {
-        return speedTextPaint.getTypeface();
+    /**
+     * @return typeface for all texts without speed and unit text.
+     */
+    public Typeface getTextTypeface() {
+        return textPaint.getTypeface();
     }
 
     /**
-     * change typeface for att texts without speed and unit text.
+     * change typeface for all texts without speed and unit text.
      * @param typeface Maybe null. The typeface to be installed.
      */
     public void setTextTypeface(Typeface typeface) {
@@ -1260,6 +1319,10 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    /**
+     * @return {@link #accelerate} used in {@link #realSpeedTo(float)}.
+     * @see #setAccelerate(float)
+     */
     public float getAccelerate() {
         return accelerate;
     }
@@ -1276,6 +1339,10 @@ public abstract class Gauge extends View {
         checkAccelerate();
     }
 
+    /**
+     * @return {@link #decelerate} used in {@link #realSpeedTo(float)}.
+     * @see #setDecelerate(float)
+     */
     public float getDecelerate() {
         return decelerate;
     }
@@ -1305,6 +1372,9 @@ public abstract class Gauge extends View {
         return translatedDy;
     }
 
+    /**
+     * @return the space between Speed Text and Unit Text.
+     */
     public float getUnitSpeedInterval() {
         return unitSpeedInterval;
     }
@@ -1322,6 +1392,9 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    /**
+     * @return Speed-Unit Text padding.
+     */
     public float getSpeedTextPadding() {
         return speedTextPadding;
     }
@@ -1338,12 +1411,15 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    /**
+     * @return whether Unit Text under Speed Text format.
+     */
     public boolean isUnitUnderSpeedText() {
         return unitUnderSpeedText;
     }
 
     /**
-     * to make unit text under speed text.
+     * to make Unit Text under Speed Text.
      * @param unitUnderSpeedText if true: drawing unit text <b>under</b> speed text.
      *                           false: drawing unit text and speed text <b>side by side</b>.
      */
@@ -1365,7 +1441,7 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * change position of speed and unit text.
+     * change position of speed and Unit Text.
      * @param position new Position (enum value).
      */
     public void setSpeedTextPosition (Position position) {
@@ -1376,6 +1452,9 @@ public abstract class Gauge extends View {
         invalidate();
     }
 
+    /**
+     * position of Speed-Unit Text.
+     */
     public enum Position {
         TOP_LEFT        (0f , 0f , 0f , 0f , 1 , 1 )
         , TOP_CENTER    (.5f, 0f , .5f, 0f , 0 , 1 )
