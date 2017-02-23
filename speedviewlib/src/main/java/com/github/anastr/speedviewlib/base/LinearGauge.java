@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 
@@ -17,12 +16,7 @@ import com.github.anastr.speedviewlib.R;
  */
 public abstract class LinearGauge extends Gauge {
 
-    /** the shape */
-    protected Path path = new Path();
-
-    protected Paint frontPaint = new Paint(Paint.ANTI_ALIAS_FLAG)
-            , backPaint = new Paint(Paint.ANTI_ALIAS_FLAG)
-            , paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     /** to draw part of bitmap */
     private Rect rect = new Rect();
     private Bitmap foregroundBitmap;
@@ -43,10 +37,15 @@ public abstract class LinearGauge extends Gauge {
         initAttributeSet(context, attrs);
     }
 
-    /** to reset {@link #path} for horizontal shape. */
-    protected abstract void updateHorizontalPath();
-    /** to reset {@link #path} for vertical shape. */
-    protected abstract void updateVerticalPath();
+    /**
+     * update background and foreground bitmap,
+     * this method called when change size, color, orientation...
+     * <p>
+     *     must call {@link #createBackgroundBitmapCanvas()} and
+     *     {@link #createForegroundBitmapCanvas()} inside this method.
+     * </p>
+     */
+    protected abstract void updateFrontAndBackBitmaps();
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
         if (attrs == null)
@@ -60,25 +59,6 @@ public abstract class LinearGauge extends Gauge {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int w = getMeasuredWidth();
-        int h = getMeasuredHeight();
-        if (orientation == Orientation.HORIZONTAL) {
-            if (h > w/2)
-                setMeasuredDimension(w, w/2);
-            else
-                setMeasuredDimension(h*2, h);
-        }
-        else {
-            if (w > h/2)
-                setMeasuredDimension(h/2, h);
-            else
-                setMeasuredDimension(w, w*2);
-        }
-    }
-
-    @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
@@ -87,26 +67,14 @@ public abstract class LinearGauge extends Gauge {
 
     @Override
     protected void updateBackgroundBitmap() {
-        Canvas c = createBackgroundBitmapCanvas();
-        updateOrientation();
-        updateForegroundBitmap();
-
-        c.translate(getPadding(), getPadding());
-        c.drawPath(path, backPaint);
+        updateFrontAndBackBitmaps();
     }
 
-    private void updateOrientation() {
-        if (getOrientation() == Orientation.HORIZONTAL)
-            updateHorizontalPath();
-        else
-            updateVerticalPath();
-    }
-
-    private void updateForegroundBitmap() {
-        foregroundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-
-        Canvas c = new Canvas(foregroundBitmap);
-        c.drawPath(path, frontPaint);
+    protected final Canvas createForegroundBitmapCanvas() {
+        if (getWidthPa() == 0 || getHeightPa() == 0)
+            return new Canvas();
+        foregroundBitmap = Bitmap.createBitmap(getWidthPa(), getHeightPa(), Bitmap.Config.ARGB_8888);
+        return new Canvas(foregroundBitmap);
     }
 
     @Override
