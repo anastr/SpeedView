@@ -303,14 +303,21 @@ public abstract class Gauge extends View {
         // check onSpeedChangeEvent.
         int newSpeed = (int) correctSpeed;
         if (newSpeed != correctIntSpeed) {
-            boolean isSpeedUp = newSpeed > correctIntSpeed;
-            correctIntSpeed = newSpeed;
-            if (onSpeedChangeListener != null){
-                boolean byTremble = false;
-                if (Build.VERSION.SDK_INT >= 11)
-                    byTremble = trembleAnimator.isRunning();
-                onSpeedChangeListener.onSpeedChange(this, isSpeedUp, byTremble);
+            if (onSpeedChangeListener != null) {
+                boolean isSpeedUp = newSpeed > correctIntSpeed;
+                int update = isSpeedUp ? 1 : -1;
+                // this loop to pass on all speed values,
+                // to safe handle by call gauge.getCorrectIntSpeed().
+                while (correctIntSpeed != newSpeed) {
+                    correctIntSpeed += update;
+                    boolean byTremble = false;
+                    if (Build.VERSION.SDK_INT >= 11)
+                        byTremble = trembleAnimator.isRunning();
+                    onSpeedChangeListener.onSpeedChange(this, isSpeedUp, byTremble);
+                }
             }
+            else
+                correctIntSpeed = newSpeed;
         }
         // check onSectionChangeEvent.
         byte newSection = getSection();
@@ -832,6 +839,9 @@ public abstract class Gauge extends View {
 
     /**
      * what is speed now in <b>integer</b>.
+     * <p>
+     *     safe method to handle all speed values in {@link #onSpeedChangeListener}.
+     * </p>
      * @return correct speed in Integer
      * @see #getCorrectSpeed()
      */
