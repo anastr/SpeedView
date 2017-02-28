@@ -51,7 +51,7 @@ public class ImageSpeedometer extends Speedometer {
             return;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ImageSpeedometer, 0, 0);
 
-        imageSpeedometer = a.getDrawable(R.styleable.ImageSpeedometer_sv_imageSpeedometer);
+        imageSpeedometer = a.getDrawable(R.styleable.ImageSpeedometer_sv_image);
         a.recycle();
     }
 

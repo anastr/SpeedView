@@ -13,6 +13,8 @@
         <enum name="VERTICAL" value="1" />
     </attr>
 
+    <attr name="sv_image" format="reference" />
+
     <declare-styleable name="Gauge">
         <attr name="sv_textColor" format="color" />
         <attr name="sv_speedTextColor" format="color"/>
@@ -134,7 +136,7 @@
     </declare-styleable>
 
     <declare-styleable name="ImageSpeedometer" parent="Speedometer">
-        <attr name="sv_imageSpeedometer" format="reference" />
+        <attr name="sv_image" />
     </declare-styleable>
 
     <declare-styleable name="LinearGauge" parent="Gauge">
