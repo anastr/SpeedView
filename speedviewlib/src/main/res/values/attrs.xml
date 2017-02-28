@@ -145,4 +145,9 @@
         <attr name="sv_speedometerBackColor" />
     </declare-styleable>
 
+    <declare-styleable name="ImageLinearGauge" parent="LinearGauge">
+        <attr name="sv_speedometerBackColor" />
+        <attr name="sv_image" />
+    </declare-styleable>
+
 </resources>
