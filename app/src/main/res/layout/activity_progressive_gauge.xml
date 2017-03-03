@@ -23,8 +23,7 @@
         app:sv_speedTextColor="#fff"
         app:sv_unitTextColor="#fff"
         app:sv_speedometerBackColor="#b3b3b3"
-        app:sv_speedometerColor="#dc4ae1"
-        app:sv_image="@drawable/fire"/>
+        app:sv_speedometerColor="#dc4ae1" />
 
     <LinearLayout
         android:orientation="horizontal"
