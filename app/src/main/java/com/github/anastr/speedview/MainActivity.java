@@ -8,6 +8,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.github.anastr.speedview.lineargauge.ImageLinearGaugeActivity;
+import com.github.anastr.speedview.lineargauge.ProgressiveGaugeActivity;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     @Override
@@ -30,7 +33,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "Create Speedometer Programmatically",
                 "Work With Start and End Degree",
                 "Work With Modes",
-                "Speed Text Position" };
+                "Speed Text Position",
+                "1. ProgressiveGauge",
+                "2. ImageLinearGauge"
+        };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, values);
@@ -81,6 +87,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 12:
                 intent.setClass(MainActivity.this, SpeedTextPositionActivity.class);
+                break;
+            case 13:
+                intent.setClass(MainActivity.this, ProgressiveGaugeActivity.class);
+                break;
+            case 14:
+                intent.setClass(MainActivity.this, ImageLinearGaugeActivity.class);
                 break;
         }
         startActivity(intent);

@@ -1,6 +1,6 @@
 package com.github.anastr.speedviewlib.util;
 
-import com.github.anastr.speedviewlib.Speedometer;
+import com.github.anastr.speedviewlib.base.Gauge;
 
 /**
  * A callback that notifies clients when the speed has been
@@ -13,9 +13,9 @@ public interface OnSpeedChangeListener {
     /**
      * Notification that the speed has changed.
      *
-     * @param speedometer the speedometer who change.
+     * @param gauge the gauge who change.
      * @param isSpeedUp if speed increase.
      * @param isByTremble true if speed has changed by Tremble.
      */
-    void onSpeedChange(Speedometer speedometer, boolean isSpeedUp, boolean isByTremble);
+    void onSpeedChange(Gauge gauge, boolean isSpeedUp, boolean isByTremble);
 }

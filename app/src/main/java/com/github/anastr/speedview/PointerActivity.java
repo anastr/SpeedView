@@ -7,8 +7,8 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.github.anastr.speedviewlib.base.Gauge;
 import com.github.anastr.speedviewlib.PointerSpeedometer;
-import com.github.anastr.speedviewlib.Speedometer;
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 
 import java.util.Locale;
@@ -57,9 +57,9 @@ public class PointerActivity extends AppCompatActivity {
 
         pointerSpeedometer.setOnSpeedChangeListener(new OnSpeedChangeListener() {
             @Override
-            public void onSpeedChange(Speedometer speedometer, boolean isSpeedUp, boolean isByTremble) {
+            public void onSpeedChange(Gauge gauge, boolean isSpeedUp, boolean isByTremble) {
                 textSpeedChange.setText(String.format(Locale.getDefault(), "onSpeedChange %d"
-                        , speedometer.getCorrectIntSpeed()));
+                        , gauge.getCorrectIntSpeed()));
             }
         });
     }

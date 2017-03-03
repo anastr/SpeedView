@@ -11,8 +11,10 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 import com.github.anastr.speedviewlib.components.Indicators.NormalSmallIndicator;
+import com.github.anastr.speedviewlib.base.SpeedometerDefault;
 
 /**
  * this Library build By Anas Altair
@@ -22,13 +24,12 @@ public class DeluxeSpeedView extends Speedometer {
 
     private Path markPath = new Path(),
             smallMarkPath = new Path();
-    private Paint centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+    private Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             smallMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
-    private int speedBackgroundColor = Color.WHITE;
 
     private boolean withEffects = true;
 
@@ -48,20 +49,27 @@ public class DeluxeSpeedView extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        super.setIndicator(new NormalSmallIndicator(getContext()));
-        super.setIndicatorColor(Color.parseColor("#00ffec"));
-        super.setCenterCircleColor(Color.parseColor("#e0e0e0"));
-        super.setLowSpeedColor(Color.parseColor("#37872f"));
-        super.setMediumSpeedColor(Color.parseColor("#a38234"));
-        super.setHighSpeedColor(Color.parseColor("#9b2020"));
         super.setTextColor(Color.WHITE);
-        super.setBackgroundCircleColor(Color.parseColor("#212121"));
+    }
+
+    @Override
+    protected SpeedometerDefault getSpeedometerDefault() {
+        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
+        speedometerDefault.indicator = new NormalSmallIndicator(getContext())
+                .setIndicatorColor(Color.parseColor("#00ffec"));
+        speedometerDefault.backgroundCircleColor = Color.parseColor("#212121");
+        speedometerDefault.lowSpeedColor = Color.parseColor("#37872f");
+        speedometerDefault.mediumSpeedColor = Color.parseColor("#a38234");
+        speedometerDefault.highSpeedColor = Color.parseColor("#9b2020");
+        return speedometerDefault;
     }
 
     private void init() {
         speedometerPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
+        speedBackgroundPaint.setColor(Color.WHITE);
+        circlePaint.setColor(Color.parseColor("#e0e0e0"));
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null);
@@ -75,15 +83,16 @@ public class DeluxeSpeedView extends Speedometer {
         }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DeluxeSpeedView, 0, 0);
 
-        speedBackgroundColor = a.getColor(R.styleable.DeluxeSpeedView_speedBackgroundColor, speedBackgroundColor);
-        withEffects = a.getBoolean(R.styleable.DeluxeSpeedView_withEffects, withEffects);
+        speedBackgroundPaint.setColor(a.getColor(R.styleable.DeluxeSpeedView_sv_speedBackgroundColor
+                , speedBackgroundPaint.getColor()));
+        withEffects = a.getBoolean(R.styleable.DeluxeSpeedView_sv_withEffects, withEffects);
+        circlePaint.setColor(a.getColor(R.styleable.DeluxeSpeedView_sv_centerCircleColor, circlePaint.getColor()));
         a.recycle();
         setWithEffects(withEffects);
         initAttributeValue();
     }
 
     private void initAttributeValue() {
-        speedBackgroundPaint.setColor(speedBackgroundColor);
     }
 
 
@@ -97,7 +106,6 @@ public class DeluxeSpeedView extends Speedometer {
         speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
         smallMarkPaint.setColor(getMarkColor());
-        centerCirclePaint.setColor(getCenterCircleColor());
     }
 
     @Override
@@ -113,7 +121,7 @@ public class DeluxeSpeedView extends Speedometer {
 
         drawSpeedUnitText(canvas);
         drawIndicator(canvas);
-        canvas.drawCircle(getSize()/2f, getSize()/2f, getWidthPa()/12f, centerCirclePaint);
+        canvas.drawCircle(getSize() *.5f, getSize() *.5f, getWidthPa()/12f, circlePaint);
         drawNotes(canvas);
     }
 
@@ -124,17 +132,17 @@ public class DeluxeSpeedView extends Speedometer {
 
         float smallMarkH = getHeightPa()/20f;
         smallMarkPath.reset();
-        smallMarkPath.moveTo(getSize()/2f, getSpeedometerWidth() + getPadding());
-        smallMarkPath.lineTo(getSize()/2f, getSpeedometerWidth() + getPadding() + smallMarkH);
+        smallMarkPath.moveTo(getSize() *.5f, getSpeedometerWidth() + getPadding());
+        smallMarkPath.lineTo(getSize() *.5f, getSpeedometerWidth() + getPadding() + smallMarkH);
         smallMarkPaint.setStrokeWidth(3);
 
         float markH = getHeightPa()/28f;
         markPath.reset();
-        markPath.moveTo(getSize()/2f, getPadding());
-        markPath.lineTo(getSize()/2f, markH + getPadding());
+        markPath.moveTo(getSize() *.5f, getPadding());
+        markPath.lineTo(getSize() *.5f, markH + getPadding());
         markPaint.setStrokeWidth(markH/3f);
 
-        float risk = getSpeedometerWidth()/2f + getPadding();
+        float risk = getSpeedometerWidth() *.5f + getPadding();
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
 
         speedometerPaint.setColor(getHighSpeedColor());
@@ -147,18 +155,18 @@ public class DeluxeSpeedView extends Speedometer {
                 , (getEndDegree()- getStartDegree())*getLowSpeedOffset(), false, speedometerPaint);
 
         c.save();
-        c.rotate(90f + getStartDegree(), getSize()/2f, getSize()/2f);
+        c.rotate(90f + getStartDegree(), getSize() *.5f, getSize() *.5f);
         float everyDegree = (getEndDegree() - getStartDegree()) * .111f;
         for (float i = getStartDegree(); i < getEndDegree()-(2f*everyDegree); i+=everyDegree) {
-            c.rotate(everyDegree, getSize()/2f, getSize()/2f);
+            c.rotate(everyDegree, getSize() *.5f, getSize() *.5f);
             c.drawPath(markPath, markPaint);
         }
         c.restore();
 
         c.save();
-        c.rotate(90f + getStartDegree(), getSize()/2f, getSize()/2f);
+        c.rotate(90f + getStartDegree(), getSize() *.5f, getSize() *.5f);
         for (float i = getStartDegree(); i < getEndDegree() - 10f; i+=10f) {
-            c.rotate(10f, getSize()/2f, getSize()/2f);
+            c.rotate(10f, getSize() *.5f, getSize() *.5f);
             c.drawPath(smallMarkPath, smallMarkPaint);
         }
         c.restore();
@@ -176,12 +184,12 @@ public class DeluxeSpeedView extends Speedometer {
         if (withEffects && !isInEditMode()) {
             markPaint.setMaskFilter(new BlurMaskFilter(5, BlurMaskFilter.Blur.SOLID));
             speedBackgroundPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.SOLID));
-            centerCirclePaint.setMaskFilter(new BlurMaskFilter(10, BlurMaskFilter.Blur.SOLID));
+            circlePaint.setMaskFilter(new BlurMaskFilter(10, BlurMaskFilter.Blur.SOLID));
         }
         else {
             markPaint.setMaskFilter(null);
             speedBackgroundPaint.setMaskFilter(null);
-            centerCirclePaint.setMaskFilter(null);
+            circlePaint.setMaskFilter(null);
         }
         updateBackgroundBitmap();
         invalidate();
@@ -194,13 +202,28 @@ public class DeluxeSpeedView extends Speedometer {
     }
 
     public int getSpeedBackgroundColor() {
-        return speedBackgroundColor;
+        return speedBackgroundPaint.getColor();
     }
 
     public void setSpeedBackgroundColor(int speedBackgroundColor) {
-        this.speedBackgroundColor = speedBackgroundColor;
         speedBackgroundPaint.setColor(speedBackgroundColor);
         updateBackgroundBitmap();
+        invalidate();
+    }
+
+    public int getCenterCircleColor() {
+        return circlePaint.getColor();
+    }
+
+    /**
+     * change the color of the center circle (if exist),
+     * <b>this option is not available for all Speedometers</b>.
+     * @param centerCircleColor new color.
+     */
+    public void setCenterCircleColor(int centerCircleColor) {
+        circlePaint.setColor(centerCircleColor);
+        if (!isAttachedToWindow())
+            return;
         invalidate();
     }
 }

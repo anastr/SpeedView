@@ -11,7 +11,9 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+import com.github.anastr.speedviewlib.base.SpeedometerDefault;
 
 /**
  * this Library build By Anas Altair
@@ -25,13 +27,10 @@ public class RaySpeedometer extends Speedometer {
     private Paint markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             rayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private int speedBackgroundColor = Color.WHITE;
 
     private boolean withEffects = true;
 
     private int degreeBetweenMark = 5;
-    private int rayColor = Color.WHITE;
-    private float markWidth = dpTOpx(3);
 
     public RaySpeedometer(Context context) {
         this(context, null);
@@ -49,40 +48,41 @@ public class RaySpeedometer extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        super.setMarkColor(Color.BLACK);
         super.setTextColor(Color.WHITE);
-        super.setBackgroundCircleColor(Color.parseColor("#212121"));
+    }
+
+    @Override
+    protected SpeedometerDefault getSpeedometerDefault() {
+        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
+        speedometerDefault.backgroundCircleColor = Color.parseColor("#212121");
+        speedometerDefault.markColor = Color.BLACK;
+        return speedometerDefault;
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
-        if (attrs == null) {
-            initAttributeValue();
+        if (attrs == null)
             return;
-        }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.RaySpeedometer, 0, 0);
 
-        rayColor = a.getColor(R.styleable.RaySpeedometer_rayColor, rayColor);
-        int degreeBetweenMark = a.getInt(R.styleable.RaySpeedometer_degreeBetweenMark, this.degreeBetweenMark);
-        markWidth = a.getDimension(R.styleable.RaySpeedometer_markWidth, markWidth);
-        speedBackgroundColor = a.getColor(R.styleable.RaySpeedometer_speedBackgroundColor, speedBackgroundColor);
-        withEffects = a.getBoolean(R.styleable.RaySpeedometer_withEffects, withEffects);
+        rayPaint.setColor(a.getColor(R.styleable.RaySpeedometer_sv_rayColor, rayPaint.getColor()));
+        int degreeBetweenMark = a.getInt(R.styleable.RaySpeedometer_sv_degreeBetweenMark, this.degreeBetweenMark);
+        markPaint.setStrokeWidth(a.getDimension(R.styleable.RaySpeedometer_sv_markWidth, markPaint.getStrokeWidth()));
+        speedBackgroundPaint.setColor(a.getColor(R.styleable.RaySpeedometer_sv_speedBackgroundColor
+                , speedBackgroundPaint.getColor()));
+        withEffects = a.getBoolean(R.styleable.RaySpeedometer_sv_withEffects, withEffects);
         a.recycle();
         setWithEffects(withEffects);
         if (degreeBetweenMark > 0 && degreeBetweenMark <= 20)
             this.degreeBetweenMark = degreeBetweenMark;
-        initAttributeValue();
-    }
-
-    private void initAttributeValue() {
-        speedBackgroundPaint.setColor(speedBackgroundColor);
-        markPaint.setStrokeWidth(markWidth);
-        rayPaint.setColor(rayColor);
     }
 
     private void init() {
         markPaint.setStyle(Paint.Style.STROKE);
         rayPaint.setStyle(Paint.Style.STROKE);
         rayPaint.setStrokeWidth(dpTOpx(1.8f));
+        rayPaint.setColor(Color.WHITE);
+        speedBackgroundPaint.setColor(Color.WHITE);
+        markPaint.setStrokeWidth(dpTOpx(3f));
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null);
@@ -103,12 +103,12 @@ public class RaySpeedometer extends Speedometer {
         super.onDraw(canvas);
 
         canvas.save();
-        canvas.rotate(getStartDegree()+90f, getSize()/2f, getSize()/2f);
+        canvas.rotate(getStartDegree()+90f, getSize() *.5f, getSize() *.5f);
         for (int i = getStartDegree(); i < getEndDegree(); i+=degreeBetweenMark) {
             if (getDegree() <= i) {
                 markPaint.setColor(getMarkColor());
                 canvas.drawPath(markPath, markPaint);
-                canvas.rotate(degreeBetweenMark, getSize()/2f, getSize()/2f);
+                canvas.rotate(degreeBetweenMark, getSize() *.5f, getSize() *.5f);
                 continue;
             }
             if (i > (getEndDegree()- getStartDegree())*getMediumSpeedOffset() + getStartDegree())
@@ -118,7 +118,7 @@ public class RaySpeedometer extends Speedometer {
             else
                 markPaint.setColor(getLowSpeedColor());
             canvas.drawPath(markPath, markPaint);
-            canvas.rotate(degreeBetweenMark, getSize()/2f, getSize()/2f);
+            canvas.rotate(degreeBetweenMark, getSize() *.5f, getSize()/2f);
         }
         canvas.restore();
 
@@ -157,7 +157,7 @@ public class RaySpeedometer extends Speedometer {
 
         c.save();
         for (int i=0; i<6; i++) {
-            c.rotate(58f, getSize()/2f, getSize()/2f);
+            c.rotate(58f, getSize() *.5f, getSize() *.5f);
             if (i % 2 == 0)
                 c.drawPath(ray1Path, rayPaint);
             else
@@ -170,8 +170,8 @@ public class RaySpeedometer extends Speedometer {
 
     private void updateMarkPath() {
         markPath.reset();
-        markPath.moveTo(getSize()/2f, getPadding());
-        markPath.lineTo(getSize()/2f, getSpeedometerWidth() + getPadding());
+        markPath.moveTo(getSize() *.5f, getPadding());
+        markPath.lineTo(getSize() *.5f, getSpeedometerWidth() + getPadding());
     }
 
     public boolean isWithEffects() {
@@ -202,11 +202,10 @@ public class RaySpeedometer extends Speedometer {
     }
 
     public int getSpeedBackgroundColor() {
-        return speedBackgroundColor;
+        return speedBackgroundPaint.getColor();
     }
 
     public void setSpeedBackgroundColor(int speedBackgroundColor) {
-        this.speedBackgroundColor = speedBackgroundColor;
         speedBackgroundPaint.setColor(speedBackgroundColor);
         updateBackgroundBitmap();
         invalidate();
@@ -231,21 +230,19 @@ public class RaySpeedometer extends Speedometer {
     }
 
     public float getMarkWidth() {
-        return markWidth;
+        return markPaint.getStrokeWidth();
     }
 
     public void setMarkWidth(float markWidth) {
-        this.markWidth = markWidth;
         markPaint.setStrokeWidth(markWidth);
         invalidate();
     }
 
     public int getRayColor() {
-        return rayColor;
+        return rayPaint.getColor();
     }
 
     public void setRayColor(int rayColor) {
-        this.rayColor = rayColor;
         rayPaint.setColor(rayColor);
         updateBackgroundBitmap();
         invalidate();
@@ -268,24 +265,5 @@ public class RaySpeedometer extends Speedometer {
     @Deprecated
     @Override
     public void setIndicatorColor(int indicatorColor) {
-    }
-
-    /**
-     * this Speedometer doesn't use this method.
-     * @return {@code Color.TRANSPARENT} always.
-     */
-    @Deprecated
-    @Override
-    public int getCenterCircleColor() {
-        return Color.TRANSPARENT;
-    }
-
-    /**
-     * this Speedometer doesn't use this method.
-     * @param centerCircleColor nothing.
-     */
-    @Deprecated
-    @Override
-    public void setCenterCircleColor(int centerCircleColor) {
     }
 }

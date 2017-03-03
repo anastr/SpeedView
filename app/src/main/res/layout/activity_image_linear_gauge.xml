@@ -8,20 +8,19 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#83f11b"
     android:orientation="vertical"
-    tools:context="com.github.anastr.speedview.PointerActivity">
+    tools:context="com.github.anastr.speedview.lineargauge.ImageLinearGaugeActivity">
 
-    <com.github.anastr.speedviewlib.PointerSpeedometer
-        android:id="@+id/pointerSpeedometer"
-        android:layout_width="300dp"
+    <com.github.anastr.speedviewlib.ImageLinearGauge
+        android:id="@+id/gauge"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        app:sv_backgroundCircleColor="#83f11b"
-        app:sv_speedometerColor="#00ccff"
-        app:sv_pointerColor="#f00"
-        app:sv_unitTextSize="15sp"
-        app:sv_speedTextTypeface="fonts/good-times.ttf" />
+        app:sv_orientation="HORIZONTAL"
+        app:sv_speedTextPosition="BOTTOM_CENTER"
+        app:sv_unitUnderSpeedText="false"
+        app:sv_speedometerBackColor="#9e9e9e"
+        app:sv_image="@drawable/fire"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -29,7 +28,7 @@
         android:layout_height="wrap_content">
 
         <SeekBar
-            android:id="@+id/seekBarSpeed"
+            android:id="@+id/seekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -40,7 +39,7 @@
             android:id="@+id/textSpeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#fff"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             tools:text="50" />
 
         <Button
@@ -50,13 +49,5 @@
             android:layout_height="wrap_content"
             android:text="ok" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/textSpeedChange"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textColor="#fff"
-        tools:text="onSpeedChange"/>
 
 </LinearLayout>

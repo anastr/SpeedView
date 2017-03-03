@@ -15,7 +15,7 @@ import com.github.anastr.speedviewlib.ImageSpeedometer;
 import com.github.anastr.speedviewlib.PointerSpeedometer;
 import com.github.anastr.speedviewlib.RaySpeedometer;
 import com.github.anastr.speedviewlib.SpeedView;
-import com.github.anastr.speedviewlib.Speedometer;
+import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.TubeSpeedometer;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 

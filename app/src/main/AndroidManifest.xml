@@ -29,6 +29,8 @@
         <activity android:name=".StartEndDegreeActivity" />
         <activity android:name=".WorkWithModesActivity" />
         <activity android:name=".SpeedTextPositionActivity" />
+        <activity android:name=".lineargauge.ProgressiveGaugeActivity" />
+        <activity android:name=".lineargauge.ImageLinearGaugeActivity" />
     </application>
 
 </manifest>

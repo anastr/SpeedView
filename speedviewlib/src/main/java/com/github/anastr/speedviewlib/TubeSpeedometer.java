@@ -10,6 +10,9 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.base.Speedometer;
+import com.github.anastr.speedviewlib.base.SpeedometerDefault;
+
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
@@ -19,8 +22,6 @@ public class TubeSpeedometer extends Speedometer {
     private Paint tubePaint = new Paint(Paint.ANTI_ALIAS_FLAG)
             ,tubeBacPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
-
-    private int speedometerColor = Color.parseColor("#757575");
 
     private boolean withEffects3D = true;
 
@@ -40,37 +41,37 @@ public class TubeSpeedometer extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        super.setLowSpeedColor(Color.parseColor("#00BCD4"));
-        super.setMediumSpeedColor(Color.parseColor("#FFC107"));
-        super.setHighSpeedColor(Color.parseColor("#F44336"));
-        super.setSpeedometerWidth(dpTOpx(40f));
-        super.setBackgroundCircleColor(Color.TRANSPARENT);
+    }
+
+    @Override
+    protected SpeedometerDefault getSpeedometerDefault() {
+        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
+        speedometerDefault.backgroundCircleColor = Color.TRANSPARENT;
+        speedometerDefault.lowSpeedColor = Color.parseColor("#00BCD4");
+        speedometerDefault.mediumSpeedColor = Color.parseColor("#FFC107");
+        speedometerDefault.highSpeedColor = Color.parseColor("#F44336");
+        speedometerDefault.speedometerWidth = dpTOpx(40f);
+        return speedometerDefault;
     }
 
     private void init() {
         tubePaint.setStyle(Paint.Style.STROKE);
         tubeBacPaint.setStyle(Paint.Style.STROKE);
+        tubeBacPaint.setColor(Color.parseColor("#757575"));
+        tubePaint.setColor(getLowSpeedColor());
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
-        if (attrs == null) {
-            initAttributeValue();
+        if (attrs == null)
             return;
-        }
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AwesomeSpeedometer, 0, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TubeSpeedometer, 0, 0);
 
-        speedometerColor = a.getColor(R.styleable.TubeSpeedometer_speedometerColor, speedometerColor);
-        withEffects3D = a.getBoolean(R.styleable.TubeSpeedometer_withEffects3D, withEffects3D);
+        tubeBacPaint.setColor(a.getColor(R.styleable.TubeSpeedometer_sv_speedometerBackColor, tubeBacPaint.getColor()));
+        withEffects3D = a.getBoolean(R.styleable.TubeSpeedometer_sv_withEffects3D, withEffects3D);
         a.recycle();
-        initAttributeValue();
-    }
-
-    private void initAttributeValue() {
-        tubeBacPaint.setColor(speedometerColor);
-        tubePaint.setColor(getLowSpeedColor());
     }
 
     @Override
@@ -131,7 +132,7 @@ public class TubeSpeedometer extends Speedometer {
         Canvas c = createBackgroundBitmapCanvas();
         initDraw();
 
-        float risk = getSpeedometerWidth()/2f + getPadding();
+        float risk = getSpeedometerWidth() *.5f + getPadding();
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
 
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, tubeBacPaint);
@@ -140,11 +141,10 @@ public class TubeSpeedometer extends Speedometer {
     }
 
     public int getSpeedometerColor() {
-        return speedometerColor;
+        return tubeBacPaint.getColor();
     }
 
     public void setSpeedometerColor(int speedometerColor) {
-        this.speedometerColor = speedometerColor;
         updateBackgroundBitmap();
         invalidate();
     }

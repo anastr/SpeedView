@@ -17,7 +17,7 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        app:endDegree="405"/>
+        app:sv_endDegree="405"/>
 
     <LinearLayout
         android:layout_width="match_parent"

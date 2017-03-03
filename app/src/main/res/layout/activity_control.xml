@@ -16,13 +16,13 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        app:speedometerWidth="35dp"
-        app:markColor="#99000000"
-        app:indicatorColor="#2b38e6"
-        app:centerCircleColor="#b2f941ff"
-        app:lowSpeedColor="#58ed21"
-        app:mediumSpeedColor="#edd029"
-        app:highSpeedColor="#ec2f33"/>
+        app:sv_speedometerWidth="35dp"
+        app:sv_markColor="#99000000"
+        app:sv_indicatorColor="#2b38e6"
+        app:sv_centerCircleColor="#b2f941ff"
+        app:sv_lowSpeedColor="#58ed21"
+        app:sv_mediumSpeedColor="#edd029"
+        app:sv_highSpeedColor="#ec2f33"/>
 
     <ScrollView
         android:layout_width="match_parent"

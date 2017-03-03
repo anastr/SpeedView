@@ -12,7 +12,9 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
+import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.components.Indicators.TriangleIndicator;
+import com.github.anastr.speedviewlib.base.SpeedometerDefault;
 
 /**
  * this Library build By Anas Altair
@@ -27,8 +29,7 @@ public class AwesomeSpeedometer extends Speedometer {
             trianglesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
 
-    private int speedometerColor = Color.parseColor("#00e6e6")
-            , trianglesColor = Color.parseColor("#3949ab");
+    private int speedometerColor = Color.parseColor("#00e6e6");
 
     public AwesomeSpeedometer(Context context) {
         this(context, null);
@@ -46,19 +47,27 @@ public class AwesomeSpeedometer extends Speedometer {
 
     @Override
     protected void defaultValues() {
-        super.setStartDegree(135);
-        super.setEndDegree(135+320);
 
-        super.setIndicator(new TriangleIndicator(getContext()));
-        super.setIndicatorWidth(dpTOpx(25f));
-        super.setSpeedometerWidth(dpTOpx(60));
-        super.setBackgroundCircleColor(Color.parseColor("#212121"));
-        super.setIndicatorColor(Color.parseColor("#00e6e6"));
         super.setTextColor(Color.parseColor("#ffc260"));
         super.setSpeedTextColor(Color.WHITE);
+        super.setUnitTextColor(Color.WHITE);
         super.setTextTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         super.setSpeedTextPosition(Position.CENTER);
         super.setUnitUnderSpeedText(true);
+    }
+
+    @Override
+    protected SpeedometerDefault getSpeedometerDefault() {
+        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
+        speedometerDefault.indicator = new TriangleIndicator(getContext())
+                .setIndicatorWidth(dpTOpx(25f))
+                .setIndicatorColor(Color.parseColor("#00e6e6"));
+        speedometerDefault.startDegree = 135;
+        speedometerDefault.endDegree = 135+320;
+        speedometerDefault.speedometerWidth = dpTOpx(60);
+        speedometerDefault.backgroundCircleColor = Color.parseColor("#212121");
+        speedometerDefault.backgroundCircleColor = Color.parseColor("#212121");
+        return speedometerDefault;
     }
 
     private void init() {
@@ -66,23 +75,17 @@ public class AwesomeSpeedometer extends Speedometer {
         textPaint.setTextAlign(Paint.Align.CENTER);
         ringPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextSize(dpTOpx(10));
+        trianglesPaint.setColor(Color.parseColor("#3949ab"));
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
-        if (attrs == null) {
-            initAttributeValue();
+        if (attrs == null)
             return;
-        }
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AwesomeSpeedometer, 0, 0);
 
-        speedometerColor = a.getColor(R.styleable.AwesomeSpeedometer_speedometerColor, speedometerColor);
-        trianglesColor = a.getColor(R.styleable.AwesomeSpeedometer_trianglesColor, trianglesColor);
+        speedometerColor = a.getColor(R.styleable.AwesomeSpeedometer_sv_speedometerColor, speedometerColor);
+        trianglesPaint.setColor(a.getColor(R.styleable.AwesomeSpeedometer_sv_trianglesColor, trianglesPaint.getColor()));
         a.recycle();
-        initAttributeValue();
-    }
-
-    private void initAttributeValue() {
-        trianglesPaint.setColor(trianglesColor);
     }
 
     @Override
@@ -94,14 +97,14 @@ public class AwesomeSpeedometer extends Speedometer {
     }
 
     private void updateGradient() {
-        float stop = (getWidthPa()/2f - getSpeedometerWidth()) / (getWidthPa()/2f);
+        float stop = (getWidthPa() *.5f - getSpeedometerWidth()) / (getWidthPa() *.5f);
         float stop2 = stop+((1f-stop)*.1f);
         float stop3 = stop+((1f-stop)*.36f);
         float stop4 = stop+((1f-stop)*.64f);
         float stop5 = stop+((1f-stop)*.9f);
         int []colors = new int[]{getBackgroundCircleColor(), speedometerColor, getBackgroundCircleColor()
                 , getBackgroundCircleColor(), speedometerColor, speedometerColor};
-        Shader radialGradient = new RadialGradient(getSize() / 2f, getSize() / 2f, getWidthPa() / 2f
+        Shader radialGradient = new RadialGradient(getSize() *.5f, getSize() *.5f, getWidthPa() *.5f
                 , colors, new float[]{stop, stop2, stop3, stop4, stop5, 1f}, Shader.TileMode.CLAMP);
         ringPaint.setShader(radialGradient);
     }
@@ -130,27 +133,27 @@ public class AwesomeSpeedometer extends Speedometer {
 
         float markH = getHeightPa()/22f;
         markPath.reset();
-        markPath.moveTo(getSize()/2f, getPadding());
-        markPath.lineTo(getSize()/2f, markH + getPadding());
+        markPath.moveTo(getSize() *.5f, getPadding());
+        markPath.lineTo(getSize() *.5f, markH + getPadding());
         markPaint.setStrokeWidth(markH/5f);
 
         trianglesPath.reset();
-        trianglesPath.moveTo(getSize()/2f, getPadding() + getHeightPa()/20f);
-        trianglesPath.lineTo(getSize()/2f -(getSize()/40f), getPadding());
-        trianglesPath.lineTo(getSize()/2f +(getSize()/40f), getPadding());
+        trianglesPath.moveTo(getSize() *.5f, getPadding() + getHeightPa()/20f);
+        trianglesPath.lineTo(getSize() *.5f -(getSize()/40f), getPadding());
+        trianglesPath.lineTo(getSize() *.5f +(getSize()/40f), getPadding());
 
-        float risk = getSpeedometerWidth()/2f + getPadding();
+        float risk = getSpeedometerWidth() *.5f + getPadding();
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
         c.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
 
         c.save();
-        c.rotate(getStartDegree()+90f, getSize()/2f, getSize()/2f);
+        c.rotate(getStartDegree()+90f, getSize() *.5f, getSize() *.5f);
         for (float i = 0; i <= getEndDegree() - getStartDegree(); i+=4f) {
-            c.rotate(4f, getSize()/2f, getSize()/2f);
+            c.rotate(4f, getSize() *.5f, getSize() *.5f);
             if (i % 40 == 0) {
                 c.drawPath(trianglesPath, trianglesPaint);
                 c.drawText(String.format(getLocale(), "%d", (int)getSpeedAtDegree(i + getStartDegree()))
-                        , getSize()/2f, getHeightPa()/20f +textPaint.getTextSize() + getPadding(), textPaint);
+                        , getSize() *.5f, getHeightPa()/20f +textPaint.getTextSize() + getPadding(), textPaint);
             }
             else {
                 if (i % 20 == 0)
@@ -166,7 +169,7 @@ public class AwesomeSpeedometer extends Speedometer {
     @Override
     public void setSpeedometerWidth(float speedometerWidth) {
         super.setSpeedometerWidth(speedometerWidth);
-        float risk = speedometerWidth/2f;
+        float risk = speedometerWidth *.5f;
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
         updateGradient();
         updateBackgroundBitmap();
@@ -185,11 +188,10 @@ public class AwesomeSpeedometer extends Speedometer {
     }
 
     public int getTrianglesColor() {
-        return trianglesColor;
+        return trianglesPaint.getColor();
     }
 
     public void setTrianglesColor(int trianglesColor) {
-        this.trianglesColor = trianglesColor;
         trianglesPaint.setColor(trianglesColor);
         updateBackgroundBitmap();
         invalidate();

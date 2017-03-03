@@ -16,8 +16,8 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        app:speedTextSize="22sp"
-        app:speedTextTypeface="fonts/James-Almacen.ttf"/>
+        app:sv_speedTextSize="22sp"
+        app:sv_speedTextTypeface="fonts/James-Almacen.ttf"/>
 
     <LinearLayout
         android:orientation="horizontal"
