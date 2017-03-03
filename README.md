@@ -4,18 +4,21 @@ Dynamic Speedometer, Gauge for Android. **amazing**, **powerful**, and _multi sh
 
 `minSdkVersion=8`
 
-Library Size just ~ 40 Kb.
+Library Size just ~ 46 KB.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-blue.svg?style=true)](https://android-arsenal.com/details/1/4169)
 [![API](https://img.shields.io/badge/API-+8-red.svg?style=flat)](#)
 [![Bintray](https://img.shields.io/bintray/v/anastr/maven/SpeedView.svg)](https://bintray.com/anastr/maven/SpeedView)
 
-<img src="https://github.com/anastr/SpeedView/blob/master/images/SpeedView.gif" width="30%" />
-<img src="https://github.com/anastr/SpeedView/blob/master/images/DeluxeSpeedView.gif" width="30%" />
-<img src="https://github.com/anastr/SpeedView/blob/master/images/AwesomeSpeedometer.gif" width="30%" /><br/>
-<img src="https://github.com/anastr/SpeedView/blob/master/images/RaySpeedometer.gif" width="30%" />
-<img src="https://github.com/anastr/SpeedView/blob/master/images/PointerSpeedometer.gif" width="30%" />
-<img src="https://github.com/anastr/SpeedView/blob/master/images/TubeSpeedometer.gif" width="30%" />
+**Gauges...**<br/>
+<img src="images/ProgressiveGauge.gif" width="49%" />
+<img src="images/ImageLinearGauge.gif" width="49%" />
+
+
+**Speedometers...**<br/>
+<img src="images/SpeedView.gif" width="32%" />
+<img src="images/AwesomeSpeedometer.gif" width="32%" />
+<img src="images/PointerSpeedometer.gif" width="32%" />
 
 # Download
 
@@ -24,7 +27,7 @@ Library Size just ~ 40 Kb.
 ```gradle
 
 dependencies {
-	    compile 'com.github.anastr:speedviewlib:1.1.3'
+	    compile 'com.github.anastr:speedviewlib:1.1.4'
 }
 
 ```
@@ -35,13 +38,13 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.1.3</version>
+  <version>1.1.4</version>
   <type>pom</type>
 </dependency>
 ```
 [Get Started](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) with _Speedometer Library_.
 # Simple Usage
-add Speedometer to your `Layout.xml`.<br>
+choose one of Speedometers, gauges and add it to your `Layout.xml`, here we use **SpeedView**.<br>
 ```xml
 
 <com.github.anastr.speedviewlib.SpeedView
@@ -51,13 +54,13 @@ add Speedometer to your `Layout.xml`.<br>
 
 ```
 
-for all speedometers, this simple method to move the indicator:
+for all speedometers and gauges, this simple method to smoothly change speed:
 ```java
 // move to 50 Km/s
 speedometer.speedTo(50);
 ```
 
-by default, indicator move Duration is 2000 ms.<br>
+by default, the speed change Duration between last speed and new speed is `2000 ms`.<br>
 you can use other Duration by method :
 ```java
 // move to 50 Km/s with Duration = 4 sec
@@ -68,7 +71,7 @@ for more control, see The most important methods at [Get Started - Wiki](https:/
 and also you can see **advanced usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage) and [Work With Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).<br>
 <img src="/images/usage/StartEndDegree.png" width="40%" />
 <img src="/images/usage/WorkWithNote.gif" width="35%" />
-we have 7 Speedometers : <br>
+we have **9 Speedometers, Gauges** : <br>
 ======================
 <table style="width:100%">
   <tr>
@@ -76,6 +79,7 @@ we have 7 Speedometers : <br>
     <th>Screenshot</th>
     <th>XML Layout</th>
   </tr>
+
   <tr>
     <td width="24%"> <a href="https://github.com/anastr/SpeedView/wiki/1.-SpeedView">1. SpeedView - Wiki</a></td>
     <td width="22%"><img src="/images/SpeedView3.png"/></td>
@@ -88,6 +92,7 @@ we have 7 Speedometers : <br>
       </textarea></pre>
     </td>
   </tr>
+
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/2.-DeluxeSpeedView">2. DeluxeSpeedView - Wiki</a></td>
     <td><img src="/images/DeluxeSpeedView2.png"/></td>
@@ -100,6 +105,7 @@ we have 7 Speedometers : <br>
       </textarea></pre>
     </td>
   </tr>
+
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/3.-AwesomeSpeedometer">3. AwesomeSpeedometer - Wiki</a></td>
     <td><img src="/images/AwesomeSpeedometer.png"/></td>
@@ -112,6 +118,7 @@ we have 7 Speedometers : <br>
       </textarea></pre>
     </td>
   </tr>
+
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/4.-RaySpeedometer">4. RaySpeedometer - Wiki</a></td>
     <td><img src="/images/RaySpeedometer.png"/></td>
@@ -124,6 +131,7 @@ we have 7 Speedometers : <br>
       </textarea></pre>
     </td>
   </tr>
+
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/5.-PointerSpeedometer">5. PointerSpeedometer - Wiki</a></td>
     <td><img src="/images/PointerSpeedometer.png"/></td>
@@ -136,6 +144,7 @@ we have 7 Speedometers : <br>
       </textarea></pre>
     </td>
   </tr>
+
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/6.-TubeSpeedometer">6. TubeSpeedometer - Wiki</a></td>
     <td><img src="/images/TubeSpeedometer.png"/></td>
@@ -148,6 +157,7 @@ we have 7 Speedometers : <br>
       </textarea></pre>
     </td>
   </tr>
+
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/7.-ImageSpeedometer">7. ImageSpeedometer - Wiki</a></td>
     <td><img src="/images/ImageSpeedometer.png"/></td>
@@ -161,11 +171,40 @@ we have 7 Speedometers : <br>
       </textarea></pre>
     </td>
   </tr>
+
+  <tr>
+    <td> <a href="https://github.com/anastr/SpeedView/wiki/8.-ProgressiveGauge">8. ProgressiveGauge - Wiki</a></td>
+    <td><img src="/images/ProgressiveGauge.png"/></td>
+    <td>
+      <pre><textarea>
+<com.github.anastr.speedviewlib.ProgressiveGauge
+        android:id="@+id/gauge"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+      </textarea></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td> <a href="https://github.com/anastr/SpeedView/wiki/9.-ImageLinearGauge">9. ImageLinearGauge - Wiki</a></td>
+    <td><img src="/images/ImageLinearGauge.png"/></td>
+    <td>
+      <pre><textarea>
+<com.github.anastr.speedviewlib.ImageLinearGauge
+        android:id="@+id/gauge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:sv_image="@drawable/fire" />
+      </textarea></pre>
+    </td>
+  </tr>
 </table>
 
 ## TODO
 * add fuel gauge component.
 * build new custom speedometer.
+
+your `pull request` is always Welcome, please review the **[rules of contribution](https://github.com/anastr/SpeedView/wiki/Contributing)** to make useful change.
 
 ## Coming Soon ...
 i well try to draw this Speedometer.
