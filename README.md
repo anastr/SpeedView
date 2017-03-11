@@ -10,15 +10,15 @@ Library Size just ~ 46 KB.
 [![API](https://img.shields.io/badge/API-+8-red.svg?style=flat)](#)
 [![Bintray](https://img.shields.io/bintray/v/anastr/maven/SpeedView.svg)](https://bintray.com/anastr/maven/SpeedView)
 
-**Gauges...**<br/>
-<img src="images/ProgressiveGauge.gif" width="49%" />
-<img src="images/ImageLinearGauge.gif" width="49%" />
-
 
 **Speedometers...**<br/>
 <img src="images/SpeedView.gif" width="32%" />
 <img src="images/AwesomeSpeedometer.gif" width="32%" />
 <img src="images/PointerSpeedometer.gif" width="32%" />
+
+**Gauges...**<br/>
+<img src="images/ProgressiveGauge.gif" width="49%" />
+<img src="images/ImageLinearGauge.gif" width="49%" />
 
 # Download
 
@@ -42,7 +42,7 @@ for **maven**
   <type>pom</type>
 </dependency>
 ```
-[Get Started](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) with _Speedometer Library_.
+**[Get Starting](https://github.com/anastr/SpeedView/wiki/0.-Get-Started)** with _SpeedView Library_.
 # Simple Usage
 choose one of Speedometers, gauges and add it to your `Layout.xml`, here we use **SpeedView**.<br>
 ```xml
