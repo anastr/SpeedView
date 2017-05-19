@@ -67,11 +67,12 @@ you can use other Duration by method :
 speedometer.speedTo(50, 4000);
 ```
 
-for more control, see The most important methods at [Get Started - Wiki](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) for **All Speedometers**.<br>
-and also you can see **advanced usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage) and [Work With Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).<br>
+**for more control**, see The most important methods at [Get Started - Wiki](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) for **All Speedometers & Gauges**.<br>
+and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage) and [Work With Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).<br>
 <img src="/images/usage/StartEndDegree.png" width="40%" />
 <img src="/images/usage/WorkWithNote.gif" width="35%" />
-we have **9 Speedometers, Gauges** : <br>
+
+## we have **9 Speedometers, Gauges** : <br>
 ======================
 <table style="width:100%">
   <tr>
@@ -84,12 +85,12 @@ we have **9 Speedometers, Gauges** : <br>
     <td width="24%"> <a href="https://github.com/anastr/SpeedView/wiki/1.-SpeedView">1. SpeedView - Wiki</a></td>
     <td width="22%"><img src="/images/SpeedView3.png"/></td>
     <td>
-      <pre><textarea>
-<com.github.anastr.speedviewlib.SpeedView
+       <pre>
+&lt; com.github.anastr.speedviewlib.SpeedView
         android:id="@+id/speedView"
         android:layout_width="300dp"
         android:layout_height="wrap_content" />
-      </textarea></pre>
+	</pre>
     </td>
   </tr>
 
@@ -97,12 +98,12 @@ we have **9 Speedometers, Gauges** : <br>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/2.-DeluxeSpeedView">2. DeluxeSpeedView - Wiki</a></td>
     <td><img src="/images/DeluxeSpeedView2.png"/></td>
     <td>
-      <pre><textarea>
-<com.github.anastr.speedviewlib.DeluxeSpeedView
+      <pre>
+&lt; com.github.anastr.speedviewlib.DeluxeSpeedView
         android:id="@+id/deluxeSpeedView"
         android:layout_width="300dp"
         android:layout_height="wrap_content" />
-      </textarea></pre>
+      </pre>
     </td>
   </tr>
 
@@ -110,12 +111,12 @@ we have **9 Speedometers, Gauges** : <br>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/3.-AwesomeSpeedometer">3. AwesomeSpeedometer - Wiki</a></td>
     <td><img src="/images/AwesomeSpeedometer.png"/></td>
     <td>
-      <pre><textarea>
-<com.github.anastr.speedviewlib.AwesomeSpeedometer
+      <pre>
+&lt; com.github.anastr.speedviewlib.AwesomeSpeedometer
         android:id="@+id/awesomeSpeedometer"
         android:layout_width="300dp"
         android:layout_height="wrap_content" />
-      </textarea></pre>
+      </pre>
     </td>
   </tr>
 
@@ -123,12 +124,12 @@ we have **9 Speedometers, Gauges** : <br>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/4.-RaySpeedometer">4. RaySpeedometer - Wiki</a></td>
     <td><img src="/images/RaySpeedometer.png"/></td>
     <td>
-      <pre><textarea>
-<com.github.anastr.speedviewlib.RaySpeedometer
+      <pre>
+&lt; com.github.anastr.speedviewlib.RaySpeedometer
         android:id="@+id/raySpeedometer"
         android:layout_width="300dp"
         android:layout_height="wrap_content" />
-      </textarea></pre>
+      </pre>
     </td>
   </tr>
 
@@ -136,12 +137,12 @@ we have **9 Speedometers, Gauges** : <br>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/5.-PointerSpeedometer">5. PointerSpeedometer - Wiki</a></td>
     <td><img src="/images/PointerSpeedometer.png"/></td>
     <td>
-      <pre><textarea>
-<com.github.anastr.speedviewlib.PointerSpeedometer
+      <pre>
+&lt; com.github.anastr.speedviewlib.PointerSpeedometer
         android:id="@+id/pointerSpeedometer"
         android:layout_width="300dp"
         android:layout_height="wrap_content" />
-      </textarea></pre>
+      </pre>
     </td>
   </tr>
 
@@ -149,12 +150,12 @@ we have **9 Speedometers, Gauges** : <br>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/6.-TubeSpeedometer">6. TubeSpeedometer - Wiki</a></td>
     <td><img src="/images/TubeSpeedometer.png"/></td>
     <td>
-      <pre><textarea>
-<com.github.anastr.speedviewlib.TubeSpeedometer
+      <pre>
+&lt; com.github.anastr.speedviewlib.TubeSpeedometer
         android:id="@+id/tubeSpeedometer"
         android:layout_width="300dp"
         android:layout_height="wrap_content" />
-      </textarea></pre>
+      </pre>
     </td>
   </tr>
 
@@ -162,13 +163,13 @@ we have **9 Speedometers, Gauges** : <br>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/7.-ImageSpeedometer">7. ImageSpeedometer - Wiki</a></td>
     <td><img src="/images/ImageSpeedometer.png"/></td>
     <td>
-      <pre><textarea>
-<com.github.anastr.speedviewlib.ImageSpeedometer
+      <pre>
+&lt; com.github.anastr.speedviewlib.ImageSpeedometer
         android:id="@+id/imageSpeedometer"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        app:imageSpeedometer="@drawable/your_image" />
-      </textarea></pre>
+        app:sv_image="@drawable/your_image" />
+      </pre>
     </td>
   </tr>
 
@@ -176,12 +177,12 @@ we have **9 Speedometers, Gauges** : <br>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/8.-ProgressiveGauge">8. ProgressiveGauge - Wiki</a></td>
     <td><img src="/images/ProgressiveGauge.png"/></td>
     <td>
-      <pre><textarea>
-<com.github.anastr.speedviewlib.ProgressiveGauge
+      <pre>
+&lt; com.github.anastr.speedviewlib.ProgressiveGauge
         android:id="@+id/gauge"
         android:layout_width="300dp"
         android:layout_height="wrap_content" />
-      </textarea></pre>
+      </pre>
     </td>
   </tr>
 
@@ -189,13 +190,13 @@ we have **9 Speedometers, Gauges** : <br>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/9.-ImageLinearGauge">9. ImageLinearGauge - Wiki</a></td>
     <td><img src="/images/ImageLinearGauge.png"/></td>
     <td>
-      <pre><textarea>
-<com.github.anastr.speedviewlib.ImageLinearGauge
+      <pre>
+&lt; com.github.anastr.speedviewlib.ImageLinearGauge
         android:id="@+id/gauge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:sv_image="@drawable/fire" />
-      </textarea></pre>
+      </pre>
     </td>
   </tr>
 </table>
@@ -210,8 +211,7 @@ your `pull request` is always Welcome, please review the **[rules of contributio
 i well try to draw this Speedometer.
 if you have any idea, image, template please **open new issue** and give me the image , and i well try to add it to the Library.
 
-<img src="/images/new2.png" width="30%" />
-<img src="/images/new3.png" width="30%" />
+<img src="/images/new2.png" width="30%" /> <img src="/images/new3.png" width="30%" />
 
 # LICENSE
 ```
