@@ -80,6 +80,7 @@ public class ImageSpeedometer extends Speedometer {
                     , (int)getViewRight() - getPadding(), (int)getViewBottom() - getPadding());
             imageSpeedometer.draw(c);
         }
+        drawTicks(c);
     }
 
     public Drawable getImageSpeedometer() {

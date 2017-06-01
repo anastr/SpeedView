@@ -131,6 +131,7 @@ public abstract class Gauge extends View {
     private void init() {
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(dpTOpx(10f));
+        textPaint.setTextAlign(Paint.Align.CENTER);
         speedTextPaint.setColor(Color.BLACK);
         speedTextPaint.setTextSize(dpTOpx(18f));
         unitTextPaint.setColor(Color.BLACK);

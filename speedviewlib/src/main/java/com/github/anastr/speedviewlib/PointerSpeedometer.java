@@ -160,7 +160,10 @@ public class PointerSpeedometer extends Speedometer {
         }
         c.restore();
 
-        drawDefMinMaxSpeedPosition(c);
+        if (getTickNumber() > 0)
+            drawTicks(c);
+        else
+            drawDefMinMaxSpeedPosition(c);
     }
 
     private SweepGradient updateSweep() {

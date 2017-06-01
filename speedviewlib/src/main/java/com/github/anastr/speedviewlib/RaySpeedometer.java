@@ -165,7 +165,10 @@ public class RaySpeedometer extends Speedometer {
         }
         c.restore();
 
-        drawDefMinMaxSpeedPosition(c);
+        if (getTickNumber() > 0)
+            drawTicks(c);
+        else
+            drawDefMinMaxSpeedPosition(c);
     }
 
     private void updateMarkPath() {

@@ -31,6 +31,8 @@ public class AwesomeSpeedometer extends Speedometer {
 
     private int speedometerColor = Color.parseColor("#00e6e6");
 
+    private float triangleHeight = 0f;
+
     public AwesomeSpeedometer(Context context) {
         this(context, null);
     }
@@ -137,6 +139,8 @@ public class AwesomeSpeedometer extends Speedometer {
         markPath.lineTo(getSize() *.5f, markH + getPadding());
         markPaint.setStrokeWidth(markH/5f);
 
+        triangleHeight = getHeightPa()/20f;
+
         trianglesPath.reset();
         trianglesPath.moveTo(getSize() *.5f, getPadding() + getHeightPa()/20f);
         trianglesPath.lineTo(getSize() *.5f -(getSize()/40f), getPadding());
@@ -146,22 +150,63 @@ public class AwesomeSpeedometer extends Speedometer {
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
         c.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
 
+//        c.save();
+//        c.rotate(getStartDegree()+90f, getSize() *.5f, getSize() *.5f);
+//        for (float i = 0; i <= getEndDegree() - getStartDegree(); i+=4f) {
+//            c.rotate(4f, getSize() *.5f, getSize() *.5f);
+//            if (i % 40 == 0) {
+//                c.drawPath(trianglesPath, trianglesPaint);
+//                c.drawText(String.format(getLocale(), "%d", (int)getSpeedAtDegree(i + getStartDegree()))
+//                        , getSize() *.5f, getHeightPa()/20f +textPaint.getTextSize() + getPadding(), textPaint);
+//            }
+//            else {
+//                if (i % 20 == 0)
+//                    markPaint.setStrokeWidth(getSize()/22f/5);
+//                else
+//                    markPaint.setStrokeWidth(getSize()/22f/9);
+//                c.drawPath(markPath, markPaint);
+//            }
+//        }
+        drawTicks(c);
+        c.restore();
+    }
+
+    @Override
+    protected void drawTicks(Canvas c) {
+        if(getTickNumber() == 0)
+            return;
+        int drawnTick = 0;
         c.save();
         c.rotate(getStartDegree()+90f, getSize() *.5f, getSize() *.5f);
-        for (float i = 0; i <= getEndDegree() - getStartDegree(); i+=4f) {
-            c.rotate(4f, getSize() *.5f, getSize() *.5f);
-            if (i % 40 == 0) {
-                c.drawPath(trianglesPath, trianglesPaint);
-                c.drawText(String.format(getLocale(), "%d", (int)getSpeedAtDegree(i + getStartDegree()))
-                        , getSize() *.5f, getHeightPa()/20f +textPaint.getTextSize() + getPadding(), textPaint);
+        // tick each degree
+        float tickEach = getTickNumber() != 1 ? (float)(getEndDegree() - getStartDegree()) / (float)(getTickNumber()-1)
+                : getEndDegree() +1f;
+        for (int i = 1; i <= getTickNumber(); i++) {
+            if (!isTickRotation()) {
+                c.save();
+                c.rotate(-(getStartDegree()+90f + tickEach * drawnTick)
+                        , getSize() *.5f, textPaint.getTextSize() + getPadding() + getTickPadding());
             }
-            else {
-                if (i % 20 == 0)
+
+            c.drawText(String.format(getLocale(), "%d", (int)getSpeedAtDegree(tickEach * drawnTick + getStartDegree()))
+                    , getSize() *.5f, triangleHeight + textPaint.getTextSize() + getPadding() + getTickPadding(), textPaint);
+            if (!isTickRotation())
+                c.restore();
+            drawnTick++;
+            c.drawPath(trianglesPath, trianglesPaint);
+            if(drawnTick == getTickNumber())
+                break;
+            c.save();
+            for (int j=1; j < 10; j++) {
+                c.rotate(tickEach*.1f, getSize() *.5f, getSize() *.5f);
+                if (j == 5)
                     markPaint.setStrokeWidth(getSize()/22f/5);
                 else
                     markPaint.setStrokeWidth(getSize()/22f/9);
                 c.drawPath(markPath, markPaint);
             }
+            c.restore();
+            c.rotate(tickEach, getSize() *.5f, getSize() *.5f);
         }
         c.restore();
     }

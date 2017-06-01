@@ -137,7 +137,10 @@ public class TubeSpeedometer extends Speedometer {
 
         c.drawArc(speedometerRect, getStartDegree(), getEndDegree()- getStartDegree(), false, tubeBacPaint);
 
-        drawDefMinMaxSpeedPosition(c);
+        if (getTickNumber() > 0)
+            drawTicks(c);
+        else
+            drawDefMinMaxSpeedPosition(c);
     }
 
     public int getSpeedometerColor() {

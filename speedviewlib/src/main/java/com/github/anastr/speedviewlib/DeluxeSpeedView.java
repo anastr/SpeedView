@@ -171,7 +171,10 @@ public class DeluxeSpeedView extends Speedometer {
         }
         c.restore();
 
-        drawDefMinMaxSpeedPosition(c);
+        if (getTickNumber() > 0)
+            drawTicks(c);
+        else
+            drawDefMinMaxSpeedPosition(c);
     }
 
     public boolean isWithEffects() {

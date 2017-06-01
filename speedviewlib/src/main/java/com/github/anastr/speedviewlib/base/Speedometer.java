@@ -44,6 +44,12 @@ public abstract class Speedometer extends Gauge {
 
     private int cutPadding = 0;
 
+    /** number of speed value's label */
+    private int tickNumber = 0;
+    /** to rotate tick label */
+    private boolean tickRotation = true;
+    private int tickPadding = (int) (getSpeedometerWidth() + dpTOpx(3f));
+
     public Speedometer(Context context) {
         this(context, null);
     }
@@ -97,6 +103,11 @@ public abstract class Speedometer extends Gauge {
         endDegree = a.getInt(R.styleable.Speedometer_sv_endDegree, endDegree);
         setIndicatorWidth(a.getDimension(R.styleable.Speedometer_sv_indicatorWidth, indicator.getIndicatorWidth()));
         cutPadding = (int) a.getDimension(R.styleable.Speedometer_sv_cutPadding, cutPadding);
+        tickNumber = a.getInteger(R.styleable.Speedometer_sv_tickNumber, tickNumber);
+        tickRotation = a.getBoolean(R.styleable.Speedometer_sv_tickRotation, tickRotation);
+        tickPadding = (int) a.getDimension(R.styleable.Speedometer_sv_tickPadding, tickPadding);
+        if (tickNumber < 0)
+            throw new IllegalArgumentException("tickNumber mustn't be negative");
         int ind = a.getInt(R.styleable.Speedometer_sv_indicator, -1);
         if (ind != -1)
             setIndicator(Indicator.Indicators.values()[ind]);
@@ -153,7 +164,7 @@ public abstract class Speedometer extends Gauge {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        degree = getDegreeAtSpeed(getCorrectSpeed());
+        degree = getDegreeAtSpeed(getCurrentSpeed());
     }
 
     /**
@@ -488,6 +499,35 @@ public abstract class Speedometer extends Gauge {
         c.restore();
     }
 
+    /**
+     * draw speed value at each tick point.
+     * @param c canvas to draw.
+     */
+    protected void drawTicks(Canvas c) {
+        if(tickNumber == 0)
+            return;
+        int drawnTick = 0;
+        c.save();
+        c.rotate(getStartDegree()+90f, getSize() *.5f, getSize() *.5f);
+        // tick each degree
+        float tickEach = tickNumber != 1 ? (float)(endDegree - startDegree) / (float)(tickNumber-1) : endDegree +1f;
+        for (int i=1; i <= tickNumber; i++) {
+            if (!tickRotation) {
+                c.save();
+                c.rotate(-(getStartDegree()+90f + tickEach * drawnTick)
+                        , getSize() *.5f, textPaint.getTextSize() + getPadding() + tickPadding);
+            }
+
+            c.drawText(String.format(getLocale(), "%d", (int)getSpeedAtDegree(tickEach * drawnTick + getStartDegree()))
+                    , getSize() *.5f, textPaint.getTextSize() + getPadding() + tickPadding, textPaint);
+            if (!tickRotation)
+                c.restore();
+            drawnTick++;
+            c.rotate(tickEach, getSize() *.5f, getSize() *.5f);
+        }
+        c.restore();
+    }
+
     public float getIndicatorWidth() {
         return indicator.getIndicatorWidth();
     }
@@ -535,6 +575,62 @@ public abstract class Speedometer extends Gauge {
         if(!isAttachedToWindow())
             return;
         this.indicator.setTargetSpeedometer(this);
+        invalidate();
+    }
+
+    /**
+     * @return number of tick points of speed value's label.
+     */
+    public int getTickNumber() {
+        return tickNumber;
+    }
+
+    /**
+     * to add speed value label at each tick point between {@link #maxSpeed}
+     * and {@link #minSpeed}.
+     * @param tickNumber number of tick points.
+     * @throws IllegalArgumentException if {@code tickNumber < 0}.
+     */
+    public void setTickNumber(int tickNumber) {
+        if (tickNumber < 0)
+            throw new IllegalArgumentException("tickNumber mustn't be negative");
+        this.tickNumber = tickNumber;
+        if (tickNumber > 0)
+            textPaint.setTextAlign(Paint.Align.CENTER);
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    /**
+     * @return whether tick label rotate.
+     */
+    public boolean isTickRotation() {
+        return tickRotation;
+    }
+
+    /**
+     * to make speed value's label rotate at each tick.
+     * @param tickRotation with rotation.
+     */
+    public void setTickRotation(boolean tickRotation) {
+        this.tickRotation = tickRotation;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    /**
+     * @return tick label's padding.
+     */
+    public int getTickPadding() {
+        return tickPadding;
+    }
+
+    /**
+     * @param tickPadding tick label's padding.
+     */
+    public void setTickPadding(int tickPadding) {
+        this.tickPadding = tickPadding;
+        updateBackgroundBitmap();
         invalidate();
     }
 

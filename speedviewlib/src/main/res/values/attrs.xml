@@ -99,6 +99,10 @@
         </attr>
 
         <attr name="sv_cutPadding" format="dimension" />
+
+        <attr name="sv_tickNumber" format="integer" />
+        <attr name="sv_tickRotation" format="boolean" />
+        <attr name="sv_tickPadding" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">

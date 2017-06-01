@@ -124,7 +124,10 @@ public class SpeedView extends Speedometer {
         }
         c.restore();
 
-        drawDefMinMaxSpeedPosition(c);
+        if (getTickNumber() > 0)
+            drawTicks(c);
+        else
+            drawDefMinMaxSpeedPosition(c);
     }
 
     public int getCenterCircleColor() {
