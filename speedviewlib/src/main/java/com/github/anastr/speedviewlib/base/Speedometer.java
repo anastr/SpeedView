@@ -67,22 +67,7 @@ public abstract class Speedometer extends Gauge {
 
     private void init() {
         indicator = new NoIndicator(getContext());
-        SpeedometerDefault speedometerDefault = getSpeedometerDefault();
-        if (speedometerDefault != null) {
-            if (speedometerDefault.speedometerMode != null)
-                this.setSpeedometerMode(speedometerDefault.speedometerMode);
-            if (speedometerDefault.indicator != null)
-                indicator = speedometerDefault.indicator;
-            if (speedometerDefault.speedometerWidth >= 0)
-                speedometerWidth = speedometerDefault.speedometerWidth;
-            markColor = speedometerDefault.markColor;
-            lowSpeedColor = speedometerDefault.lowSpeedColor;
-            mediumSpeedColor = speedometerDefault.mediumSpeedColor;
-            highSpeedColor = speedometerDefault.highSpeedColor;
-            backgroundCircleColor = speedometerDefault.backgroundCircleColor;
-            startDegree = speedometerDefault.startDegree;
-            endDegree = speedometerDefault.endDegree;
-        }
+        defaultSpeedometerValues();
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -159,7 +144,15 @@ public abstract class Speedometer extends Gauge {
                     + " in " + speedometerMode + " Mode !");
     }
 
-    protected abstract SpeedometerDefault getSpeedometerDefault();
+    /**
+     * add default values for Speedometer inside this method,
+     * call super setting method to set default value,
+     * Ex :
+     * <pre>
+     *     super.setBackgroundCircleColor(Color.TRANSPARENT);
+     * </pre>
+     */
+    abstract protected void defaultSpeedometerValues();
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -597,6 +590,8 @@ public abstract class Speedometer extends Gauge {
         this.tickNumber = tickNumber;
         if (tickNumber > 0)
             textPaint.setTextAlign(Paint.Align.CENTER);
+        if (!isAttachedToWindow())
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -614,6 +609,8 @@ public abstract class Speedometer extends Gauge {
      */
     public void setTickRotation(boolean tickRotation) {
         this.tickRotation = tickRotation;
+        if (!isAttachedToWindow())
+            return;
         updateBackgroundBitmap();
         invalidate();
     }
@@ -630,6 +627,8 @@ public abstract class Speedometer extends Gauge {
      */
     public void setTickPadding(int tickPadding) {
         this.tickPadding = tickPadding;
+        if (!isAttachedToWindow())
+            return;
         updateBackgroundBitmap();
         invalidate();
     }

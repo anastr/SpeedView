@@ -37,7 +37,7 @@ public class ProgressiveGauge extends LinearGauge {
     }
 
     @Override
-    protected void defaultValues() {
+    protected void defaultGaugeValues() {
         super.setSpeedTextPosition(Position.CENTER);
         super.setUnitUnderSpeedText(true);
     }

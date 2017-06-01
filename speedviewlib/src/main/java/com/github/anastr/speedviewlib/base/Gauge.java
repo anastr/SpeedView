@@ -161,7 +161,7 @@ public abstract class Gauge extends View {
                 }
             };
         }
-        defaultValues();
+        defaultGaugeValues();
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -272,14 +272,14 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * add default values inside this method,
+     * add default values for Gauge inside this method,
      * call super setting method to set default value,
      * Ex :
      * <pre>
      *     super.setBackgroundCircleColor(Color.TRANSPARENT);
      * </pre>
      */
-    abstract protected void defaultValues();
+    abstract protected void defaultGaugeValues();
     /**
      * notice that {@link #backgroundBitmap} must recreate.
      */

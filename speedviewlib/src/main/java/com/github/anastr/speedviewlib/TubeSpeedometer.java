@@ -11,7 +11,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 
 import com.github.anastr.speedviewlib.base.Speedometer;
-import com.github.anastr.speedviewlib.base.SpeedometerDefault;
 
 /**
  * this Library build By Anas Altair
@@ -40,18 +39,16 @@ public class TubeSpeedometer extends Speedometer {
     }
 
     @Override
-    protected void defaultValues() {
+    protected void defaultGaugeValues() {
     }
 
     @Override
-    protected SpeedometerDefault getSpeedometerDefault() {
-        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
-        speedometerDefault.backgroundCircleColor = Color.TRANSPARENT;
-        speedometerDefault.lowSpeedColor = Color.parseColor("#00BCD4");
-        speedometerDefault.mediumSpeedColor = Color.parseColor("#FFC107");
-        speedometerDefault.highSpeedColor = Color.parseColor("#F44336");
-        speedometerDefault.speedometerWidth = dpTOpx(40f);
-        return speedometerDefault;
+    protected void defaultSpeedometerValues() {
+        super.setBackgroundCircleColor(Color.TRANSPARENT);
+        super.setLowSpeedColor(Color.parseColor("#00BCD4"));
+        super.setMediumSpeedColor(Color.parseColor("#FFC107"));
+        super.setHighSpeedColor(Color.parseColor("#F44336"));
+        super.setSpeedometerWidth(dpTOpx(40f));
     }
 
     private void init() {

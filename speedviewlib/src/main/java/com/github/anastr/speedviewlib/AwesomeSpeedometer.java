@@ -14,7 +14,6 @@ import android.util.AttributeSet;
 
 import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.components.Indicators.TriangleIndicator;
-import com.github.anastr.speedviewlib.base.SpeedometerDefault;
 
 /**
  * this Library build By Anas Altair
@@ -48,7 +47,7 @@ public class AwesomeSpeedometer extends Speedometer {
     }
 
     @Override
-    protected void defaultValues() {
+    protected void defaultGaugeValues() {
 
         super.setTextColor(Color.parseColor("#ffc260"));
         super.setSpeedTextColor(Color.WHITE);
@@ -59,17 +58,15 @@ public class AwesomeSpeedometer extends Speedometer {
     }
 
     @Override
-    protected SpeedometerDefault getSpeedometerDefault() {
-        SpeedometerDefault speedometerDefault = new SpeedometerDefault();
-        speedometerDefault.indicator = new TriangleIndicator(getContext())
+    protected void defaultSpeedometerValues() {
+        super.setIndicator(new TriangleIndicator(getContext())
                 .setIndicatorWidth(dpTOpx(25f))
-                .setIndicatorColor(Color.parseColor("#00e6e6"));
-        speedometerDefault.startDegree = 135;
-        speedometerDefault.endDegree = 135+320;
-        speedometerDefault.speedometerWidth = dpTOpx(60);
-        speedometerDefault.backgroundCircleColor = Color.parseColor("#212121");
-        speedometerDefault.backgroundCircleColor = Color.parseColor("#212121");
-        return speedometerDefault;
+                .setIndicatorColor(Color.parseColor("#00e6e6")));
+        super.setStartEndDegree(135, 135 + 320);
+        super.setSpeedometerWidth(dpTOpx(60f));
+        super.setBackgroundCircleColor(Color.parseColor("#212121"));
+        super.setTickNumber(9);
+        super.setTickPadding(0);
     }
 
     private void init() {
@@ -150,25 +147,7 @@ public class AwesomeSpeedometer extends Speedometer {
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
         c.drawArc(speedometerRect, 0f, 360f, false, ringPaint);
 
-//        c.save();
-//        c.rotate(getStartDegree()+90f, getSize() *.5f, getSize() *.5f);
-//        for (float i = 0; i <= getEndDegree() - getStartDegree(); i+=4f) {
-//            c.rotate(4f, getSize() *.5f, getSize() *.5f);
-//            if (i % 40 == 0) {
-//                c.drawPath(trianglesPath, trianglesPaint);
-//                c.drawText(String.format(getLocale(), "%d", (int)getSpeedAtDegree(i + getStartDegree()))
-//                        , getSize() *.5f, getHeightPa()/20f +textPaint.getTextSize() + getPadding(), textPaint);
-//            }
-//            else {
-//                if (i % 20 == 0)
-//                    markPaint.setStrokeWidth(getSize()/22f/5);
-//                else
-//                    markPaint.setStrokeWidth(getSize()/22f/9);
-//                c.drawPath(markPath, markPaint);
-//            }
-//        }
         drawTicks(c);
-        c.restore();
     }
 
     @Override
