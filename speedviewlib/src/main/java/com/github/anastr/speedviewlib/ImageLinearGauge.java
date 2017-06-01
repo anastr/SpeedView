@@ -57,20 +57,15 @@ public class ImageLinearGauge extends LinearGauge {
             return;
         int w = getMeasuredWidth();
         int h = getMeasuredHeight();
-        if (getOrientation() == Orientation.HORIZONTAL) {
-            float image_w_to_h = (float) image.getIntrinsicWidth() / (float) image.getIntrinsicHeight();
-            if (image_w_to_h > 1f)
-                setMeasuredDimension(w, (int) (w / image_w_to_h));
-            else
-                setMeasuredDimension(w, (int) (w * image_w_to_h));
-        }
-        else {
-            float image_h_to_w = (float) image.getIntrinsicHeight() / (float) image.getIntrinsicWidth();
-            if (image_h_to_w > 1f)
-                setMeasuredDimension((int) (h / image_h_to_w), h);
-            else
-                setMeasuredDimension((int) (h * image_h_to_w), h);
-        }
+        float imageW = (float) image.getIntrinsicWidth();
+        float imageH = (float) image.getIntrinsicHeight();
+        float view_w_to_h = w / h;
+        float image_w_to_h = imageW / imageH;
+
+        if (image_w_to_h > view_w_to_h)
+            setMeasuredDimension(w, (int) (w * imageH / imageW));
+        else
+            setMeasuredDimension((int)(h * imageW / imageH), h);
     }
 
     @Override
