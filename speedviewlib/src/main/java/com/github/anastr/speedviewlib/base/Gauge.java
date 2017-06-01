@@ -51,9 +51,9 @@ public abstract class Gauge extends View {
      */
     private float speed = minSpeed;
     /** what is speed now in <b>int</b> */
-    private int correctIntSpeed = 0;
+    private int currentIntSpeed = 0;
     /** what is speed now in <b>float</b> */
-    private float correctSpeed = 0f;
+    private float currentSpeed = 0f;
     /** a degree to increases and decreases the indicator around correct speed */
     private float trembleDegree = 4f;
     private int trembleDuration = 1000;
@@ -304,15 +304,15 @@ public abstract class Gauge extends View {
             canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint);
 
         // check onSpeedChangeEvent.
-        int newSpeed = (int) correctSpeed;
-        if (newSpeed != correctIntSpeed) {
+        int newSpeed = (int) currentSpeed;
+        if (newSpeed != currentIntSpeed) {
             if (onSpeedChangeListener != null) {
-                boolean isSpeedUp = newSpeed > correctIntSpeed;
+                boolean isSpeedUp = newSpeed > currentIntSpeed;
                 int update = isSpeedUp ? 1 : -1;
                 // this loop to pass on all speed values,
                 // to safe handle by call gauge.getCorrectIntSpeed().
-                while (correctIntSpeed != newSpeed) {
-                    correctIntSpeed += update;
+                while (currentIntSpeed != newSpeed) {
+                    currentIntSpeed += update;
                     boolean byTremble = false;
                     if (Build.VERSION.SDK_INT >= 11)
                         byTremble = trembleAnimator.isRunning();
@@ -320,7 +320,7 @@ public abstract class Gauge extends View {
                 }
             }
             else
-                correctIntSpeed = newSpeed;
+                currentIntSpeed = newSpeed;
         }
         // check onSectionChangeEvent.
         byte newSection = getSection();
@@ -451,7 +451,7 @@ public abstract class Gauge extends View {
             return;
         if (!speedAnimator.isRunning() && !realSpeedAnimator.isRunning())
             return;
-        speed = correctSpeed;
+        speed = currentSpeed;
         cancelSpeedAnimator();
         tremble();
     }
@@ -490,7 +490,7 @@ public abstract class Gauge extends View {
     public void setSpeedAt(float speed) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         this.speed = speed;
-        this.correctSpeed = speed;
+        this.currentSpeed = speed;
         cancelSpeedAnimator();
         invalidate();
         tremble();
@@ -572,13 +572,13 @@ public abstract class Gauge extends View {
         }
 
         cancelSpeedAnimator();
-        speedAnimator = ValueAnimator.ofFloat(correctSpeed, speed);
+        speedAnimator = ValueAnimator.ofFloat(currentSpeed, speed);
         speedAnimator.setInterpolator(new DecelerateInterpolator());
         speedAnimator.setDuration(moveDuration);
         speedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                correctSpeed = (float) speedAnimator.getAnimatedValue();
+                currentSpeed = (float) speedAnimator.getAnimatedValue();
                 postInvalidate();
             }
         });
@@ -632,7 +632,7 @@ public abstract class Gauge extends View {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void realSpeedTo(float speed) {
-        boolean oldIsSpeedUp = this.speed > correctSpeed;
+        boolean oldIsSpeedUp = this.speed > currentSpeed;
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
         if (speed == this.speed)
             return;
@@ -642,33 +642,33 @@ public abstract class Gauge extends View {
             setSpeedAt(speed);
             return;
         }
-        final boolean isSpeedUp = speed > correctSpeed;
+        final boolean isSpeedUp = speed > currentSpeed;
         if (realSpeedAnimator.isRunning() && oldIsSpeedUp == isSpeedUp)
             return;
 
         cancelSpeedAnimator();
-        realSpeedAnimator = ValueAnimator.ofInt((int)correctSpeed, (int)speed);
+        realSpeedAnimator = ValueAnimator.ofInt((int) currentSpeed, (int)speed);
         realSpeedAnimator.setRepeatCount(ValueAnimator.INFINITE);
         realSpeedAnimator.setInterpolator(new LinearInterpolator());
-        realSpeedAnimator.setDuration(Math.abs((long) ((speed - correctSpeed) * 10) ));
+        realSpeedAnimator.setDuration(Math.abs((long) ((speed - currentSpeed) * 10) ));
         final float finalSpeed = speed;
         realSpeedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 if (isSpeedUp) {
                     float per = 100.005f-getPercentSpeed();
-                    correctSpeed += (accelerate * 10f) * per *.01f;
-                    if (correctSpeed > finalSpeed)
-                        correctSpeed = finalSpeed;
+                    currentSpeed += (accelerate * 10f) * per *.01f;
+                    if (currentSpeed > finalSpeed)
+                        currentSpeed = finalSpeed;
                 }
                 else {
                     float per = getPercentSpeed()+.005f;
-                    correctSpeed -= (decelerate * 10f) * per *.01f +.1f;
-                    if (correctSpeed < finalSpeed)
-                        correctSpeed = finalSpeed;
+                    currentSpeed -= (decelerate * 10f) * per *.01f +.1f;
+                    if (currentSpeed < finalSpeed)
+                        currentSpeed = finalSpeed;
                 }
                 postInvalidate();
-                if (finalSpeed == correctSpeed)
+                if (finalSpeed == currentSpeed)
                     stop();
             }
         });
@@ -688,13 +688,13 @@ public abstract class Gauge extends View {
         float mad = trembleDegree * random.nextFloat() * ((random.nextBoolean()) ? -1 :1);
         mad = (speed + mad > maxSpeed) ? maxSpeed - speed
                 : (speed + mad < minSpeed) ? minSpeed - speed : mad;
-        trembleAnimator = ValueAnimator.ofFloat(correctSpeed, speed + mad);
+        trembleAnimator = ValueAnimator.ofFloat(currentSpeed, speed + mad);
         trembleAnimator.setInterpolator(new DecelerateInterpolator());
         trembleAnimator.setDuration(trembleDuration);
         trembleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                correctSpeed = (float) trembleAnimator.getAnimatedValue();
+                currentSpeed = (float) trembleAnimator.getAnimatedValue();
                 postInvalidate();
             }
         });
@@ -782,8 +782,8 @@ public abstract class Gauge extends View {
      * @return correct speed to draw.
      */
     protected String getSpeedText() {
-        return speedTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", correctSpeed)
-                : String.format(locale, "%d", correctIntSpeed);
+        return speedTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", currentSpeed)
+                : String.format(locale, "%d", currentIntSpeed);
     }
 
     /**
@@ -829,10 +829,17 @@ public abstract class Gauge extends View {
      * or {@link #speedTo(float, long)} or {@link #speedPercentTo(int)},
      * or if you stop speedometer By {@link #stop()} method.
      *
-     * @see #getCorrectSpeed()
+     * @see #getCurrentSpeed()
      */
     public float getSpeed() {
         return speed;
+    }
+
+    /**
+     * @deprecated use {@link #getCurrentSpeed()}.
+     */
+    public float getCorrectSpeed() {
+        return currentSpeed;
     }
 
     /**
@@ -843,8 +850,15 @@ public abstract class Gauge extends View {
      * @see #setWithTremble(boolean)
      * @see #getSpeed()
      */
-    public float getCorrectSpeed() {
-        return correctSpeed;
+    public float getCurrentSpeed() {
+        return currentSpeed;
+    }
+
+    /**
+     * @deprecated use {@link #getCurrentIntSpeed()}.
+     */
+    public int getCorrectIntSpeed() {
+        return currentIntSpeed;
     }
 
     /**
@@ -853,10 +867,10 @@ public abstract class Gauge extends View {
      *     safe method to handle all speed values in {@link #onSpeedChangeListener}.
      * </p>
      * @return correct speed in Integer
-     * @see #getCorrectSpeed()
+     * @see #getCurrentSpeed()
      */
-    public int getCorrectIntSpeed() {
-        return correctIntSpeed;
+    public int getCurrentIntSpeed() {
+        return currentIntSpeed;
     }
 
     /**
@@ -923,14 +937,14 @@ public abstract class Gauge extends View {
      * @return percent speed, between [0,100].
      */
     public float getPercentSpeed() {
-        return (correctSpeed - minSpeed) * 100f / (float)(maxSpeed - minSpeed);
+        return (currentSpeed - minSpeed) * 100f / (float)(maxSpeed - minSpeed);
     }
 
     /**
      * @return offset speed, between [0,1].
      */
     public float getOffsetSpeed() {
-        return (correctSpeed - minSpeed) / (float)(maxSpeed - minSpeed);
+        return (currentSpeed - minSpeed) / (float)(maxSpeed - minSpeed);
     }
 
     /**
@@ -1233,7 +1247,7 @@ public abstract class Gauge extends View {
      * @see #setLowSpeedPercent(int)
      */
     public boolean isInLowSection() {
-        return (maxSpeed - minSpeed)*getLowSpeedOffset() + minSpeed >= correctSpeed;
+        return (maxSpeed - minSpeed)*getLowSpeedOffset() + minSpeed >= currentSpeed;
     }
 
     /**
@@ -1244,7 +1258,7 @@ public abstract class Gauge extends View {
      * @see #setMediumSpeedPercent(int)
      */
     public boolean isInMediumSection() {
-        return (maxSpeed - minSpeed)*getMediumSpeedOffset() + minSpeed >= correctSpeed && !isInLowSection();
+        return (maxSpeed - minSpeed)*getMediumSpeedOffset() + minSpeed >= currentSpeed && !isInLowSection();
     }
 
     /**
@@ -1253,7 +1267,7 @@ public abstract class Gauge extends View {
      * , and it is not in Low Speed Section or Medium Speed Section.
      */
     public boolean isInHighSection() {
-        return correctSpeed > (maxSpeed - minSpeed)*getMediumSpeedOffset() + minSpeed;
+        return currentSpeed > (maxSpeed - minSpeed)*getMediumSpeedOffset() + minSpeed;
     }
 
     /**
