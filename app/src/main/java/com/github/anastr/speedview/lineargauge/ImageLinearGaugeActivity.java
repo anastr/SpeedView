@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.github.anastr.speedview.R;
 import com.github.anastr.speedviewlib.ImageLinearGauge;
+import com.github.anastr.speedviewlib.base.LinearGauge;
 
 import java.util.Locale;
 
@@ -18,6 +21,7 @@ public class ImageLinearGaugeActivity extends AppCompatActivity {
     SeekBar seekBar;
     Button ok;
     TextView textSpeed;
+    CheckBox checkBoxOrientation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,7 @@ public class ImageLinearGaugeActivity extends AppCompatActivity {
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         ok = (Button) findViewById(R.id.ok);
         textSpeed = (TextView) findViewById(R.id.textSpeed);
+        checkBoxOrientation = (CheckBox) findViewById(R.id.cb_orientation);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +53,16 @@ public class ImageLinearGaugeActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        checkBoxOrientation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b)
+                    imageLinearGauge.setOrientation(LinearGauge.Orientation.VERTICAL);
+                else
+                    imageLinearGauge.setOrientation(LinearGauge.Orientation.HORIZONTAL);
             }
         });
     }

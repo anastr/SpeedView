@@ -14,7 +14,7 @@
     <com.github.anastr.speedviewlib.ImageLinearGauge
         android:id="@+id/gauge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_gravity="center_horizontal"
         app:sv_orientation="HORIZONTAL"
         app:sv_speedTextPosition="BOTTOM_CENTER"
@@ -49,5 +49,12 @@
             android:layout_height="wrap_content"
             android:text="ok" />
     </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/cb_orientation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Vertical"
+        android:checked="false"/>
 
 </LinearLayout>

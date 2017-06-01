@@ -59,7 +59,7 @@ public class PointerActivity extends AppCompatActivity {
             @Override
             public void onSpeedChange(Gauge gauge, boolean isSpeedUp, boolean isByTremble) {
                 textSpeedChange.setText(String.format(Locale.getDefault(), "onSpeedChange %d"
-                        , gauge.getCorrectIntSpeed()));
+                        , gauge.getCurrentIntSpeed()));
             }
         });
     }
