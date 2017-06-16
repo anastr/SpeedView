@@ -180,8 +180,10 @@ public class DeluxeSpeedView extends Speedometer {
 
     public void setWithEffects(boolean withEffects) {
         this.withEffects = withEffects;
+        if (isInEditMode())
+            return;
         indicatorEffects(withEffects);
-        if (withEffects && !isInEditMode()) {
+        if (withEffects) {
             markPaint.setMaskFilter(new BlurMaskFilter(5, BlurMaskFilter.Blur.SOLID));
             speedBackgroundPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.SOLID));
             circlePaint.setMaskFilter(new BlurMaskFilter(10, BlurMaskFilter.Blur.SOLID));

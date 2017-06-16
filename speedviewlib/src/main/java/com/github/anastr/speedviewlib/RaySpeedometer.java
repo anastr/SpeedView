@@ -180,8 +180,10 @@ public class RaySpeedometer extends Speedometer {
 
     public void setWithEffects(boolean withEffects) {
         this.withEffects = withEffects;
+        if (isInEditMode())
+            return;
         indicatorEffects(withEffects);
-        if (withEffects && !isInEditMode()) {
+        if (withEffects) {
             rayPaint.setMaskFilter(new BlurMaskFilter(3, BlurMaskFilter.Blur.SOLID));
             markPaint.setMaskFilter(new BlurMaskFilter(5, BlurMaskFilter.Blur.SOLID));
             speedBackgroundPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.SOLID));
