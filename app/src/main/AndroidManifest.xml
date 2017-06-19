@@ -31,6 +31,7 @@
         <activity android:name=".SpeedTextPositionActivity" />
         <activity android:name=".lineargauge.ProgressiveGaugeActivity" />
         <activity android:name=".lineargauge.ImageLinearGaugeActivity" />
+        <activity android:name=".TickActivity" />
     </application>
 
 </manifest>
