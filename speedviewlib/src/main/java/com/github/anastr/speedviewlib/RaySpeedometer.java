@@ -24,6 +24,7 @@ public class RaySpeedometer extends Speedometer {
             ray1Path = new Path(),
             ray2Path = new Path();
     private Paint markPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            activeMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             speedBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG),
             rayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -63,7 +64,9 @@ public class RaySpeedometer extends Speedometer {
 
         rayPaint.setColor(a.getColor(R.styleable.RaySpeedometer_sv_rayColor, rayPaint.getColor()));
         int degreeBetweenMark = a.getInt(R.styleable.RaySpeedometer_sv_degreeBetweenMark, this.degreeBetweenMark);
-        markPaint.setStrokeWidth(a.getDimension(R.styleable.RaySpeedometer_sv_markWidth, markPaint.getStrokeWidth()));
+        float markWidth = a.getDimension(R.styleable.RaySpeedometer_sv_markWidth, markPaint.getStrokeWidth());
+        markPaint.setStrokeWidth(markWidth);
+        activeMarkPaint.setStrokeWidth(markWidth);
         speedBackgroundPaint.setColor(a.getColor(R.styleable.RaySpeedometer_sv_speedBackgroundColor
                 , speedBackgroundPaint.getColor()));
         withEffects = a.getBoolean(R.styleable.RaySpeedometer_sv_withEffects, withEffects);
@@ -75,11 +78,13 @@ public class RaySpeedometer extends Speedometer {
 
     private void init() {
         markPaint.setStyle(Paint.Style.STROKE);
+        markPaint.setStrokeWidth(dpTOpx(3f));
+        activeMarkPaint.setStyle(Paint.Style.STROKE);
+        activeMarkPaint.setStrokeWidth(dpTOpx(3f));
         rayPaint.setStyle(Paint.Style.STROKE);
         rayPaint.setStrokeWidth(dpTOpx(1.8f));
         rayPaint.setColor(Color.WHITE);
         speedBackgroundPaint.setColor(Color.WHITE);
-        markPaint.setStrokeWidth(dpTOpx(3f));
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null);
@@ -109,12 +114,12 @@ public class RaySpeedometer extends Speedometer {
                 continue;
             }
             if (i > (getEndDegree()- getStartDegree())*getMediumSpeedOffset() + getStartDegree())
-                markPaint.setColor(getHighSpeedColor());
+                activeMarkPaint.setColor(getHighSpeedColor());
             else if (i > (getEndDegree()- getStartDegree())*getLowSpeedOffset() + getStartDegree())
-                markPaint.setColor(getMediumSpeedColor());
+                activeMarkPaint.setColor(getMediumSpeedColor());
             else
-                markPaint.setColor(getLowSpeedColor());
-            canvas.drawPath(markPath, markPaint);
+                activeMarkPaint.setColor(getLowSpeedColor());
+            canvas.drawPath(markPath, activeMarkPaint);
             canvas.rotate(degreeBetweenMark, getSize() *.5f, getSize()/2f);
         }
         canvas.restore();
@@ -185,12 +190,12 @@ public class RaySpeedometer extends Speedometer {
         indicatorEffects(withEffects);
         if (withEffects) {
             rayPaint.setMaskFilter(new BlurMaskFilter(3, BlurMaskFilter.Blur.SOLID));
-            markPaint.setMaskFilter(new BlurMaskFilter(5, BlurMaskFilter.Blur.SOLID));
+            activeMarkPaint.setMaskFilter(new BlurMaskFilter(5, BlurMaskFilter.Blur.SOLID));
             speedBackgroundPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.SOLID));
         }
         else {
             rayPaint.setMaskFilter(null);
-            markPaint.setMaskFilter(null);
+            activeMarkPaint.setMaskFilter(null);
             speedBackgroundPaint.setMaskFilter(null);
         }
         updateBackgroundBitmap();
@@ -237,6 +242,7 @@ public class RaySpeedometer extends Speedometer {
 
     public void setMarkWidth(float markWidth) {
         markPaint.setStrokeWidth(markWidth);
+        activeMarkPaint.setStrokeWidth(markWidth);
         invalidate();
     }
 
