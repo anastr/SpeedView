@@ -886,21 +886,13 @@ public abstract class Gauge extends View {
 
     /**
      * change max speed.<br>
-     * this method well call {@link #speedTo(float)} method
-     * to make the change smooth.<br>
-     * if {@code maxSpeed <= minSpeed} will ignore.
      *
      * @param maxSpeed new MAX Speed.
+     *
+     * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
      */
     public void setMaxSpeed(int maxSpeed) {
-        if (maxSpeed <= minSpeed)
-            return;
-        this.maxSpeed = maxSpeed;
-        recreateSpeedUnitTextBitmap();
-        if (!attachedToWindow)
-            return;
-        updateBackgroundBitmap();
-        speedTo(speed);
+        setMinMaxSpeed(minSpeed, maxSpeed);
     }
 
     /**
@@ -916,20 +908,33 @@ public abstract class Gauge extends View {
 
     /**
      * change min speed.<br>
-     * this method well call {@link #speedTo(float)} method
-     * to make the change smooth.<br>
-     * if {@code minSpeed >= maxSpeed} will ignore.
      *
      * @param minSpeed new MAX Speed.
+     *
+     * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
      */
     public void setMinSpeed(int minSpeed) {
+        setMinMaxSpeed(minSpeed, maxSpeed);
+    }
+
+    /**
+     * change Min and Max speed.<br>
+     *
+     * @param minSpeed new MAX Speed.
+     *
+     * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
+     */
+    public void setMinMaxSpeed(int minSpeed, int maxSpeed) {
         if (minSpeed >= maxSpeed)
-            return;
+            throw new IllegalArgumentException("minSpeed must be smaller than maxSpeed !!");
+        cancelSpeedAnimator();
         this.minSpeed = minSpeed;
+        this.maxSpeed = maxSpeed;
+        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         updateBackgroundBitmap();
-        speedTo(speed);
+        setSpeedAt(speed);
     }
 
     /**
