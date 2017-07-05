@@ -308,15 +308,13 @@ public abstract class Gauge extends View {
         int newSpeed = (int) currentSpeed;
         if (newSpeed != currentIntSpeed) {
             if (onSpeedChangeListener != null) {
+                boolean byTremble = Build.VERSION.SDK_INT >= 11 && trembleAnimator.isRunning();
                 boolean isSpeedUp = newSpeed > currentIntSpeed;
                 int update = isSpeedUp ? 1 : -1;
                 // this loop to pass on all speed values,
                 // to safe handle by call gauge.getCorrectIntSpeed().
                 while (currentIntSpeed != newSpeed) {
                     currentIntSpeed += update;
-                    boolean byTremble = false;
-                    if (Build.VERSION.SDK_INT >= 11)
-                        byTremble = trembleAnimator.isRunning();
                     onSpeedChangeListener.onSpeedChange(this, isSpeedUp, byTremble);
                 }
             }
@@ -325,10 +323,9 @@ public abstract class Gauge extends View {
         }
         // check onSectionChangeEvent.
         byte newSection = getSection();
-        if (section != newSection) {
+        if (section != newSection)
             onSectionChangeEvent(section, newSection);
-            section = newSection;
-        }
+        section = newSection;
     }
 
     /**
@@ -362,19 +359,23 @@ public abstract class Gauge extends View {
         if (unitUnderSpeedText) {
             c.drawText(getSpeedText(), speedUnitTextBitmap.getWidth() *.5f
                     , speedTextPaint.getTextSize(), speedTextPaint);
-            c.drawText(getUnit(), speedUnitTextBitmap.getWidth() *.5f
+            c.drawText(unit, speedUnitTextBitmap.getWidth() *.5f
                     , speedTextPaint.getTextSize() + unitSpeedInterval + unitTextPaint.getTextSize(), unitTextPaint);
             return speedUnitTextBitmap;
         }
         else {
-            float speedX = 0f;
-            float unitX = speedTextPaint.measureText(getSpeedText()) + unitSpeedInterval;
+            float speedX;
+            float unitX;
             if (isSpeedometerTextRightToLeft()) {
-                speedX = unitTextPaint.measureText(getUnit()) + unitSpeedInterval;
+                speedX = unitTextPaint.measureText(unit) + unitSpeedInterval;
                 unitX = 0f;
             }
-            c.drawText(getSpeedText(), speedX, c.getHeight() - .1f, speedTextPaint);
-            c.drawText(getUnit(), unitX, c.getHeight() - .1f, unitTextPaint);
+            else {
+                speedX = 0f;
+                unitX = speedTextPaint.measureText(getSpeedText()) + unitSpeedInterval;
+            }
+            c.drawText(getSpeedText(), speedX, c.getHeight() - .15f, speedTextPaint);
+            c.drawText(unit, unitX, c.getHeight() - .15f, unitTextPaint);
             return speedUnitTextBitmap;
         }
     }
@@ -394,31 +395,29 @@ public abstract class Gauge extends View {
     }
 
     private float getMaxWidthForSpeedUnitText() {
-        String speedUnitText = speedTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", (float)maxSpeed)
+        String maxSpeedText = speedTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", (float)maxSpeed)
                 : String.format(locale, "%d", maxSpeed);
-        if (unitUnderSpeedText)
-            return Math.max(speedTextPaint.measureText(speedUnitText)
-                    , unitTextPaint.measureText(getUnit()));
-        return speedTextPaint.measureText(speedUnitText)
-                + unitTextPaint.measureText(getUnit()) + unitSpeedInterval;
+        return unitUnderSpeedText ?
+                Math.max(speedTextPaint.measureText(maxSpeedText), unitTextPaint.measureText(unit))
+                : speedTextPaint.measureText(maxSpeedText) + unitTextPaint.measureText(unit) + unitSpeedInterval;
     }
 
     /**
      * @return the width of speed & unit text.
      */
     private float getSpeedUnitTextWidth() {
-        if (unitUnderSpeedText)
-            return Math.max(speedTextPaint.measureText(getSpeedText()), unitTextPaint.measureText(getUnit()));
-        return speedTextPaint.measureText(getSpeedText()) + unitTextPaint.measureText(getUnit()) + unitSpeedInterval;
+        return unitUnderSpeedText ?
+                Math.max(speedTextPaint.measureText(getSpeedText()), unitTextPaint.measureText(getUnit()))
+                : speedTextPaint.measureText(getSpeedText()) + unitTextPaint.measureText(getUnit()) + unitSpeedInterval;
     }
 
     /**
      * @return the height of speed & unit text.
      */
     private float getSpeedUnitTextHeight() {
-        if (unitUnderSpeedText)
-            return speedTextPaint.getTextSize() + unitTextPaint.getTextSize() + unitSpeedInterval;
-        return Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize());
+        return unitUnderSpeedText ?
+                speedTextPaint.getTextSize() + unitTextPaint.getTextSize() + unitSpeedInterval
+                : Math.max(speedTextPaint.getTextSize(), unitTextPaint.getTextSize());
     }
 
     /**
@@ -1471,15 +1470,15 @@ public abstract class Gauge extends View {
      * position of Speed-Unit Text.
      */
     public enum Position {
-        TOP_LEFT        (0f , 0f , 0f , 0f , 1 , 1 )
-        , TOP_CENTER    (.5f, 0f , .5f, 0f , 0 , 1 )
-        , TOP_RIGHT     (1f , 0f , 1f , 0f , -1, 1 )
-        , LEFT          (0f , .5f, 0f , .5f, 1 , 0 )
-        , CENTER        (.5f, .5f, .5f, .5f, 0 , 0 )
-        , RIGHT         (1f , .5f, 1f , .5f, -1, 0 )
-        , BOTTOM_LEFT   (0f , 1f , 0f , 1f , 1 , -1)
-        , BOTTOM_CENTER (.5f, 1f , .5f, 1f , 0 , -1)
-        , BOTTOM_RIGHT  (1f , 1f , 1f , 1f , -1, -1);
+        TOP_LEFT        (0f  , 0f  , 0f  , 0f  , 1  , 1 )
+        , TOP_CENTER    (.5f , 0f  , .5f , 0f  , 0  , 1 )
+        , TOP_RIGHT     (1f  , 0f  , 1f  , 0f  , -1 , 1 )
+        , LEFT          (0f  , .5f , 0f  , .5f , 1  , 0 )
+        , CENTER        (.5f , .5f , .5f , .5f , 0  , 0 )
+        , RIGHT         (1f  , .5f , 1f  , .5f , -1 , 0 )
+        , BOTTOM_LEFT   (0f  , 1f  , 0f  , 1f  , 1  , -1)
+        , BOTTOM_CENTER (.5f , 1f  , .5f , 1f  , 0  , -1)
+        , BOTTOM_RIGHT  (1f  , 1f  , 1f  , 1f  , -1 , -1);
 
         final float x;
         final float y;
