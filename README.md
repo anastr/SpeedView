@@ -4,7 +4,7 @@ Dynamic Speedometer, Gauge for Android. **amazing**, **powerful**, and _multi sh
 
 `minSdkVersion=8`
 
-Library Size just ~ 46 KB.
+Library Size just ~ 50 KB.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-blue.svg?style=true)](https://android-arsenal.com/details/1/4169)
 [![API](https://img.shields.io/badge/API-+8-red.svg?style=flat)](#)
@@ -27,7 +27,7 @@ Library Size just ~ 46 KB.
 ```gradle
 
 dependencies {
-	    compile 'com.github.anastr:speedviewlib:1.1.4'
+	    compile 'com.github.anastr:speedviewlib:1.1.5'
 }
 
 ```
@@ -38,7 +38,7 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.1.4</version>
+  <version>1.1.5</version>
   <type>pom</type>
 </dependency>
 ```
@@ -56,6 +56,8 @@ choose one of Speedometers, gauges and add it to your `Layout.xml`, here we use 
 
 for all speedometers and gauges, this simple method to smoothly change speed:
 ```java
+SpeedView speedometer = (SpeedView) findViewById(R.id.speedView);
+
 // move to 50 Km/s
 speedometer.speedTo(50);
 ```
@@ -72,8 +74,8 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
 <img src="/images/usage/StartEndDegree.png" width="40%" />
 <img src="/images/usage/WorkWithNote.gif" width="35%" />
 
-## we have **9 Speedometers, Gauges** : <br>
-======================
+## we have **9 Speedometers, Gauges** :
+
 <table style="width:100%">
   <tr>
     <th>Name</th>
@@ -202,6 +204,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
 </table>
 
 ## TODO
+* build start animation.
 * add fuel gauge component.
 * build new custom speedometer.
 
