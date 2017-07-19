@@ -91,6 +91,7 @@ public class CreateProgrammatically extends AppCompatActivity {
                 speedometer.setIndicator(Indicator.Indicators.HalfLineIndicator);
                 speedometer.setIndicatorWidth(speedometer.dpTOpx(5f));
                 speedometer.setSpeedTextColor(Color.WHITE);
+                speedometer.setUnitTextColor(Color.WHITE);
                 ((ImageSpeedometer)speedometer).setImageSpeedometer(R.drawable.for_image_speedometer);
                 break;
         }
