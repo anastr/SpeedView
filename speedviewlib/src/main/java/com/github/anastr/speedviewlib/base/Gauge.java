@@ -12,6 +12,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -723,6 +725,25 @@ public abstract class Gauge extends View {
         cancelSpeedAnimator();
         attachedToWindow = false;
     }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        super.onSaveInstanceState();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("superState", super.onSaveInstanceState());
+        bundle.putFloat("speed", speed);
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        Bundle bundle = (Bundle) state;
+        speed = bundle.getFloat("speed");
+        state = bundle.getParcelable("superState");
+        super.onRestoreInstanceState(state);
+        setSpeedAt(speed);
+    }
+
 
     /**
      * default : 4 speed value.
