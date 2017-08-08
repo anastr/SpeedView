@@ -13,6 +13,7 @@ import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 import com.github.anastr.speedviewlib.components.Indicators.NoIndicator;
 import com.github.anastr.speedviewlib.components.note.Note;
+import com.github.anastr.speedviewlib.util.OnPrintTickLabel;
 
 import java.util.ArrayList;
 
@@ -49,6 +50,7 @@ public abstract class Speedometer extends Gauge {
     /** to rotate tick label */
     private boolean tickRotation = true;
     private int tickPadding = (int) (getSpeedometerWidth() + dpTOpx(3f));
+    private OnPrintTickLabel onPrintTickLabel;
 
     public Speedometer(Context context) {
         this(context, null);
@@ -504,15 +506,21 @@ public abstract class Speedometer extends Gauge {
         c.rotate(getStartDegree()+90f, getSize() *.5f, getSize() *.5f);
         // tick each degree
         float tickEach = tickNumber != 1 ? (float)(endDegree - startDegree) / (float)(tickNumber-1) : endDegree +1f;
-        for (int i=1; i <= tickNumber; i++) {
+        for (int i=0; i < tickNumber; i++) {
             if (!tickRotation) {
                 c.save();
                 c.rotate(-(getStartDegree()+90f + tickEach * drawnTick)
                         , getSize() *.5f, textPaint.getTextSize() + getPadding() + tickPadding);
             }
 
-            c.drawText(String.format(getLocale(), "%d", (int)getSpeedAtDegree(tickEach * drawnTick + getStartDegree()))
-                    , getSize() *.5f, textPaint.getTextSize() + getPadding() + tickPadding, textPaint);
+            int tick = (int)getSpeedAtDegree(tickEach * drawnTick + getStartDegree());
+            String tickLabel;
+            if (onPrintTickLabel != null)
+                tickLabel = onPrintTickLabel.getTickLabel(i, tick);
+            else
+                tickLabel = String.format(getLocale(), "%d", tick);
+            c.drawText( tickLabel, getSize() *.5f, textPaint.getTextSize() + getPadding() + tickPadding
+                    , textPaint);
             if (!tickRotation)
                 c.restore();
             drawnTick++;
@@ -627,6 +635,18 @@ public abstract class Speedometer extends Gauge {
      */
     public void setTickPadding(int tickPadding) {
         this.tickPadding = tickPadding;
+        if (!isAttachedToWindow())
+            return;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    /**
+     * create custom Tick label.
+     * @param onPrintTickLabel maybe null, The callback that will run.
+     */
+    public void setOnPrintTickLabel(OnPrintTickLabel onPrintTickLabel) {
+        this.onPrintTickLabel = onPrintTickLabel;
         if (!isAttachedToWindow())
             return;
         updateBackgroundBitmap();
