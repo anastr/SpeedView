@@ -513,7 +513,7 @@ public abstract class Speedometer extends Gauge {
             c.rotate(d, getSize() *.5f, getSize() *.5f);
             if (!tickRotation) {
                 c.save();
-                c.rotate(-(getStartDegree()+90f + d * i), getSize() *.5f
+                c.rotate(-d, getSize() *.5f
                         , initTickPadding + textPaint.getTextSize() + getPadding() + tickPadding);
             }
 
