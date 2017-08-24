@@ -354,12 +354,13 @@ public abstract class Speedometer extends Gauge {
     }
 
     /**
-     * change the start of speedometer (at {@link #minSpeed}).
+     * change the start of speedometer (at {@link #minSpeed}).<br/>
+     * this method will recreate ticks, and if you have set custom tick,
+     * it will be removed, by calling {@link #setTickNumber(int)} method.
      * @param startDegree the start of speedometer.
      * @throws IllegalArgumentException if {@code startDegree} negative.
      * @throws IllegalArgumentException if {@code startDegree >= endDegree}.
      * @throws IllegalArgumentException if the difference between {@code endDegree and startDegree} bigger than 360.
-     * @throws IllegalArgumentException if one of {@link #ticks} out of range [{@link #minSpeed}, {@link #maxSpeed}].
      */
     public void setStartDegree(int startDegree) {
         setStartEndDegree(startDegree, endDegree);
@@ -370,31 +371,34 @@ public abstract class Speedometer extends Gauge {
     }
 
     /**
-     * change the end of speedometer (at {@link #maxSpeed}).
+     * change the end of speedometer (at {@link #maxSpeed}).<br/>
+     * this method will recreate ticks, and if you have set custom tick,
+     * it will be removed, by calling {@link #setTickNumber(int)} method.
      * @param endDegree the end of speedometer.
      * @throws IllegalArgumentException if {@code endDegree} negative.
      * @throws IllegalArgumentException if {@code endDegree <= startDegree}.
      * @throws IllegalArgumentException if the difference between {@code endDegree and startDegree} bigger than 360.
-     * @throws IllegalArgumentException if one of {@link #ticks} out of range [{@link #minSpeed}, {@link #maxSpeed}].
      */
     public void setEndDegree(int endDegree) {
         setStartEndDegree(startDegree, endDegree);
     }
 
     /**
-     * change start and end of speedometer.
+     * change start and end of speedometer.<br/>
+     * this method will recreate ticks, and if you have set custom tick,
+     * it will be removed, by calling {@link #setTickNumber(int)} method.
      * @param startDegree the start of speedometer.
      * @param endDegree the end of speedometer.
      * @throws IllegalArgumentException if {@code startDegree OR endDegree} negative.
      * @throws IllegalArgumentException if {@code startDegree >= endDegree}.
      * @throws IllegalArgumentException if the difference between {@code endDegree and startDegree} bigger than 360.
-     * @throws IllegalArgumentException if one of {@link #ticks} out of range [{@link #minSpeed}, {@link #maxSpeed}].
      */
     public void setStartEndDegree (int startDegree, int endDegree) {
         this.startDegree = startDegree;
         this.endDegree = endDegree;
         checkStartAndEndDegree();
-        checkTicks();
+        if (ticks.size() != 0)
+            setTickNumber(ticks.size());
         cancelSpeedAnimator();
         degree = getDegreeAtSpeed(getSpeed());
         if (!isAttachedToWindow())
