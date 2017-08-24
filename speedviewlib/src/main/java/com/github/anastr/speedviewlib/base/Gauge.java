@@ -226,7 +226,7 @@ public abstract class Gauge extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-        updatePadding();
+        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
     }
 
     private void checkSpeedometerPercent() {
@@ -290,13 +290,10 @@ public abstract class Gauge extends View {
     /**
      * notice that padding or size have changed.
      */
-    private void updatePadding() {
-        padding = Math.max(Math.max(getPaddingLeft(), getPaddingRight()), Math.max(getPaddingTop(), getPaddingBottom()));
+    private void updatePadding(int left, int top, int right, int bottom) {
+        padding = Math.max(Math.max(left, right), Math.max(top, bottom));
         widthPa  = getWidth() - padding*2;
         heightPa = getHeight() - padding*2;
-        super.setPadding(padding, padding, padding, padding);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-            super.setPaddingRelative(padding, padding, padding, padding);
     }
 
     @Override
@@ -1237,14 +1234,14 @@ public abstract class Gauge extends View {
 
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
-        super.setPadding(left, top, right, bottom);
-        updatePadding();
+        updatePadding(left, top, right, bottom);
+        super.setPadding(padding, padding, padding, padding);
     }
 
     @Override
     public void setPaddingRelative(int start, int top, int end, int bottom) {
-        super.setPaddingRelative(start, top, end, bottom);
-        updatePadding();
+        updatePadding(start, top, end, bottom);
+        super.setPaddingRelative(padding, padding, padding, padding);
     }
 
     /**
