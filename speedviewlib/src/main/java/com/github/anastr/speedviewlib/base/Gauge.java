@@ -854,13 +854,6 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * @deprecated use {@link #getCurrentSpeed()}.
-     */
-    public float getCorrectSpeed() {
-        return currentSpeed;
-    }
-
-    /**
      * what is correct speed now.
      * <p>It will give different results if withTremble is running.</p>
      *
@@ -870,13 +863,6 @@ public abstract class Gauge extends View {
      */
     public float getCurrentSpeed() {
         return currentSpeed;
-    }
-
-    /**
-     * @deprecated use {@link #getCurrentIntSpeed()}.
-     */
-    public int getCorrectIntSpeed() {
-        return currentIntSpeed;
     }
 
     /**
