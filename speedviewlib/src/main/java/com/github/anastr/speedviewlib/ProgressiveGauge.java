@@ -44,7 +44,7 @@ public class ProgressiveGauge extends LinearGauge {
 
     private void init() {
         frontPaint.setColor(Color.CYAN);
-        backPaint.setColor(Color.parseColor("#d6d7d7"));
+        backPaint.setColor(0xffd6d7d7);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {

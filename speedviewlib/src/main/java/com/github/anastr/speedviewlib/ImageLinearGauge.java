@@ -3,7 +3,6 @@ package com.github.anastr.speedviewlib;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -18,7 +17,7 @@ public class ImageLinearGauge extends LinearGauge {
 
     private Drawable image;
 
-    private int backColor = Color.parseColor("#d6d7d7");
+    private int backColor = 0xffd6d7d7;
 
     public ImageLinearGauge(Context context) {
         this(context, null);

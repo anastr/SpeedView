@@ -2,7 +2,6 @@ package com.github.anastr.speedviewlib.components.Indicators;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.github.anastr.speedviewlib.base.Speedometer;
@@ -19,7 +18,7 @@ public abstract class Indicator<I extends Indicator> {
     private float indicatorWidth;
     private float viewSize;
     private float speedometerWidth;
-    private int indicatorColor = Color.parseColor("#2196F3");
+    private int indicatorColor = 0xff2196F3;
     private int padding;
     private boolean inEditMode;
 

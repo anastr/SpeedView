@@ -28,7 +28,7 @@ public class AwesomeSpeedometer extends Speedometer {
             trianglesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
 
-    private int speedometerColor = Color.parseColor("#00e6e6");
+    private int speedometerColor = 0xff00e6e6;
 
     private float triangleHeight = 0f;
 
@@ -49,7 +49,7 @@ public class AwesomeSpeedometer extends Speedometer {
     @Override
     protected void defaultGaugeValues() {
 
-        super.setTextColor(Color.parseColor("#ffc260"));
+        super.setTextColor(0xffffc260);
         super.setSpeedTextColor(Color.WHITE);
         super.setUnitTextColor(Color.WHITE);
         super.setTextTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
@@ -61,10 +61,10 @@ public class AwesomeSpeedometer extends Speedometer {
     protected void defaultSpeedometerValues() {
         super.setIndicator(new TriangleIndicator(getContext())
                 .setIndicatorWidth(dpTOpx(25f))
-                .setIndicatorColor(Color.parseColor("#00e6e6")));
+                .setIndicatorColor(0xff00e6e6));
         super.setStartEndDegree(135, 135 + 320);
         super.setSpeedometerWidth(dpTOpx(60f));
-        super.setBackgroundCircleColor(Color.parseColor("#212121"));
+        super.setBackgroundCircleColor(0xff212121);
         super.setTickNumber(9);
         super.setTickPadding(0);
     }
@@ -74,7 +74,7 @@ public class AwesomeSpeedometer extends Speedometer {
         textPaint.setTextAlign(Paint.Align.CENTER);
         ringPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextSize(dpTOpx(10));
-        trianglesPaint.setColor(Color.parseColor("#3949ab"));
+        trianglesPaint.setColor(0xff3949ab);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {

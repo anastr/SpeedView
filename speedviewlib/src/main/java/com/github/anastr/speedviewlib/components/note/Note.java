@@ -3,7 +3,6 @@ package com.github.anastr.speedviewlib.components.note;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -41,7 +40,7 @@ public abstract class Note<N extends Note> {
 
     private void init() {
         triangleHeight = dpTOpx(12f);
-        backgroundPaint.setColor(Color.parseColor("#d6d7d7"));
+        backgroundPaint.setColor(0xffd6d7d7);
         setPadding(dpTOpx(7f), dpTOpx(7f), dpTOpx(7f), dpTOpx(7f));
     }
 

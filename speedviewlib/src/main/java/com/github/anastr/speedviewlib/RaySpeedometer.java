@@ -53,7 +53,7 @@ public class RaySpeedometer extends Speedometer {
 
     @Override
     protected void defaultSpeedometerValues() {
-        super.setBackgroundCircleColor(Color.parseColor("#212121"));
+        super.setBackgroundCircleColor(0xff212121);
         super.setMarkColor(Color.BLACK);
     }
 

@@ -31,7 +31,7 @@ public class PointerSpeedometer extends Speedometer {
             markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
 
-    private int speedometerColor = Color.parseColor("#eeeeee")
+    private int speedometerColor = 0xffeeeeee
             , pointerColor = Color.WHITE;
 
     public PointerSpeedometer(Context context) {
@@ -63,7 +63,7 @@ public class PointerSpeedometer extends Speedometer {
         super.setIndicator(new SpindleIndicator(getContext())
                 .setIndicatorWidth(dpTOpx(16f))
                 .setIndicatorColor(Color.WHITE));
-        super.setBackgroundCircleColor(Color.parseColor("#48cce9"));
+        super.setBackgroundCircleColor(0xff48cce9);
         super.setSpeedometerWidth(dpTOpx(10f));
     }
 

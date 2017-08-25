@@ -45,16 +45,16 @@ public class TubeSpeedometer extends Speedometer {
     @Override
     protected void defaultSpeedometerValues() {
         super.setBackgroundCircleColor(Color.TRANSPARENT);
-        super.setLowSpeedColor(Color.parseColor("#00BCD4"));
-        super.setMediumSpeedColor(Color.parseColor("#FFC107"));
-        super.setHighSpeedColor(Color.parseColor("#F44336"));
+        super.setLowSpeedColor(0xff00BCD4);
+        super.setMediumSpeedColor(0xffFFC107);
+        super.setHighSpeedColor(0xffF44336);
         super.setSpeedometerWidth(dpTOpx(40f));
     }
 
     private void init() {
         tubePaint.setStyle(Paint.Style.STROKE);
         tubeBacPaint.setStyle(Paint.Style.STROKE);
-        tubeBacPaint.setColor(Color.parseColor("#757575"));
+        tubeBacPaint.setColor(0xff757575);
         tubePaint.setColor(getLowSpeedColor());
 
         if (Build.VERSION.SDK_INT >= 11)
