@@ -132,6 +132,7 @@
         <attr name="sv_centerCircleColor" />
         <attr name="sv_speedometerColor" />
         <attr name="sv_pointerColor" format="color"/>
+        <attr name="sv_withPointer" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="TubeSpeedometer" parent="Speedometer">
