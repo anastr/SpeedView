@@ -34,6 +34,8 @@ public class PointerSpeedometer extends Speedometer {
     private int speedometerColor = 0xffeeeeee
             , pointerColor = Color.WHITE;
 
+    private boolean withPointer = true;
+
     public PointerSpeedometer(Context context) {
         this(context, null);
     }
@@ -86,6 +88,7 @@ public class PointerSpeedometer extends Speedometer {
         speedometerColor = a.getColor(R.styleable.PointerSpeedometer_sv_speedometerColor, speedometerColor);
         pointerColor = a.getColor(R.styleable.PointerSpeedometer_sv_pointerColor, pointerColor);
         circlePaint.setColor(a.getColor(R.styleable.PointerSpeedometer_sv_centerCircleColor, circlePaint.getColor()));
+        withPointer = a.getBoolean(R.styleable.PointerSpeedometer_sv_withPointer, withPointer);
         a.recycle();
         initAttributeValue();
     }
@@ -119,13 +122,15 @@ public class PointerSpeedometer extends Speedometer {
 
         canvas.drawArc(speedometerRect, getStartDegree(),  getEndDegree()- getStartDegree(), false, speedometerPaint);
 
-        canvas.save();
-        canvas.rotate(90 + getDegree(), getSize() *.5f, getSize() *.5f);
-        canvas.drawCircle(getSize() *.5f, getSpeedometerWidth() *.5f + dpTOpx(8) + getPadding()
-                , getSpeedometerWidth() *.5f + dpTOpx(8), pointerBackPaint);
-        canvas.drawCircle(getSize() *.5f, getSpeedometerWidth() *.5f + dpTOpx(8) + getPadding()
-                , getSpeedometerWidth() *.5f + dpTOpx(1), pointerPaint);
-        canvas.restore();
+        if (withPointer) {
+            canvas.save();
+            canvas.rotate(90 + getDegree(), getSize() * .5f, getSize() * .5f);
+            canvas.drawCircle(getSize() * .5f, getSpeedometerWidth() * .5f + dpTOpx(8) + getPadding()
+                    , getSpeedometerWidth() * .5f + dpTOpx(8), pointerBackPaint);
+            canvas.drawCircle(getSize() * .5f, getSpeedometerWidth() * .5f + dpTOpx(8) + getPadding()
+                    , getSpeedometerWidth() * .5f + dpTOpx(1), pointerPaint);
+            canvas.restore();
+        }
 
         drawSpeedUnitText(canvas);
         drawIndicator(canvas);
@@ -218,6 +223,23 @@ public class PointerSpeedometer extends Speedometer {
      */
     public void setCenterCircleColor(int centerCircleColor) {
         circlePaint.setColor(centerCircleColor);
+        if (!isAttachedToWindow())
+            return;
+        invalidate();
+    }
+
+    public boolean isWithPointer() {
+        return withPointer;
+    }
+
+    /**
+     * enable to draw circle pointer on speedometer arc.<br/>
+     * this will not make any change for the Indicator.
+     * @param withPointer true: draw the pointer,
+     *                    false: don't draw the pointer.
+     */
+    public void setWithPointer(boolean withPointer) {
+        this.withPointer = withPointer;
         if (!isAttachedToWindow())
             return;
         invalidate();
