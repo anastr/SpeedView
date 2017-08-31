@@ -143,19 +143,19 @@ public class RaySpeedometer extends Speedometer {
 
         ray1Path.reset();
         ray1Path.moveTo(getSize()/2f, getSize()/2f);
-        ray1Path.lineTo(getSize()/2f, getHeightPa()/3.2f + getPadding());
-        ray1Path.moveTo(getSize()/2f, getHeightPa()/3.2f + getPadding());
-        ray1Path.lineTo(getSize()/2.2f, getHeightPa()/3f + getPadding());
-        ray1Path.moveTo(getSize()/2.2f, getHeightPa()/3f + getPadding());
-        ray1Path.lineTo(getSize()/2.1f, getHeightPa()/4.5f + getPadding());
+        ray1Path.lineTo(getSize()/2f, getSizePa()/3.2f + getPadding());
+        ray1Path.moveTo(getSize()/2f, getSizePa()/3.2f + getPadding());
+        ray1Path.lineTo(getSize()/2.2f, getSizePa()/3f + getPadding());
+        ray1Path.moveTo(getSize()/2.2f, getSizePa()/3f + getPadding());
+        ray1Path.lineTo(getSize()/2.1f, getSizePa()/4.5f + getPadding());
 
         ray2Path.reset();
         ray2Path.moveTo(getSize()/2f, getSize()/2f);
-        ray2Path.lineTo(getSize()/2f, getHeightPa()/3.2f + getPadding());
-        ray2Path.moveTo(getSize()/2f, getHeightPa()/3.2f + getPadding());
-        ray2Path.lineTo(getSize()/2.2f, getHeightPa()/3.8f + getPadding());
-        ray2Path.moveTo(getSize()/2f, getHeightPa()/3.2f + getPadding());
-        ray2Path.lineTo(getSize()/1.8f, getHeightPa()/3.8f + getPadding());
+        ray2Path.lineTo(getSize()/2f, getSizePa()/3.2f + getPadding());
+        ray2Path.moveTo(getSize()/2f, getSizePa()/3.2f + getPadding());
+        ray2Path.lineTo(getSize()/2.2f, getSizePa()/3.8f + getPadding());
+        ray2Path.moveTo(getSize()/2f, getSizePa()/3.2f + getPadding());
+        ray2Path.lineTo(getSize()/1.8f, getSizePa()/3.8f + getPadding());
 
         c.save();
         for (int i=0; i<6; i++) {

@@ -1218,6 +1218,14 @@ public abstract class Gauge extends View {
         return heightPa;
     }
 
+    public int getViewSize() {
+        return Math.max(getWidth(), getHeight());
+    }
+
+    public int getViewSizePa() {
+        return Math.max(widthPa, heightPa);
+    }
+
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
         updatePadding(left, top, right, bottom);

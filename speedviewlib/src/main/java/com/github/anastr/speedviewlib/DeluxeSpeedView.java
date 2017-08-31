@@ -127,13 +127,13 @@ public class DeluxeSpeedView extends Speedometer {
         Canvas c = createBackgroundBitmapCanvas();
         initDraw();
 
-        float smallMarkH = getHeightPa()/20f;
+        float smallMarkH = getViewSizePa()/20f;
         smallMarkPath.reset();
         smallMarkPath.moveTo(getSize() *.5f, getSpeedometerWidth() + getPadding());
         smallMarkPath.lineTo(getSize() *.5f, getSpeedometerWidth() + getPadding() + smallMarkH);
         smallMarkPaint.setStrokeWidth(3);
 
-        float markH = getHeightPa()/28f;
+        float markH = getViewSizePa()/28f;
         markPath.reset();
         markPath.moveTo(getSize() *.5f, getPadding());
         markPath.lineTo(getSize() *.5f, markH + getPadding());

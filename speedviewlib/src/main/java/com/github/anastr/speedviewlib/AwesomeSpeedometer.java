@@ -96,14 +96,14 @@ public class AwesomeSpeedometer extends Speedometer {
     }
 
     private void updateGradient() {
-        float stop = (getWidthPa() *.5f - getSpeedometerWidth()) / (getWidthPa() *.5f);
+        float stop = (getSizePa() *.5f - getSpeedometerWidth()) / (getSizePa() *.5f);
         float stop2 = stop+((1f-stop)*.1f);
         float stop3 = stop+((1f-stop)*.36f);
         float stop4 = stop+((1f-stop)*.64f);
         float stop5 = stop+((1f-stop)*.9f);
         int []colors = new int[]{getBackgroundCircleColor(), speedometerColor, getBackgroundCircleColor()
                 , getBackgroundCircleColor(), speedometerColor, speedometerColor};
-        Shader radialGradient = new RadialGradient(getSize() *.5f, getSize() *.5f, getWidthPa() *.5f
+        Shader radialGradient = new RadialGradient(getSize() *.5f, getSize() *.5f, getSizePa() *.5f
                 , colors, new float[]{stop, stop2, stop3, stop4, stop5, 1f}, Shader.TileMode.CLAMP);
         ringPaint.setShader(radialGradient);
     }
@@ -130,19 +130,20 @@ public class AwesomeSpeedometer extends Speedometer {
         Canvas c = createBackgroundBitmapCanvas();
         initDraw();
 
-        float markH = getHeightPa()/22f;
+        float markH = getViewSizePa()/22f;
         markPath.reset();
         markPath.moveTo(getSize() *.5f, getPadding());
         markPath.lineTo(getSize() *.5f, markH + getPadding());
         markPaint.setStrokeWidth(markH/5f);
 
-        triangleHeight = getHeightPa()/20f;
+        triangleHeight = getViewSizePa()/20f;
         setInitTickPadding(triangleHeight);
 
         trianglesPath.reset();
-        trianglesPath.moveTo(getSize() *.5f, getPadding() + getHeightPa()/20f);
-        trianglesPath.lineTo(getSize() *.5f -(getSize()/40f), getPadding());
-        trianglesPath.lineTo(getSize() *.5f +(getSize()/40f), getPadding());
+        trianglesPath.moveTo(getSize() *.5f, getPadding() + getViewSizePa()/20f);
+        float triangleWidth = getViewSize()/20f;
+        trianglesPath.lineTo(getSize() *.5f - triangleWidth/2f, getPadding());
+        trianglesPath.lineTo(getSize() *.5f + triangleWidth/2f, getPadding());
 
         float risk = getSpeedometerWidth() *.5f + getPadding();
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);

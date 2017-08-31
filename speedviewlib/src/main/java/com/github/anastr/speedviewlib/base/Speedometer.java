@@ -797,6 +797,10 @@ public abstract class Speedometer extends Gauge {
         invalidate();
     }
 
+    public Mode getSpeedometerMode() {
+        return speedometerMode;
+    }
+
     public enum Mode {
         NORMAL         (0 ,360*2, false, 1, 1)
         , LEFT         (90 , 270, true , 2, 1)
@@ -810,7 +814,7 @@ public abstract class Speedometer extends Gauge {
 
         final int minDegree;
         final int maxDegree;
-        final boolean isHalf;
+        public final boolean isHalf;
         final int divWidth;
         final int divHeight;
         Mode (int minDegree, int maxDegree, boolean isHalf, int divWidth, int divHeight) {
@@ -835,6 +839,10 @@ public abstract class Speedometer extends Gauge {
 
         public boolean isBottom(){
             return this == BOTTOM || this == BOTTOM_LEFT || this == BOTTOM_RIGHT;
+        }
+
+        public boolean isQuarter(){
+            return !isHalf && this != NORMAL;
         }
     }
 }
