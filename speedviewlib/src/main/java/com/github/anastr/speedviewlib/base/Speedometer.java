@@ -128,6 +128,7 @@ public abstract class Speedometer extends Gauge {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
         indicator.onSizeChange(this);
+        updateTranslated();
     }
 
     private void checkStartAndEndDegree() {
@@ -784,8 +785,7 @@ public abstract class Speedometer extends Gauge {
             startDegree = speedometerMode.minDegree;
             endDegree = speedometerMode.maxDegree;
         }
-        translatedDx = speedometerMode.isRight()  ? - getSize() *.5f + cutPadding : 0;
-        translatedDy = speedometerMode.isBottom() ? - getSize() *.5f + cutPadding : 0;
+        updateTranslated();
         cancelSpeedAnimator();
         degree = getDegreeAtSpeed(getSpeed());
         indicator.onSizeChange(this);
@@ -795,6 +795,11 @@ public abstract class Speedometer extends Gauge {
         updateBackgroundBitmap();
         tremble();
         invalidate();
+    }
+
+    private void updateTranslated() {
+        translatedDx = speedometerMode.isRight()  ? - getSize() *.5f + cutPadding : 0;
+        translatedDy = speedometerMode.isBottom() ? - getSize() *.5f + cutPadding : 0;
     }
 
     public Mode getSpeedometerMode() {
