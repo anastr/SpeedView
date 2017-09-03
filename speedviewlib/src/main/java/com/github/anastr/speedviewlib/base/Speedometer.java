@@ -83,6 +83,9 @@ public abstract class Speedometer extends Gauge {
         int mode = a.getInt(R.styleable.Speedometer_sv_speedometerMode, -1);
         if (mode != -1 && mode != 0)
             setSpeedometerMode(Mode.values()[mode]);
+        int ind = a.getInt(R.styleable.Speedometer_sv_indicator, -1);
+        if (ind != -1)
+            setIndicator(Indicator.Indicators.values()[ind]);
         markColor = a.getColor(R.styleable.Speedometer_sv_markColor, markColor);
         lowSpeedColor = a.getColor(R.styleable.Speedometer_sv_lowSpeedColor, lowSpeedColor);
         mediumSpeedColor = a.getColor(R.styleable.Speedometer_sv_mediumSpeedColor, mediumSpeedColor);
@@ -96,9 +99,6 @@ public abstract class Speedometer extends Gauge {
         setTickNumber(a.getInteger(R.styleable.Speedometer_sv_tickNumber, ticks.size()));
         tickRotation = a.getBoolean(R.styleable.Speedometer_sv_tickRotation, tickRotation);
         tickPadding = (int) a.getDimension(R.styleable.Speedometer_sv_tickPadding, tickPadding);
-        int ind = a.getInt(R.styleable.Speedometer_sv_indicator, -1);
-        if (ind != -1)
-            setIndicator(Indicator.Indicators.values()[ind]);
         setIndicatorColor(a.getColor(R.styleable.Speedometer_sv_indicatorColor, indicator.getIndicatorColor()));
         degree = startDegree;
         a.recycle();
