@@ -147,7 +147,8 @@ public abstract class Indicator<I extends Indicator> {
     /** indicator's shape */
     public enum Indicators {
         NoIndicator, NormalIndicator, NormalSmallIndicator, TriangleIndicator
-        , SpindleIndicator, LineIndicator, HalfLineIndicator, QuarterLineIndicator, KiteIndicator
+        , SpindleIndicator, LineIndicator, HalfLineIndicator, QuarterLineIndicator
+        , KiteIndicator, NeedleIndicator
     }
 
     /**
@@ -176,6 +177,8 @@ public abstract class Indicator<I extends Indicator> {
                 return new LineIndicator(context, LineIndicator.QUARTER_LINE);
             case KiteIndicator :
                 return new KiteIndicator(context);
+            case NeedleIndicator :
+                return new NeedleIndicator(context);
             default :
                 return new NormalIndicator(context);
         }
