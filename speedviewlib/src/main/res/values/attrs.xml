@@ -84,6 +84,7 @@
             <enum name="LineIndicator" value="5" />
             <enum name="HalfLineIndicator" value="6" />
             <enum name="QuarterLineIndicator" value="7" />
+            <enum name="KiteIndicator" value="8" />
         </attr>
 
         <attr name="sv_speedometerMode" format="enum" >
