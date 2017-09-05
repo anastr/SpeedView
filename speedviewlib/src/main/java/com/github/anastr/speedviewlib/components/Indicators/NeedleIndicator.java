@@ -3,6 +3,7 @@ package com.github.anastr.speedviewlib.components.Indicators;
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 
@@ -14,9 +15,12 @@ import android.graphics.RectF;
 public class NeedleIndicator extends Indicator {
 
     private Path indicatorPath = new Path();
+    private Path circlePath = new Path();
+    private Paint circlePaint =  new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public NeedleIndicator(Context context) {
         super(context);
+        circlePaint.setStyle(Paint.Style.STROKE);
         updateIndicator();
     }
 
@@ -30,31 +34,35 @@ public class NeedleIndicator extends Indicator {
         canvas.save();
         canvas.rotate(90f + degree, getCenterX(), getCenterY());
         canvas.drawPath(indicatorPath, indicatorPaint);
+        canvas.drawPath(circlePath, circlePaint);
         canvas.restore();
     }
 
     @Override
     protected void updateIndicator() {
         indicatorPath.reset();
+        circlePath.reset();
         indicatorPath.moveTo(getCenterX(), getPadding());
-        float y = (float) (getIndicatorWidth() * Math.sin(265)) + getViewSize()*.5f + getPadding();
-        float xLeft = (float) (getIndicatorWidth() * Math.cos(265)) + getViewSize()*.5f + getPadding();
+        float y = (float) (getIndicatorWidth() * Math.sin(Math.toRadians(260))) + getViewSize()*.5f + getPadding();
+        float xLeft = (float) (getIndicatorWidth() * Math.cos(Math.toRadians(260))) + getViewSize()*.5f + getPadding();
         indicatorPath.lineTo(xLeft, y);
-        RectF rectF = new RectF(getCenterX() - getIndicatorWidth(), getCenterX() - getIndicatorWidth()
-                , getCenterX() + getIndicatorWidth(), getCenterX() + getIndicatorWidth());
-        indicatorPath.arcTo(rectF, 265, -10f);
-        indicatorPath.addCircle(getCenterX(), getCenterY(), getIndicatorWidth(), Path.Direction.CW);
+        RectF rectF = new RectF(getCenterX() - getIndicatorWidth(), getCenterY() - getIndicatorWidth()
+                , getCenterX() + getIndicatorWidth(), getCenterY() + getIndicatorWidth());
+        indicatorPath.arcTo(rectF, 260, 20f);
+
+        float circleWidth = getIndicatorWidth() *.25f;
+        circlePath.addCircle(getCenterX(), getCenterY(), getIndicatorWidth() - circleWidth*.5f +.6f, Path.Direction.CW);
 
         indicatorPaint.setColor(getIndicatorColor());
+        circlePaint.setColor(getIndicatorColor());
+        circlePaint.setStrokeWidth(circleWidth);
     }
 
     @Override
     protected void setWithEffects(boolean withEffects) {
-        if (withEffects && !isInEditMode()) {
+        if (withEffects && !isInEditMode())
             indicatorPaint.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.SOLID));
-        }
-        else {
+        else
             indicatorPaint.setMaskFilter(null);
-        }
     }
 }
