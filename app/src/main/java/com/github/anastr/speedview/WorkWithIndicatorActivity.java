@@ -46,8 +46,10 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
         categories.add("LineIndicator");
         categories.add("HalfLineIndicator");
         categories.add("QuarterLineIndicator");
+        categories.add("KiteIndicator");
+        categories.add("NeedleIndicator");
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(1);
 
@@ -96,6 +98,12 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
                 break;
             case 7:
                 speedometer.setIndicator(Indicator.Indicators.QuarterLineIndicator);
+                break;
+            case 8:
+                speedometer.setIndicator(Indicator.Indicators.KiteIndicator);
+                break;
+            case 9:
+                speedometer.setIndicator(Indicator.Indicators.NeedleIndicator);
                 break;
         }
     }
