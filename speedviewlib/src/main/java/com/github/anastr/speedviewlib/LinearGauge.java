@@ -1,4 +1,4 @@
-package com.github.anastr.speedviewlib.base;
+package com.github.anastr.speedviewlib;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -7,8 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-
-import com.github.anastr.speedviewlib.R;
 
 /**
  * this Library build By Anas Altair

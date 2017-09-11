@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.github.anastr.speedviewlib.base.Gauge;
+import com.github.anastr.speedviewlib.Gauge;
 import com.github.anastr.speedviewlib.PointerSpeedometer;
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 

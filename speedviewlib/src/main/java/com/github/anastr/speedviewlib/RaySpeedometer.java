@@ -11,7 +11,6 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 
-import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 
 /**

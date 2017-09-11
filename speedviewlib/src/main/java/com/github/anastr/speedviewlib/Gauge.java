@@ -1,4 +1,4 @@
-package com.github.anastr.speedviewlib.base;
+package com.github.anastr.speedviewlib;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.github.anastr.speedviewlib.R;
 import com.github.anastr.speedviewlib.util.OnSectionChangeListener;
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 

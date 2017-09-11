@@ -10,8 +10,6 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 
-import com.github.anastr.speedviewlib.base.Speedometer;
-
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>

@@ -7,7 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.github.anastr.speedviewlib.base.Speedometer;
+import com.github.anastr.speedviewlib.Speedometer;
 
 import java.util.ArrayList;
 import java.util.List;
