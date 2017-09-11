@@ -1,4 +1,4 @@
-package com.github.anastr.speedviewlib.base;
+package com.github.anastr.speedviewlib;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -12,13 +12,14 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.github.anastr.speedviewlib.R;
 import com.github.anastr.speedviewlib.util.OnSectionChangeListener;
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 
@@ -224,7 +225,7 @@ public abstract class Gauge extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-        updatePadding();
+        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
     }
 
     private void checkSpeedometerPercent() {
@@ -288,13 +289,10 @@ public abstract class Gauge extends View {
     /**
      * notice that padding or size have changed.
      */
-    private void updatePadding() {
-        padding = Math.max(Math.max(getPaddingLeft(), getPaddingRight()), Math.max(getPaddingTop(), getPaddingBottom()));
+    private void updatePadding(int left, int top, int right, int bottom) {
+        padding = Math.max(Math.max(left, right), Math.max(top, bottom));
         widthPa  = getWidth() - padding*2;
         heightPa = getHeight() - padding*2;
-        super.setPadding(padding, padding, padding, padding);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-            super.setPaddingRelative(padding, padding, padding, padding);
     }
 
     @Override
@@ -724,6 +722,25 @@ public abstract class Gauge extends View {
         attachedToWindow = false;
     }
 
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        super.onSaveInstanceState();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("superState", super.onSaveInstanceState());
+        bundle.putFloat("speed", speed);
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        Bundle bundle = (Bundle) state;
+        speed = bundle.getFloat("speed");
+        state = bundle.getParcelable("superState");
+        super.onRestoreInstanceState(state);
+        setSpeedAt(speed);
+    }
+
+
     /**
      * default : 4 speed value.
      * @param trembleDegree a speed value to increases and decreases the indicator around correct speed.
@@ -836,13 +853,6 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * @deprecated use {@link #getCurrentSpeed()}.
-     */
-    public float getCorrectSpeed() {
-        return currentSpeed;
-    }
-
-    /**
      * what is correct speed now.
      * <p>It will give different results if withTremble is running.</p>
      *
@@ -852,13 +862,6 @@ public abstract class Gauge extends View {
      */
     public float getCurrentSpeed() {
         return currentSpeed;
-    }
-
-    /**
-     * @deprecated use {@link #getCurrentIntSpeed()}.
-     */
-    public int getCorrectIntSpeed() {
-        return currentIntSpeed;
     }
 
     /**
@@ -1214,16 +1217,24 @@ public abstract class Gauge extends View {
         return heightPa;
     }
 
+    public int getViewSize() {
+        return Math.max(getWidth(), getHeight());
+    }
+
+    public int getViewSizePa() {
+        return Math.max(widthPa, heightPa);
+    }
+
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
-        super.setPadding(left, top, right, bottom);
-        updatePadding();
+        updatePadding(left, top, right, bottom);
+        super.setPadding(padding, padding, padding, padding);
     }
 
     @Override
     public void setPaddingRelative(int start, int top, int end, int bottom) {
-        super.setPaddingRelative(start, top, end, bottom);
-        updatePadding();
+        updatePadding(start, top, end, bottom);
+        super.setPaddingRelative(padding, padding, padding, padding);
     }
 
     /**

@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.github.anastr.speedview.R;
 import com.github.anastr.speedviewlib.ImageLinearGauge;
-import com.github.anastr.speedviewlib.base.LinearGauge;
+import com.github.anastr.speedviewlib.LinearGauge;
 
 import java.util.Locale;
 

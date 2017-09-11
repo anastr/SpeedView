@@ -8,8 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 
-import com.github.anastr.speedviewlib.base.LinearGauge;
-
 /**
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
@@ -44,7 +42,7 @@ public class ProgressiveGauge extends LinearGauge {
 
     private void init() {
         frontPaint.setColor(Color.CYAN);
-        backPaint.setColor(Color.parseColor("#d6d7d7"));
+        backPaint.setColor(0xffd6d7d7);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {

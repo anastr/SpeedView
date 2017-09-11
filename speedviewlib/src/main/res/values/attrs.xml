@@ -84,6 +84,8 @@
             <enum name="LineIndicator" value="5" />
             <enum name="HalfLineIndicator" value="6" />
             <enum name="QuarterLineIndicator" value="7" />
+            <enum name="KiteIndicator" value="8" />
+            <enum name="NeedleIndicator" value="9" />
         </attr>
 
         <attr name="sv_speedometerMode" format="enum" >
@@ -132,6 +134,7 @@
         <attr name="sv_centerCircleColor" />
         <attr name="sv_speedometerColor" />
         <attr name="sv_pointerColor" format="color"/>
+        <attr name="sv_withPointer" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="TubeSpeedometer" parent="Speedometer">

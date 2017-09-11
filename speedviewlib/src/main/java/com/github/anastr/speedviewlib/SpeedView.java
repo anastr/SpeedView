@@ -9,7 +9,6 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
-import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.components.Indicators.NormalIndicator;
 
 /**
@@ -94,7 +93,7 @@ public class SpeedView extends Speedometer {
         Canvas c = createBackgroundBitmapCanvas();
         initDraw();
 
-        float markH = getSizePa()/28f;
+        float markH = getViewSizePa()/28f;
         markPath.reset();
         markPath.moveTo(getSize() *.5f, getPadding());
         markPath.lineTo(getSize() *.5f, markH + getPadding());

@@ -7,7 +7,7 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.github.anastr.speedviewlib.base.Speedometer;
+import com.github.anastr.speedviewlib.Speedometer;
 
 import java.util.Locale;
 

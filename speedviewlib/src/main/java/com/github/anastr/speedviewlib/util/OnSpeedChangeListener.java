@@ -1,6 +1,6 @@
 package com.github.anastr.speedviewlib.util;
 
-import com.github.anastr.speedviewlib.base.Gauge;
+import com.github.anastr.speedviewlib.Gauge;
 
 /**
  * A callback that notifies clients when the speed has been

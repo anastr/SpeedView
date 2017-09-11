@@ -27,7 +27,7 @@ Library Size just ~ 50 KB.
 ```gradle
 
 dependencies {
-	    compile 'com.github.anastr:speedviewlib:1.1.5'
+	    compile 'com.github.anastr:speedviewlib:1.1.6'
 }
 
 ```
@@ -38,7 +38,7 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.1.5</version>
+  <version>1.1.6</version>
   <type>pom</type>
 </dependency>
 ```

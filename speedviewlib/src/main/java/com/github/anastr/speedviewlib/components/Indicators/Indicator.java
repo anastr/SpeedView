@@ -2,10 +2,9 @@ package com.github.anastr.speedviewlib.components.Indicators;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.github.anastr.speedviewlib.base.Speedometer;
+import com.github.anastr.speedviewlib.Speedometer;
 
 /**
  * this Library build By Anas Altair
@@ -19,7 +18,7 @@ public abstract class Indicator<I extends Indicator> {
     private float indicatorWidth;
     private float viewSize;
     private float speedometerWidth;
-    private int indicatorColor = Color.parseColor("#2196F3");
+    private int indicatorColor = 0xff2196F3;
     private int padding;
     private boolean inEditMode;
 
@@ -149,6 +148,7 @@ public abstract class Indicator<I extends Indicator> {
     public enum Indicators {
         NoIndicator, NormalIndicator, NormalSmallIndicator, TriangleIndicator
         , SpindleIndicator, LineIndicator, HalfLineIndicator, QuarterLineIndicator
+        , KiteIndicator, NeedleIndicator
     }
 
     /**
@@ -175,6 +175,10 @@ public abstract class Indicator<I extends Indicator> {
                 return new LineIndicator(context, LineIndicator.HALF_LINE);
             case QuarterLineIndicator :
                 return new LineIndicator(context, LineIndicator.QUARTER_LINE);
+            case KiteIndicator :
+                return new KiteIndicator(context);
+            case NeedleIndicator :
+                return new NeedleIndicator(context);
             default :
                 return new NormalIndicator(context);
         }

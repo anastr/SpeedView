@@ -11,7 +11,6 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 
-import com.github.anastr.speedviewlib.base.Speedometer;
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 import com.github.anastr.speedviewlib.components.Indicators.NormalSmallIndicator;
 
@@ -54,11 +53,11 @@ public class DeluxeSpeedView extends Speedometer {
     @Override
     protected void defaultSpeedometerValues() {
         super.setIndicator(new NormalSmallIndicator(getContext())
-                .setIndicatorColor(Color.parseColor("#00ffec")));
-        super.setBackgroundCircleColor(Color.parseColor("#212121"));
-        super.setLowSpeedColor(Color.parseColor("#37872f"));
-        super.setMediumSpeedColor(Color.parseColor("#a38234"));
-        super.setHighSpeedColor(Color.parseColor("#9b2020"));
+                .setIndicatorColor(0xff00ffec));
+        super.setBackgroundCircleColor(0xff212121);
+        super.setLowSpeedColor(0xff37872f);
+        super.setMediumSpeedColor(0xffa38234);
+        super.setHighSpeedColor(0xff9b2020);
     }
 
     private void init() {
@@ -66,7 +65,7 @@ public class DeluxeSpeedView extends Speedometer {
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
         speedBackgroundPaint.setColor(Color.WHITE);
-        circlePaint.setColor(Color.parseColor("#e0e0e0"));
+        circlePaint.setColor(0xffe0e0e0);
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null);
@@ -127,13 +126,13 @@ public class DeluxeSpeedView extends Speedometer {
         Canvas c = createBackgroundBitmapCanvas();
         initDraw();
 
-        float smallMarkH = getHeightPa()/20f;
+        float smallMarkH = getViewSizePa()/20f;
         smallMarkPath.reset();
         smallMarkPath.moveTo(getSize() *.5f, getSpeedometerWidth() + getPadding());
         smallMarkPath.lineTo(getSize() *.5f, getSpeedometerWidth() + getPadding() + smallMarkH);
         smallMarkPaint.setStrokeWidth(3);
 
-        float markH = getHeightPa()/28f;
+        float markH = getViewSizePa()/28f;
         markPath.reset();
         markPath.moveTo(getSize() *.5f, getPadding());
         markPath.lineTo(getSize() *.5f, markH + getPadding());
