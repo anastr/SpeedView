@@ -232,7 +232,7 @@ public class PointerSpeedometer extends Speedometer {
     }
 
     /**
-     * enable to draw circle pointer on speedometer arc.<br/>
+     * enable to draw circle pointer on speedometer arc.<br>
      * this will not make any change for the Indicator.
      * @param withPointer true: draw the pointer,
      *                    false: don't draw the pointer.

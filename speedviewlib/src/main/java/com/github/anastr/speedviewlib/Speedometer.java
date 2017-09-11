@@ -354,7 +354,7 @@ public abstract class Speedometer extends Gauge {
     }
 
     /**
-     * change the start of speedometer (at {@link #minSpeed}).<br/>
+     * change the start of speedometer (at {@link #minSpeed}).<br>
      * this method will recreate ticks, and if you have set custom tick,
      * it will be removed, by calling {@link #setTickNumber(int)} method.
      * @param startDegree the start of speedometer.
@@ -371,7 +371,7 @@ public abstract class Speedometer extends Gauge {
     }
 
     /**
-     * change the end of speedometer (at {@link #maxSpeed}).<br/>
+     * change the end of speedometer (at {@link #maxSpeed}).<br>
      * this method will recreate ticks, and if you have set custom tick,
      * it will be removed, by calling {@link #setTickNumber(int)} method.
      * @param endDegree the end of speedometer.
@@ -384,7 +384,7 @@ public abstract class Speedometer extends Gauge {
     }
 
     /**
-     * change start and end of speedometer.<br/>
+     * change start and end of speedometer.<br>
      * this method will recreate ticks, and if you have set custom tick,
      * it will be removed, by calling {@link #setTickNumber(int)} method.
      * @param startDegree the start of speedometer.
