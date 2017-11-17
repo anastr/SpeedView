@@ -107,6 +107,7 @@ public abstract class Gauge extends View {
     private float speedTextPadding = dpTOpx(20f);
     private boolean unitUnderSpeedText = false;
     private Bitmap speedUnitTextBitmap;
+    private Canvas speedUnitTextCanvas;
 
     /** draw speed text as <b>integer</b> .*/
     public static final byte INTEGER_FORMAT = 0;
@@ -219,13 +220,16 @@ public abstract class Gauge extends View {
             speedTextPaint.setTextAlign(Paint.Align.LEFT);
             unitTextPaint.setTextAlign(Paint.Align.LEFT);
         }
-        recreateSpeedUnitTextBitmap();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
         setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
+        if (widthPa > 0 && heightPa > 0)
+            speedUnitTextBitmap = Bitmap.createBitmap(widthPa
+                    , heightPa, Bitmap.Config.ARGB_8888);
+        speedUnitTextCanvas = new Canvas(speedUnitTextBitmap);
     }
 
     private void checkSpeedometerPercent() {
@@ -333,48 +337,38 @@ public abstract class Gauge extends View {
      */
     protected void drawSpeedUnitText(Canvas canvas) {
         RectF r = getSpeedUnitTextBounds();
-        canvas.drawBitmap(updateSpeedUnitTextBitmap(), r.left, r.top, speedUnitTextBitmapPaint);
-    }
-
-    /**
-     * fixable method to create {@link #speedUnitTextBitmap}
-     * to avoid create it every frame in {@code onDraw} method.
-     */
-    private void recreateSpeedUnitTextBitmap() {
-        speedUnitTextBitmap = Bitmap.createBitmap((int) getMaxWidthForSpeedUnitText()
-                , (int) getSpeedUnitTextHeight(), Bitmap.Config.ARGB_8888);
+        updateSpeedUnitTextBitmap(getSpeedText());
+        canvas.drawBitmap(speedUnitTextBitmap, r.left - speedUnitTextBitmap.getWidth() *.5f + r.width() *.5f
+                , r.top - speedUnitTextBitmap.getHeight() *.5f + r.height() *.5f, speedUnitTextBitmapPaint);
     }
 
     /**
      * clear {@link #speedUnitTextBitmap} and draw speed and unit Text
      * taking into consideration {@link #speedometerTextRightToLeft} and {@link #unitUnderSpeedText}.
-     * @return {@link #speedUnitTextBitmap} after update.
      */
-    private Bitmap updateSpeedUnitTextBitmap() {
+    private void updateSpeedUnitTextBitmap(String speedText) {
         speedUnitTextBitmap.eraseColor(Color.TRANSPARENT);
-        Canvas c = new Canvas(speedUnitTextBitmap);
 
         if (unitUnderSpeedText) {
-            c.drawText(getSpeedText(), speedUnitTextBitmap.getWidth() *.5f
-                    , speedTextPaint.getTextSize(), speedTextPaint);
-            c.drawText(unit, speedUnitTextBitmap.getWidth() *.5f
-                    , speedTextPaint.getTextSize() + unitSpeedInterval + unitTextPaint.getTextSize(), unitTextPaint);
-            return speedUnitTextBitmap;
+            speedUnitTextCanvas.drawText(speedText, speedUnitTextBitmap.getWidth() *.5f
+                    , speedUnitTextBitmap.getHeight() *.5f  - unitSpeedInterval *.5f, speedTextPaint);
+            speedUnitTextCanvas.drawText(unit, speedUnitTextBitmap.getWidth() *.5f
+                    , speedUnitTextBitmap.getHeight() *.5f + unitTextPaint.getTextSize() + unitSpeedInterval *.5f, unitTextPaint);
         }
         else {
             float speedX;
             float unitX;
             if (isSpeedometerTextRightToLeft()) {
-                speedX = unitTextPaint.measureText(unit) + unitSpeedInterval;
-                unitX = 0f;
+                unitX = speedUnitTextBitmap.getWidth() *.5f - getSpeedUnitTextWidth() *.5f;
+                speedX = unitX + unitTextPaint.measureText(unit) + unitSpeedInterval;
             }
             else {
-                speedX = 0f;
-                unitX = speedTextPaint.measureText(getSpeedText()) + unitSpeedInterval;
+                speedX = speedUnitTextBitmap.getWidth() *.5f - getSpeedUnitTextWidth() *.5f;
+                unitX = speedX + speedTextPaint.measureText(speedText) + unitSpeedInterval;
             }
-            c.drawText(getSpeedText(), speedX, c.getHeight() - .15f, speedTextPaint);
-            c.drawText(unit, unitX, c.getHeight() - .15f, unitTextPaint);
-            return speedUnitTextBitmap;
+            float h = speedUnitTextBitmap.getHeight() *.5f + getSpeedUnitTextHeight() *.5f;
+            speedUnitTextCanvas.drawText(speedText, speedX, h, speedTextPaint);
+            speedUnitTextCanvas.drawText(unit, unitX, h, unitTextPaint);
         }
     }
 
@@ -384,10 +378,10 @@ public abstract class Gauge extends View {
      */
     protected RectF getSpeedUnitTextBounds() {
         float left = getWidthPa()*speedTextPosition.x -translatedDx + padding
-                - speedUnitTextBitmap.getWidth()*speedTextPosition.width
+                - getSpeedUnitTextWidth()*speedTextPosition.width
                 + speedTextPadding*speedTextPosition.paddingH;
         float top = getHeightPa()*speedTextPosition.y -translatedDy + padding
-                - speedUnitTextBitmap.getHeight()*speedTextPosition.height
+                - getSpeedUnitTextHeight()*speedTextPosition.height
                 + speedTextPadding*speedTextPosition.paddingV;
         return new RectF(left, top, left + getSpeedUnitTextWidth(), top + getSpeedUnitTextHeight());
     }
@@ -787,7 +781,6 @@ public abstract class Gauge extends View {
      */
     public void setSpeedTextFormat(byte speedTextFormat) {
         this.speedTextFormat = speedTextFormat;
-        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         updateBackgroundBitmap();
@@ -933,7 +926,6 @@ public abstract class Gauge extends View {
         cancelSpeedAnimator();
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
-        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         updateBackgroundBitmap();
@@ -1058,7 +1050,6 @@ public abstract class Gauge extends View {
      */
     public void setSpeedTextSize(float speedTextSize) {
         speedTextPaint.setTextSize(speedTextSize);
-        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         invalidate();
@@ -1081,7 +1072,6 @@ public abstract class Gauge extends View {
      */
     public void setUnitTextSize(float unitTextSize) {
         unitTextPaint.setTextSize(unitTextSize);
-        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         updateBackgroundBitmap();
@@ -1101,7 +1091,6 @@ public abstract class Gauge extends View {
      */
     public void setUnit(String unit) {
         this.unit = unit;
-        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         invalidate();
@@ -1415,7 +1404,6 @@ public abstract class Gauge extends View {
      */
     public void setUnitSpeedInterval(float unitSpeedInterval) {
         this.unitSpeedInterval = unitSpeedInterval;
-        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         updateBackgroundBitmap();
@@ -1463,7 +1451,6 @@ public abstract class Gauge extends View {
             speedTextPaint.setTextAlign(Paint.Align.LEFT);
             unitTextPaint.setTextAlign(Paint.Align.LEFT);
         }
-        recreateSpeedUnitTextBitmap();
         if (!attachedToWindow)
             return;
         updateBackgroundBitmap();
