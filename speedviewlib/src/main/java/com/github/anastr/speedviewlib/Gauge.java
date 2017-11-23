@@ -54,7 +54,7 @@ public abstract class Gauge extends View {
     /** what is speed now in <b>int</b> */
     private int currentIntSpeed = 0;
     /** what is speed now in <b>float</b> */
-    private float currentSpeed = 0f;
+    private float currentSpeed = minSpeed;
     /** a degree to increases and decreases the indicator around correct speed */
     private float trembleDegree = 4f;
     private int trembleDuration = 1000;
@@ -173,6 +173,8 @@ public abstract class Gauge extends View {
 
         maxSpeed = a.getInt(R.styleable.Gauge_sv_maxSpeed, maxSpeed);
         minSpeed = a.getInt(R.styleable.Gauge_sv_minSpeed, minSpeed);
+        speed = minSpeed;
+        currentSpeed = minSpeed;
         withTremble = a.getBoolean(R.styleable.Gauge_sv_withTremble, withTremble);
         textPaint.setColor(a.getColor(R.styleable.Gauge_sv_textColor, textPaint.getColor()));
         textPaint.setTextSize(a.getDimension(R.styleable.Gauge_sv_textSize, textPaint.getTextSize()));
