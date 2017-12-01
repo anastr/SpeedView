@@ -310,21 +310,19 @@ public abstract class Gauge extends View {
 
         // check onSpeedChangeEvent.
         int newSpeed = (int) currentSpeed;
-        if (newSpeed != currentIntSpeed) {
-            if (onSpeedChangeListener != null) {
-                boolean byTremble = Build.VERSION.SDK_INT >= 11 && trembleAnimator.isRunning();
-                boolean isSpeedUp = newSpeed > currentIntSpeed;
-                int update = isSpeedUp ? 1 : -1;
-                // this loop to pass on all speed values,
-                // to safe handle by call gauge.getCorrectIntSpeed().
-                while (currentIntSpeed != newSpeed) {
-                    currentIntSpeed += update;
-                    onSpeedChangeListener.onSpeedChange(this, isSpeedUp, byTremble);
-                }
+        if (newSpeed != currentIntSpeed && onSpeedChangeListener != null) {
+            boolean byTremble = Build.VERSION.SDK_INT >= 11 && trembleAnimator.isRunning();
+            boolean isSpeedUp = newSpeed > currentIntSpeed;
+            int update = isSpeedUp ? 1 : -1;
+            // this loop to pass on all speed values,
+            // to safe handle by call gauge.getCorrectIntSpeed().
+            while (currentIntSpeed != newSpeed) {
+                currentIntSpeed += update;
+                onSpeedChangeListener.onSpeedChange(this, isSpeedUp, byTremble);
             }
-            else
-                currentIntSpeed = newSpeed;
         }
+        currentIntSpeed = newSpeed;
+
         // check onSectionChangeEvent.
         byte newSection = getSection();
         if (section != newSection)
@@ -388,16 +386,8 @@ public abstract class Gauge extends View {
         return new RectF(left, top, left + getSpeedUnitTextWidth(), top + getSpeedUnitTextHeight());
     }
 
-    private float getMaxWidthForSpeedUnitText() {
-        String maxSpeedText = speedTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", (float)maxSpeed)
-                : String.format(locale, "%d", maxSpeed);
-        return unitUnderSpeedText ?
-                Math.max(speedTextPaint.measureText(maxSpeedText), unitTextPaint.measureText(unit))
-                : speedTextPaint.measureText(maxSpeedText) + unitTextPaint.measureText(unit) + unitSpeedInterval;
-    }
-
     /**
-     * @return the width of speed & unit text.
+     * @return the width of speed & unit text at runtime.
      */
     private float getSpeedUnitTextWidth() {
         return unitUnderSpeedText ?
@@ -406,7 +396,7 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * @return the height of speed & unit text.
+     * @return the height of speed & unit text at runtime.
      */
     private float getSpeedUnitTextHeight() {
         return unitUnderSpeedText ?

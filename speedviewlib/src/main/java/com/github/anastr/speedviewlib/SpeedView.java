@@ -78,7 +78,6 @@ public class SpeedView extends Speedometer {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        initDraw();
 
         drawSpeedUnitText(canvas);
 
