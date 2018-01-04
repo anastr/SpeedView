@@ -21,12 +21,12 @@ public class WorkWithModesActivity extends AppCompatActivity implements AdapterV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_with_modes);
 
-        speedometer = (Speedometer) findViewById(R.id.speedometer);
+        speedometer = findViewById(R.id.speedometer);
 
         assert speedometer != null;
         speedometer.speedTo(40);
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        Spinner spinner = findViewById(R.id.spinner);
         assert spinner != null;
         spinner.setOnItemSelectedListener(this);
 
@@ -41,7 +41,7 @@ public class WorkWithModesActivity extends AppCompatActivity implements AdapterV
         categories.add("BOTTOM_RIGHT");
         categories.add("BOTTOM_LEFT");
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(0);
     }

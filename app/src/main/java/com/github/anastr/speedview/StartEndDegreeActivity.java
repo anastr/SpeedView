@@ -20,11 +20,11 @@ public class StartEndDegreeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_end_degree);
 
-        speedometer = (Speedometer) findViewById(R.id.speedometer);
-        seekBarStartDegree = (SeekBar) findViewById(R.id.seekBarStartDegree);
-        seekBarEndDegree = (SeekBar) findViewById(R.id.seekBarEndDegree);
-        textStartDegree = (TextView) findViewById(R.id.textStartDegree);
-        textEndDegree = (TextView) findViewById(R.id.textEndDegree);
+        speedometer = findViewById(R.id.speedometer);
+        seekBarStartDegree = findViewById(R.id.seekBarStartDegree);
+        seekBarEndDegree = findViewById(R.id.seekBarEndDegree);
+        textStartDegree = findViewById(R.id.textStartDegree);
+        textEndDegree = findViewById(R.id.textEndDegree);
 
         speedometer.speedPercentTo(50);
 

@@ -23,10 +23,10 @@ public class TubeSpeedometerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tube_speedometer);
 
-        tubeSpeedometer = (TubeSpeedometer) findViewById(R.id.speedometer);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
-        ok = (Button) findViewById(R.id.ok);
-        textSpeed = (TextView) findViewById(R.id.textSpeed);
+        tubeSpeedometer = findViewById(R.id.speedometer);
+        seekBar = findViewById(R.id.seekBar);
+        ok = findViewById(R.id.ok);
+        textSpeed = findViewById(R.id.textSpeed);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -26,12 +26,12 @@ public class DeluxeSpeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deluxe_speed);
 
-        deluxeSpeedView = (DeluxeSpeedView) findViewById(R.id.deluxeSpeedView);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
-        ok = (Button) findViewById(R.id.ok);
-        textSpeed = (TextView) findViewById(R.id.textSpeed);
-        withTremble = (CheckBox) findViewById(R.id.withTremble);
-        withEffects = (CheckBox) findViewById(R.id.withEffects);
+        deluxeSpeedView = findViewById(R.id.deluxeSpeedView);
+        seekBar = findViewById(R.id.seekBar);
+        ok = findViewById(R.id.ok);
+        textSpeed = findViewById(R.id.textSpeed);
+        withTremble = findViewById(R.id.withTremble);
+        withEffects = findViewById(R.id.withEffects);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override

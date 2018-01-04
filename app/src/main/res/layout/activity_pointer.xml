@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#83f11b"
+    android:background="#7be11b"
     android:orientation="vertical"
     tools:context="com.github.anastr.speedview.PointerActivity">
 
@@ -17,7 +17,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        app:sv_backgroundCircleColor="#83f11b"
+        app:sv_backgroundCircleColor="#7be11b"
         app:sv_speedometerColor="#00ccff"
         app:sv_pointerColor="#f00"
         app:sv_unitTextSize="15sp"

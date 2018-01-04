@@ -23,12 +23,12 @@ public class AwesomeSpeedometerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_awesome_speedometer);
 
-        awesomeSpeedometer = (AwesomeSpeedometer) findViewById(R.id.awesomeSpeedometer);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
-        speedTo = (Button) findViewById(R.id.speedTo);
-        realSpeedTo = (Button) findViewById(R.id.realSpeedTo);
-        stop = (Button) findViewById(R.id.stop);
-        textSpeed = (TextView) findViewById(R.id.textSpeed);
+        awesomeSpeedometer = findViewById(R.id.awesomeSpeedometer);
+        seekBar = findViewById(R.id.seekBar);
+        speedTo = findViewById(R.id.speedTo);
+        realSpeedTo = findViewById(R.id.realSpeedTo);
+        stop = findViewById(R.id.stop);
+        textSpeed = findViewById(R.id.textSpeed);
 
         speedTo.setOnClickListener(new View.OnClickListener() {
             @Override
