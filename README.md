@@ -27,7 +27,7 @@ Library Size just ~ 50 KB.
 ```gradle
 
 dependencies {
-	    compile 'com.github.anastr:speedviewlib:1.1.6'
+	    compile 'com.github.anastr:speedviewlib:1.1.7'
 }
 
 ```
@@ -38,7 +38,7 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.1.6</version>
+  <version>1.1.7</version>
   <type>pom</type>
 </dependency>
 ```
@@ -49,14 +49,14 @@ choose one of Speedometers, gauges and add it to your `Layout.xml`, here we use 
 
 <com.github.anastr.speedviewlib.SpeedView
         android:id="@+id/speedView"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
 ```
 
 for all speedometers and gauges, this simple method to smoothly change speed:
 ```java
-SpeedView speedometer = (SpeedView) findViewById(R.id.speedView);
+SpeedView speedometer = findViewById(R.id.speedView);
 
 // move to 50 Km/s
 speedometer.speedTo(50);
@@ -74,7 +74,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
 <img src="/images/usage/StartEndDegree.png" width="40%" />
 <img src="/images/usage/WorkWithNote.gif" width="35%" />
 
-## we have **9 Speedometers, Gauges** :
+## All Speedometers, Gauges :
 
 <table style="width:100%">
   <tr>
@@ -90,7 +90,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
        <pre>
 &lt; com.github.anastr.speedviewlib.SpeedView
         android:id="@+id/speedView"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 	</pre>
     </td>
@@ -103,7 +103,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
       <pre>
 &lt; com.github.anastr.speedviewlib.DeluxeSpeedView
         android:id="@+id/deluxeSpeedView"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
       </pre>
     </td>
@@ -116,7 +116,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
       <pre>
 &lt; com.github.anastr.speedviewlib.AwesomeSpeedometer
         android:id="@+id/awesomeSpeedometer"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
       </pre>
     </td>
@@ -129,7 +129,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
       <pre>
 &lt; com.github.anastr.speedviewlib.RaySpeedometer
         android:id="@+id/raySpeedometer"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
       </pre>
     </td>
@@ -142,7 +142,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
       <pre>
 &lt; com.github.anastr.speedviewlib.PointerSpeedometer
         android:id="@+id/pointerSpeedometer"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
       </pre>
     </td>
@@ -155,7 +155,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
       <pre>
 &lt; com.github.anastr.speedviewlib.TubeSpeedometer
         android:id="@+id/tubeSpeedometer"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
       </pre>
     </td>
@@ -168,7 +168,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
       <pre>
 &lt; com.github.anastr.speedviewlib.ImageSpeedometer
         android:id="@+id/imageSpeedometer"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:sv_image="@drawable/your_image" />
       </pre>
@@ -208,7 +208,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
 * add fuel gauge component.
 * build new custom speedometer.
 
-your `pull request` is always Welcome, please review the **[rules of contribution](https://github.com/anastr/SpeedView/wiki/Contributing)** to make useful change.
+your `pull request` is always Welcome, please review the **[rules of contribution](https://github.com/anastr/SpeedView/blob/master/CONTRIBUTING.md)** to make useful change.
 
 ## Coming Soon ...
 i well try to draw this Speedometer.
