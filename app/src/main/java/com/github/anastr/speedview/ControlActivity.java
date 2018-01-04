@@ -27,12 +27,12 @@ public class ControlActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
 
-        speedView = (SpeedView) findViewById(R.id.awesomeSpeedometer);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
-        textSpeed = (TextView) findViewById(R.id.textSpeed);
-        maxSpeed = (EditText) findViewById(R.id.maxSpeed);
-        speedometerWidth = (EditText) findViewById(R.id.speedometerWidth);
-        withTremble = (CheckBox) findViewById(R.id.withTremble);
+        speedView = findViewById(R.id.awesomeSpeedometer);
+        seekBar = findViewById(R.id.seekBar);
+        textSpeed = findViewById(R.id.textSpeed);
+        maxSpeed = findViewById(R.id.maxSpeed);
+        speedometerWidth = findViewById(R.id.speedometerWidth);
+        withTremble = findViewById(R.id.withTremble);
 
         withTremble.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -87,7 +87,7 @@ public class ControlActivity extends AppCompatActivity {
     }
 
     public void setSpeedTextSize(View view) {
-        EditText speedTextSize = (EditText) findViewById(R.id.speedTextSize);
+        EditText speedTextSize = findViewById(R.id.speedTextSize);
         try {
             float size = Float.parseFloat(speedTextSize.getText().toString());
             speedView.setSpeedTextSize(size);
@@ -98,7 +98,7 @@ public class ControlActivity extends AppCompatActivity {
     }
 
     public void setIndicatorColor(View view) {
-        EditText indicatorColor = (EditText) findViewById(R.id.indicatorColor);
+        EditText indicatorColor = findViewById(R.id.indicatorColor);
         try{
             speedView.setIndicatorColor(Color.parseColor(indicatorColor.getText().toString()));
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class ControlActivity extends AppCompatActivity {
     }
 
     public void setCenterCircleColor(View view) {
-        EditText centerCircleColor = (EditText) findViewById(R.id.centerCircleColor);
+        EditText centerCircleColor = findViewById(R.id.centerCircleColor);
         try{
             speedView.setCenterCircleColor(Color.parseColor(centerCircleColor.getText().toString()));
         } catch (Exception e) {
@@ -116,7 +116,7 @@ public class ControlActivity extends AppCompatActivity {
     }
 
     public void setLowSpeedColor(View view) {
-        EditText lowSpeedColor = (EditText) findViewById(R.id.lowSpeedColor);
+        EditText lowSpeedColor = findViewById(R.id.lowSpeedColor);
         try{
             speedView.setLowSpeedColor(Color.parseColor(lowSpeedColor.getText().toString()));
         } catch (Exception e) {
@@ -125,7 +125,7 @@ public class ControlActivity extends AppCompatActivity {
     }
 
     public void setMediumSpeedColor(View view) {
-        EditText mediumSpeedColor = (EditText) findViewById(R.id.mediumSpeedColor);
+        EditText mediumSpeedColor = findViewById(R.id.mediumSpeedColor);
         try{
             speedView.setMediumSpeedColor(Color.parseColor(mediumSpeedColor.getText().toString()));
         } catch (Exception e) {
@@ -134,7 +134,7 @@ public class ControlActivity extends AppCompatActivity {
     }
 
     public void setHighSpeedColor(View view) {
-        EditText highSpeedColor = (EditText) findViewById(R.id.highSpeedColor);
+        EditText highSpeedColor = findViewById(R.id.highSpeedColor);
         try{
             speedView.setHighSpeedColor(Color.parseColor(highSpeedColor.getText().toString()));
         } catch (Exception e) {

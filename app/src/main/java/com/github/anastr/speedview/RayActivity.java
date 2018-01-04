@@ -23,14 +23,14 @@ public class RayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ray);
 
-        raySpeedometer = (RaySpeedometer) findViewById(R.id.raySpeedometer);
-        seekBarSpeed = (SeekBar) findViewById(R.id.seekBarSpeed);
-        seekBarDegree = (SeekBar) findViewById(R.id.seekBarDegree);
-        seekBarWidth = (SeekBar) findViewById(R.id.seekBarWidth);
-        ok = (Button) findViewById(R.id.ok);
-        textSpeed = (TextView) findViewById(R.id.textSpeed);
-        textDegree = (TextView) findViewById(R.id.textDegree);
-        textWidth = (TextView) findViewById(R.id.textWidth);
+        raySpeedometer = findViewById(R.id.raySpeedometer);
+        seekBarSpeed = findViewById(R.id.seekBarSpeed);
+        seekBarDegree = findViewById(R.id.seekBarDegree);
+        seekBarWidth = findViewById(R.id.seekBarWidth);
+        ok = findViewById(R.id.ok);
+        textSpeed = findViewById(R.id.textSpeed);
+        textDegree = findViewById(R.id.textDegree);
+        textWidth = findViewById(R.id.textWidth);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override

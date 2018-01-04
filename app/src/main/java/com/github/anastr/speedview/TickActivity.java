@@ -23,12 +23,12 @@ public class TickActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tick);
 
-        speedometer = (Speedometer) findViewById(R.id.speedometer);
-        withRotation = (CheckBox) findViewById(R.id.cb_withRotation);
-        seekBarTickNumbers = (SeekBar) findViewById(R.id.seekBarStartDegree);
-        seekBarTickPadding = (SeekBar) findViewById(R.id.seekBarTickPadding);
-        textTicks = (TextView) findViewById(R.id.textTickNumber);
-        textTickPadding = (TextView) findViewById(R.id.textTickPadding);
+        speedometer = findViewById(R.id.speedometer);
+        withRotation = findViewById(R.id.cb_withRotation);
+        seekBarTickNumbers = findViewById(R.id.seekBarStartDegree);
+        seekBarTickPadding = findViewById(R.id.seekBarTickPadding);
+        textTicks = findViewById(R.id.textTickNumber);
+        textTickPadding = findViewById(R.id.textTickPadding);
 
         speedometer.speedPercentTo(53);
 

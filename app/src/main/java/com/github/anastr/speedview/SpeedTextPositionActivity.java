@@ -21,12 +21,12 @@ public class SpeedTextPositionActivity extends AppCompatActivity implements Adap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speed_text_position);
 
-        speedometer = (Speedometer) findViewById(R.id.speedometer);
+        speedometer = findViewById(R.id.speedometer);
 
         assert speedometer != null;
         speedometer.speedTo(40);
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        Spinner spinner = findViewById(R.id.spinner);
         assert spinner != null;
         spinner.setOnItemSelectedListener(this);
 
@@ -41,7 +41,7 @@ public class SpeedTextPositionActivity extends AppCompatActivity implements Adap
         categories.add("BOTTOM_CENTER");
         categories.add("BOTTOM_RIGHT");
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(7);
     }

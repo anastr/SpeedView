@@ -31,10 +31,10 @@ public class WorkWithNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_with_note);
 
-        speedView = (SpeedView) findViewById(R.id.speedView);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
-        ok = (Button) findViewById(R.id.ok);
-        textSpeed = (TextView) findViewById(R.id.textSpeed);
+        speedView = findViewById(R.id.speedView);
+        seekBar = findViewById(R.id.seekBar);
+        ok = findViewById(R.id.ok);
+        textSpeed = findViewById(R.id.textSpeed);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -29,8 +29,6 @@ public class AwesomeSpeedometer extends Speedometer {
 
     private int speedometerColor = 0xff00e6e6;
 
-    private float triangleHeight = 0f;
-
     public AwesomeSpeedometer(Context context) {
         this(context, null);
     }
@@ -110,14 +108,11 @@ public class AwesomeSpeedometer extends Speedometer {
     private void initDraw() {
         ringPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
-        textPaint.setColor(getTextColor());
-        textPaint.setTextSize(getTextSize());
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        initDraw();
 
         drawSpeedUnitText(canvas);
         drawIndicator(canvas);
@@ -135,7 +130,7 @@ public class AwesomeSpeedometer extends Speedometer {
         markPath.lineTo(getSize() *.5f, markH + getPadding());
         markPaint.setStrokeWidth(markH/5f);
 
-        triangleHeight = getViewSizePa()/20f;
+        float triangleHeight = getViewSizePa() / 20f;
         setInitTickPadding(triangleHeight);
 
         trianglesPath.reset();

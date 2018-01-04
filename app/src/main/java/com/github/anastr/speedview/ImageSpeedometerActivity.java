@@ -23,10 +23,10 @@ public class ImageSpeedometerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_speedometer);
 
-        imageSpeedometer = (ImageSpeedometer) findViewById(R.id.imageSpeedometer);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
-        ok = (Button) findViewById(R.id.ok);
-        textSpeed = (TextView) findViewById(R.id.textSpeed);
+        imageSpeedometer = findViewById(R.id.imageSpeedometer);
+        seekBar = findViewById(R.id.seekBar);
+        ok = findViewById(R.id.ok);
+        textSpeed = findViewById(R.id.textSpeed);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override

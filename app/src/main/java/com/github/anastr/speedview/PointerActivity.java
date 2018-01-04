@@ -25,11 +25,11 @@ public class PointerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pointer);
 
-        pointerSpeedometer = (PointerSpeedometer) findViewById(R.id.pointerSpeedometer);
-        seekBarSpeed = (SeekBar) findViewById(R.id.seekBarSpeed);
-        ok = (Button) findViewById(R.id.ok);
-        textSpeed = (TextView) findViewById(R.id.textSpeed);
-        textSpeedChange = (TextView) findViewById(R.id.textSpeedChange);
+        pointerSpeedometer = findViewById(R.id.pointerSpeedometer);
+        seekBarSpeed = findViewById(R.id.seekBarSpeed);
+        ok = findViewById(R.id.ok);
+        textSpeed = findViewById(R.id.textSpeed);
+        textSpeedChange = findViewById(R.id.textSpeedChange);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override

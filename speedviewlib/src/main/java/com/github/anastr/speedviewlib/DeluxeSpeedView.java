@@ -107,7 +107,6 @@ public class DeluxeSpeedView extends Speedometer {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        initDraw();
 
         RectF speedBackgroundRect = getSpeedUnitTextBounds();
         speedBackgroundRect.left -= 2;

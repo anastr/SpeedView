@@ -111,7 +111,29 @@ public abstract class Speedometer extends Gauge {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int size = Math.min(getMeasuredWidth(), getMeasuredHeight());
+
+        int defaultSize = (int) dpTOpx(250f);
+
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+
+        int size;
+
+        if (widthMode == MeasureSpec.EXACTLY)
+            size = getMeasuredWidth();
+        else if (heightMode == MeasureSpec.EXACTLY)
+            size = getMeasuredHeight();
+        else if (widthMode == MeasureSpec.UNSPECIFIED && heightMode == MeasureSpec.UNSPECIFIED)
+            size = defaultSize;
+        else if (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST)
+            size = Math.min(defaultSize, Math.min(getMeasuredWidth(), getMeasuredHeight()));
+        else {
+            if (widthMode == MeasureSpec.AT_MOST)
+                size = Math.min(defaultSize, getMeasuredWidth());
+            else
+                size = Math.min(defaultSize, getMeasuredHeight());
+        }
+
         int newW = size / speedometerMode.divWidth;
         int newH = size / speedometerMode.divHeight;
         if (speedometerMode.isHalf) {

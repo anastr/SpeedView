@@ -27,13 +27,13 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_with_indicator);
 
-        speedometer = (Speedometer) findViewById(R.id.speedometer);
-        textWidth = (TextView) findViewById(R.id.textWidth);
+        speedometer = findViewById(R.id.speedometer);
+        textWidth = findViewById(R.id.textWidth);
 
         assert speedometer != null;
         speedometer.speedTo(40);
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        Spinner spinner = findViewById(R.id.spinner);
         assert spinner != null;
         spinner.setOnItemSelectedListener(this);
 
@@ -53,7 +53,7 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(1);
 
-        SeekBar seekBarWidth = (SeekBar) findViewById(R.id.seekBar);
+        SeekBar seekBarWidth = findViewById(R.id.seekBar);
         assert seekBarWidth != null;
         seekBarWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
