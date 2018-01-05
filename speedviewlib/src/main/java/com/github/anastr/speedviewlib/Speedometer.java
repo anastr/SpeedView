@@ -44,6 +44,7 @@ public abstract class Speedometer extends Gauge {
 
     private Mode speedometerMode = Mode.NORMAL;
 
+    /** padding to fix speedometer cut when change {@link #speedometerMode} */
     private int cutPadding = 0;
 
     /** ticks values(speed values) to draw */
@@ -186,7 +187,7 @@ public abstract class Speedometer extends Gauge {
     }
 
     /**
-     * draw indicator at correct {@link #degree},
+     * draw indicator at current {@link #degree},
      * this method must call in subSpeedometer's {@code onDraw} method.
      * @param canvas view canvas to draw.
      */
@@ -233,7 +234,7 @@ public abstract class Speedometer extends Gauge {
     }
 
     /**
-     * @return correct degree where indicator must be.
+     * @return current degree where indicator must be.
      */
     protected float getDegree() {
         return degree;
@@ -241,7 +242,7 @@ public abstract class Speedometer extends Gauge {
 
     /**
      * @param speed to know the degree at it.
-     * @return correct Degree at that speed.
+     * @return current Degree at that speed.
      */
     protected float getDegreeAtSpeed (float speed) {
         return (speed - getMinSpeed()) * (endDegree - startDegree) /(getMaxSpeed() - getMinSpeed()) + startDegree;
@@ -249,7 +250,7 @@ public abstract class Speedometer extends Gauge {
 
     /**
      * @param degree to know the speed at it.
-     * @return correct speed at that degree.
+     * @return current speed at that degree.
      */
     protected float getSpeedAtDegree (float degree) {
         return (degree - startDegree) * (getMaxSpeed() - getMinSpeed()) /(endDegree - startDegree) + getMinSpeed();
@@ -742,7 +743,7 @@ public abstract class Speedometer extends Gauge {
     }
 
     /**
-     * @return correct position of center X to use in drawing.
+     * @return current position of center X to use in drawing.
      */
     protected final float getViewCenterX() {
         switch (speedometerMode) {
@@ -760,7 +761,7 @@ public abstract class Speedometer extends Gauge {
     }
 
     /**
-     * @return correct position of center Y to use in drawing.
+     * @return current position of center Y to use in drawing.
      */
     protected final float getViewCenterY() {
         switch (speedometerMode) {

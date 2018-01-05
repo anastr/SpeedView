@@ -1,7 +1,11 @@
 package com.github.anastr.speedviewlib.util;
 
 /**
- * Created by Anas Altair.
+ * <p>
+ *     callback to draw custom TickLabel for each Tick.
+ * </p>
+ * this Library build By <b>Anas Altair</b>
+ * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
 
 public interface OnPrintTickLabel {

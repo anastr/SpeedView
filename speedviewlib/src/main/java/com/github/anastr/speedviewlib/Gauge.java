@@ -39,6 +39,7 @@ public abstract class Gauge extends View {
             unitTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     /** the text after speedText */
     private String unit = "Km/h";
+    /** automatically increase and decrease speed value around the {@link #speed} */
     private boolean withTremble = true;
 
     /** the max range in speedometer, {@code default = 100} */
@@ -55,7 +56,7 @@ public abstract class Gauge extends View {
     private int currentIntSpeed = 0;
     /** what is speed now in <b>float</b> */
     private float currentSpeed = minSpeed;
-    /** a degree to increases and decreases the indicator around correct speed */
+    /** a degree to increases and decreases speed value around {@link #speed} */
     private float trembleDegree = 4f;
     private int trembleDuration = 1000;
 
@@ -331,7 +332,7 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * draw speed and unit text at correct {@link #speedTextPosition},
+     * draw speed and unit text at {@link #speedTextPosition},
      * this method must call in subSpeedometer's {@code onDraw} method.
      * @param canvas view canvas to draw.
      */
@@ -374,7 +375,7 @@ public abstract class Gauge extends View {
 
     /**
      * speed-unit text position and size.
-     * @return correct speed-unit's rect.
+     * @return speed-unit's rect.
      */
     protected RectF getSpeedUnitTextBounds() {
         float left = getWidthPa()*speedTextPosition.x -translatedDx + padding
@@ -417,8 +418,8 @@ public abstract class Gauge extends View {
 
     /**
      * Implement this method to handle section change event.
-     * @param oldSection where indicator came from.
-     * @param newSection where indicator move to.
+     * @param oldSection where speed value came from.
+     * @param newSection where speed value move to.
      */
     protected void onSectionChangeEvent(byte oldSection, byte newSection) {
         if (onSectionChangeListener != null)
@@ -468,8 +469,8 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * rotate indicator to correct speed without animation.
-     * @param speed correct speed to move.
+     * move speed value to new speed without animation.
+     * @param speed current speed to move.
      */
     public void setSpeedAt(float speed) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
@@ -509,16 +510,16 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * move speed to correct {@code int},
+     * move speed to current value smoothly,
      * it should be between [{@link #minSpeed}, {@link #maxSpeed}].<br>
      * <br>
-     * if {@code speed > maxSpeed} speed will change to {@link #maxSpeed},<br>
-     * if {@code speed < minSpeed} speed will change to {@link #minSpeed}.<br>
+     * if {@code speed > maxSpeed} speed value will move to {@link #maxSpeed},<br>
+     * if {@code speed < minSpeed} speed value will move to {@link #minSpeed}.<br>
      *
      * it is the same {@link #speedTo(float, long)}
      * with default {@code moveDuration = 2000}.
      *
-     * @param speed correct speed to move.
+     * @param speed current speed to move.
      *
      * @see #speedTo(float, long)
      * @see #speedPercentTo(int)
@@ -529,14 +530,14 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * move speed to correct {@code int},
+     * move speed to current value smoothly with animation duration,
      * it should be between [{@link #minSpeed}, {@link #maxSpeed}].<br>
      * <br>
-     * if {@code speed > maxSpeed} speed will change to {@link #maxSpeed},<br>
-     * if {@code speed < minSpeed} speed will change to {@link #minSpeed}.
+     * if {@code speed > maxSpeed} speed value will move to {@link #maxSpeed},<br>
+     * if {@code speed < minSpeed} speed value will move to {@link #minSpeed}.
      *
-     * @param speed correct speed to move.
-     * @param moveDuration The length of the animation, in milliseconds.
+     * @param speed current speed to move.
+     * @param moveDuration The length of animation, in milliseconds.
      *                     This value cannot be negative.
      *
      * @see #speedTo(float)
@@ -603,10 +604,10 @@ public abstract class Gauge extends View {
     /**
      * to make speedometer some real.
      * <br>
-     * when <b>speed up</b> : speed value well increase <i>slowly</i> by {@link #accelerate}.
+     * when <b>speed up</b> : speed value will increase <i>slowly</i> by {@link #accelerate}.
      * <br>
      * when <b>slow down</b> : speed value will decrease <i>rapidly</i> by {@link #decelerate}.
-     * @param speed correct speed to move.
+     * @param speed current speed to move.
      *
      * @see #speedTo(float)
      * @see #speedTo(float, long)
@@ -688,7 +689,7 @@ public abstract class Gauge extends View {
 
     /**
      * @param percentSpeed between [0, 100].
-     * @return speed value at correct percentSpeed.
+     * @return speed value at current percentSpeed.
      */
     private float getSpeedValue(float percentSpeed) {
         percentSpeed = (percentSpeed > 100) ? 100 : (percentSpeed < 0) ? 0 : percentSpeed;
@@ -729,7 +730,7 @@ public abstract class Gauge extends View {
 
     /**
      * default : 4 speed value.
-     * @param trembleDegree a speed value to increases and decreases the indicator around correct speed.
+     * @param trembleDegree a speed value to increases and decreases current speed around {@link #speed}.
      * @throws IllegalArgumentException If trembleDegree is Negative.
      */
     public void setTrembleDegree (float trembleDegree) {
@@ -747,7 +748,7 @@ public abstract class Gauge extends View {
 
     /**
      * tremble control.
-     * @param trembleDegree a speed value to increases and decreases the indicator around correct speed.
+     * @param trembleDegree a speed value to increases and decreases current around {@link #speed}.
      * @param trembleDuration tremble Animation duration in millisecond.
      *
      * @see #setTrembleDegree(float)
@@ -780,8 +781,8 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * get correct speed as string to <b>Draw</b>.
-     * @return correct speed to draw.
+     * get current speed as string to <b>Draw</b>.
+     * @return current speed to draw.
      */
     protected String getSpeedText() {
         return speedTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", currentSpeed)
@@ -805,10 +806,10 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * <b>if true</b> : the indicator automatically will be increases and decreases
-     * {@link #trembleDegree} speed value around last speed you set,
+     * <b>if true</b> : the speed value automatically will be increases and decreases
+     * by {@link #trembleDegree} around last speed you set,
      * used to add some reality to speedometer.<br>
-     * <b>if false</b> : nothing will do.
+     * <b>if false</b> : nothing will done.
      * @param withTremble to play tremble Animation
      *
      * @see #setTrembleData(float, int)
@@ -819,8 +820,8 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * @return whether indicator could increases and decreases automatically
-     * around last speed about {@link #trembleDegree} speed value.
+     * @return whether speed value could increase and decrease automatically
+     * around last speed by {@link #trembleDegree}.
      */
     public boolean isWithTremble() {
         return withTremble;
@@ -838,10 +839,10 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * what is correct speed now.
-     * <p>It will give different results if withTremble is running.</p>
+     * what is current speed now.
+     * <p>It will give different results if {@link #withTremble} is running.</p>
      *
-     * @return correct speed now.
+     * @return current speed now.
      * @see #setWithTremble(boolean)
      * @see #getSpeed()
      */
@@ -854,7 +855,7 @@ public abstract class Gauge extends View {
      * <p>
      *     safe method to handle all speed values in {@link #onSpeedChangeListener}.
      * </p>
-     * @return correct speed in Integer
+     * @return current speed in Integer
      * @see #getCurrentSpeed()
      */
     public int getCurrentIntSpeed() {
@@ -874,6 +875,8 @@ public abstract class Gauge extends View {
 
     /**
      * change max speed.<br>
+     * this method will move {@link #currentSpeed} to its new position
+     * immediately without animation.
      *
      * @param maxSpeed new MAX Speed.
      *
@@ -896,8 +899,10 @@ public abstract class Gauge extends View {
 
     /**
      * change min speed.<br>
+     * this method will move {@link #currentSpeed} to its new position
+     * immediately without animation.
      *
-     * @param minSpeed new MAX Speed.
+     * @param minSpeed new MIN Speed.
      *
      * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
      */
@@ -907,8 +912,11 @@ public abstract class Gauge extends View {
 
     /**
      * change Min and Max speed.<br>
+     * this method will move {@link #currentSpeed} to its new position
+     * immediately without animation.
      *
-     * @param minSpeed new MAX Speed.
+     * @param minSpeed new MIN Speed.
+     * @param maxSpeed new MAX Speed.
      *
      * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
      */
@@ -925,7 +933,7 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * get correct speed as <b>percent</b>.
+     * get current speed as <b>percent</b>.
      * @return percent speed, between [0,100].
      */
     public float getPercentSpeed() {
@@ -1238,8 +1246,8 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * check if correct speed in <b>Low Speed Section</b>.
-     * @return true if correct speed in Low Speed Section.
+     * check if current speed in <b>Low Speed Section</b>.
+     * @return true if current speed in Low Section.
      *
      * @see #setLowSpeedPercent(int)
      */
@@ -1248,9 +1256,9 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * check if correct speed in <b>Medium Speed Section</b>.
-     * @return true if correct speed in Medium Speed Section
-     * , and it is not in Low Speed Section.
+     * check if current speed in <b>Medium Speed Section</b>.
+     * @return true if current speed in Medium Section
+     * , and it is not in Low Section.
      *
      * @see #setMediumSpeedPercent(int)
      */
@@ -1259,16 +1267,16 @@ public abstract class Gauge extends View {
     }
 
     /**
-     * check if correct speed in <b>High Speed Section</b>.
-     * @return true if correct speed in High Speed Section
-     * , and it is not in Low Speed Section or Medium Speed Section.
+     * check if current speed in <b>High Speed Section</b>.
+     * @return true if current speed in High Section
+     * , and it is not in Low Section or Medium Section.
      */
     public boolean isInHighSection() {
         return currentSpeed > (maxSpeed - minSpeed)*getMediumSpeedOffset() + minSpeed;
     }
 
     /**
-     * @return correct section,
+     * @return current section,
      * used in condition : {@code if (speedometer.getSection() == speedometer.LOW_SECTION)}.
      */
     public byte getSection() {

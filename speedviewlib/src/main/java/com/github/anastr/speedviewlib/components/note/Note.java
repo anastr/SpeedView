@@ -8,6 +8,10 @@ import android.graphics.Path;
 import android.graphics.RectF;
 
 /**
+ * <p>
+ * small popup dialog with simple note shown with limited or unlimited time.
+ * </p>
+ *
  * this Library build By Anas Altair
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */

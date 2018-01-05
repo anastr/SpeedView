@@ -3,9 +3,11 @@ package com.github.anastr.speedviewlib.util;
 import com.github.anastr.speedviewlib.Gauge;
 
 /**
+ * <p>
  * A callback that notifies clients when the speed has been
  * changed (just when speed change in integer).
- * <p>
+ * </p>
+ *
  * this Library build By <b>Anas Altair</b>
  * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
  */
