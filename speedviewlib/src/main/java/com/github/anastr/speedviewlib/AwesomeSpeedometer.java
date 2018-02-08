@@ -70,7 +70,6 @@ public class AwesomeSpeedometer extends Speedometer {
         markPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextAlign(Paint.Align.CENTER);
         ringPaint.setStyle(Paint.Style.STROKE);
-        textPaint.setTextSize(dpTOpx(10));
         trianglesPaint.setColor(0xff3949ab);
     }
 
