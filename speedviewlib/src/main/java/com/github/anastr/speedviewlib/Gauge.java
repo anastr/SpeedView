@@ -43,9 +43,9 @@ public abstract class Gauge extends View {
     private boolean withTremble = true;
 
     /** the max range in speedometer, {@code default = 100} */
-    private int maxSpeed = 100;
+    private float maxSpeed = 100f;
     /** the min range in speedometer, {@code default = 0} */
-    private int minSpeed = 0;
+    private float minSpeed = 0f;
     /**
      * the last speed which you set by {@link #speedTo(float)}
      * or {@link #speedTo(float, long)} or {@link #speedPercentTo(int)},
@@ -115,6 +115,7 @@ public abstract class Gauge extends View {
     /** draw speed text as <b>float</b>. */
     public static final byte FLOAT_FORMAT = 1;
     private byte speedTextFormat = FLOAT_FORMAT;
+    private byte tickTextFormat = INTEGER_FORMAT;
 
     public Gauge(Context context) {
         this(context, null);
@@ -172,8 +173,8 @@ public abstract class Gauge extends View {
             return;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.Gauge, 0, 0);
 
-        maxSpeed = a.getInt(R.styleable.Gauge_sv_maxSpeed, maxSpeed);
-        minSpeed = a.getInt(R.styleable.Gauge_sv_minSpeed, minSpeed);
+        maxSpeed = a.getFloat(R.styleable.Gauge_sv_maxSpeed, maxSpeed);
+        minSpeed = a.getFloat(R.styleable.Gauge_sv_minSpeed, minSpeed);
         speed = minSpeed;
         currentSpeed = minSpeed;
         withTremble = a.getBoolean(R.styleable.Gauge_sv_withTremble, withTremble);
@@ -204,9 +205,12 @@ public abstract class Gauge extends View {
         int position = a.getInt(R.styleable.Gauge_sv_speedTextPosition, -1);
         if (position != -1)
             setSpeedTextPosition(Position.values()[position]);
-        byte format = (byte) a.getInt(R.styleable.Gauge_sv_speedTextFormat, -1);
-        if (format != -1)
-            setSpeedTextFormat(format);
+        byte speedFormat = (byte) a.getInt(R.styleable.Gauge_sv_speedTextFormat, -1);
+        if (speedFormat != -1)
+            setSpeedTextFormat(speedFormat);
+        byte tickFormat = (byte) a.getInt(R.styleable.Gauge_sv_tickTextFormat, -1);
+        if (tickFormat != -1)
+            setTickTextFormat(tickFormat);
         a.recycle();
         checkSpeedometerPercent();
         checkAccelerate();
@@ -781,6 +785,25 @@ public abstract class Gauge extends View {
     }
 
     /**
+     * @return tick text's format, [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}].
+     */
+    public byte getTickTextFormat() {
+        return tickTextFormat;
+    }
+
+    /**
+     * change tick text's format [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}].
+     * @param tickTextFormat new format.
+     */
+    public void setTickTextFormat(byte tickTextFormat) {
+        this.tickTextFormat = tickTextFormat;
+        if (!attachedToWindow)
+            return;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    /**
      * get current speed as string to <b>Draw</b>.
      * @return current speed to draw.
      */
@@ -794,7 +817,8 @@ public abstract class Gauge extends View {
      * @return Max speed to draw.
      */
     protected String getMaxSpeedText() {
-        return String.format(locale, "%d", maxSpeed);
+        return tickTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", maxSpeed)
+                : String.format(locale, "%d", (int) maxSpeed);
     }
 
     /**
@@ -802,7 +826,8 @@ public abstract class Gauge extends View {
      * @return Min speed to draw.
      */
     protected String getMinSpeedText() {
-        return String.format(locale, "%d", minSpeed);
+        return tickTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", minSpeed)
+                : String.format(locale, "%d", (int) minSpeed);
     }
 
     /**
@@ -867,9 +892,9 @@ public abstract class Gauge extends View {
      * @return max speed.
      *
      * @see #getMinSpeed()
-     * @see #setMaxSpeed(int)
+     * @see #setMaxSpeed(float)
      */
-    public int getMaxSpeed() {
+    public float getMaxSpeed() {
         return maxSpeed;
     }
 
@@ -882,7 +907,7 @@ public abstract class Gauge extends View {
      *
      * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
      */
-    public void setMaxSpeed(int maxSpeed) {
+    public void setMaxSpeed(float maxSpeed) {
         setMinMaxSpeed(minSpeed, maxSpeed);
     }
 
@@ -891,9 +916,9 @@ public abstract class Gauge extends View {
      * @return min speed.
      *
      * @see #getMaxSpeed()
-     * @see #setMinSpeed(int)
+     * @see #setMinSpeed(float)
      */
-    public int getMinSpeed() {
+    public float getMinSpeed() {
         return minSpeed;
     }
 
@@ -906,7 +931,7 @@ public abstract class Gauge extends View {
      *
      * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
      */
-    public void setMinSpeed(int minSpeed) {
+    public void setMinSpeed(float minSpeed) {
         setMinMaxSpeed(minSpeed, maxSpeed);
     }
 
@@ -920,7 +945,7 @@ public abstract class Gauge extends View {
      *
      * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
      */
-    public void setMinMaxSpeed(int minSpeed, int maxSpeed) {
+    public void setMinMaxSpeed(float minSpeed, float maxSpeed) {
         if (minSpeed >= maxSpeed)
             throw new IllegalArgumentException("minSpeed must be smaller than maxSpeed !!");
         cancelSpeedAnimator();
@@ -937,14 +962,14 @@ public abstract class Gauge extends View {
      * @return percent speed, between [0,100].
      */
     public float getPercentSpeed() {
-        return (currentSpeed - minSpeed) * 100f / (float)(maxSpeed - minSpeed);
+        return (currentSpeed - minSpeed) * 100f / (maxSpeed - minSpeed);
     }
 
     /**
      * @return offset speed, between [0,1].
      */
     public float getOffsetSpeed() {
-        return (currentSpeed - minSpeed) / (float)(maxSpeed - minSpeed);
+        return (currentSpeed - minSpeed) / (maxSpeed - minSpeed);
     }
 
     /**

@@ -31,8 +31,8 @@
         <attr name="sv_mediumSpeedPercent" format="integer" />
         <attr name="sv_textRightToLeft" format="boolean" />
 
-        <attr name="sv_minSpeed" format="integer" />
-        <attr name="sv_maxSpeed" format="integer" />
+        <attr name="sv_minSpeed" format="float" />
+        <attr name="sv_maxSpeed" format="float" />
 
         <attr name="sv_accelerate" format="float" />
         <attr name="sv_decelerate" format="float" />
@@ -55,6 +55,10 @@
         <attr name="sv_unitSpeedInterval" format="dimension" />
         <attr name="sv_speedTextPadding" format="dimension" />
         <attr name="sv_speedTextFormat" format="enum" >
+            <enum name="INTEGER" value="0" />
+            <enum name="FLOAT" value="1" />
+        </attr>
+        <attr name="sv_tickTextFormat" format="enum" >
             <enum name="INTEGER" value="0" />
             <enum name="FLOAT" value="1" />
         </attr>

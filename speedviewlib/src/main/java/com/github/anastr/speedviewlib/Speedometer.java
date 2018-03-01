@@ -50,7 +50,7 @@ public abstract class Speedometer extends Gauge {
     private int cutPadding = 0;
 
     /** ticks values(speed values) to draw */
-    private List<Integer> ticks = new ArrayList<>();
+    private List<Float> ticks = new ArrayList<>();
     /** to rotate tick label */
     private boolean tickRotation = true;
     private float initTickPadding = 0;
@@ -556,7 +556,8 @@ public abstract class Speedometer extends Gauge {
 
             // if onPrintTickLabel == null, or getTickLabel() return null.
             if (tick == null)
-                tick = String.format(getLocale(), "%d", ticks.get(i));
+                tick = getTickTextFormat() == FLOAT_FORMAT ? String.format(getLocale(), "%.1f", ticks.get(i))
+                        : String.format(getLocale(), "%d", ticks.get(i).intValue());
 
             c.translate(0, initTickPadding + getPadding() + tickPadding);
             new StaticLayout(tick, textPaint, getSize()
@@ -633,11 +634,11 @@ public abstract class Speedometer extends Gauge {
     public void setTickNumber(int tickNumber) {
         if (tickNumber < 0)
             throw new IllegalArgumentException("tickNumber mustn't be negative");
-        List<Integer> ticks = new ArrayList<>();
+        List<Float> ticks = new ArrayList<>();
         // tick each degree
         float tickEach = tickNumber != 1 ? (float)(endDegree - startDegree) / (float)(tickNumber-1) : endDegree +1f;
         for (int i=0; i < tickNumber; i++) {
-            int tick = (int)getSpeedAtDegree(tickEach * i + getStartDegree());
+            float tick = getSpeedAtDegree(tickEach * i + getStartDegree());
             ticks.add(tick);
         }
         setTicks(ticks);
@@ -646,7 +647,7 @@ public abstract class Speedometer extends Gauge {
     /**
      * @return ticks values as list, don't edit the list.
      */
-    public List<Integer> getTicks() {
+    public List<Float> getTicks() {
         return ticks;
     }
 
@@ -657,7 +658,7 @@ public abstract class Speedometer extends Gauge {
      * @throws IllegalArgumentException if one of {@link #ticks} out of range [{@link #minSpeed}, {@link #maxSpeed}].
      * @throws IllegalArgumentException If {@link #ticks} are not ascending.
      */
-    public void setTicks(Integer... ticks) {
+    public void setTicks(Float... ticks) {
         setTicks(Arrays.asList(ticks));
     }
 
@@ -668,7 +669,7 @@ public abstract class Speedometer extends Gauge {
      * @throws IllegalArgumentException if one of {@link #ticks} out of range [{@link #minSpeed}, {@link #maxSpeed}].
      * @throws IllegalArgumentException If {@link #ticks} are not ascending.
      */
-    public void setTicks(List<Integer> ticks) {
+    public void setTicks(List<Float> ticks) {
         this.ticks.clear();
         this.ticks.addAll(ticks);
         checkTicks();
@@ -679,13 +680,15 @@ public abstract class Speedometer extends Gauge {
     }
 
     private void checkTicks() {
-        int lastTick = getMinSpeed() -1;
-        for (int tick : ticks) {
-            if (lastTick >= tick)
+        float lastTick = getMinSpeed() - 1f;
+        for (float tick : ticks) {
+            if (lastTick == tick)
+                throw new IllegalArgumentException("you mustn't have double ticks");
+            if (lastTick > tick)
                 throw new IllegalArgumentException("ticks must be ascending order");
-            lastTick = tick;
             if (tick < getMinSpeed() || tick > getMaxSpeed())
                 throw new IllegalArgumentException("ticks must be between [minSpeed, maxSpeed] !!");
+            lastTick = tick;
         }
     }
 
