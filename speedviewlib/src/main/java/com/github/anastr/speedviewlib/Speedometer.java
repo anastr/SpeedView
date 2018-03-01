@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.text.Layout;
+import android.text.StaticLayout;
 import android.util.AttributeSet;
 
 import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator;
@@ -230,6 +232,10 @@ public abstract class Speedometer extends Gauge {
         backgroundBitmap = Bitmap.createBitmap(getSize(), getSize(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(backgroundBitmap);
         canvas.drawCircle(getSize() *.5f, getSize() *.5f, getSize() *.5f - getPadding(), circleBackPaint);
+
+        // to fix preview mode issue
+        canvas.clipRect(0, 0, getSize(), getSize());
+
         return canvas;
     }
 
@@ -534,25 +540,29 @@ public abstract class Speedometer extends Gauge {
         if(ticks.size() == 0)
             return;
 
+        textPaint.setTextAlign(Paint.Align.LEFT);
+
         for (int i=0; i < ticks.size(); i++) {
             float d = getDegreeAtSpeed(ticks.get(i)) + 90f;
             c.save();
             c.rotate(d, getSize() *.5f, getSize() *.5f);
-            if (!tickRotation) {
-                c.save();
+            if (!tickRotation)
                 c.rotate(-d, getSize() *.5f
                         , initTickPadding + textPaint.getTextSize() + getPadding() + tickPadding);
-            }
 
-            String tickLabel;
+            CharSequence tick = null;
             if (onPrintTickLabel != null)
-                tickLabel = onPrintTickLabel.getTickLabel(i, ticks.get(i));
-            else
-                tickLabel = String.format(getLocale(), "%d", ticks.get(i));
-            c.drawText( tickLabel, getSize() *.5f
-                    , initTickPadding + textPaint.getTextSize() + getPadding() + tickPadding, textPaint);
-            if (!tickRotation)
-                c.restore();
+                tick = onPrintTickLabel.getTickLabel(i, ticks.get(i));
+
+            // if onPrintTickLabel == null, or getTickLabel() return null.
+            if (tick == null)
+                tick = String.format(getLocale(), "%d", ticks.get(i));
+
+            c.translate(0, initTickPadding + getPadding() + tickPadding);
+            new StaticLayout(tick, textPaint, getSize()
+                    , Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false)
+                    .draw(c);
+
             c.restore();
         }
     }
@@ -662,8 +672,6 @@ public abstract class Speedometer extends Gauge {
         this.ticks.clear();
         this.ticks.addAll(ticks);
         checkTicks();
-        if (ticks.size() > 0)
-            textPaint.setTextAlign(Paint.Align.CENTER);
         if (!isAttachedToWindow())
             return;
         updateBackgroundBitmap();

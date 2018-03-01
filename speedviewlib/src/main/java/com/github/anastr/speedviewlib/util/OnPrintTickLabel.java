@@ -14,5 +14,5 @@ public interface OnPrintTickLabel {
      * @param tick speed value at the tick.
      * @return label to draw.
      */
-    String getTickLabel(int tickPosition, int tick);
+    CharSequence getTickLabel(int tickPosition, int tick);
 }
