@@ -25,6 +25,11 @@ public class NormalSmallIndicator extends Indicator<NormalSmallIndicator> {
     }
 
     @Override
+    public float getTop() {
+        return getViewSize()/5f + getPadding();
+    }
+
+    @Override
     public void draw(Canvas canvas, float degree) {
         canvas.save();
         canvas.rotate(90f + degree, getCenterX(), getCenterY());

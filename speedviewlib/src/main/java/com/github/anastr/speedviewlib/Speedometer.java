@@ -6,6 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.SweepGradient;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.util.AttributeSet;
@@ -27,8 +30,14 @@ import java.util.List;
 @SuppressWarnings("unused")
 public abstract class Speedometer extends Gauge {
 
+    /** needle point to {@link #currentSpeed}, cannot be null */
     private Indicator indicator;
-    private Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private boolean withIndicatorLight = false;
+    private int indicatorLightColor = 0xBBFF5722;
+
+    private Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG)
+            , indicatorLightPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     private float speedometerWidth = dpTOpx(30f);
 
     private int markColor = Color.WHITE
@@ -73,6 +82,7 @@ public abstract class Speedometer extends Gauge {
     }
 
     private void init() {
+        indicatorLightPaint.setStyle(Paint.Style.STROKE);
         indicator = new NoIndicator(getContext());
         defaultSpeedometerValues();
     }
@@ -102,6 +112,8 @@ public abstract class Speedometer extends Gauge {
         tickRotation = a.getBoolean(R.styleable.Speedometer_sv_tickRotation, tickRotation);
         tickPadding = (int) a.getDimension(R.styleable.Speedometer_sv_tickPadding, tickPadding);
         setIndicatorColor(a.getColor(R.styleable.Speedometer_sv_indicatorColor, indicator.getIndicatorColor()));
+        withIndicatorLight = a.getBoolean(R.styleable.Speedometer_sv_withIndicatorLight, withIndicatorLight);
+        indicatorLightColor = a.getColor(R.styleable.Speedometer_sv_indicatorLightColor, indicatorLightColor);
         degree = startDegree;
         a.recycle();
         checkStartAndEndDegree();
@@ -194,7 +206,34 @@ public abstract class Speedometer extends Gauge {
      * @param canvas view canvas to draw.
      */
     protected void drawIndicator(Canvas canvas) {
+        if (withIndicatorLight)
+            drawIndicatorLight(canvas);
         indicator.draw(canvas, degree);
+    }
+
+    private float lastPercentSpeed = 0;
+
+    protected void drawIndicatorLight(Canvas canvas) {
+        final float MAX_LIGHT_SWEEP = 30f;
+        float sweep = Math.abs(getPercentSpeed() - lastPercentSpeed) * MAX_LIGHT_SWEEP;
+        lastPercentSpeed = getPercentSpeed();
+        if (sweep > MAX_LIGHT_SWEEP)
+            sweep = MAX_LIGHT_SWEEP;
+        int[] colors = new int[]{indicatorLightColor, 0x00FFFFFF};
+        Shader lightSweep = new SweepGradient(getSize() *.5f, getSize() *.5f
+                , colors, new float[]{0f, sweep/360f});
+        indicatorLightPaint.setShader(lightSweep);
+        indicatorLightPaint.setStrokeWidth(indicator.getBottom()-indicator.getTop());
+
+        float risk = indicator.getTop() + indicatorLightPaint.getStrokeWidth() *.5f;
+        RectF speedometerRect = new RectF(risk, risk, getSize() -risk, getSize() -risk);
+        canvas.save();
+        canvas.rotate(degree, getSize()*.5f, getSize()*.5f);
+        if (isSpeedIncrease())
+            canvas.scale(1, -1, getSize() *.5f, getSize() *.5f);
+        canvas.drawArc(speedometerRect, 0, sweep
+                , false, indicatorLightPaint);
+        canvas.restore();
     }
 
     /**
@@ -616,6 +655,37 @@ public abstract class Speedometer extends Gauge {
             return;
         this.indicator.setTargetSpeedometer(this);
         invalidate();
+    }
+
+    /**
+     * @return is light effect enable or not.
+     */
+    public boolean isWithIndicatorLight() {
+        return withIndicatorLight;
+    }
+
+    /**
+     * light effect behind the {@link #indicator}.
+     * @param withIndicatorLight true to enable the effect.
+     */
+    public void setWithIndicatorLight(boolean withIndicatorLight) {
+        this.withIndicatorLight = withIndicatorLight;
+    }
+
+    /**
+     * @return indicator light's color.
+     */
+    public int getIndicatorLightColor() {
+        return indicatorLightColor;
+    }
+
+    /**
+     * indicator light's color.
+     * @param indicatorLightColor new color.
+     * @see #setWithIndicatorLight(boolean)
+     */
+    public void setIndicatorLightColor(int indicatorLightColor) {
+        this.indicatorLightColor = indicatorLightColor;
     }
 
     /**

@@ -30,6 +30,11 @@ public class LineIndicator extends Indicator<LineIndicator> {
     }
 
     @Override
+    public float getBottom() {
+        return getCenterY() * mode;
+    }
+
+    @Override
     public void draw(Canvas canvas, float degree) {
         canvas.save();
         canvas.rotate(90f + degree, getCenterX(), getCenterY());

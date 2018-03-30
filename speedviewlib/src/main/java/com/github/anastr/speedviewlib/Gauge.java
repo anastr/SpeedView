@@ -56,6 +56,7 @@ public abstract class Gauge extends View {
     private int currentIntSpeed = 0;
     /** what is speed now in <b>float</b> */
     private float currentSpeed = minSpeed;
+    private boolean isSpeedIncrease = false;
     /** a degree to increases and decreases speed value around {@link #speed} */
     private float trembleDegree = 4f;
     private int trembleDuration = 1000;
@@ -478,6 +479,7 @@ public abstract class Gauge extends View {
      */
     public void setSpeedAt(float speed) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
+        isSpeedIncrease = speed > currentSpeed;
         this.speed = speed;
         this.currentSpeed = speed;
         cancelSpeedAnimator();
@@ -560,6 +562,8 @@ public abstract class Gauge extends View {
             return;
         }
 
+        isSpeedIncrease = speed > currentSpeed;
+
         cancelSpeedAnimator();
         speedAnimator = ValueAnimator.ofFloat(currentSpeed, speed);
         speedAnimator.setInterpolator(new DecelerateInterpolator());
@@ -631,8 +635,8 @@ public abstract class Gauge extends View {
             setSpeedAt(speed);
             return;
         }
-        final boolean isSpeedUp = speed > currentSpeed;
-        if (realSpeedAnimator.isRunning() && oldIsSpeedUp == isSpeedUp)
+        isSpeedIncrease = speed > currentSpeed;
+        if (realSpeedAnimator.isRunning() && oldIsSpeedUp == isSpeedIncrease)
             return;
 
         cancelSpeedAnimator();
@@ -644,7 +648,7 @@ public abstract class Gauge extends View {
         realSpeedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                if (isSpeedUp) {
+                if (isSpeedIncrease) {
                     float per = 100.005f-getPercentSpeed();
                     currentSpeed += (accelerate * 10f) * per *.01f;
                     if (currentSpeed > finalSpeed)
@@ -683,6 +687,7 @@ public abstract class Gauge extends View {
         trembleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
+                isSpeedIncrease = (float) trembleAnimator.getAnimatedValue() > currentSpeed;
                 currentSpeed = (float) trembleAnimator.getAnimatedValue();
                 postInvalidate();
             }
@@ -873,6 +878,14 @@ public abstract class Gauge extends View {
      */
     public float getCurrentSpeed() {
         return currentSpeed;
+    }
+
+    /**
+     * given a state of the speed change if it's increase or decrease.
+     * @return is speed increase in the last change or not.
+     */
+    public boolean isSpeedIncrease() {
+        return isSpeedIncrease;
     }
 
     /**

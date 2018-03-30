@@ -67,6 +67,8 @@
 
     <declare-styleable name="Speedometer"  parent="Gauge">
         <attr name="sv_indicatorColor" format="color" />
+        <attr name="sv_withIndicatorLight" format="boolean" />
+        <attr name="sv_indicatorLightColor" format="color" />
         <attr name="sv_markColor" format="color" />
         <attr name="sv_lowSpeedColor" format="color" />
         <attr name="sv_mediumSpeedColor" format="color" />
