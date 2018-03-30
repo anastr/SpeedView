@@ -223,7 +223,7 @@ public abstract class Speedometer extends Gauge {
         Shader lightSweep = new SweepGradient(getSize() *.5f, getSize() *.5f
                 , colors, new float[]{0f, sweep/360f});
         indicatorLightPaint.setShader(lightSweep);
-        indicatorLightPaint.setStrokeWidth(indicator.getBottom()-indicator.getTop());
+        indicatorLightPaint.setStrokeWidth(indicator.getLightBottom()-indicator.getTop());
 
         float risk = indicator.getTop() + indicatorLightPaint.getStrokeWidth() *.5f;
         RectF speedometerRect = new RectF(risk, risk, getSize() -risk, getSize() -risk);

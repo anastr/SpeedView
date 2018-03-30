@@ -13,6 +13,7 @@ import android.graphics.RectF;
 public class NormalIndicator extends Indicator<NormalIndicator> {
 
     private Path indicatorPath = new Path();
+    private float bottomY;
 
     public NormalIndicator(Context context) {
         super(context);
@@ -22,6 +23,11 @@ public class NormalIndicator extends Indicator<NormalIndicator> {
     @Override
     protected float getDefaultIndicatorWidth() {
         return dpTOpx(12f);
+    }
+
+    @Override
+    public float getBottom() {
+        return bottomY;
     }
 
     @Override
@@ -36,11 +42,11 @@ public class NormalIndicator extends Indicator<NormalIndicator> {
     protected void updateIndicator() {
         indicatorPath.reset();
         indicatorPath.moveTo(getCenterX(), getPadding());
-        float indicatorBottom = getViewSize()*2f/3f + getPadding();
-        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), indicatorBottom);
-        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), indicatorBottom);
-        RectF rectF = new RectF(getCenterX() - getIndicatorWidth(), indicatorBottom - getIndicatorWidth()
-                , getCenterX() + getIndicatorWidth(), indicatorBottom + getIndicatorWidth());
+        bottomY = getViewSize()*2f/3f + getPadding();
+        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), bottomY);
+        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), bottomY);
+        RectF rectF = new RectF(getCenterX() - getIndicatorWidth(), bottomY - getIndicatorWidth()
+                , getCenterX() + getIndicatorWidth(), bottomY + getIndicatorWidth());
         indicatorPath.addArc(rectF, 0f, 180f);
 
         indicatorPaint.setColor(getIndicatorColor());

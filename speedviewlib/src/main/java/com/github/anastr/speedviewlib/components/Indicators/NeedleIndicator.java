@@ -17,6 +17,7 @@ public class NeedleIndicator extends Indicator {
     private Path indicatorPath = new Path();
     private Path circlePath = new Path();
     private Paint circlePaint =  new Paint(Paint.ANTI_ALIAS_FLAG);
+    private float bottomY;
 
     public NeedleIndicator(Context context) {
         super(context);
@@ -27,6 +28,11 @@ public class NeedleIndicator extends Indicator {
     @Override
     protected float getDefaultIndicatorWidth() {
         return dpTOpx(12f);
+    }
+
+    @Override
+    public float getBottom() {
+        return bottomY;
     }
 
     @Override
@@ -43,9 +49,9 @@ public class NeedleIndicator extends Indicator {
         indicatorPath.reset();
         circlePath.reset();
         indicatorPath.moveTo(getCenterX(), getPadding());
-        float y = (float) (getIndicatorWidth() * Math.sin(Math.toRadians(260))) + getViewSize()*.5f + getPadding();
+        bottomY = (float) (getIndicatorWidth() * Math.sin(Math.toRadians(260))) + getViewSize()*.5f + getPadding();
         float xLeft = (float) (getIndicatorWidth() * Math.cos(Math.toRadians(260))) + getViewSize()*.5f + getPadding();
-        indicatorPath.lineTo(xLeft, y);
+        indicatorPath.lineTo(xLeft, bottomY);
         RectF rectF = new RectF(getCenterX() - getIndicatorWidth(), getCenterY() - getIndicatorWidth()
                 , getCenterX() + getIndicatorWidth(), getCenterY() + getIndicatorWidth());
         indicatorPath.arcTo(rectF, 260, 20f);

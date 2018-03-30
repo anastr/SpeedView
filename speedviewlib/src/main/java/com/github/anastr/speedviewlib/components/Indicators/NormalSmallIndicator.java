@@ -13,6 +13,7 @@ import android.graphics.RectF;
 public class NormalSmallIndicator extends Indicator<NormalSmallIndicator> {
 
     private Path indicatorPath = new Path();
+    private float bottomY;
 
     public NormalSmallIndicator(Context context) {
         super(context);
@@ -30,6 +31,11 @@ public class NormalSmallIndicator extends Indicator<NormalSmallIndicator> {
     }
 
     @Override
+    public float getBottom() {
+        return bottomY;
+    }
+
+    @Override
     public void draw(Canvas canvas, float degree) {
         canvas.save();
         canvas.rotate(90f + degree, getCenterX(), getCenterY());
@@ -41,11 +47,11 @@ public class NormalSmallIndicator extends Indicator<NormalSmallIndicator> {
     protected void updateIndicator() {
         indicatorPath.reset();
         indicatorPath.moveTo(getCenterX(), getViewSize()/5f + getPadding());
-        float indicatorBottom = getViewSize()*3f/5f + getPadding();
-        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), indicatorBottom);
-        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), indicatorBottom);
-        RectF rectF = new RectF(getCenterX() - getIndicatorWidth(), indicatorBottom - getIndicatorWidth()
-                , getCenterX() + getIndicatorWidth(), indicatorBottom + getIndicatorWidth());
+        bottomY = getViewSize()*3f/5f + getPadding();
+        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), bottomY);
+        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), bottomY);
+        RectF rectF = new RectF(getCenterX() - getIndicatorWidth(), bottomY - getIndicatorWidth()
+                , getCenterX() + getIndicatorWidth(), bottomY + getIndicatorWidth());
         indicatorPath.addArc(rectF, 0f, 180f);
 
         indicatorPaint.setColor(getIndicatorColor());

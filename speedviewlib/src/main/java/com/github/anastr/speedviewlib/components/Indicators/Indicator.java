@@ -47,6 +47,10 @@ public abstract class Indicator<I extends Indicator> {
     public float getBottom(){
         return getCenterY();
     }
+    /** down point after center */
+    public float getLightBottom() {
+        return getCenterY() > getBottom() ? getBottom() : getCenterY();
+    }
 
     /**
      * must call in {@code speedometer.onSizeChanged()}
