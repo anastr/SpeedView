@@ -247,10 +247,23 @@ public abstract class Speedometer extends Gauge {
                 note.draw(canvas, getWidth() *.5f, getHeight() *.5f);
             else {
                 float y = 0f;
-                if (note.getPosition() == Note.Position.CenterIndicator)
-                    y = getHeightPa() *.25f + getPadding();
-                else if (note.getPosition() == Note.Position.TopIndicator)
-                    y = getPadding();
+                switch (note.getPosition()) {
+                    case TopIndicator:
+                        y = indicator.getTop();
+                        break;
+                    case CenterIndicator:
+                        y = (indicator.getTop() + indicator.getBottom()) *.5f;
+                        break;
+                    case BottomIndicator:
+                        y = indicator.getBottom();
+                        break;
+                    case TopSpeedometer:
+                        y = getPadding();
+                        break;
+                    case QuarterSpeedometer:
+                        y = getHeightPa() *.25f + getPadding();
+                        break;
+                }
                 canvas.save();
                 canvas.rotate(90f + getDegree(), getWidth() *.5f, getHeight() *.5f);
                 canvas.rotate(-(90f + getDegree()), getWidth() *.5f, y);
