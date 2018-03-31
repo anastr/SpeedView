@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -47,7 +46,7 @@ public class DeluxeSpeedView extends Speedometer {
 
     @Override
     protected void defaultGaugeValues() {
-        super.setTextColor(Color.WHITE);
+        super.setTextColor(0xFFFFFFFF);
     }
 
     @Override
@@ -64,7 +63,7 @@ public class DeluxeSpeedView extends Speedometer {
         speedometerPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
-        speedBackgroundPaint.setColor(Color.WHITE);
+        speedBackgroundPaint.setColor(0xFFFFFFFF);
         circlePaint.setColor(0xffe0e0e0);
 
         if (Build.VERSION.SDK_INT >= 11)

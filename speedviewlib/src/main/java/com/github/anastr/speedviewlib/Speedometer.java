@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -40,11 +39,11 @@ public abstract class Speedometer extends Gauge {
 
     private float speedometerWidth = dpTOpx(30f);
 
-    private int markColor = Color.WHITE
-            , lowSpeedColor = Color.GREEN
-            , mediumSpeedColor = Color.YELLOW
-            , highSpeedColor = Color.RED
-            , backgroundCircleColor = Color.WHITE;
+    private int markColor = 0xFFFFFFFF
+            , lowSpeedColor = 0xFF00FF00
+            , mediumSpeedColor = 0xFFFFFF00
+            , highSpeedColor = 0xFFFF0000
+            , backgroundCircleColor = 0xFFFFFFFF;
 
     private int startDegree = 135, endDegree = 135+270;
     /** to rotate indicator */

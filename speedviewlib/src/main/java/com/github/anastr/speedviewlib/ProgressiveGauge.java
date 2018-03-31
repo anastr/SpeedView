@@ -3,7 +3,6 @@ package com.github.anastr.speedviewlib;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -41,7 +40,7 @@ public class ProgressiveGauge extends LinearGauge {
     }
 
     private void init() {
-        frontPaint.setColor(Color.CYAN);
+        frontPaint.setColor(0xFF00FFFF);
         backPaint.setColor(0xffd6d7d7);
     }
 

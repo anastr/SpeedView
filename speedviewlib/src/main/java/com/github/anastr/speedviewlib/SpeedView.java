@@ -3,7 +3,6 @@ package com.github.anastr.speedviewlib;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -44,13 +43,13 @@ public class SpeedView extends Speedometer {
     @Override
     protected void defaultSpeedometerValues() {
         super.setIndicator(new NormalIndicator(getContext()));
-        super.setBackgroundCircleColor(Color.TRANSPARENT);
+        super.setBackgroundCircleColor(0);
     }
 
     private void init() {
         speedometerPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
-        circlePaint.setColor(Color.DKGRAY);
+        circlePaint.setColor(0xFF444444);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {

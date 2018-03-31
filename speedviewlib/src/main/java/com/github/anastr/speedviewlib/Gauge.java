@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -134,12 +133,12 @@ public abstract class Gauge extends View {
     }
 
     private void init() {
-        textPaint.setColor(Color.BLACK);
+        textPaint.setColor(0xFF000000);
         textPaint.setTextSize(dpTOpx(10f));
         textPaint.setTextAlign(Paint.Align.CENTER);
-        speedTextPaint.setColor(Color.BLACK);
+        speedTextPaint.setColor(0xFF000000);
         speedTextPaint.setTextSize(dpTOpx(18f));
-        unitTextPaint.setColor(Color.BLACK);
+        unitTextPaint.setColor(0xFF000000);
         unitTextPaint.setTextSize(dpTOpx(15f));
 
         if (Build.VERSION.SDK_INT >= 11) {
@@ -353,7 +352,7 @@ public abstract class Gauge extends View {
      * taking into consideration {@link #speedometerTextRightToLeft} and {@link #unitUnderSpeedText}.
      */
     private void updateSpeedUnitTextBitmap(String speedText) {
-        speedUnitTextBitmap.eraseColor(Color.TRANSPARENT);
+        speedUnitTextBitmap.eraseColor(0);
 
         if (unitUnderSpeedText) {
             speedUnitTextCanvas.drawText(speedText, speedUnitTextBitmap.getWidth() *.5f
