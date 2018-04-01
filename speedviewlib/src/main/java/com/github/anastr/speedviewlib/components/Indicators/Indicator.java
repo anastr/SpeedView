@@ -39,6 +39,19 @@ public abstract class Indicator<I extends Indicator> {
     protected abstract void setWithEffects(boolean withEffects);
     protected abstract float getDefaultIndicatorWidth();
 
+    /** Top Y position of indicator */
+    public float getTop(){
+        return getPadding();
+    }
+    /** Bottom Y position of indicator */
+    public float getBottom(){
+        return getCenterY();
+    }
+    /** down point after center */
+    public float getLightBottom() {
+        return getCenterY() > getBottom() ? getBottom() : getCenterY();
+    }
+
     /**
      * must call in {@code speedometer.onSizeChanged()}
      * @param speedometer target speedometer.

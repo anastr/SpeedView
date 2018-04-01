@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -47,13 +46,13 @@ public class RaySpeedometer extends Speedometer {
 
     @Override
     protected void defaultGaugeValues() {
-        super.setTextColor(Color.WHITE);
+        super.setTextColor(0xFFFFFFFF);
     }
 
     @Override
     protected void defaultSpeedometerValues() {
         super.setBackgroundCircleColor(0xff212121);
-        super.setMarkColor(Color.BLACK);
+        super.setMarkColor(0xFF000000);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -82,8 +81,8 @@ public class RaySpeedometer extends Speedometer {
         activeMarkPaint.setStrokeWidth(dpTOpx(3f));
         rayPaint.setStyle(Paint.Style.STROKE);
         rayPaint.setStrokeWidth(dpTOpx(1.8f));
-        rayPaint.setColor(Color.WHITE);
-        speedBackgroundPaint.setColor(Color.WHITE);
+        rayPaint.setColor(0xFFFFFFFF);
+        speedBackgroundPaint.setColor(0xFFFFFFFF);
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null);
@@ -262,7 +261,7 @@ public class RaySpeedometer extends Speedometer {
     @Deprecated
     @Override
     public int getIndicatorColor() {
-        return Color.TRANSPARENT;
+        return 0;
     }
 
     /**

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -34,7 +33,7 @@ public class ImageSpeedometer extends Speedometer {
 
     @Override
     protected void defaultSpeedometerValues() {
-        setBackgroundCircleColor(Color.TRANSPARENT);
+        setBackgroundCircleColor(0);
     }
 
     @Override
@@ -120,7 +119,7 @@ public class ImageSpeedometer extends Speedometer {
     @Deprecated
     @Override
     public int getLowSpeedColor() {
-        return Color.TRANSPARENT;
+        return 0;
     }
 
     /**
@@ -139,7 +138,7 @@ public class ImageSpeedometer extends Speedometer {
     @Deprecated
     @Override
     public int getMediumSpeedColor() {
-        return Color.TRANSPARENT;
+        return 0;
     }
 
     /**
@@ -158,7 +157,7 @@ public class ImageSpeedometer extends Speedometer {
     @Deprecated
     @Override
     public int getHighSpeedColor() {
-        return Color.TRANSPARENT;
+        return 0;
     }
 
     /**

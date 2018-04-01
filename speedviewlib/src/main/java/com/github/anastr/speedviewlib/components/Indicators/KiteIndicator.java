@@ -13,6 +13,7 @@ import android.graphics.Path;
 public class KiteIndicator extends Indicator<KiteIndicator> {
 
     private Path indicatorPath = new Path();
+    private float bottomY;
 
     public KiteIndicator(Context context) {
         super(context);
@@ -22,6 +23,11 @@ public class KiteIndicator extends Indicator<KiteIndicator> {
     @Override
     protected float getDefaultIndicatorWidth() {
         return dpTOpx(12f);
+    }
+
+    @Override
+    public float getBottom() {
+        return bottomY;
     }
 
     @Override
@@ -36,10 +42,10 @@ public class KiteIndicator extends Indicator<KiteIndicator> {
     protected void updateIndicator() {
         indicatorPath.reset();
         indicatorPath.moveTo(getCenterX(), getPadding());
-        float indicatorBottom = getViewSize()*.5f + getPadding();
-        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), indicatorBottom);
-        indicatorPath.lineTo(getCenterX(), indicatorBottom + getIndicatorWidth());
-        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), indicatorBottom);
+        bottomY = getViewSize()*.5f + getPadding();
+        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), bottomY);
+        indicatorPath.lineTo(getCenterX(), bottomY + getIndicatorWidth());
+        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), bottomY);
 
         indicatorPaint.setColor(getIndicatorColor());
     }

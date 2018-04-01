@@ -4,7 +4,7 @@ Dynamic Speedometer, Gauge for Android. **amazing**, **powerful**, and _multi sh
 
 `minSdkVersion=8`
 
-Library Size just ~ 50 KB.
+Library Size just ~ 51 KB.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-blue.svg?style=true)](https://android-arsenal.com/details/1/4169)
 [![API](https://img.shields.io/badge/API-+8-red.svg?style=flat)](#)
@@ -27,7 +27,7 @@ Library Size just ~ 50 KB.
 ```gradle
 
 dependencies {
-	    compile 'com.github.anastr:speedviewlib:1.1.7'
+	    compile 'com.github.anastr:speedviewlib:1.2.0'
 }
 
 ```
@@ -38,7 +38,7 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.1.7</version>
+  <version>1.2.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -68,6 +68,8 @@ you can use other Duration by method :
 // move to 50 Km/s with Duration = 4 sec
 speedometer.speedTo(50, 4000);
 ```
+
+automatically indicator move around current speed to add some reality to speedometer because of [Tremble](https://github.com/anastr/SpeedView/wiki/0.-Get-Started#tremble), you can stop it by `app:sv_withTremble="false"` Attribute or call `speedometer.setWithTremble(false);` method in the code.
 
 **for more control**, see The most important methods at [Get Started - Wiki](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) for **All Speedometers & Gauges**.<br>
 and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage) and [Work With Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).<br>
@@ -211,7 +213,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
 your `pull request` is always Welcome, please review the **[rules of contribution](https://github.com/anastr/SpeedView/blob/master/CONTRIBUTING.md)** to make useful change.
 
 ## Coming Soon ...
-i well try to draw this Speedometer.
+I will try to draw this Speedometer.
 if you have any idea, image, template please **open new issue** and give me the image , and i well try to add it to the Library.
 
 <img src="/images/new2.png" width="30%" /> <img src="/images/new3.png" width="30%" />
@@ -219,7 +221,7 @@ if you have any idea, image, template please **open new issue** and give me the 
 # LICENSE
 ```
 
-Copyright 2016 Anas ALtair
+Copyright 2016 Anas Altair
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

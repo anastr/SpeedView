@@ -4,8 +4,12 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.SweepGradient;
+import android.text.Layout;
+import android.text.StaticLayout;
 import android.util.AttributeSet;
 
 import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator;
@@ -25,15 +29,21 @@ import java.util.List;
 @SuppressWarnings("unused")
 public abstract class Speedometer extends Gauge {
 
+    /** needle point to {@link #currentSpeed}, cannot be null */
     private Indicator indicator;
-    private Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private boolean withIndicatorLight = false;
+    private int indicatorLightColor = 0xBBFF5722;
+
+    private Paint circleBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG)
+            , indicatorLightPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     private float speedometerWidth = dpTOpx(30f);
 
-    private int markColor = Color.WHITE
-            , lowSpeedColor = Color.GREEN
-            , mediumSpeedColor = Color.YELLOW
-            , highSpeedColor = Color.RED
-            , backgroundCircleColor = Color.WHITE;
+    private int markColor = 0xFFFFFFFF
+            , lowSpeedColor = 0xFF00FF00
+            , mediumSpeedColor = 0xFFFFFF00
+            , highSpeedColor = 0xFFFF0000
+            , backgroundCircleColor = 0xFFFFFFFF;
 
     private int startDegree = 135, endDegree = 135+270;
     /** to rotate indicator */
@@ -48,7 +58,7 @@ public abstract class Speedometer extends Gauge {
     private int cutPadding = 0;
 
     /** ticks values(speed values) to draw */
-    private List<Integer> ticks = new ArrayList<>();
+    private List<Float> ticks = new ArrayList<>();
     /** to rotate tick label */
     private boolean tickRotation = true;
     private float initTickPadding = 0;
@@ -71,6 +81,7 @@ public abstract class Speedometer extends Gauge {
     }
 
     private void init() {
+        indicatorLightPaint.setStyle(Paint.Style.STROKE);
         indicator = new NoIndicator(getContext());
         defaultSpeedometerValues();
     }
@@ -100,6 +111,8 @@ public abstract class Speedometer extends Gauge {
         tickRotation = a.getBoolean(R.styleable.Speedometer_sv_tickRotation, tickRotation);
         tickPadding = (int) a.getDimension(R.styleable.Speedometer_sv_tickPadding, tickPadding);
         setIndicatorColor(a.getColor(R.styleable.Speedometer_sv_indicatorColor, indicator.getIndicatorColor()));
+        withIndicatorLight = a.getBoolean(R.styleable.Speedometer_sv_withIndicatorLight, withIndicatorLight);
+        indicatorLightColor = a.getColor(R.styleable.Speedometer_sv_indicatorLightColor, indicatorLightColor);
         degree = startDegree;
         a.recycle();
         checkStartAndEndDegree();
@@ -192,7 +205,34 @@ public abstract class Speedometer extends Gauge {
      * @param canvas view canvas to draw.
      */
     protected void drawIndicator(Canvas canvas) {
+        if (withIndicatorLight)
+            drawIndicatorLight(canvas);
         indicator.draw(canvas, degree);
+    }
+
+    private float lastPercentSpeed = 0;
+
+    protected void drawIndicatorLight(Canvas canvas) {
+        final float MAX_LIGHT_SWEEP = 30f;
+        float sweep = Math.abs(getPercentSpeed() - lastPercentSpeed) * MAX_LIGHT_SWEEP;
+        lastPercentSpeed = getPercentSpeed();
+        if (sweep > MAX_LIGHT_SWEEP)
+            sweep = MAX_LIGHT_SWEEP;
+        int[] colors = new int[]{indicatorLightColor, 0x00FFFFFF};
+        Shader lightSweep = new SweepGradient(getSize() *.5f, getSize() *.5f
+                , colors, new float[]{0f, sweep/360f});
+        indicatorLightPaint.setShader(lightSweep);
+        indicatorLightPaint.setStrokeWidth(indicator.getLightBottom()-indicator.getTop());
+
+        float risk = indicator.getTop() + indicatorLightPaint.getStrokeWidth() *.5f;
+        RectF speedometerRect = new RectF(risk, risk, getSize() -risk, getSize() -risk);
+        canvas.save();
+        canvas.rotate(degree, getSize()*.5f, getSize()*.5f);
+        if (isSpeedIncrease())
+            canvas.scale(1, -1, getSize() *.5f, getSize() *.5f);
+        canvas.drawArc(speedometerRect, 0, sweep
+                , false, indicatorLightPaint);
+        canvas.restore();
     }
 
     /**
@@ -206,10 +246,23 @@ public abstract class Speedometer extends Gauge {
                 note.draw(canvas, getWidth() *.5f, getHeight() *.5f);
             else {
                 float y = 0f;
-                if (note.getPosition() == Note.Position.CenterIndicator)
-                    y = getHeightPa() *.25f + getPadding();
-                else if (note.getPosition() == Note.Position.TopIndicator)
-                    y = getPadding();
+                switch (note.getPosition()) {
+                    case TopIndicator:
+                        y = indicator.getTop();
+                        break;
+                    case CenterIndicator:
+                        y = (indicator.getTop() + indicator.getBottom()) *.5f;
+                        break;
+                    case BottomIndicator:
+                        y = indicator.getBottom();
+                        break;
+                    case TopSpeedometer:
+                        y = getPadding();
+                        break;
+                    case QuarterSpeedometer:
+                        y = getHeightPa() *.25f + getPadding();
+                        break;
+                }
                 canvas.save();
                 canvas.rotate(90f + getDegree(), getWidth() *.5f, getHeight() *.5f);
                 canvas.rotate(-(90f + getDegree()), getWidth() *.5f, y);
@@ -230,6 +283,10 @@ public abstract class Speedometer extends Gauge {
         backgroundBitmap = Bitmap.createBitmap(getSize(), getSize(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(backgroundBitmap);
         canvas.drawCircle(getSize() *.5f, getSize() *.5f, getSize() *.5f - getPadding(), circleBackPaint);
+
+        // to fix preview mode issue
+        canvas.clipRect(0, 0, getSize(), getSize());
+
         return canvas;
     }
 
@@ -534,25 +591,30 @@ public abstract class Speedometer extends Gauge {
         if(ticks.size() == 0)
             return;
 
+        textPaint.setTextAlign(Paint.Align.LEFT);
+
         for (int i=0; i < ticks.size(); i++) {
             float d = getDegreeAtSpeed(ticks.get(i)) + 90f;
             c.save();
             c.rotate(d, getSize() *.5f, getSize() *.5f);
-            if (!tickRotation) {
-                c.save();
+            if (!tickRotation)
                 c.rotate(-d, getSize() *.5f
                         , initTickPadding + textPaint.getTextSize() + getPadding() + tickPadding);
-            }
 
-            String tickLabel;
+            CharSequence tick = null;
             if (onPrintTickLabel != null)
-                tickLabel = onPrintTickLabel.getTickLabel(i, ticks.get(i));
-            else
-                tickLabel = String.format(getLocale(), "%d", ticks.get(i));
-            c.drawText( tickLabel, getSize() *.5f
-                    , initTickPadding + textPaint.getTextSize() + getPadding() + tickPadding, textPaint);
-            if (!tickRotation)
-                c.restore();
+                tick = onPrintTickLabel.getTickLabel(i, ticks.get(i));
+
+            // if onPrintTickLabel == null, or getTickLabel() return null.
+            if (tick == null)
+                tick = getTickTextFormat() == FLOAT_FORMAT ? String.format(getLocale(), "%.1f", ticks.get(i))
+                        : String.format(getLocale(), "%d", ticks.get(i).intValue());
+
+            c.translate(0, initTickPadding + getPadding() + tickPadding);
+            new StaticLayout(tick, textPaint, getSize()
+                    , Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false)
+                    .draw(c);
+
             c.restore();
         }
     }
@@ -608,6 +670,37 @@ public abstract class Speedometer extends Gauge {
     }
 
     /**
+     * @return is light effect enable or not.
+     */
+    public boolean isWithIndicatorLight() {
+        return withIndicatorLight;
+    }
+
+    /**
+     * light effect behind the {@link #indicator}.
+     * @param withIndicatorLight true to enable the effect.
+     */
+    public void setWithIndicatorLight(boolean withIndicatorLight) {
+        this.withIndicatorLight = withIndicatorLight;
+    }
+
+    /**
+     * @return indicator light's color.
+     */
+    public int getIndicatorLightColor() {
+        return indicatorLightColor;
+    }
+
+    /**
+     * indicator light's color.
+     * @param indicatorLightColor new color.
+     * @see #setWithIndicatorLight(boolean)
+     */
+    public void setIndicatorLightColor(int indicatorLightColor) {
+        this.indicatorLightColor = indicatorLightColor;
+    }
+
+    /**
      * @return number of tick points of speed value's label.
      */
     public int getTickNumber() {
@@ -623,11 +716,11 @@ public abstract class Speedometer extends Gauge {
     public void setTickNumber(int tickNumber) {
         if (tickNumber < 0)
             throw new IllegalArgumentException("tickNumber mustn't be negative");
-        List<Integer> ticks = new ArrayList<>();
+        List<Float> ticks = new ArrayList<>();
         // tick each degree
         float tickEach = tickNumber != 1 ? (float)(endDegree - startDegree) / (float)(tickNumber-1) : endDegree +1f;
         for (int i=0; i < tickNumber; i++) {
-            int tick = (int)getSpeedAtDegree(tickEach * i + getStartDegree());
+            float tick = getSpeedAtDegree(tickEach * i + getStartDegree());
             ticks.add(tick);
         }
         setTicks(ticks);
@@ -636,7 +729,7 @@ public abstract class Speedometer extends Gauge {
     /**
      * @return ticks values as list, don't edit the list.
      */
-    public List<Integer> getTicks() {
+    public List<Float> getTicks() {
         return ticks;
     }
 
@@ -647,7 +740,7 @@ public abstract class Speedometer extends Gauge {
      * @throws IllegalArgumentException if one of {@link #ticks} out of range [{@link #minSpeed}, {@link #maxSpeed}].
      * @throws IllegalArgumentException If {@link #ticks} are not ascending.
      */
-    public void setTicks(Integer... ticks) {
+    public void setTicks(Float... ticks) {
         setTicks(Arrays.asList(ticks));
     }
 
@@ -658,12 +751,10 @@ public abstract class Speedometer extends Gauge {
      * @throws IllegalArgumentException if one of {@link #ticks} out of range [{@link #minSpeed}, {@link #maxSpeed}].
      * @throws IllegalArgumentException If {@link #ticks} are not ascending.
      */
-    public void setTicks(List<Integer> ticks) {
+    public void setTicks(List<Float> ticks) {
         this.ticks.clear();
         this.ticks.addAll(ticks);
         checkTicks();
-        if (ticks.size() > 0)
-            textPaint.setTextAlign(Paint.Align.CENTER);
         if (!isAttachedToWindow())
             return;
         updateBackgroundBitmap();
@@ -671,13 +762,15 @@ public abstract class Speedometer extends Gauge {
     }
 
     private void checkTicks() {
-        int lastTick = getMinSpeed() -1;
-        for (int tick : ticks) {
-            if (lastTick >= tick)
+        float lastTick = getMinSpeed() - 1f;
+        for (float tick : ticks) {
+            if (lastTick == tick)
+                throw new IllegalArgumentException("you mustn't have double ticks");
+            if (lastTick > tick)
                 throw new IllegalArgumentException("ticks must be ascending order");
-            lastTick = tick;
             if (tick < getMinSpeed() || tick > getMaxSpeed())
                 throw new IllegalArgumentException("ticks must be between [minSpeed, maxSpeed] !!");
+            lastTick = tick;
         }
     }
 

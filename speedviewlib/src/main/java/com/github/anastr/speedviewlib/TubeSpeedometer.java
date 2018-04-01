@@ -3,7 +3,6 @@ package com.github.anastr.speedviewlib;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -42,7 +41,7 @@ public class TubeSpeedometer extends Speedometer {
 
     @Override
     protected void defaultSpeedometerValues() {
-        super.setBackgroundCircleColor(Color.TRANSPARENT);
+        super.setBackgroundCircleColor(0);
         super.setLowSpeedColor(0xff00BCD4);
         super.setMediumSpeedColor(0xffFFC107);
         super.setHighSpeedColor(0xffF44336);

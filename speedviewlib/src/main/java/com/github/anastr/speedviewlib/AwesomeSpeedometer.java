@@ -3,7 +3,6 @@ package com.github.anastr.speedviewlib;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RadialGradient;
@@ -47,8 +46,8 @@ public class AwesomeSpeedometer extends Speedometer {
     protected void defaultGaugeValues() {
 
         super.setTextColor(0xffffc260);
-        super.setSpeedTextColor(Color.WHITE);
-        super.setUnitTextColor(Color.WHITE);
+        super.setSpeedTextColor(0xFFFFFFFF);
+        super.setUnitTextColor(0xFFFFFFFF);
         super.setTextTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         super.setSpeedTextPosition(Position.CENTER);
         super.setUnitUnderSpeedText(true);
@@ -70,7 +69,6 @@ public class AwesomeSpeedometer extends Speedometer {
         markPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextAlign(Paint.Align.CENTER);
         ringPaint.setStyle(Paint.Style.STROKE);
-        textPaint.setTextSize(dpTOpx(10));
         trianglesPaint.setColor(0xff3949ab);
     }
 
@@ -210,7 +208,7 @@ public class AwesomeSpeedometer extends Speedometer {
     @Deprecated
     @Override
     public int getLowSpeedColor() {
-        return Color.TRANSPARENT;
+        return 0;
     }
 
     /**
@@ -229,7 +227,7 @@ public class AwesomeSpeedometer extends Speedometer {
     @Deprecated
     @Override
     public int getMediumSpeedColor() {
-        return Color.TRANSPARENT;
+        return 0;
     }
 
     /**
@@ -248,7 +246,7 @@ public class AwesomeSpeedometer extends Speedometer {
     @Deprecated
     @Override
     public int getHighSpeedColor() {
-        return Color.TRANSPARENT;
+        return 0;
     }
 
     /**

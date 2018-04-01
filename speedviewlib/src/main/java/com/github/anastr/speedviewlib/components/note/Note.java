@@ -241,17 +241,29 @@ public abstract class Note<N extends Note> {
 
     public enum Position {
         /**
-         * the top of speedometer at correct speed.
+         * the top of the indicator at current speed.
          */
         TopIndicator,
         /**
-         * center between [top fo speedometer, center of speedometer] at correct speed.
+         * center between [top fo indicator, bottom of indicator] at current speed.
          */
         CenterIndicator,
         /**
-         * center of speedometer (correct speed ignored).
+         * the bottom of the indicator at current speed.
          */
-        CenterSpeedometer
+        BottomIndicator,
+        /**
+         * the top of the speedometer at current speed.
+         */
+        TopSpeedometer,
+        /**
+         * center of the speedometer (current speed ignored).
+         */
+        CenterSpeedometer,
+        /**
+         * quarter of the speedometer between [top fo speedometer, center of speedometer] at current speed.
+         */
+        QuarterSpeedometer
     }
 
     public enum Align {

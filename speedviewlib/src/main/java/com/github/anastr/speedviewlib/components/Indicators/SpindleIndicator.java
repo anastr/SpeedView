@@ -24,6 +24,11 @@ public class SpindleIndicator extends Indicator<SpindleIndicator> {
     }
 
     @Override
+    public float getTop() {
+        return getViewSize()*.18f + getPadding();
+    }
+
+    @Override
     public void draw(Canvas canvas, float degree) {
         canvas.save();
         canvas.rotate(90f + degree, getCenterX(), getCenterY());

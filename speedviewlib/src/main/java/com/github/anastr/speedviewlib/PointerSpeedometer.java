@@ -30,8 +30,8 @@ public class PointerSpeedometer extends Speedometer {
             markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF speedometerRect = new RectF();
 
-    private int speedometerColor = 0xffeeeeee
-            , pointerColor = Color.WHITE;
+    private int speedometerColor = 0xFFEEEEEE
+            , pointerColor = 0xFFFFFFFF;
 
     private boolean withPointer = true;
 
@@ -51,9 +51,9 @@ public class PointerSpeedometer extends Speedometer {
 
     @Override
     protected void defaultGaugeValues() {
-        super.setTextColor(Color.WHITE);
-        super.setSpeedTextColor(Color.WHITE);
-        super.setUnitTextColor(Color.WHITE);
+        super.setTextColor(0xFFFFFFFF);
+        super.setSpeedTextColor(0xFFFFFFFF);
+        super.setUnitTextColor(0xFFFFFFFF);
         super.setSpeedTextSize(dpTOpx(24f));
         super.setUnitTextSize(dpTOpx(11f));
         super.setSpeedTextTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
@@ -63,7 +63,7 @@ public class PointerSpeedometer extends Speedometer {
     protected void defaultSpeedometerValues() {
         super.setIndicator(new SpindleIndicator(getContext())
                 .setIndicatorWidth(dpTOpx(16f))
-                .setIndicatorColor(Color.WHITE));
+                .setIndicatorColor(0xFFFFFFFF));
         super.setBackgroundCircleColor(0xff48cce9);
         super.setSpeedometerWidth(dpTOpx(10f));
     }
@@ -74,7 +74,7 @@ public class PointerSpeedometer extends Speedometer {
         markPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStrokeCap(Paint.Cap.ROUND);
         markPaint.setStrokeWidth(dpTOpx(2));
-        circlePaint.setColor(Color.WHITE);
+        circlePaint.setColor(0xFFFFFFFF);
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -251,7 +251,7 @@ public class PointerSpeedometer extends Speedometer {
     @Deprecated
     @Override
     public int getLowSpeedColor() {
-        return Color.TRANSPARENT;
+        return 0;
     }
 
     /**
@@ -270,7 +270,7 @@ public class PointerSpeedometer extends Speedometer {
     @Deprecated
     @Override
     public int getMediumSpeedColor() {
-        return Color.TRANSPARENT;
+        return 0;
     }
 
     /**
@@ -289,7 +289,7 @@ public class PointerSpeedometer extends Speedometer {
     @Deprecated
     @Override
     public int getHighSpeedColor() {
-        return Color.TRANSPARENT;
+        return 0;
     }
 
     /**

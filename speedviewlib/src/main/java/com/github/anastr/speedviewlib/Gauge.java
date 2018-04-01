@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -43,9 +42,9 @@ public abstract class Gauge extends View {
     private boolean withTremble = true;
 
     /** the max range in speedometer, {@code default = 100} */
-    private int maxSpeed = 100;
+    private float maxSpeed = 100f;
     /** the min range in speedometer, {@code default = 0} */
-    private int minSpeed = 0;
+    private float minSpeed = 0f;
     /**
      * the last speed which you set by {@link #speedTo(float)}
      * or {@link #speedTo(float, long)} or {@link #speedPercentTo(int)},
@@ -56,6 +55,7 @@ public abstract class Gauge extends View {
     private int currentIntSpeed = 0;
     /** what is speed now in <b>float</b> */
     private float currentSpeed = minSpeed;
+    private boolean isSpeedIncrease = false;
     /** a degree to increases and decreases speed value around {@link #speed} */
     private float trembleDegree = 4f;
     private int trembleDuration = 1000;
@@ -115,6 +115,7 @@ public abstract class Gauge extends View {
     /** draw speed text as <b>float</b>. */
     public static final byte FLOAT_FORMAT = 1;
     private byte speedTextFormat = FLOAT_FORMAT;
+    private byte tickTextFormat = INTEGER_FORMAT;
 
     public Gauge(Context context) {
         this(context, null);
@@ -132,12 +133,12 @@ public abstract class Gauge extends View {
     }
 
     private void init() {
-        textPaint.setColor(Color.BLACK);
+        textPaint.setColor(0xFF000000);
         textPaint.setTextSize(dpTOpx(10f));
         textPaint.setTextAlign(Paint.Align.CENTER);
-        speedTextPaint.setColor(Color.BLACK);
+        speedTextPaint.setColor(0xFF000000);
         speedTextPaint.setTextSize(dpTOpx(18f));
-        unitTextPaint.setColor(Color.BLACK);
+        unitTextPaint.setColor(0xFF000000);
         unitTextPaint.setTextSize(dpTOpx(15f));
 
         if (Build.VERSION.SDK_INT >= 11) {
@@ -172,8 +173,8 @@ public abstract class Gauge extends View {
             return;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.Gauge, 0, 0);
 
-        maxSpeed = a.getInt(R.styleable.Gauge_sv_maxSpeed, maxSpeed);
-        minSpeed = a.getInt(R.styleable.Gauge_sv_minSpeed, minSpeed);
+        maxSpeed = a.getFloat(R.styleable.Gauge_sv_maxSpeed, maxSpeed);
+        minSpeed = a.getFloat(R.styleable.Gauge_sv_minSpeed, minSpeed);
         speed = minSpeed;
         currentSpeed = minSpeed;
         withTremble = a.getBoolean(R.styleable.Gauge_sv_withTremble, withTremble);
@@ -204,9 +205,12 @@ public abstract class Gauge extends View {
         int position = a.getInt(R.styleable.Gauge_sv_speedTextPosition, -1);
         if (position != -1)
             setSpeedTextPosition(Position.values()[position]);
-        byte format = (byte) a.getInt(R.styleable.Gauge_sv_speedTextFormat, -1);
-        if (format != -1)
-            setSpeedTextFormat(format);
+        byte speedFormat = (byte) a.getInt(R.styleable.Gauge_sv_speedTextFormat, -1);
+        if (speedFormat != -1)
+            setSpeedTextFormat(speedFormat);
+        byte tickFormat = (byte) a.getInt(R.styleable.Gauge_sv_tickTextFormat, -1);
+        if (tickFormat != -1)
+            setTickTextFormat(tickFormat);
         a.recycle();
         checkSpeedometerPercent();
         checkAccelerate();
@@ -348,7 +352,7 @@ public abstract class Gauge extends View {
      * taking into consideration {@link #speedometerTextRightToLeft} and {@link #unitUnderSpeedText}.
      */
     private void updateSpeedUnitTextBitmap(String speedText) {
-        speedUnitTextBitmap.eraseColor(Color.TRANSPARENT);
+        speedUnitTextBitmap.eraseColor(0);
 
         if (unitUnderSpeedText) {
             speedUnitTextCanvas.drawText(speedText, speedUnitTextBitmap.getWidth() *.5f
@@ -474,6 +478,7 @@ public abstract class Gauge extends View {
      */
     public void setSpeedAt(float speed) {
         speed = (speed > maxSpeed) ? maxSpeed : (speed < minSpeed) ? minSpeed : speed;
+        isSpeedIncrease = speed > currentSpeed;
         this.speed = speed;
         this.currentSpeed = speed;
         cancelSpeedAnimator();
@@ -556,6 +561,8 @@ public abstract class Gauge extends View {
             return;
         }
 
+        isSpeedIncrease = speed > currentSpeed;
+
         cancelSpeedAnimator();
         speedAnimator = ValueAnimator.ofFloat(currentSpeed, speed);
         speedAnimator.setInterpolator(new DecelerateInterpolator());
@@ -627,8 +634,8 @@ public abstract class Gauge extends View {
             setSpeedAt(speed);
             return;
         }
-        final boolean isSpeedUp = speed > currentSpeed;
-        if (realSpeedAnimator.isRunning() && oldIsSpeedUp == isSpeedUp)
+        isSpeedIncrease = speed > currentSpeed;
+        if (realSpeedAnimator.isRunning() && oldIsSpeedUp == isSpeedIncrease)
             return;
 
         cancelSpeedAnimator();
@@ -640,7 +647,7 @@ public abstract class Gauge extends View {
         realSpeedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                if (isSpeedUp) {
+                if (isSpeedIncrease) {
                     float per = 100.005f-getPercentSpeed();
                     currentSpeed += (accelerate * 10f) * per *.01f;
                     if (currentSpeed > finalSpeed)
@@ -679,6 +686,7 @@ public abstract class Gauge extends View {
         trembleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
+                isSpeedIncrease = (float) trembleAnimator.getAnimatedValue() > currentSpeed;
                 currentSpeed = (float) trembleAnimator.getAnimatedValue();
                 postInvalidate();
             }
@@ -781,6 +789,25 @@ public abstract class Gauge extends View {
     }
 
     /**
+     * @return tick text's format, [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}].
+     */
+    public byte getTickTextFormat() {
+        return tickTextFormat;
+    }
+
+    /**
+     * change tick text's format [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}].
+     * @param tickTextFormat new format.
+     */
+    public void setTickTextFormat(byte tickTextFormat) {
+        this.tickTextFormat = tickTextFormat;
+        if (!attachedToWindow)
+            return;
+        updateBackgroundBitmap();
+        invalidate();
+    }
+
+    /**
      * get current speed as string to <b>Draw</b>.
      * @return current speed to draw.
      */
@@ -794,7 +821,8 @@ public abstract class Gauge extends View {
      * @return Max speed to draw.
      */
     protected String getMaxSpeedText() {
-        return String.format(locale, "%d", maxSpeed);
+        return tickTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", maxSpeed)
+                : String.format(locale, "%d", (int) maxSpeed);
     }
 
     /**
@@ -802,7 +830,8 @@ public abstract class Gauge extends View {
      * @return Min speed to draw.
      */
     protected String getMinSpeedText() {
-        return String.format(locale, "%d", minSpeed);
+        return tickTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", minSpeed)
+                : String.format(locale, "%d", (int) minSpeed);
     }
 
     /**
@@ -851,6 +880,14 @@ public abstract class Gauge extends View {
     }
 
     /**
+     * given a state of the speed change if it's increase or decrease.
+     * @return is speed increase in the last change or not.
+     */
+    public boolean isSpeedIncrease() {
+        return isSpeedIncrease;
+    }
+
+    /**
      * what is speed now in <b>integer</b>.
      * <p>
      *     safe method to handle all speed values in {@link #onSpeedChangeListener}.
@@ -867,9 +904,9 @@ public abstract class Gauge extends View {
      * @return max speed.
      *
      * @see #getMinSpeed()
-     * @see #setMaxSpeed(int)
+     * @see #setMaxSpeed(float)
      */
-    public int getMaxSpeed() {
+    public float getMaxSpeed() {
         return maxSpeed;
     }
 
@@ -882,7 +919,7 @@ public abstract class Gauge extends View {
      *
      * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
      */
-    public void setMaxSpeed(int maxSpeed) {
+    public void setMaxSpeed(float maxSpeed) {
         setMinMaxSpeed(minSpeed, maxSpeed);
     }
 
@@ -891,9 +928,9 @@ public abstract class Gauge extends View {
      * @return min speed.
      *
      * @see #getMaxSpeed()
-     * @see #setMinSpeed(int)
+     * @see #setMinSpeed(float)
      */
-    public int getMinSpeed() {
+    public float getMinSpeed() {
         return minSpeed;
     }
 
@@ -906,7 +943,7 @@ public abstract class Gauge extends View {
      *
      * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
      */
-    public void setMinSpeed(int minSpeed) {
+    public void setMinSpeed(float minSpeed) {
         setMinMaxSpeed(minSpeed, maxSpeed);
     }
 
@@ -920,7 +957,7 @@ public abstract class Gauge extends View {
      *
      * @throws IllegalArgumentException if {@code minSpeed >= maxSpeed}
      */
-    public void setMinMaxSpeed(int minSpeed, int maxSpeed) {
+    public void setMinMaxSpeed(float minSpeed, float maxSpeed) {
         if (minSpeed >= maxSpeed)
             throw new IllegalArgumentException("minSpeed must be smaller than maxSpeed !!");
         cancelSpeedAnimator();
@@ -937,14 +974,14 @@ public abstract class Gauge extends View {
      * @return percent speed, between [0,100].
      */
     public float getPercentSpeed() {
-        return (currentSpeed - minSpeed) * 100f / (float)(maxSpeed - minSpeed);
+        return (currentSpeed - minSpeed) * 100f / (maxSpeed - minSpeed);
     }
 
     /**
      * @return offset speed, between [0,1].
      */
     public float getOffsetSpeed() {
-        return (currentSpeed - minSpeed) / (float)(maxSpeed - minSpeed);
+        return (currentSpeed - minSpeed) / (maxSpeed - minSpeed);
     }
 
     /**

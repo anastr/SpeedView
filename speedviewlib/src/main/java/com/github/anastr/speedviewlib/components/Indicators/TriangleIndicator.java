@@ -15,6 +15,7 @@ import android.graphics.Shader;
 public class TriangleIndicator extends Indicator<TriangleIndicator> {
 
     private Path indicatorPath = new Path();
+    private float indicatorTop = 0;
 
     public TriangleIndicator(Context context) {
         super(context);
@@ -24,6 +25,16 @@ public class TriangleIndicator extends Indicator<TriangleIndicator> {
     @Override
     protected float getDefaultIndicatorWidth() {
         return dpTOpx(25f);
+    }
+
+    @Override
+    public float getTop() {
+        return indicatorTop;
+    }
+
+    @Override
+    public float getBottom() {
+        return indicatorTop + getIndicatorWidth();
     }
 
     @Override
@@ -37,15 +48,15 @@ public class TriangleIndicator extends Indicator<TriangleIndicator> {
     @Override
     protected void updateIndicator() {
         indicatorPath = new Path();
-        float indicatorH = getPadding() + getSpeedometerWidth() + dpTOpx(5);
-        indicatorPath.moveTo(getCenterX(), indicatorH);
-        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), indicatorH + getIndicatorWidth());
-        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), indicatorH + getIndicatorWidth());
+        indicatorTop = getPadding() + getSpeedometerWidth() + dpTOpx(5);
+        indicatorPath.moveTo(getCenterX(), indicatorTop);
+        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), indicatorTop + getIndicatorWidth());
+        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), indicatorTop + getIndicatorWidth());
         indicatorPath.moveTo(0f, 0f);
 
         int endColor = Color.argb(0, Color.red(getIndicatorColor()), Color.green(getIndicatorColor())
                 , Color.blue(getIndicatorColor()));
-        Shader linearGradient = new LinearGradient(getCenterX(), indicatorH, getCenterX(), indicatorH + getIndicatorWidth()
+        Shader linearGradient = new LinearGradient(getCenterX(), indicatorTop, getCenterX(), indicatorTop + getIndicatorWidth()
                 , getIndicatorColor(), endColor, Shader.TileMode.CLAMP);
         indicatorPaint.setShader(linearGradient);
     }

@@ -88,7 +88,8 @@ public class WorkWithNoteActivity extends AppCompatActivity {
 
     public void noteImageNote(View view) {
         ImageNote imageNote = new ImageNote(getApplicationContext()
-                , R.mipmap.ic_launcher );
+                , R.mipmap.ic_launcher )
+                .setPosition(Note.Position.BottomIndicator);
 
         speedView.addNote(imageNote, 1000);
     }
@@ -104,7 +105,8 @@ public class WorkWithNoteActivity extends AppCompatActivity {
         s.setSpan(new ForegroundColorSpan(Color.parseColor("#2196F3")), 6, 11, 0);
 
         TextNote note = new TextNote(getApplicationContext(), s)
-                .setBackgroundColor(Color.parseColor("#EEFF41"));
+                .setBackgroundColor(Color.parseColor("#EEFF41"))
+                .setPosition(Note.Position.QuarterSpeedometer);
         speedView.addNote(note, 1000);
     }
 }
