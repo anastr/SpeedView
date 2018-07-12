@@ -137,11 +137,12 @@ public class TubeSpeedometer extends Speedometer {
             drawDefMinMaxSpeedPosition(c);
     }
 
-    public int getSpeedometerColor() {
+    public int getSpeedometerBackColor() {
         return tubeBacPaint.getColor();
     }
 
-    public void setSpeedometerColor(int speedometerColor) {
+    public void setSpeedometerBackColor(int speedometerBackColor) {
+        tubeBacPaint.setColor(speedometerBackColor);
         updateBackgroundBitmap();
         invalidate();
     }
