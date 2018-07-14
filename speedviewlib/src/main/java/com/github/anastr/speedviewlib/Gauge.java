@@ -708,6 +708,8 @@ public abstract class Gauge extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         attachedToWindow = true;
+        updateBackgroundBitmap();
+        invalidate();
     }
 
     @Override
