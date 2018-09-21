@@ -135,7 +135,7 @@ public class PointerSpeedometer extends Speedometer {
         drawIndicator(canvas);
 
         int c = getCenterCircleColor();
-        circlePaint.setColor(Color.argb(120, Color.red(c), Color.green(c), Color.blue(c)));
+        circlePaint.setColor(Color.argb((int)(Color.alpha(c)*.5f), Color.red(c), Color.green(c), Color.blue(c)));
         canvas.drawCircle(getSize() *.5f, getSize() *.5f, getWidthPa()/14f, circlePaint);
         circlePaint.setColor(c);
         canvas.drawCircle(getSize() *.5f, getSize() *.5f, getWidthPa()/22f, circlePaint);

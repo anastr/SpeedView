@@ -36,7 +36,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "Work With Start and End Degree",
                 "Work With Modes",
                 "Speed Text Position",
-                "Work With Ticks"
+                "Work With Ticks",
+                "SpeedView with Recycler"
         };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -97,6 +98,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 15:
                 intent.setClass(MainActivity.this, TickActivity.class);
+                break;
+            case 16:
+                intent.setClass(MainActivity.this, RecyclerActivity.class);
                 break;
         }
         startActivity(intent);

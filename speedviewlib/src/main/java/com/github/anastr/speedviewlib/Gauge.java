@@ -112,10 +112,12 @@ public abstract class Gauge extends View {
 
     /** draw speed text as <b>integer</b> .*/
     public static final byte INTEGER_FORMAT = 0;
-    /** draw speed text as <b>float</b>. */
+    /** draw speed text as <b>.1 float</b>. */
     public static final byte FLOAT_FORMAT = 1;
-    private byte speedTextFormat = FLOAT_FORMAT;
-    private byte tickTextFormat = INTEGER_FORMAT;
+    /** number of decimal places */
+    private int speedTextFormat = FLOAT_FORMAT;
+    /** number of decimal places */
+    private int tickTextFormat = INTEGER_FORMAT;
 
     public Gauge(Context context) {
         this(context, null);
@@ -205,10 +207,10 @@ public abstract class Gauge extends View {
         int position = a.getInt(R.styleable.Gauge_sv_speedTextPosition, -1);
         if (position != -1)
             setSpeedTextPosition(Position.values()[position]);
-        byte speedFormat = (byte) a.getInt(R.styleable.Gauge_sv_speedTextFormat, -1);
+        int speedFormat = a.getInt(R.styleable.Gauge_sv_speedTextFormat, -1);
         if (speedFormat != -1)
             setSpeedTextFormat(speedFormat);
-        byte tickFormat = (byte) a.getInt(R.styleable.Gauge_sv_tickTextFormat, -1);
+        int tickFormat = a.getInt(R.styleable.Gauge_sv_tickTextFormat, -1);
         if (tickFormat != -1)
             setTickTextFormat(tickFormat);
         a.recycle();
@@ -708,6 +710,8 @@ public abstract class Gauge extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         attachedToWindow = true;
+        updateBackgroundBitmap();
+        invalidate();
     }
 
     @Override
@@ -772,15 +776,16 @@ public abstract class Gauge extends View {
     /**
      * @return speed text's format, [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}].
      */
-    public byte getSpeedTextFormat() {
+    public int getSpeedTextFormat() {
         return speedTextFormat;
     }
 
     /**
-     * change speed text's format [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}].
+     * change speed text's format [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}]
+     * or number of decimal places you want.
      * @param speedTextFormat new format.
      */
-    public void setSpeedTextFormat(byte speedTextFormat) {
+    public void setSpeedTextFormat(int speedTextFormat) {
         this.speedTextFormat = speedTextFormat;
         if (!attachedToWindow)
             return;
@@ -791,15 +796,16 @@ public abstract class Gauge extends View {
     /**
      * @return tick text's format, [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}].
      */
-    public byte getTickTextFormat() {
+    public int getTickTextFormat() {
         return tickTextFormat;
     }
 
     /**
-     * change tick text's format [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}].
+     * change tick text's format [{@link #INTEGER_FORMAT} or {@link #FLOAT_FORMAT}]
+     * or number of decimal places you want.
      * @param tickTextFormat new format.
      */
-    public void setTickTextFormat(byte tickTextFormat) {
+    public void setTickTextFormat(int tickTextFormat) {
         this.tickTextFormat = tickTextFormat;
         if (!attachedToWindow)
             return;
@@ -812,8 +818,7 @@ public abstract class Gauge extends View {
      * @return current speed to draw.
      */
     protected String getSpeedText() {
-        return speedTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", currentSpeed)
-                : String.format(locale, "%d", currentIntSpeed);
+        return String.format(locale, "%."+speedTextFormat+"f", currentSpeed);
     }
 
     /**
@@ -821,8 +826,7 @@ public abstract class Gauge extends View {
      * @return Max speed to draw.
      */
     protected String getMaxSpeedText() {
-        return tickTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", maxSpeed)
-                : String.format(locale, "%d", (int) maxSpeed);
+        return String.format(locale, "%."+tickTextFormat+"f", maxSpeed);
     }
 
     /**
@@ -830,8 +834,7 @@ public abstract class Gauge extends View {
      * @return Min speed to draw.
      */
     protected String getMinSpeedText() {
-        return tickTextFormat == FLOAT_FORMAT ? String.format(locale, "%.1f", minSpeed)
-                : String.format(locale, "%d", (int) minSpeed);
+        return String.format(locale, "%."+tickTextFormat+"f", minSpeed);
     }
 
     /**

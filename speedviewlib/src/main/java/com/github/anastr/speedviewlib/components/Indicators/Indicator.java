@@ -35,19 +35,19 @@ public abstract class Indicator<I extends Indicator> {
     public abstract void draw(Canvas canvas, float degree);
     /** called when size change or color, width */
     protected abstract void updateIndicator();
-    /** if indicator have effects like BlurMaskFilter */
+    /** @param withEffects if indicator have effects like BlurMaskFilter */
     protected abstract void setWithEffects(boolean withEffects);
     protected abstract float getDefaultIndicatorWidth();
 
-    /** Top Y position of indicator */
+    /**  @return Y position of indicator */
     public float getTop(){
         return getPadding();
     }
-    /** Bottom Y position of indicator */
+    /** @return Bottom Y position of indicator */
     public float getBottom(){
         return getCenterY();
     }
-    /** down point after center */
+    /** @return down point after center */
     public float getLightBottom() {
         return getCenterY() > getBottom() ? getBottom() : getCenterY();
     }

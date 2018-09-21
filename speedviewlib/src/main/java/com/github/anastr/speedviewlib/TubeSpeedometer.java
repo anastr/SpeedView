@@ -92,20 +92,15 @@ public class TubeSpeedometer extends Speedometer {
         tubeBacPaint.setMaskFilter(embossMaskFilterBac);
     }
 
-    @Override
-    protected void onSectionChangeEvent(byte oldSection, byte newSection) {
-        super.onSectionChangeEvent(oldSection, newSection);
-        if (newSection == LOW_SECTION)
+    private void initDraw() {
+        tubePaint.setStrokeWidth(getSpeedometerWidth());
+        byte section = getSection();
+        if (section == LOW_SECTION)
             tubePaint.setColor(getLowSpeedColor());
-        else if (newSection == MEDIUM_SECTION)
+        else if (section == MEDIUM_SECTION)
             tubePaint.setColor(getMediumSpeedColor());
         else
             tubePaint.setColor(getHighSpeedColor());
-    }
-
-    private void initDraw() {
-        tubePaint.setStrokeWidth(getSpeedometerWidth());
-        tubeBacPaint.setStrokeWidth(getSpeedometerWidth());
     }
 
     @Override
@@ -124,7 +119,7 @@ public class TubeSpeedometer extends Speedometer {
     @Override
     protected void updateBackgroundBitmap() {
         Canvas c = createBackgroundBitmapCanvas();
-        initDraw();
+        tubeBacPaint.setStrokeWidth(getSpeedometerWidth());
 
         float risk = getSpeedometerWidth() *.5f + getPadding();
         speedometerRect.set(risk, risk, getSize() -risk, getSize() -risk);
@@ -137,13 +132,20 @@ public class TubeSpeedometer extends Speedometer {
             drawDefMinMaxSpeedPosition(c);
     }
 
-    public int getSpeedometerColor() {
+    public int getSpeedometerBackColor() {
         return tubeBacPaint.getColor();
     }
 
-    public void setSpeedometerColor(int speedometerColor) {
+    public void setSpeedometerBackColor(int speedometerBackColor) {
+        tubeBacPaint.setColor(speedometerBackColor);
         updateBackgroundBitmap();
         invalidate();
+    }
+
+    @Override
+    public void setLowSpeedColor(int lowSpeedColor) {
+        super.setLowSpeedColor(lowSpeedColor);
+
     }
 
     public boolean isWithEffects3D() {
