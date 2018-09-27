@@ -25,9 +25,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "2. Deluxe Speed View",
                 "3. Awesome Speedometer View",
                 "4. Ray Speedometer View",
-                "5. Pointer Speedometer",
-                "6. Tube Speedometer",
-                "7. Image Speedometer",
+                "5. Ray Speedometer Improvement View",
+                "6. Pointer Speedometer",
+                "7. Tube Speedometer",
+                "8. Image Speedometer",
                 "1.. ProgressiveGauge",
                 "2.. ImageLinearGauge",
                 "Work With Indicator",
@@ -64,42 +65,45 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 intent.setClass(MainActivity.this, RayActivity.class);
                 break;
             case 4:
-                intent.setClass(MainActivity.this, PointerActivity.class);
+                intent.setClass(MainActivity.this, RayImprovementActivity.class);
                 break;
             case 5:
-                intent.setClass(MainActivity.this, TubeSpeedometerActivity.class);
+                intent.setClass(MainActivity.this, PointerActivity.class);
                 break;
             case 6:
-                intent.setClass(MainActivity.this, ImageSpeedometerActivity.class);
+                intent.setClass(MainActivity.this, TubeSpeedometerActivity.class);
                 break;
             case 7:
-                intent.setClass(MainActivity.this, ProgressiveGaugeActivity.class);
+                intent.setClass(MainActivity.this, ImageSpeedometerActivity.class);
                 break;
             case 8:
-                intent.setClass(MainActivity.this, ImageLinearGaugeActivity.class);
+                intent.setClass(MainActivity.this, ProgressiveGaugeActivity.class);
                 break;
             case 9:
-                intent.setClass(MainActivity.this, WorkWithIndicatorActivity.class);
+                intent.setClass(MainActivity.this, ImageLinearGaugeActivity.class);
                 break;
             case 10:
-                intent.setClass(MainActivity.this, WorkWithNoteActivity.class);
+                intent.setClass(MainActivity.this, WorkWithIndicatorActivity.class);
                 break;
             case 11:
-                intent.setClass(MainActivity.this, CreateProgrammatically.class);
+                intent.setClass(MainActivity.this, WorkWithNoteActivity.class);
                 break;
             case 12:
-                intent.setClass(MainActivity.this, StartEndDegreeActivity.class);
+                intent.setClass(MainActivity.this, CreateProgrammatically.class);
                 break;
             case 13:
-                intent.setClass(MainActivity.this, WorkWithModesActivity.class);
+                intent.setClass(MainActivity.this, StartEndDegreeActivity.class);
                 break;
             case 14:
-                intent.setClass(MainActivity.this, SpeedTextPositionActivity.class);
+                intent.setClass(MainActivity.this, WorkWithModesActivity.class);
                 break;
             case 15:
-                intent.setClass(MainActivity.this, TickActivity.class);
+                intent.setClass(MainActivity.this, SpeedTextPositionActivity.class);
                 break;
             case 16:
+                intent.setClass(MainActivity.this, TickActivity.class);
+                break;
+            case 17:
                 intent.setClass(MainActivity.this, RecyclerActivity.class);
                 break;
         }

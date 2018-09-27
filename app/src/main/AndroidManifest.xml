@@ -20,6 +20,7 @@
         <activity android:name=".SpeedViewActivity" />
         <activity android:name=".AwesomeSpeedometerActivity" />
         <activity android:name=".RayActivity" />
+        <activity android:name=".RayImprovementActivity" />
         <activity android:name=".PointerActivity" />
         <activity android:name=".WorkWithNoteActivity" />
         <activity android:name=".CreateProgrammatically" />
