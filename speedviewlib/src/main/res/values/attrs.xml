@@ -131,6 +131,9 @@
     <declare-styleable name="RaySpeedometer" parent="Speedometer">
         <attr name="sv_speedBackgroundColor" />
         <attr name="sv_withEffects" />
+        <attr name="sv_spectrumEffects" />
+        <attr name="sv_maxValueEffects" />
+        <attr name="sv_maxValueMarkColor" format="color"/>
         <attr name="sv_rayColor" format="color"/>
         <attr name="sv_degreeBetweenMark" format="integer"/>
         <attr name="sv_markWidth" format="dimension"/>
