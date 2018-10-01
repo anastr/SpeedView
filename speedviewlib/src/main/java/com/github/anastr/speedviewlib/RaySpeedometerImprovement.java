@@ -9,7 +9,6 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.github.anastr.speedviewlib.components.Indicators.Indicator;
 
@@ -38,16 +37,17 @@ public class RaySpeedometerImprovement extends Speedometer {
      * It shows the spectrum when the speed changes.
      * */
     private boolean spectrumEffects = false;
-    private float spectrumMark = 0;
+    private float spectrumMark = getMinSpeed();
     private double ticksValue = 0;
-    private int spectrumInterval = 60;
+    private int spectrumInterval = 60; // 30
     private static final int INTERVAL_OFFSET = 30;
 
     /**
      * Displays the max value of the speed.
      * */
     private boolean maxValueEffects = false;
-    private int maxValueMark = 0;
+    private double maxValueMark = 0;
+    private double ticks = 0;
     private int maxValueMarkColor = 0xFFFF0000;
 
     private int degreeBetweenMark = 5;
@@ -120,7 +120,6 @@ public class RaySpeedometerImprovement extends Speedometer {
         speedBackgroundPaint.setColor(a.getColor(R.styleable.RaySpeedometer_sv_speedBackgroundColor
                 , speedBackgroundPaint.getColor()));
         withEffects = a.getBoolean(R.styleable.RaySpeedometer_sv_withEffects, withEffects);
-        //TODO: spectrum, maxValue Effect.
         spectrumEffects = a.getBoolean(R.styleable.RaySpeedometer_sv_spectrumEffects, spectrumEffects);
         maxValueEffects = a.getBoolean(R.styleable.RaySpeedometer_sv_maxValueEffects, maxValueEffects);
         maxValueMarkColor = a.getColor(R.styleable.RaySpeedometer_sv_maxValueMarkColor, maxValueMarkColor);
@@ -162,42 +161,42 @@ public class RaySpeedometerImprovement extends Speedometer {
             spectrumMark = currentSpeed;
         }
 
-        if (maxValueEffects && maxValueMark < currentSpeed) {
-            maxValueMark = (int) currentSpeed;
+        double maxValue = (ticks - .5f) * ticksValue;
+        if (maxValueEffects && currentSpeed > maxValueMark && maxValueMark <= maxValue) {
+            maxValueMark = currentSpeed;
         }
 
         canvas.save();
         canvas.rotate(getStartDegree()+90f, getSize() *.5f, getSize() *.5f);
         for (int i = getStartDegree(); i < getEndDegree(); i+=degreeBetweenMark) {
             if (getDegree() <= i) {
-                float currentTicks = (float)(i - getStartDegree()) / degreeBetweenMark;
-                if (currentTicks == 0) {
-                    currentTicks = 1;
-                }
+                int currentTicks = (i - getStartDegree()) / degreeBetweenMark;
                 double currentMark = currentTicks * ticksValue;
-
-                Log.i("onDraw", "currentMark:" + currentMark +
-                        " maxValueMark:" + maxValueMark +
-                        " currentTicks:" + currentTicks +
-                        " ticksValue:" + ticksValue +
-                        " currentMark - maxValueMark:" + (currentMark - maxValueMark));
-
-                if (maxValueEffects &&
-                        maxValueMark >= currentMark &&
-                        (currentMark - maxValueMark) >= (-ticksValue)) {
-
-                    activeMarkPaint.setColor(maxValueMarkColor);
-                    canvas.drawPath(markPath, activeMarkPaint);
-                } else if (spectrumEffects &&
-                        spectrumMark >= currentMark &&
-                        (currentMark - spectrumMark) > (-ticksValue)) {
-
-                    activeMarkPaint.setColor(getLowSpeedColor());
-                    canvas.drawPath(markPath, activeMarkPaint);
+                if (currentMark == 0) {
+                    if (maxValueEffects &&
+                            ticksValue > maxValueMark &&
+                            maxValueMark > (ticksValue * 2)) {
+                        activeMarkPaint.setColor(maxValueMarkColor);
+                        canvas.drawPath(markPath, activeMarkPaint);
+                    } else {
+                        markPaint.setColor(getMarkColor());
+                        canvas.drawPath(markPath, markPaint);
+                    }
                 } else {
-
-                    markPaint.setColor(getMarkColor());
-                    canvas.drawPath(markPath, markPaint);
+                    if (maxValueEffects &&
+                            maxValueMark >= currentMark &&
+                            (currentMark - maxValueMark) >= (-ticksValue)) {
+                        activeMarkPaint.setColor(maxValueMarkColor);
+                        canvas.drawPath(markPath, activeMarkPaint);
+                    } else if (spectrumEffects &&
+                            spectrumMark >= currentMark &&
+                            (currentMark - spectrumMark) > (-ticksValue)) {
+                        activeMarkPaint.setColor(getLowSpeedColor());
+                        canvas.drawPath(markPath, activeMarkPaint);
+                    } else {
+                        markPaint.setColor(getMarkColor());
+                        canvas.drawPath(markPath, markPaint);
+                    }
                 }
                 canvas.rotate(degreeBetweenMark, getSize() *.5f, getSize() *.5f);
                 continue;
@@ -263,14 +262,10 @@ public class RaySpeedometerImprovement extends Speedometer {
     }
 
     private void updateMarkPath() {
-        double ticks = (double) (getEndDegree() - getStartDegree()) / degreeBetweenMark;
-        ticksValue = getMaxSpeed() / ticks; // 틱당 값
-        spectrumInterval = (int)(degreeBetweenMark / 2f * INTERVAL_OFFSET);
-
-        Log.i("updateMarkPath",
-                "degreeBetweenMark:" + degreeBetweenMark +
-                " ticks:" + ticks +
-                " ticksValue:" + ticksValue);
+        maxValueMark = 0;
+        ticks = (double) (getEndDegree() - getStartDegree()) / degreeBetweenMark;
+        ticksValue = getMaxSpeed() / ticks;
+        spectrumInterval = (int)(degreeBetweenMark / 2f * INTERVAL_OFFSET); // 15 ~ 300 value.
 
         float markHeight = getSpeedometerWidth() * 1.2f + getPadding();
 
