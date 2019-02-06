@@ -710,8 +710,10 @@ public abstract class Gauge extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         attachedToWindow = true;
-        updateBackgroundBitmap();
-        invalidate();
+        if (!isInEditMode()) {
+            updateBackgroundBitmap();
+            invalidate();
+        }
     }
 
     @Override
