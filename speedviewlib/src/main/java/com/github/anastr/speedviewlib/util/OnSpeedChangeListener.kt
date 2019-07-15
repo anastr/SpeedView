@@ -1,17 +1,15 @@
-package com.github.anastr.speedviewlib.util;
+package com.github.anastr.speedviewlib.util
 
-import com.github.anastr.speedviewlib.Gauge;
+import com.github.anastr.speedviewlib.Gauge
 
 /**
- * <p>
  * A callback that notifies clients when the speed has been
  * changed (just when speed change in integer).
- * </p>
  *
- * this Library build By <b>Anas Altair</b>
- * see it on <a href="https://github.com/anastr/SpeedView">GitHub</a>
+ * this Library build By **Anas Altair**
+ * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-public interface OnSpeedChangeListener {
+interface OnSpeedChangeListener {
     /**
      * Notification that the speed has changed.
      *
@@ -19,5 +17,5 @@ public interface OnSpeedChangeListener {
      * @param isSpeedUp if speed increase.
      * @param isByTremble true if speed has changed by Tremble.
      */
-    void onSpeedChange(Gauge gauge, boolean isSpeedUp, boolean isByTremble);
+    fun onSpeedChange(gauge: Gauge, isSpeedUp: Boolean, isByTremble: Boolean)
 }

@@ -58,9 +58,6 @@ public class SpeedTextPositionActivity extends AppCompatActivity implements Adap
     }
 
     public void unitUnderSpeedTextClick(View view) {
-        if (speedometer.isUnitUnderSpeedText())
-            speedometer.setUnitUnderSpeedText(false);
-        else
-            speedometer.setUnitUnderSpeedText(true);
+        speedometer.setUnitUnderSpeedText(!speedometer.getUnitUnderSpeedText());
     }
 }
