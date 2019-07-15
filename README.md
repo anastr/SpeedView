@@ -10,6 +10,8 @@ Library Size just ~ 51 KB.
 [![API](https://img.shields.io/badge/API-+8-red.svg?style=flat)](#)
 [![Bintray](https://img.shields.io/bintray/v/anastr/maven/SpeedView.svg)](https://bintray.com/anastr/maven/SpeedView)
 
+> this library has rewritten with Kotlin in version 1.4.0 manually, which means it may have some issues.
+> if you have any problem please open an issue, and you can use old version 1.3.1 written in java.
 
 **Speedometers...**<br/>
 <img src="images/SpeedView.gif" width="32%" />
@@ -22,12 +24,14 @@ Library Size just ~ 51 KB.
 
 # Download
 
-**add this line to** `build.gradle`
+this library required **kotlin version 1.3.31** _you still can use it in java projects_.
+
+**add this line to** `build.gradle`:
 
 ```gradle
 
 dependencies {
-	implementation 'com.github.anastr:speedviewlib:1.3.1'
+	implementation 'com.github.anastr:speedviewlib:1.4.0'
 }
 
 ```
@@ -38,7 +42,7 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.3.1</version>
+  <version>1.4.0</version>
   <type>pom</type>
 </dependency>
 ```
