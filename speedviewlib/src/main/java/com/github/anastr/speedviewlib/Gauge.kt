@@ -29,8 +29,22 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     private val unitTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     /** the text after speedText  */
     private var unit = "Km/h"
-    /** automatically increase and decrease speed value around the [speed]  */
-    private var withTremble = true
+
+    /**
+     * automatically increase and decrease speed value around the [speed]
+     *
+     * **if true** : the speed value automatically will be increases and decreases
+     * by [trembleDegree] around last speed you set,
+     * used to add some reality to speedometer.<br></br>
+     * **if false** : nothing will done.
+     *
+     * @see .setTrembleData
+     */
+    var withTremble = true
+        set(withTremble) {
+            field = withTremble
+            tremble()
+        }
 
     /** the max range in speedometer, `default = 100`  */
     private var maxSpeed = 100f
@@ -79,14 +93,14 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     private var trembleDegree = 4f
     private var trembleDuration = 1000
 
-    private var speedAnimator: ValueAnimator? = null
-    private var trembleAnimator: ValueAnimator? = null
-    private var realSpeedAnimator: ValueAnimator? = null
+    private lateinit var speedAnimator: ValueAnimator
+    private lateinit var trembleAnimator: ValueAnimator
+    private lateinit var realSpeedAnimator: ValueAnimator
     private var canceled = false
     private var onSpeedChangeListener: OnSpeedChangeListener? = null
     private var onSectionChangeListener: OnSectionChangeListener? = null
     /** this animatorListener to call [.tremble] method when animator done  */
-    private var animatorListener: Animator.AnimatorListener? = null
+    private lateinit var animatorListener: Animator.AnimatorListener
 
     /** to contain all drawing that doesn't change  */
     protected var backgroundBitmap: Bitmap? = null
@@ -445,21 +459,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     protected fun getMinSpeedText() = "%.${tickTextFormat}f".format(locale, minSpeed)
 
     /**
-     * **if true** : the speed value automatically will be increases and decreases
-     * by [trembleDegree] around last speed you set,
-     * used to add some reality to speedometer.<br></br>
-     * **if false** : nothing will done.
-     *
-     * @see .setTrembleData
-     */
-    var isWithTremble: Boolean
-        get() = withTremble
-        set(withTremble) {
-            this.withTremble = withTremble
-            tremble()
-        }
-
-    /**
      * get current speed as **percent**.
      * @return percent speed, between [0,100].
      */
@@ -651,7 +650,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         // check onSpeedChangeEvent.
         val newSpeed = currentSpeed.toInt()
         if (newSpeed != currentIntSpeed && onSpeedChangeListener != null) {
-            val byTremble = Build.VERSION.SDK_INT >= 11 && trembleAnimator!!.isRunning
+            val byTremble = Build.VERSION.SDK_INT >= 11 && trembleAnimator.isRunning
             val isSpeedUp = newSpeed > currentIntSpeed
             val update = if (isSpeedUp) 1 else -1
             // this loop to pass on all speed values,
@@ -725,8 +724,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * @param newSection where speed value move to.
      */
     protected fun onSectionChangeEvent(oldSection: Byte, newSection: Byte) {
-        if (onSectionChangeListener != null)
-            onSectionChangeListener!!.onSectionChangeListener(oldSection, newSection)
+        onSectionChangeListener?.onSectionChangeListener(oldSection, newSection)
     }
 
     /**
@@ -737,7 +735,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     fun stop() {
         if (Build.VERSION.SDK_INT < 11)
             return
-        if (!speedAnimator!!.isRunning && !realSpeedAnimator!!.isRunning)
+        if (!speedAnimator.isRunning && !realSpeedAnimator.isRunning)
             return
         speed = currentSpeed
         cancelSpeedAnimator()
@@ -757,7 +755,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         if (Build.VERSION.SDK_INT < 11)
             return
         canceled = true
-        trembleAnimator!!.cancel()
+        trembleAnimator.cancel()
         canceled = false
     }
 
@@ -766,8 +764,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         if (Build.VERSION.SDK_INT < 11)
             return
         canceled = true
-        speedAnimator!!.cancel()
-        realSpeedAnimator!!.cancel()
+        speedAnimator.cancel()
+        realSpeedAnimator.cancel()
         canceled = false
     }
 
@@ -854,14 +852,14 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
 
         cancelSpeedAnimator()
         speedAnimator = ValueAnimator.ofFloat(currentSpeed, speed_)
-        speedAnimator!!.interpolator = DecelerateInterpolator()
-        speedAnimator!!.duration = moveDuration
-        speedAnimator!!.addUpdateListener {
-            currentSpeed = speedAnimator!!.animatedValue as Float
+        speedAnimator.interpolator = DecelerateInterpolator()
+        speedAnimator.duration = moveDuration
+        speedAnimator.addUpdateListener {
+            currentSpeed = speedAnimator.animatedValue as Float
             postInvalidate()
         }
-        speedAnimator!!.addListener(animatorListener)
-        speedAnimator!!.start()
+        speedAnimator.addListener(animatorListener)
+        speedAnimator.start()
     }
 
     /**
@@ -922,16 +920,16 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             return
         }
         isSpeedIncrease = speed_ > currentSpeed
-        if (realSpeedAnimator!!.isRunning && oldIsSpeedUp == isSpeedIncrease)
+        if (realSpeedAnimator.isRunning && oldIsSpeedUp == isSpeedIncrease)
             return
 
         cancelSpeedAnimator()
         realSpeedAnimator = ValueAnimator.ofInt(currentSpeed.toInt(), speed_.toInt())
-        realSpeedAnimator!!.repeatCount = ValueAnimator.INFINITE
-        realSpeedAnimator!!.interpolator = LinearInterpolator()
-        realSpeedAnimator!!.duration = Math.abs(((speed_ - currentSpeed) * 10).toLong())
+        realSpeedAnimator.repeatCount = ValueAnimator.INFINITE
+        realSpeedAnimator.interpolator = LinearInterpolator()
+        realSpeedAnimator.duration = Math.abs(((speed_ - currentSpeed) * 10).toLong())
         val finalSpeed = speed_
-        realSpeedAnimator!!.addUpdateListener {
+        realSpeedAnimator.addUpdateListener {
             if (isSpeedIncrease) {
                 val per = 100.005f - getPercentSpeed()
                 currentSpeed += accelerate * 10f * per * .01f
@@ -947,8 +945,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             if (finalSpeed == currentSpeed)
                 stop()
         }
-        realSpeedAnimator!!.addListener(animatorListener)
-        realSpeedAnimator!!.start()
+        realSpeedAnimator.addListener(animatorListener)
+        realSpeedAnimator.start()
     }
 
     /**
@@ -957,7 +955,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected fun tremble() {
         cancelTremble()
-        if (!isWithTremble || Build.VERSION.SDK_INT < 11)
+        if (!withTremble || Build.VERSION.SDK_INT < 11)
             return
         val random = Random()
         var mad = trembleDegree * random.nextFloat() * (if (random.nextBoolean()) -1 else 1).toFloat()
@@ -965,15 +963,15 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             maxSpeed - speed
         else if (speed + mad < minSpeed) minSpeed - speed else mad
         trembleAnimator = ValueAnimator.ofFloat(currentSpeed, speed + mad)
-        trembleAnimator!!.interpolator = DecelerateInterpolator()
-        trembleAnimator!!.duration = trembleDuration.toLong()
-        trembleAnimator!!.addUpdateListener {
-            isSpeedIncrease = trembleAnimator!!.animatedValue as Float > currentSpeed
-            currentSpeed = trembleAnimator!!.animatedValue as Float
+        trembleAnimator.interpolator = DecelerateInterpolator()
+        trembleAnimator.duration = trembleDuration.toLong()
+        trembleAnimator.addUpdateListener {
+            isSpeedIncrease = trembleAnimator.animatedValue as Float > currentSpeed
+            currentSpeed = trembleAnimator.animatedValue as Float
             postInvalidate()
         }
-        trembleAnimator!!.addListener(animatorListener)
-        trembleAnimator!!.start()
+        trembleAnimator.addListener(animatorListener)
+        trembleAnimator.start()
     }
 
     /**
