@@ -89,9 +89,24 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     var isSpeedIncrease = false
         private set
 
-    /** a degree to increases and decreases speed value around [speed]  */
-    private var trembleDegree = 4f
-    private var trembleDuration = 1000
+    /**
+     * a degree to increases and decreases speed value around [speed]
+     * default : 4 speed value.
+     * @throws IllegalArgumentException If trembleDegree is Negative.
+     */
+    var trembleDegree = 4f
+        set(trembleDegree) {
+            setTrembleData(trembleDegree, trembleDuration)
+        }
+    /**
+     * tremble Animation duration in millisecond.
+     * default : 1000 millisecond.
+     * @throws IllegalArgumentException If trembleDuration is Negative.
+     */
+    var trembleDuration = 1000
+        set(trembleDuration) {
+            setTrembleData(trembleDegree, trembleDuration)
+        }
 
     private lateinit var speedAnimator: ValueAnimator
     private lateinit var trembleAnimator: ValueAnimator
@@ -127,7 +142,17 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     private var mediumSpeedPercent = 87
     private var section = LOW_SECTION
 
-    private var speedometerTextRightToLeft = false
+    /**
+     * to support Right To Left Text.
+     */
+    var speedometerTextRightToLeft = false
+        set(speedometerTextRightToLeft) {
+            field = speedometerTextRightToLeft
+            if (!attachedToWindow)
+                return
+            updateBackgroundBitmap()
+            invalidate()
+        }
 
     private var attachedToWindow = false
 
@@ -164,8 +189,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * @throws IllegalArgumentException if `accelerate` out of range.
      */
     var accelerate = .1f
-        /**
-         */
         set(accelerate) {
             field = accelerate
             checkAccelerate()
@@ -189,6 +212,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     /** space between unitText and speedText  */
     private var unitSpeedInterval = dpTOpx(1f)
     private var speedTextPadding = dpTOpx(20f)
+
     /**
      * to make Unit Text under Speed Text.
      *
@@ -248,7 +272,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     init {
         init()
         initAttributeSet(context, attrs)
-//        initAttributeValue()
     }
 
     private fun init() {
@@ -329,16 +352,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         checkDecelerate()
         checkTrembleData()
     }
-
-//    private fun initAttributeValue() {
-//        if (unitUnderSpeedText) {
-//            speedTextPaint.textAlign = Paint.Align.CENTER
-//            unitTextPaint.textAlign = Paint.Align.CENTER
-//        } else {
-//            speedTextPaint.textAlign = Paint.Align.LEFT
-//            unitTextPaint.textAlign = Paint.Align.LEFT
-//        }
-//    }
 
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
         super.onSizeChanged(w, h, oldW, oldH)
@@ -574,19 +587,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     fun getMediumSpeedOffset(): Float = mediumSpeedPercent * .01f
 
-    /**
-     * to support Right To Left Text.
-     */
-    var isSpeedometerTextRightToLeft: Boolean = false
-        get() = speedometerTextRightToLeft
-        set(speedometerTextRightToLeft) {
-            field = speedometerTextRightToLeft
-            if (!attachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
-        }
-
     val viewSize: Int
         get() = Math.max(width, height)
 
@@ -694,7 +694,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         } else {
             val speedX: Float
             val unitX: Float
-            if (isSpeedometerTextRightToLeft) {
+            if (speedometerTextRightToLeft) {
                 unitX = speedUnitTextBitmap.width * .5f - getSpeedUnitTextWidth() * .5f
                 speedX = unitX + unitTextPaint.measureText(unit) + unitSpeedInterval
             } else {
@@ -774,11 +774,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * @param speed current speed to move.
      */
     fun setSpeedAt(speed: Float) {
-        var speed_ = speed
-        speed_ = if (speed_ > maxSpeed) maxSpeed else if (speed_ < minSpeed) minSpeed else speed_
-        isSpeedIncrease = speed_ > currentSpeed
-        this.speed = speed_
-        this.currentSpeed = speed_
+        var newSpeed = speed
+        newSpeed = if (newSpeed > maxSpeed) maxSpeed else if (newSpeed < minSpeed) minSpeed else newSpeed
+        isSpeedIncrease = newSpeed > currentSpeed
+        this.speed = newSpeed
+        this.currentSpeed = newSpeed
         cancelSpeedAnimator()
         invalidate()
         tremble()
@@ -837,21 +837,21 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     fun speedTo(speed: Float, moveDuration: Long) {
-        var speed_ = speed
-        speed_ = if (speed_ > maxSpeed) maxSpeed else if (speed_ < minSpeed) minSpeed else speed_
-        if (speed_ == this.speed)
+        var newSpeed = speed
+        newSpeed = if (newSpeed > maxSpeed) maxSpeed else if (newSpeed < minSpeed) minSpeed else newSpeed
+        if (newSpeed == this.speed)
             return
-        this.speed = speed_
+        this.speed = newSpeed
 
         if (Build.VERSION.SDK_INT < 11) {
-            setSpeedAt(speed_)
+            setSpeedAt(newSpeed)
             return
         }
 
-        isSpeedIncrease = speed_ > currentSpeed
+        isSpeedIncrease = newSpeed > currentSpeed
 
         cancelSpeedAnimator()
-        speedAnimator = ValueAnimator.ofFloat(currentSpeed, speed_)
+        speedAnimator = ValueAnimator.ofFloat(currentSpeed, newSpeed)
         speedAnimator.interpolator = DecelerateInterpolator()
         speedAnimator.duration = moveDuration
         speedAnimator.addUpdateListener {
@@ -908,27 +908,27 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     fun realSpeedTo(speed: Float) {
-        var speed_ = speed
+        var newSpeed = speed
         val oldIsSpeedUp = this.speed > currentSpeed
-        speed_ = if (speed_ > maxSpeed) maxSpeed else if (speed_ < minSpeed) minSpeed else speed_
-        if (speed_ == this.speed)
+        newSpeed = if (newSpeed > maxSpeed) maxSpeed else if (newSpeed < minSpeed) minSpeed else newSpeed
+        if (newSpeed == this.speed)
             return
-        this.speed = speed_
+        this.speed = newSpeed
 
         if (Build.VERSION.SDK_INT < 11) {
-            setSpeedAt(speed_)
+            setSpeedAt(newSpeed)
             return
         }
-        isSpeedIncrease = speed_ > currentSpeed
+        isSpeedIncrease = newSpeed > currentSpeed
         if (realSpeedAnimator.isRunning && oldIsSpeedUp == isSpeedIncrease)
             return
 
         cancelSpeedAnimator()
-        realSpeedAnimator = ValueAnimator.ofInt(currentSpeed.toInt(), speed_.toInt())
+        realSpeedAnimator = ValueAnimator.ofInt(currentSpeed.toInt(), newSpeed.toInt())
         realSpeedAnimator.repeatCount = ValueAnimator.INFINITE
         realSpeedAnimator.interpolator = LinearInterpolator()
-        realSpeedAnimator.duration = Math.abs(((speed_ - currentSpeed) * 10).toLong())
-        val finalSpeed = speed_
+        realSpeedAnimator.duration = Math.abs(((newSpeed - currentSpeed) * 10).toLong())
+        val finalSpeed = newSpeed
         realSpeedAnimator.addUpdateListener {
             if (isSpeedIncrease) {
                 val per = 100.005f - getPercentSpeed()
@@ -959,9 +959,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             return
         val random = Random()
         var mad = trembleDegree * random.nextFloat() * (if (random.nextBoolean()) -1 else 1).toFloat()
-        mad = if (speed + mad > maxSpeed)
-            maxSpeed - speed
-        else if (speed + mad < minSpeed) minSpeed - speed else mad
+        mad = when {
+            speed + mad > maxSpeed -> maxSpeed - speed
+            speed + mad < minSpeed -> minSpeed - speed
+            else -> mad
+        }
         trembleAnimator = ValueAnimator.ofFloat(currentSpeed, speed + mad)
         trembleAnimator.interpolator = DecelerateInterpolator()
         trembleAnimator.duration = trembleDuration.toLong()
@@ -980,7 +982,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     private fun getSpeedValue(percentSpeed: Float): Float {
         var percentSpeed_ = percentSpeed
-        percentSpeed_ = if (percentSpeed_ > 100) 100f else if (percentSpeed_ < 0) 0f else percentSpeed_
+        percentSpeed_ = when {
+            percentSpeed_ > 100 -> 100f
+            percentSpeed_ < 0 -> 0f
+            else -> percentSpeed_
+        }
         return percentSpeed_ * (maxSpeed - minSpeed) * .01f + minSpeed
     }
 
@@ -1016,32 +1022,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         setSpeedAt(speed)
     }
 
-
-    /**
-     * default : 4 speed value.
-     * @param trembleDegree a speed value to increases and decreases current speed around [speed].
-     * @throws IllegalArgumentException If trembleDegree is Negative.
-     */
-    fun setTrembleDegree(trembleDegree: Float) {
-        setTrembleData(trembleDegree, trembleDuration)
-    }
-
-    /**
-     * default : 1000 millisecond.
-     * @param trembleDuration tremble Animation duration in millisecond.
-     * @throws IllegalArgumentException If trembleDuration is Negative.
-     */
-    fun setTrembleDuration(trembleDuration: Int) {
-        setTrembleData(trembleDegree, trembleDuration)
-    }
-
     /**
      * tremble control.
      * @param trembleDegree a speed value to increases and decreases current around [speed].
      * @param trembleDuration tremble Animation duration in millisecond.
      *
-     * @see setTrembleDegree
-     * @see setTrembleDuration
      * @throws IllegalArgumentException If trembleDegree OR trembleDuration is Negative.
      */
     fun setTrembleData(trembleDegree: Float, trembleDuration: Int) {
