@@ -10,8 +10,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.Speedometer;
-import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator;
-import com.github.anastr.speedviewlib.components.Indicators.Indicator;
+import com.github.anastr.speedviewlib.components.indicators.ImageIndicator;
+import com.github.anastr.speedviewlib.components.indicators.Indicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +114,7 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
 
     public void imageIndicator(View view) {
         ImageIndicator imageIndicator = new ImageIndicator(getApplicationContext(), R.drawable.image_indicator1
-                , (int)speedometer.dpTOpx(speedometer.getWidth()), (int)speedometer.dpTOpx(speedometer.getHeight()));
+                ,speedometer.getWidth(), speedometer.getHeight());
         speedometer.setIndicator(imageIndicator);
     }
 }

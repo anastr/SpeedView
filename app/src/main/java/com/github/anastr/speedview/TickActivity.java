@@ -2,12 +2,15 @@ package com.github.anastr.speedview;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.Speedometer;
+import com.github.anastr.speedviewlib.util.OnPrintTickLabel;
 
 import java.util.Locale;
 
@@ -31,6 +34,18 @@ public class TickActivity extends AppCompatActivity {
         textTickPadding = findViewById(R.id.textTickPadding);
 
         speedometer.speedPercentTo(53);
+
+        speedometer.setOnPrintTickLabel(new OnPrintTickLabel() {
+            @Override
+            public CharSequence getTickLabel(int tickPosition, float tick) {
+                if (tick == 0) {
+                    SpannableString s = new SpannableString(String.format(Locale.getDefault(), "%.1f", tick));
+                    s.setSpan(new ForegroundColorSpan(0xffff1117), 0, 1, 0);
+                    return s;
+                }
+                return null;
+            }
+        });
 
         withRotation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

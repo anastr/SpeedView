@@ -106,7 +106,8 @@ public class WorkWithNoteActivity extends AppCompatActivity {
 
         TextNote note = new TextNote(getApplicationContext(), s)
                 .setBackgroundColor(Color.parseColor("#EEFF41"))
-                .setPosition(Note.Position.QuarterSpeedometer);
+                .setPosition(Note.Position.QuarterSpeedometer)
+                .setTextSize(speedView.dpTOpx(10f));
         speedView.addNote(note, 1000);
     }
 }

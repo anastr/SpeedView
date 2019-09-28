@@ -12,6 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        app:sv_speedTextFormat="INTEGER"
+        app:sv_speedTextSize="11sp"
+        app:sv_unitTextSize="8sp"/>
 
 </android.support.v7.widget.CardView>
