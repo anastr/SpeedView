@@ -56,7 +56,7 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 group = 'com.github.anastr'
-version = '1.4.0'
+version = '1.4.1'
 
 bintray {
     user = properties.getProperty("bintray.user")

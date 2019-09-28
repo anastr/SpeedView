@@ -24,14 +24,14 @@ Library Size just ~ 51 KB.
 
 # Download
 
-this library required **kotlin version 1.3.31** _you still can use it in java projects_.
+this library required **kotlin version 1.3.50**, _you still can use it in java projects_.
 
 **add this line to** `build.gradle`:
 
 ```gradle
 
 dependencies {
-	implementation 'com.github.anastr:speedviewlib:1.4.0'
+	implementation 'com.github.anastr:speedviewlib:1.4.1'
 }
 
 ```
@@ -42,7 +42,7 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1</version>
   <type>pom</type>
 </dependency>
 ```
