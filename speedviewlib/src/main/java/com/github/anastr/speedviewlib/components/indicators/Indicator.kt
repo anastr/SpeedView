@@ -1,4 +1,4 @@
-package com.github.anastr.speedviewlib.components.Indicators
+package com.github.anastr.speedviewlib.components.indicators
 
 import android.content.Context
 import android.graphics.Canvas
@@ -13,7 +13,7 @@ import com.github.anastr.speedviewlib.Speedometer
 abstract class Indicator<I : Indicator<I>> protected constructor(context: Context) {
 
     protected var indicatorPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val density: Float
+    private val density: Float = context.resources.displayMetrics.density
     private var indicatorWidth: Float = 0.toFloat()
     private var viewSize: Float = 0.toFloat()
     var speedometerWidth: Float = 0.toFloat()
@@ -46,11 +46,6 @@ abstract class Indicator<I : Indicator<I>> protected constructor(context: Contex
     fun getCenterY(): Float = viewSize / 2f
 
     init {
-        this.density = context.resources.displayMetrics.density
-        init()
-    }
-
-    private fun init() {
         indicatorPaint.color = indicatorColor
         indicatorWidth = defaultIndicatorWidth
     }
@@ -156,18 +151,17 @@ abstract class Indicator<I : Indicator<I>> protected constructor(context: Contex
          * @return new indicator object.
          */
         fun createIndicator(context: Context, indicator: Indicators): Indicator<*> {
-            when (indicator) {
-                Indicator.Indicators.NoIndicator -> return NoIndicator(context)
-                Indicator.Indicators.NormalIndicator -> return NormalIndicator(context)
-                Indicator.Indicators.NormalSmallIndicator -> return NormalSmallIndicator(context)
-                Indicator.Indicators.TriangleIndicator -> return TriangleIndicator(context)
-                Indicator.Indicators.SpindleIndicator -> return SpindleIndicator(context)
-                Indicator.Indicators.LineIndicator -> return LineIndicator(context, LineIndicator.LINE)
-                Indicator.Indicators.HalfLineIndicator -> return LineIndicator(context, LineIndicator.HALF_LINE)
-                Indicator.Indicators.QuarterLineIndicator -> return LineIndicator(context, LineIndicator.QUARTER_LINE)
-                Indicator.Indicators.KiteIndicator -> return KiteIndicator(context)
-                Indicator.Indicators.NeedleIndicator -> return NeedleIndicator(context)
-                else -> return NormalIndicator(context)
+            return when (indicator) {
+                Indicators.NoIndicator -> NoIndicator(context)
+                Indicators.NormalIndicator -> NormalIndicator(context)
+                Indicators.NormalSmallIndicator -> NormalSmallIndicator(context)
+                Indicators.TriangleIndicator -> TriangleIndicator(context)
+                Indicators.SpindleIndicator -> SpindleIndicator(context)
+                Indicators.LineIndicator -> LineIndicator(context, LineIndicator.LINE)
+                Indicators.HalfLineIndicator -> LineIndicator(context, LineIndicator.HALF_LINE)
+                Indicators.QuarterLineIndicator -> LineIndicator(context, LineIndicator.QUARTER_LINE)
+                Indicators.KiteIndicator -> KiteIndicator(context)
+                Indicators.NeedleIndicator -> NeedleIndicator(context)
             }
         }
     }

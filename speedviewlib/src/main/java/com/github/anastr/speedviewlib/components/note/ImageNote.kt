@@ -35,10 +35,8 @@ class ImageNote
     constructor(context: Context, resource: Int, width: Int, height: Int) : this(context, BitmapFactory.decodeResource(context.resources, resource), width, height)
 
     init {
-        if (width <= 0)
-            throw IllegalArgumentException("width must be bigger than 0")
-        if (height <= 0)
-            throw IllegalArgumentException("height must be bigger than 0")
+        require(width > 0) { "width must be bigger than 0" }
+        require(height > 0) { "height must be bigger than 0" }
     }
 
     override fun build(viewWidth: Int) {

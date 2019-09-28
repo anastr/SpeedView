@@ -6,7 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
-import com.github.anastr.speedviewlib.components.Indicators.NormalIndicator
+import com.github.anastr.speedviewlib.components.indicators.NormalIndicator
 
 /**
  * this Library build By Anas Altair

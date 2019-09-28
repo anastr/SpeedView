@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import kotlin.math.max
 
 /**
  * this Library build By Anas Altair
@@ -26,8 +27,7 @@ class TextNote
         get() = notePaint.color
 
     init {
-        if (noteText == null)
-            throw IllegalArgumentException("noteText cannot be null.")
+        requireNotNull(noteText) { "noteText cannot be null." }
         notePaint.textAlign = Paint.Align.LEFT
     }
 
@@ -35,7 +35,7 @@ class TextNote
         textLayout = StaticLayout(noteText, notePaint, viewWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true)
         var w = 0
         for (i in 0 until textLayout!!.lineCount)
-            w = Math.max(w.toFloat(), textLayout!!.getLineWidth(i)).toInt()
+            w = max(w.toFloat(), textLayout!!.getLineWidth(i)).toInt()
         noticeContainsSizeChange(w, textLayout!!.height)
     }
 

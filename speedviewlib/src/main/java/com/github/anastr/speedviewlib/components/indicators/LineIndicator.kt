@@ -1,29 +1,28 @@
-package com.github.anastr.speedviewlib.components.Indicators
+package com.github.anastr.speedviewlib.components.indicators
 
 import android.content.Context
 import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.RectF
 
 /**
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-class NormalIndicator(context: Context) : Indicator<NormalIndicator>(context) {
+class LineIndicator(context: Context, private val mode: Float) : Indicator<LineIndicator>(context) {
 
     private val indicatorPath = Path()
-    private var bottomY: Float = 0.toFloat()
 
     override val defaultIndicatorWidth: Float
-        get() = dpTOpx(12f)
+        get() = dpTOpx(8f)
 
     init {
         updateIndicator()
     }
 
     override fun getBottom(): Float {
-        return bottomY
+        return getCenterY() * mode
     }
 
     override fun draw(canvas: Canvas, degree: Float) {
@@ -36,12 +35,10 @@ class NormalIndicator(context: Context) : Indicator<NormalIndicator>(context) {
     override fun updateIndicator() {
         indicatorPath.reset()
         indicatorPath.moveTo(getCenterX(), padding.toFloat())
-        bottomY = getViewSize() * 2f / 3f + padding
-        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), bottomY)
-        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), bottomY)
-        val rectF = RectF(getCenterX() - getIndicatorWidth(), bottomY - getIndicatorWidth(), getCenterX() + getIndicatorWidth(), bottomY + getIndicatorWidth())
-        indicatorPath.addArc(rectF, 0f, 180f)
+        indicatorPath.lineTo(getCenterX(), getCenterY() * mode)
 
+        indicatorPaint.style = Paint.Style.STROKE
+        indicatorPaint.strokeWidth = getIndicatorWidth()
         indicatorPaint.color = getIndicatorColor()
     }
 
@@ -51,5 +48,11 @@ class NormalIndicator(context: Context) : Indicator<NormalIndicator>(context) {
         } else {
             indicatorPaint.maskFilter = null
         }
+    }
+
+    companion object {
+        const val LINE = 1f
+        const val HALF_LINE = .5f
+        const val QUARTER_LINE = .25f
     }
 }

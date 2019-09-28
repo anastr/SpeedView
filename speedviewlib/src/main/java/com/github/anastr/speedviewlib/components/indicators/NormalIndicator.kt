@@ -1,4 +1,4 @@
-package com.github.anastr.speedviewlib.components.Indicators
+package com.github.anastr.speedviewlib.components.indicators
 
 import android.content.Context
 import android.graphics.BlurMaskFilter
@@ -10,7 +10,7 @@ import android.graphics.RectF
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-class NormalSmallIndicator(context: Context) : Indicator<NormalSmallIndicator>(context) {
+class NormalIndicator(context: Context) : Indicator<NormalIndicator>(context) {
 
     private val indicatorPath = Path()
     private var bottomY: Float = 0.toFloat()
@@ -20,10 +20,6 @@ class NormalSmallIndicator(context: Context) : Indicator<NormalSmallIndicator>(c
 
     init {
         updateIndicator()
-    }
-
-    override fun getTop(): Float {
-        return getViewSize() / 5f + padding
     }
 
     override fun getBottom(): Float {
@@ -39,8 +35,8 @@ class NormalSmallIndicator(context: Context) : Indicator<NormalSmallIndicator>(c
 
     override fun updateIndicator() {
         indicatorPath.reset()
-        indicatorPath.moveTo(getCenterX(), getViewSize() / 5f + padding)
-        bottomY = getViewSize() * 3f / 5f + padding
+        indicatorPath.moveTo(getCenterX(), padding.toFloat())
+        bottomY = getViewSize() * 2f / 3f + padding
         indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), bottomY)
         indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), bottomY)
         val rectF = RectF(getCenterX() - getIndicatorWidth(), bottomY - getIndicatorWidth(), getCenterX() + getIndicatorWidth(), bottomY + getIndicatorWidth())

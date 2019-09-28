@@ -7,8 +7,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.os.Build
 import android.util.AttributeSet
-import android.view.View
-import com.github.anastr.speedviewlib.components.Indicators.Indicator
+import com.github.anastr.speedviewlib.components.indicators.Indicator
 
 /**
  * this Library build By Anas Altair
@@ -126,7 +125,7 @@ class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Attribut
         speedBackgroundPaint.color = -0x1
 
         if (Build.VERSION.SDK_INT >= 11)
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+            setLayerType(LAYER_TYPE_SOFTWARE, null)
         isWithEffects = withEffects
     }
 
@@ -152,12 +151,13 @@ class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Attribut
                 i += degreeBetweenMark
                 continue
             }
-            if (i > (getEndDegree() - getStartDegree()) * getMediumSpeedOffset() + getStartDegree())
-                activeMarkPaint.color = getHighSpeedColor()
-            else if (i > (getEndDegree() - getStartDegree()) * getLowSpeedOffset() + getStartDegree())
-                activeMarkPaint.color = getMediumSpeedColor()
-            else
-                activeMarkPaint.color = getLowSpeedColor()
+            activeMarkPaint.color = when {
+                i > (getEndDegree() - getStartDegree()) * getMediumSpeedOffset() + getStartDegree() ->
+                    getHighSpeedColor()
+                i > (getEndDegree() - getStartDegree()) * getLowSpeedOffset() + getStartDegree() ->
+                    getMediumSpeedColor()
+                else -> getLowSpeedColor()
+            }
             canvas.drawPath(markPath, activeMarkPaint)
             canvas.rotate(degreeBetweenMark.toFloat(), size * .5f, size / 2f)
             i += degreeBetweenMark

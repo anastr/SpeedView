@@ -4,9 +4,8 @@ import android.content.Context
 import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
-import android.view.View
-import com.github.anastr.speedviewlib.components.Indicators.Indicator
-import com.github.anastr.speedviewlib.components.Indicators.NormalSmallIndicator
+import com.github.anastr.speedviewlib.components.indicators.Indicator
+import com.github.anastr.speedviewlib.components.indicators.NormalSmallIndicator
 
 /**
  * this Library build By Anas Altair
@@ -92,7 +91,7 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
         circlePaint.color = -0x1f1f20
 
         if (Build.VERSION.SDK_INT >= 11)
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+            setLayerType(LAYER_TYPE_SOFTWARE, null)
         isWithEffects = withEffects
     }
 

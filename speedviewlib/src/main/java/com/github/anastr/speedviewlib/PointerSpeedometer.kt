@@ -3,7 +3,7 @@ package com.github.anastr.speedviewlib
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import com.github.anastr.speedviewlib.components.Indicators.SpindleIndicator
+import com.github.anastr.speedviewlib.components.indicators.SpindleIndicator
 
 /**
  * this Library build By Anas Altair

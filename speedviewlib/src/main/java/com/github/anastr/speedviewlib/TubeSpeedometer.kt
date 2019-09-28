@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
-import android.view.View
 
 /**
  * this Library build By Anas Altair
@@ -60,7 +59,7 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
         tubePaint.color = getLowSpeedColor()
 
         if (Build.VERSION.SDK_INT >= 11)
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+            setLayerType(LAYER_TYPE_SOFTWARE, null)
     }
 
     private fun initAttributeSet(context: Context, attrs: AttributeSet?) {
@@ -100,8 +99,8 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
         tubePaint.strokeWidth = getSpeedometerWidth()
         val section = getSection()
         when (section) {
-            Gauge.LOW_SECTION -> tubePaint.color = getLowSpeedColor()
-            Gauge.MEDIUM_SECTION -> tubePaint.color = getMediumSpeedColor()
+            LOW_SECTION -> tubePaint.color = getLowSpeedColor()
+            MEDIUM_SECTION -> tubePaint.color = getMediumSpeedColor()
             else -> tubePaint.color = getHighSpeedColor()
         }
     }
@@ -131,10 +130,5 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
             drawTicks(c)
         else
             drawDefMinMaxSpeedPosition(c)
-    }
-
-    override fun setLowSpeedColor(lowSpeedColor: Int) {
-        super.setLowSpeedColor(lowSpeedColor)
-
     }
 }

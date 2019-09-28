@@ -1,4 +1,4 @@
-package com.github.anastr.speedviewlib.components.Indicators
+package com.github.anastr.speedviewlib.components.indicators
 
 import android.content.Context
 import android.graphics.Canvas

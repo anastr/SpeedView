@@ -16,6 +16,7 @@ import android.view.animation.LinearInterpolator
 import com.github.anastr.speedviewlib.util.OnSectionChangeListener
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener
 import java.util.*
+import kotlin.math.max
 
 /**
  * this Library build By Anas Altair
@@ -364,29 +365,22 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     private fun checkSpeedometerPercent() {
-        if (lowSpeedPercent > mediumSpeedPercent)
-            throw IllegalArgumentException("lowSpeedPercent must be smaller than mediumSpeedPercent")
-        if (lowSpeedPercent > 100 || lowSpeedPercent < 0)
-            throw IllegalArgumentException("lowSpeedPercent must be between [0, 100]")
-        if (mediumSpeedPercent > 100 || mediumSpeedPercent < 0)
-            throw IllegalArgumentException("mediumSpeedPercent must be between [0, 100]")
+        require(lowSpeedPercent <= mediumSpeedPercent) { "lowSpeedPercent must be smaller than mediumSpeedPercent" }
+        require(!(lowSpeedPercent > 100 || lowSpeedPercent < 0)) { "lowSpeedPercent must be between [0, 100]" }
+        require(!(mediumSpeedPercent > 100 || mediumSpeedPercent < 0)) { "mediumSpeedPercent must be between [0, 100]" }
     }
 
     private fun checkAccelerate() {
-        if (accelerate > 1f || accelerate <= 0)
-            throw IllegalArgumentException("accelerate must be between (0, 1]")
+        require(!(accelerate > 1f || accelerate <= 0)) { "accelerate must be between (0, 1]" }
     }
 
     private fun checkDecelerate() {
-        if (decelerate > 1f || decelerate <= 0)
-            throw IllegalArgumentException("decelerate must be between (0, 1]")
+        require(!(decelerate > 1f || decelerate <= 0)) { "decelerate must be between (0, 1]" }
     }
 
     private fun checkTrembleData() {
-        if (trembleDegree < 0)
-            throw IllegalArgumentException("trembleDegree  can't be Negative")
-        if (trembleDuration < 0)
-            throw IllegalArgumentException("trembleDuration  can't be Negative")
+        require(trembleDegree >= 0) { "trembleDegree  can't be Negative" }
+        require(trembleDuration >= 0) { "trembleDuration  can't be Negative" }
     }
 
     /**
@@ -423,7 +417,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * notice that padding or size have changed.
      */
     private fun updatePadding(left: Int, top: Int, right: Int, bottom: Int) {
-        padding = Math.max(Math.max(left, right), Math.max(top, bottom))
+        padding = max(max(left, right), max(top, bottom))
         widthPa = width - padding * 2
         heightPa = height - padding * 2
     }
@@ -445,7 +439,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     private fun getSpeedUnitTextWidth(): Float =
         if (unitUnderSpeedText)
-            Math.max(speedTextPaint.measureText(getSpeedText()), unitTextPaint.measureText(getUnit()))
+            max(speedTextPaint.measureText(getSpeedText()), unitTextPaint.measureText(getUnit()))
         else
             speedTextPaint.measureText(getSpeedText()) + unitTextPaint.measureText(getUnit()) + unitSpeedInterval
 
@@ -456,7 +450,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         if (unitUnderSpeedText)
             speedTextPaint.textSize + unitTextPaint.textSize + unitSpeedInterval
         else
-            Math.max(speedTextPaint.textSize, unitTextPaint.textSize)
+            max(speedTextPaint.textSize, unitTextPaint.textSize)
 
     /**
      * get current speed as string to **Draw**.
@@ -590,10 +584,10 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     fun getMediumSpeedOffset(): Float = mediumSpeedPercent * .01f
 
     val viewSize: Int
-        get() = Math.max(width, height)
+        get() = max(width, height)
 
     val viewSizePa: Int
-        get() = Math.max(widthPa, heightPa)
+        get() = max(widthPa, heightPa)
 
     /**
      * @return true if current speed in Low Section.
@@ -1096,8 +1090,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
      */
     fun setMinMaxSpeed(minSpeed: Float, maxSpeed: Float) {
-        if (minSpeed >= maxSpeed)
-            throw IllegalArgumentException("minSpeed must be smaller than maxSpeed !!")
+        require(minSpeed < maxSpeed) { "minSpeed must be smaller than maxSpeed !!" }
         cancelSpeedAnimator()
         this.minSpeed = minSpeed
         this.maxSpeed = maxSpeed

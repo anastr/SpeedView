@@ -3,7 +3,7 @@ package com.github.anastr.speedviewlib
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import com.github.anastr.speedviewlib.components.Indicators.TriangleIndicator
+import com.github.anastr.speedviewlib.components.indicators.TriangleIndicator
 
 /**
  * this Library build By Anas Altair
@@ -39,7 +39,7 @@ class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         super.speedTextColor = -0x1
         super.unitTextColor = -0x1
         super.textTypeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        super.setSpeedTextPosition(Gauge.Position.CENTER)
+        super.setSpeedTextPosition(Position.CENTER)
         super.unitUnderSpeedText = true
     }
 

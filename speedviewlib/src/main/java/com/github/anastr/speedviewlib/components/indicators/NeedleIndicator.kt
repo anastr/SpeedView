@@ -1,7 +1,9 @@
-package com.github.anastr.speedviewlib.components.Indicators
+package com.github.anastr.speedviewlib.components.indicators
 
 import android.content.Context
 import android.graphics.*
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * this Library build By Anas Altair
@@ -39,8 +41,8 @@ class NeedleIndicator(context: Context) : Indicator<NeedleIndicator>(context) {
         indicatorPath.reset()
         circlePath.reset()
         indicatorPath.moveTo(getCenterX(), padding.toFloat())
-        bottomY = (getIndicatorWidth() * Math.sin(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + padding.toFloat()
-        val xLeft = (getIndicatorWidth() * Math.cos(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + padding.toFloat()
+        bottomY = (getIndicatorWidth() * sin(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + padding.toFloat()
+        val xLeft = (getIndicatorWidth() * cos(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + padding.toFloat()
         indicatorPath.lineTo(xLeft, bottomY)
         val rectF = RectF(getCenterX() - getIndicatorWidth(), getCenterY() - getIndicatorWidth(), getCenterX() + getIndicatorWidth(), getCenterY() + getIndicatorWidth())
         indicatorPath.arcTo(rectF, 260f, 20f)

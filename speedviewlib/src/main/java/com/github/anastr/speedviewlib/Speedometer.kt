@@ -5,13 +5,15 @@ import android.graphics.*
 import android.text.Layout
 import android.text.StaticLayout
 import android.util.AttributeSet
-import android.view.View
-import com.github.anastr.speedviewlib.components.Indicators.ImageIndicator
-import com.github.anastr.speedviewlib.components.Indicators.Indicator
-import com.github.anastr.speedviewlib.components.Indicators.NoIndicator
+import com.github.anastr.speedviewlib.components.indicators.ImageIndicator
+import com.github.anastr.speedviewlib.components.indicators.Indicator
+import com.github.anastr.speedviewlib.components.indicators.NoIndicator
 import com.github.anastr.speedviewlib.components.note.Note
 import com.github.anastr.speedviewlib.util.OnPrintTickLabel
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.min
+import kotlin.text.Typography.degree
 
 /**
  * this Library build By Anas Altair
@@ -57,7 +59,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      * you can set it `Color.TRANSPARENT`
      * to remove circle background.
      */
-    public var backgroundCircleColor = -0x1
+    var backgroundCircleColor = -0x1
         set(backgroundCircleColor) {
             field = backgroundCircleColor
             circleBackPaint.color = backgroundCircleColor
@@ -176,8 +178,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     var tickNumber: Int
         get() = ticks.size
         set(tickNumber) {
-            if (tickNumber < 0)
-                throw IllegalArgumentException("tickNumber mustn't be negative")
+            require(tickNumber >= 0) { "tickNumber mustn't be negative" }
             val ticks = ArrayList<Float>()
             val tickEach = if (tickNumber != 1) (endDegree - startDegree).toFloat() / (tickNumber - 1).toFloat() else endDegree + 1f
             for (i in 0 until tickNumber) {
@@ -206,8 +207,8 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     protected val viewCenterX: Float
         get() {
             return when (this.speedometerMode) {
-                Speedometer.Mode.LEFT, Speedometer.Mode.TOP_LEFT, Speedometer.Mode.BOTTOM_LEFT -> size * .5f - width * .5f
-                Speedometer.Mode.RIGHT, Speedometer.Mode.TOP_RIGHT, Speedometer.Mode.BOTTOM_RIGHT -> size * .5f + width * .5f
+                Mode.LEFT, Mode.TOP_LEFT, Mode.BOTTOM_LEFT -> size * .5f - width * .5f
+                Mode.RIGHT, Mode.TOP_RIGHT, Mode.BOTTOM_RIGHT -> size * .5f + width * .5f
                 else -> size * .5f
             }
         }
@@ -218,8 +219,8 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     protected val viewCenterY: Float
         get() {
             return when (this.speedometerMode) {
-                Speedometer.Mode.TOP, Speedometer.Mode.TOP_LEFT, Speedometer.Mode.TOP_RIGHT -> size * .5f - height * .5f
-                Speedometer.Mode.BOTTOM, Speedometer.Mode.BOTTOM_LEFT, Speedometer.Mode.BOTTOM_RIGHT -> size * .5f + height * .5f
+                Mode.TOP, Mode.TOP_LEFT, Mode.TOP_RIGHT -> size * .5f - height * .5f
+                Mode.BOTTOM, Mode.BOTTOM_LEFT, Mode.BOTTOM_RIGHT -> size * .5f + height * .5f
                 else -> size * .5f
             }
         }
@@ -289,24 +290,24 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
         val defaultSize = dpTOpx(250f).toInt()
 
-        val widthMode = View.MeasureSpec.getMode(widthMeasureSpec)
-        val heightMode = View.MeasureSpec.getMode(heightMeasureSpec)
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
 
         val size: Int
 
-        size = if (widthMode == View.MeasureSpec.EXACTLY)
+        size = if (widthMode == MeasureSpec.EXACTLY)
             measuredWidth
-        else if (heightMode == View.MeasureSpec.EXACTLY)
+        else if (heightMode == MeasureSpec.EXACTLY)
             measuredHeight
-        else if (widthMode == View.MeasureSpec.UNSPECIFIED && heightMode == View.MeasureSpec.UNSPECIFIED)
+        else if (widthMode == MeasureSpec.UNSPECIFIED && heightMode == MeasureSpec.UNSPECIFIED)
             defaultSize
-        else if (widthMode == View.MeasureSpec.AT_MOST && heightMode == View.MeasureSpec.AT_MOST)
-            Math.min(defaultSize, Math.min(measuredWidth, measuredHeight))
+        else if (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST)
+            min(defaultSize, min(measuredWidth, measuredHeight))
         else {
-            if (widthMode == View.MeasureSpec.AT_MOST)
-                Math.min(defaultSize, measuredWidth)
+            if (widthMode == MeasureSpec.AT_MOST)
+                min(defaultSize, measuredWidth)
             else
-                Math.min(defaultSize, measuredHeight)
+                min(defaultSize, measuredHeight)
         }
 
         var newW = size / this.speedometerMode.divWidth
@@ -327,20 +328,14 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun checkStartAndEndDegree() {
-        if (startDegree < 0)
-            throw IllegalArgumentException("StartDegree can\'t be Negative")
-        if (endDegree < 0)
-            throw IllegalArgumentException("EndDegree can\'t be Negative")
-        if (startDegree >= endDegree)
-            throw IllegalArgumentException("EndDegree must be bigger than StartDegree !")
-        if (endDegree - startDegree > 360)
-            throw IllegalArgumentException("(EndDegree - StartDegree) must be smaller than 360 !")
-        if (startDegree < this.speedometerMode.minDegree)
-            throw IllegalArgumentException("StartDegree must be bigger than " + this.speedometerMode.minDegree
-                    + " in " + this.speedometerMode + " Mode !")
-        if (endDegree > this.speedometerMode.maxDegree)
-            throw IllegalArgumentException("EndDegree must be smaller than " + this.speedometerMode.maxDegree
-                    + " in " + this.speedometerMode + " Mode !")
+        require(startDegree >= 0) { "StartDegree can\'t be Negative" }
+        require(endDegree >= 0) { "EndDegree can\'t be Negative" }
+        require(startDegree < endDegree) { "EndDegree must be bigger than StartDegree !" }
+        require(endDegree - startDegree <= 360) { "(EndDegree - StartDegree) must be smaller than 360 !" }
+        require(startDegree >= speedometerMode.minDegree) {
+            "StartDegree must be bigger than ${speedometerMode.minDegree} in $speedometerMode Mode !" }
+        require(endDegree <= speedometerMode.maxDegree) {
+            "EndDegree must be smaller than ${speedometerMode.maxDegree} in $speedometerMode Mode !" }
     }
 
     /**
@@ -370,7 +365,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
     protected fun drawIndicatorLight(canvas: Canvas) {
         val MAX_LIGHT_SWEEP = 30f
-        var sweep = Math.abs(getPercentSpeed() - lastPercentSpeed) * MAX_LIGHT_SWEEP
+        var sweep = abs(getPercentSpeed() - lastPercentSpeed) * MAX_LIGHT_SWEEP
         lastPercentSpeed = getPercentSpeed()
         if (sweep > MAX_LIGHT_SWEEP)
             sweep = MAX_LIGHT_SWEEP
@@ -653,7 +648,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
             // if onPrintTickLabel == null, or getTickLabel() return null.
             if (tick == null)
-                tick = if (tickTextFormat == Gauge.FLOAT_FORMAT.toInt())
+                tick = if (tickTextFormat == FLOAT_FORMAT.toInt())
                     "%.1f".format(locale, ticks[i])
 //                    String.format(locale, "%.1f", ticks[i])
                 else
@@ -739,12 +734,9 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     private fun checkTicks() {
         var lastTick = getMinSpeed() - 1f
         for (tick in ticks) {
-            if (lastTick == tick)
-                throw IllegalArgumentException("you mustn't have double ticks")
-            if (lastTick > tick)
-                throw IllegalArgumentException("ticks must be ascending order")
-            if (tick < getMinSpeed() || tick > getMaxSpeed())
-                throw IllegalArgumentException("ticks must be between [minSpeed, maxSpeed] !!")
+            require(lastTick != tick) { "you mustn't have double ticks" }
+            require(lastTick <= tick) { "ticks must be ascending order" }
+            require(!(tick < getMinSpeed() || tick > getMaxSpeed())) { "ticks must be between [minSpeed, maxSpeed] !!" }
             lastTick = tick
         }
     }

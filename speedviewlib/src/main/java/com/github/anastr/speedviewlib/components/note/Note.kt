@@ -14,7 +14,7 @@ import android.graphics.*
  */
 abstract class Note<N : Note<N>> protected constructor(context: Context) {
 
-    private val density: Float
+    private val density: Float = context.resources.displayMetrics.density
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -37,11 +37,6 @@ abstract class Note<N : Note<N>> protected constructor(context: Context) {
         get() = backgroundPaint.color
 
     init {
-        this.density = context.resources.displayMetrics.density
-        init()
-    }
-
-    private fun init() {
         triangleHeight = dpTOpx(12f)
         backgroundPaint.color = -0x292829
         setPadding(dpTOpx(7f), dpTOpx(7f), dpTOpx(7f), dpTOpx(7f))
@@ -90,14 +85,12 @@ abstract class Note<N : Note<N>> protected constructor(context: Context) {
     private fun updateBackgroundBitmap() {
         backgroundBitmap = Bitmap.createBitmap(noteW, noteH, Bitmap.Config.ARGB_8888)
         val c = Canvas(backgroundBitmap!!)
-        if (align == Align.Left)
-            bitmapLeft(c)
-        else if (align == Align.Top)
-            bitmapTop(c)
-        else if (align == Align.Right)
-            bitmapRight(c)
-        else if (align == Align.Bottom)
-            bitmapBottom(c)
+        when (align) {
+            Align.Left -> bitmapLeft(c)
+            Align.Top -> bitmapTop(c)
+            Align.Right -> bitmapRight(c)
+            Align.Bottom -> bitmapBottom(c)
+        }
     }
 
     private fun bitmapLeft(c: Canvas) {
@@ -142,19 +135,19 @@ abstract class Note<N : Note<N>> protected constructor(context: Context) {
 
     fun draw(canvas: Canvas, posX: Float, posY: Float) {
         when (align) {
-            Note.Align.Left -> {
+            Align.Left -> {
                 canvas.drawBitmap(backgroundBitmap!!, posX - noteW, posY - noteH / 2f, paint)
                 drawContains(canvas, posX - noteW + paddingLeft, posY - noteH / 2f + paddingTop)
             }
-            Note.Align.Top -> {
+            Align.Top -> {
                 canvas.drawBitmap(backgroundBitmap!!, posX - noteW / 2f, posY - noteH, paint)
                 drawContains(canvas, posX - containsW / 2f, posY - noteH + paddingTop)
             }
-            Note.Align.Right -> {
+            Align.Right -> {
                 canvas.drawBitmap(backgroundBitmap!!, posX, posY - noteH / 2f, paint)
                 drawContains(canvas, posX + triangleHeight + paddingLeft, posY - noteH / 2f + paddingTop)
             }
-            Note.Align.Bottom -> {
+            Align.Bottom -> {
                 canvas.drawBitmap(backgroundBitmap!!, posX - noteW / 2f, posY, paint)
                 drawContains(canvas, posX - containsW / 2f, posY + triangleHeight + paddingTop)
             }
@@ -182,8 +175,7 @@ abstract class Note<N : Note<N>> protected constructor(context: Context) {
      * @return This Note object to allow for chaining of calls to set methods.
      */
     fun setCornersRound(cornersRound: Float): N {
-        if (cornersRound < 0)
-            throw IllegalArgumentException("cornersRound cannot be negative")
+        require(cornersRound >= 0) { "cornersRound cannot be negative" }
         this.cornersRound = cornersRound
         return this as N
     }
@@ -270,6 +262,6 @@ abstract class Note<N : Note<N>> protected constructor(context: Context) {
          * to keep the note on the speedometer.
          *
          * but it well be removed when call `speedometer.removeAllNotes()`. */
-        val INFINITE = -1
+        const val INFINITE = -1
     }
 }

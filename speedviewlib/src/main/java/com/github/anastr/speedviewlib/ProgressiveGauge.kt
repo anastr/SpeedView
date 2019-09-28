@@ -51,7 +51,7 @@ class ProgressiveGauge @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     override fun defaultGaugeValues() {
-        super.setSpeedTextPosition(Gauge.Position.CENTER)
+        super.setSpeedTextPosition(Position.CENTER)
         super.unitUnderSpeedText = true
     }
 
@@ -74,7 +74,7 @@ class ProgressiveGauge @JvmOverloads constructor(context: Context, attrs: Attrib
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val w = measuredWidth
         val h = measuredHeight
-        if (orientation === LinearGauge.Orientation.HORIZONTAL) {
+        if (orientation === Orientation.HORIZONTAL) {
             if (h > w / 2)
                 setMeasuredDimension(w, w / 2)
             else
@@ -99,7 +99,7 @@ class ProgressiveGauge @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     private fun updateOrientation() {
-        if (orientation === LinearGauge.Orientation.HORIZONTAL)
+        if (orientation === Orientation.HORIZONTAL)
             updateHorizontalPath()
         else
             updateVerticalPath()
