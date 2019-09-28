@@ -96,7 +96,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     var trembleDegree = 4f
         set(trembleDegree) {
-            setTrembleData(trembleDegree, trembleDuration)
+            field = trembleDegree
+            checkTrembleData()
         }
     /**
      * tremble Animation duration in millisecond.
@@ -105,7 +106,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     var trembleDuration = 1000
         set(trembleDuration) {
-            setTrembleData(trembleDegree, trembleDuration)
+            field = trembleDuration
+            checkTrembleData()
         }
 
     private lateinit var speedAnimator: ValueAnimator
