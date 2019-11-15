@@ -27,8 +27,6 @@
         <attr name="sv_unitTextSize" format="dimension"/>
         <attr name="sv_trembleDegree" format="float" />
         <attr name="sv_trembleDuration" format="integer" />
-        <attr name="sv_lowSpeedPercent" format="integer" />
-        <attr name="sv_mediumSpeedPercent" format="integer" />
         <attr name="sv_textRightToLeft" format="boolean" />
 
         <attr name="sv_minSpeed" format="float" />
@@ -70,9 +68,6 @@
         <attr name="sv_withIndicatorLight" format="boolean" />
         <attr name="sv_indicatorLightColor" format="color" />
         <attr name="sv_markColor" format="color" />
-        <attr name="sv_lowSpeedColor" format="color" />
-        <attr name="sv_mediumSpeedColor" format="color" />
-        <attr name="sv_highSpeedColor" format="color" />
         <attr name="sv_backgroundCircleColor" format="color" />
         <attr name="sv_speedometerWidth" format="dimension" />
 
