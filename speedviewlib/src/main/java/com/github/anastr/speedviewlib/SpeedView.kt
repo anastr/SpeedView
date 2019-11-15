@@ -96,12 +96,10 @@ class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val risk = getSpeedometerWidth() * .5f + padding
         speedometerRect.set(risk, risk, size - risk, size - risk)
 
-        speedometerPaint.color = getHighSpeedColor()
-        c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()).toFloat(), false, speedometerPaint)
-        speedometerPaint.color = getMediumSpeedColor()
-        c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()) * getMediumSpeedOffset(), false, speedometerPaint)
-        speedometerPaint.color = getLowSpeedColor()
-        c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()) * getLowSpeedOffset(), false, speedometerPaint)
+        for (i in sections.size-1 downTo 0) {
+            speedometerPaint.color = sections[i].color
+            c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()) * sections[i].speedOffset, false, speedometerPaint)
+        }
 
         c.save()
         c.rotate(90f + getStartDegree(), size * .5f, size * .5f)

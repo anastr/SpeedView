@@ -51,9 +51,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
                 return
             invalidate()
         }
-    private var lowSpeedColor = -0xff0100
-    private var mediumSpeedColor = -0x100
-    private var highSpeedColor = -0x10000
+
     /**
      * Circle Background Color,
      * you can set it `Color.TRANSPARENT`
@@ -261,9 +259,6 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         if (ind != -1)
             setIndicator(Indicator.Indicators.values()[ind])
         markColor = a.getColor(R.styleable.Speedometer_sv_markColor, markColor)
-        lowSpeedColor = a.getColor(R.styleable.Speedometer_sv_lowSpeedColor, lowSpeedColor)
-        mediumSpeedColor = a.getColor(R.styleable.Speedometer_sv_mediumSpeedColor, mediumSpeedColor)
-        highSpeedColor = a.getColor(R.styleable.Speedometer_sv_highSpeedColor, highSpeedColor)
         backgroundCircleColor = a.getColor(R.styleable.Speedometer_sv_backgroundCircleColor, backgroundCircleColor)
         speedometerWidth = a.getDimension(R.styleable.Speedometer_sv_speedometerWidth, speedometerWidth)
         startDegree = a.getInt(R.styleable.Speedometer_sv_startDegree, startDegree)
@@ -442,54 +437,6 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      */
     protected fun getSpeedAtDegree(degree: Float): Float {
         return (degree - startDegree) * (getMaxSpeed() - getMinSpeed()) / (endDegree - startDegree) + getMinSpeed()
-    }
-
-    open fun getLowSpeedColor(): Int {
-        return lowSpeedColor
-    }
-
-    /**
-     * change the color of Low Section.
-     * @param lowSpeedColor new color.
-     */
-    open fun setLowSpeedColor(lowSpeedColor: Int) {
-        this.lowSpeedColor = lowSpeedColor
-        if (!isAttachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
-    }
-
-    open fun getMediumSpeedColor(): Int {
-        return mediumSpeedColor
-    }
-
-    /**
-     * change the color of Medium Section.
-     * @param mediumSpeedColor new color.
-     */
-    open fun setMediumSpeedColor(mediumSpeedColor: Int) {
-        this.mediumSpeedColor = mediumSpeedColor
-        if (!isAttachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
-    }
-
-    open fun getHighSpeedColor(): Int {
-        return highSpeedColor
-    }
-
-    /**
-     * change the color of High Section.
-     * @param highSpeedColor new color.
-     */
-    open fun setHighSpeedColor(highSpeedColor: Int) {
-        this.highSpeedColor = highSpeedColor
-        if (!isAttachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
     }
 
     fun getSpeedometerWidth(): Float {

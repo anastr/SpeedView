@@ -42,13 +42,14 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
         initAttributeSet(context, attrs)
     }
 
-    override fun defaultGaugeValues() {}
+    override fun defaultGaugeValues() {
+        sections[0].color = -0xff432c
+        sections[1].color = -0x3ef9
+        sections[2].color = -0xbbcca
+    }
 
     override fun defaultSpeedometerValues() {
         super.backgroundCircleColor = 0
-        super.setLowSpeedColor(-0xff432c)
-        super.setMediumSpeedColor(-0x3ef9)
-        super.setHighSpeedColor(-0xbbcca)
         super.setSpeedometerWidth(dpTOpx(40f))
     }
 
@@ -56,7 +57,6 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
         tubePaint.style = Paint.Style.STROKE
         tubeBacPaint.style = Paint.Style.STROKE
         tubeBacPaint.color = -0x8a8a8b
-        tubePaint.color = getLowSpeedColor()
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null)
@@ -97,12 +97,10 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
 
     private fun initDraw() {
         tubePaint.strokeWidth = getSpeedometerWidth()
-        val section = getSection()
-        when (section) {
-            LOW_SECTION -> tubePaint.color = getLowSpeedColor()
-            MEDIUM_SECTION -> tubePaint.color = getMediumSpeedColor()
-            else -> tubePaint.color = getHighSpeedColor()
-        }
+        if (currentSection != null)
+            tubePaint.color = currentSection!!.color
+        else
+            tubePaint.color = 0 // transparent color
     }
 
     override fun onDraw(canvas: Canvas) {

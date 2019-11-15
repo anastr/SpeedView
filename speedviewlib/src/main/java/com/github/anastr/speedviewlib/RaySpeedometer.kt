@@ -151,13 +151,10 @@ class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Attribut
                 i += degreeBetweenMark
                 continue
             }
-            activeMarkPaint.color = when {
-                i > (getEndDegree() - getStartDegree()) * getMediumSpeedOffset() + getStartDegree() ->
-                    getHighSpeedColor()
-                i > (getEndDegree() - getStartDegree()) * getLowSpeedOffset() + getStartDegree() ->
-                    getMediumSpeedColor()
-                else -> getLowSpeedColor()
-            }
+            if (currentSection != null)
+                activeMarkPaint.color = currentSection!!.color
+            else
+                activeMarkPaint.color = 0 // transparent color
             canvas.drawPath(markPath, activeMarkPaint)
             canvas.rotate(degreeBetweenMark.toFloat(), size * .5f, size / 2f)
             i += degreeBetweenMark

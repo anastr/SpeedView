@@ -72,15 +72,15 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     override fun defaultGaugeValues() {
         super.textColor = -0x1
+        sections[0].color = -0xc878d1
+        sections[1].color = -0x5c7dcc
+        sections[2].color = -0x64dfe0
     }
 
     override fun defaultSpeedometerValues() {
         super.setIndicator(NormalSmallIndicator(context)
                 .setIndicatorColor(-0xff0014))
         super.backgroundCircleColor = -0xdededf
-        super.setLowSpeedColor(-0xc878d1)
-        super.setMediumSpeedColor(-0x5c7dcc)
-        super.setHighSpeedColor(-0x64dfe0)
     }
 
     private fun init() {
@@ -158,12 +158,10 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
         val risk = getSpeedometerWidth() * .5f + padding
         speedometerRect.set(risk, risk, size - risk, size - risk)
 
-        speedometerPaint.color = getHighSpeedColor()
-        c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()).toFloat(), false, speedometerPaint)
-        speedometerPaint.color = getMediumSpeedColor()
-        c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()) * getMediumSpeedOffset(), false, speedometerPaint)
-        speedometerPaint.color = getLowSpeedColor()
-        c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()) * getLowSpeedOffset(), false, speedometerPaint)
+        for (i in sections.size-1 downTo 0) {
+            speedometerPaint.color = sections[i].color
+            c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()) * sections[i].speedOffset, false, speedometerPaint)
+        }
 
         c.save()
         c.rotate(90f + getStartDegree(), size * .5f, size * .5f)

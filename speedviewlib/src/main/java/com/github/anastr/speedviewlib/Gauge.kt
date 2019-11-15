@@ -13,16 +13,18 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import com.github.anastr.speedviewlib.components.Section
 import com.github.anastr.speedviewlib.util.OnSectionChangeListener
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.max
 
 /**
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
+abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr), Observer {
 
     private val speedUnitTextBitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     protected var textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
@@ -139,11 +141,10 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     var heightPa = 0
         private set
 
-    /** low speed area  */
-    private var lowSpeedPercent = 60
-    /** medium speed area  */
-    private var mediumSpeedPercent = 87
-    private var section = LOW_SECTION
+    /** All sections -_Read Only_- */
+    val sections = ArrayList<Section>()
+    var currentSection: Section? = null
+        private set
 
     /**
      * to support Right To Left Text.
@@ -285,6 +286,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         speedTextPaint.textSize = dpTOpx(18f)
         unitTextPaint.color = -0x1000000
         unitTextPaint.textSize = dpTOpx(15f)
+        sections.add(Section(.6f, -0xff0100).inGauge(this))
+        sections.add(Section(.87f, -0x100).inGauge(this))
+        sections.add(Section(1f, -0x10000).inGauge(this))
 
         if (Build.VERSION.SDK_INT >= 11) {
             speedAnimator = ValueAnimator.ofFloat(0f, 1f)
@@ -326,8 +330,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         this.unit = unit ?: this.unit
         trembleDegree = a.getFloat(R.styleable.Gauge_sv_trembleDegree, trembleDegree)
         trembleDuration = a.getInt(R.styleable.Gauge_sv_trembleDuration, trembleDuration)
-        lowSpeedPercent = a.getInt(R.styleable.Gauge_sv_lowSpeedPercent, lowSpeedPercent)
-        mediumSpeedPercent = a.getInt(R.styleable.Gauge_sv_mediumSpeedPercent, mediumSpeedPercent)
         speedometerTextRightToLeft = a.getBoolean(R.styleable.Gauge_sv_textRightToLeft, speedometerTextRightToLeft)
         accelerate = a.getFloat(R.styleable.Gauge_sv_accelerate, accelerate)
         decelerate = a.getFloat(R.styleable.Gauge_sv_decelerate, decelerate)
@@ -350,7 +352,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         if (tickFormat != -1)
             tickTextFormat = tickFormat
         a.recycle()
-        checkSpeedometerPercent()
         checkAccelerate()
         checkDecelerate()
         checkTrembleData()
@@ -364,10 +365,10 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         speedUnitTextCanvas = Canvas(speedUnitTextBitmap)
     }
 
-    private fun checkSpeedometerPercent() {
-        require(lowSpeedPercent <= mediumSpeedPercent) { "lowSpeedPercent must be smaller than mediumSpeedPercent" }
-        require(!(lowSpeedPercent > 100 || lowSpeedPercent < 0)) { "lowSpeedPercent must be between [0, 100]" }
-        require(!(mediumSpeedPercent > 100 || mediumSpeedPercent < 0)) { "mediumSpeedPercent must be between [0, 100]" }
+    private fun checkSectionsOffset() {
+        for (i in 1 until sections.size) {
+            require(sections[i-1].speedOffset <= sections[i].speedOffset) { "offset at section(${i-1}) must be smaller than next section's offset" }
+        }
     }
 
     private fun checkAccelerate() {
@@ -573,42 +574,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             invalidate()
         }
 
-    /**
-     * @return the long of low speed area (low section) as Offset [0, 1].
-     */
-    fun getLowSpeedOffset(): Float = lowSpeedPercent * .01f
-
-    /**
-     * @return the long of Medium speed area (Medium section) as Offset [0, 1].
-     */
-    fun getMediumSpeedOffset(): Float = mediumSpeedPercent * .01f
-
     val viewSize: Int
         get() = max(width, height)
 
     val viewSizePa: Int
         get() = max(widthPa, heightPa)
-
-    /**
-     * @return true if current speed in Low Section.
-     *
-     * @see setLowSpeedPercent
-     */
-    fun isInLowSection() = (maxSpeed - minSpeed) * getLowSpeedOffset() + minSpeed >= currentSpeed
-
-    /**
-     * @return true if current speed in Medium Section
-     * , and it is not in Low Section.
-     *
-     * @see setMediumSpeedPercent
-     */
-    fun isInMediumSection() = (maxSpeed - minSpeed) * getMediumSpeedOffset() + minSpeed >= currentSpeed && !isInLowSection()
-
-    /**
-     * @return true if current speed in High Section
-     * , and it is not in Low Section or Medium Section.
-     */
-    fun isInHighSection() = currentSpeed > (maxSpeed - minSpeed) * getMediumSpeedOffset() + minSpeed
 
     /**
      * Maybe null, change typeface for **speed and unit** text.
@@ -660,9 +630,10 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
 
         // check onSectionChangeEvent.
         val newSection = getSection()
-        if (section != newSection)
-            onSectionChangeEvent(section, newSection)
-        section = newSection
+        if (currentSection != newSection) {
+            onSectionChangeEvent(currentSection, newSection)
+            currentSection = newSection
+        }
     }
 
     /**
@@ -716,11 +687,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
 
     /**
      * Implement this method to handle section change event.
-     * @param oldSection where speed value came from.
+     * @param previousSection where speed value came from.
      * @param newSection where speed value move to.
      */
-    protected fun onSectionChangeEvent(oldSection: Byte, newSection: Byte) {
-        onSectionChangeListener?.onSectionChangeListener(oldSection, newSection)
+    protected fun onSectionChangeEvent(previousSection: Section?, newSection: Section?) {
+        onSectionChangeListener?.onSectionChangeListener(previousSection, newSection)
     }
 
     /**
@@ -1002,19 +973,19 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     override fun onSaveInstanceState(): Parcelable? {
-        super.onSaveInstanceState()
         val bundle = Bundle()
         bundle.putParcelable("superState", super.onSaveInstanceState())
         bundle.putFloat("speed", speed)
+        bundle.putParcelableArrayList("sections", sections)
         return bundle
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        var state_ = state
-        val bundle = state_ as Bundle?
-        speed = bundle!!.getFloat("speed")
-        state_ = bundle.getParcelable("superState")
-        super.onRestoreInstanceState(state_)
+        val bundle = state as Bundle
+        speed = bundle.getFloat("speed")
+        sections.clear()
+        addSections(bundle.getParcelableArrayList("sections")!!)
+        super.onRestoreInstanceState(bundle.getParcelable("superState"))
         setSpeedAt(speed)
     }
 
@@ -1136,22 +1107,24 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
-     * @return the long of low speed area (low section) as percent.
+     * add list of sections to the gauge,
+     * [sections] will be resorted by [Section.speedOffset].
+     * @throws IllegalArgumentException if section.speedOffset out of range.
      */
-    fun getLowSpeedPercent(): Int {
-        return lowSpeedPercent
+    fun addSections(vararg sections: Section) {
+        addSections(sections.asList())
     }
 
     /**
-     * to change low speed area (low section).
-     * @param lowSpeedPercent the long of low speed area as percent,
-     * must be between `[0,100]`.
-     * @throws IllegalArgumentException if `lowSpeedPercent` out of range.
-     * @throws IllegalArgumentException if `lowSpeedPercent > mediumSpeedPercent`.
+     * add list of sections to the gauge,
+     * [sections] will be resorted by [Section.speedOffset].
+     * @throws IllegalArgumentException if section.speedOffset out of range.
      */
-    fun setLowSpeedPercent(lowSpeedPercent: Int) {
-        this.lowSpeedPercent = lowSpeedPercent
-        checkSpeedometerPercent()
+    fun addSections(sections: List<Section>) {
+        sections.forEach {
+            this.sections.add(it.inGauge(this))
+        }
+        this.sections.sortBy { it.speedOffset }
         if (!attachedToWindow)
             return
         updateBackgroundBitmap()
@@ -1159,22 +1132,23 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
-     * @return the long of Medium speed area (Medium section) as percent.
+     * remove section from this gauge.
      */
-    fun getMediumSpeedPercent(): Int {
-        return mediumSpeedPercent
+    fun removeSection(section: Section?) {
+        section?.deleteObservers()
+        sections.remove(section)
+        if (!attachedToWindow)
+            return
+        updateBackgroundBitmap()
+        invalidate()
     }
 
     /**
-     * to change medium speed area (medium section).
-     * @param mediumSpeedPercent the long of medium speed area as percent,
-     * must be between `[0,100]`.
-     * @throws IllegalArgumentException if `mediumSpeedPercent` out of range.
-     * @throws IllegalArgumentException if `mediumSpeedPercent < lowSpeedPercent`.
+     * notification that an section has changed.
      */
-    fun setMediumSpeedPercent(mediumSpeedPercent: Int) {
-        this.mediumSpeedPercent = mediumSpeedPercent
-        checkSpeedometerPercent()
+    override fun update(section: Observable?, isPercentChanged: Any?) {
+        if (isPercentChanged as Boolean)
+            this.sections.sortBy { it.speedOffset }
         if (!attachedToWindow)
             return
         updateBackgroundBitmap()
@@ -1192,15 +1166,14 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
-     * @return current section,
-     * used in condition : `if (speedometer.getSection() == speedometer.LOW_SECTION)`.
+     * @return calculate current section.
      */
-    fun getSection(): Byte {
-        return when {
-            isInLowSection() -> LOW_SECTION
-            isInMediumSection() -> MEDIUM_SECTION
-            else -> HIGH_SECTION
+    private fun getSection(): Section? {
+        sections.forEach {
+            if ((maxSpeed - minSpeed) * it.speedOffset + minSpeed >= currentSpeed)
+                return it
         }
+        return null
     }
 
     /**
