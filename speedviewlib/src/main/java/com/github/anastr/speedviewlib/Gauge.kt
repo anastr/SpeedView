@@ -1144,6 +1144,18 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
+     * remove all sections.
+     */
+    fun clearSections() {
+        sections.forEach { it.deleteObservers() }
+        sections.clear()
+        if (!attachedToWindow)
+            return
+        updateBackgroundBitmap()
+        invalidate()
+    }
+
+    /**
      * notification that an section has changed.
      */
     override fun update(section: Observable?, isPercentChanged: Any?) {
