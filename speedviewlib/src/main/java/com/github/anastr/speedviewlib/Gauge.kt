@@ -1132,6 +1132,24 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
+     * clear all [sections],
+     * and add [numberOfSections] equal to each other.
+     */
+    fun makeSections(numberOfSections: Int) {
+        sections.forEach { it.deleteObservers() }
+        sections.clear()
+        var part = 1f / numberOfSections
+        for (i in 0 until numberOfSections) {
+            sections.add(Section(part, 0).inGauge(this))
+            part += (1f / numberOfSections)
+        }
+        if (!attachedToWindow)
+            return
+        updateBackgroundBitmap()
+        invalidate()
+    }
+
+    /**
      * remove section from this gauge.
      */
     fun removeSection(section: Section?) {
