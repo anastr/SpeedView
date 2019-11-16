@@ -140,7 +140,6 @@
 
     <declare-styleable name="TubeSpeedometer" parent="Speedometer">
         <attr name="sv_speedometerBackColor" />
-        <attr name="sv_withEffects3D" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="ImageSpeedometer" parent="Speedometer">

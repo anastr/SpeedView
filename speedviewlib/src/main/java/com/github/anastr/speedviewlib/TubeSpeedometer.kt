@@ -2,7 +2,6 @@ package com.github.anastr.speedviewlib
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.EmbossMaskFilter
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
@@ -18,21 +17,11 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
     private val tubeBacPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedometerRect = RectF()
 
-    private var withEffects3D = true
 
     var speedometerBackColor: Int
         get() = tubeBacPaint.color
         set(speedometerBackColor) {
             tubeBacPaint.color = speedometerBackColor
-            updateBackgroundBitmap()
-            invalidate()
-        }
-
-    var isWithEffects3D: Boolean
-        get() = withEffects3D
-        set(withEffects3D) {
-            this.withEffects3D = withEffects3D
-            updateEmboss()
             updateBackgroundBitmap()
             invalidate()
         }
@@ -68,31 +57,13 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.TubeSpeedometer, 0, 0)
 
         tubeBacPaint.color = a.getColor(R.styleable.TubeSpeedometer_sv_speedometerBackColor, tubeBacPaint.color)
-        withEffects3D = a.getBoolean(R.styleable.TubeSpeedometer_sv_withEffects3D, withEffects3D)
         a.recycle()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
         super.onSizeChanged(w, h, oldW, oldH)
 
-        updateEmboss()
         updateBackgroundBitmap()
-    }
-
-    private fun updateEmboss() {
-        if (isInEditMode)
-            return
-        if (!withEffects3D) {
-            tubePaint.maskFilter = null
-            tubeBacPaint.maskFilter = null
-            return
-        }
-        val embossMaskFilter = EmbossMaskFilter(
-                floatArrayOf(.5f, 1f, 1f), .6f, 3f, pxTOdp(getSpeedometerWidth()) * .35f)
-        tubePaint.maskFilter = embossMaskFilter
-        val embossMaskFilterBac = EmbossMaskFilter(
-                floatArrayOf(-.5f, -1f, 0f), .6f, 1f, pxTOdp(getSpeedometerWidth()) * .35f)
-        tubeBacPaint.maskFilter = embossMaskFilterBac
     }
 
     private fun initDraw() {
