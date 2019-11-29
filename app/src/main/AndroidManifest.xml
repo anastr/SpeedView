@@ -8,6 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".SectionActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,7 +33,7 @@
         <activity android:name=".lineargauge.ProgressiveGaugeActivity" />
         <activity android:name=".lineargauge.ImageLinearGaugeActivity" />
         <activity android:name=".TickActivity" />
-        <activity android:name=".RecyclerActivity"></activity>
+        <activity android:name=".RecyclerActivity" />
     </application>
 
 </manifest>

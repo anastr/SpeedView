@@ -2,11 +2,12 @@ package com.github.anastr.speedview;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedview.lineargauge.ImageLinearGaugeActivity;
 import com.github.anastr.speedview.lineargauge.ProgressiveGaugeActivity;
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "Work With Modes",
                 "Speed Text Position",
                 "Work With Ticks",
-                "SpeedView with Recycler"
+                "SpeedView with Recycler",
+                "Sections"
         };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -101,6 +103,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 16:
                 intent.setClass(MainActivity.this, RecyclerActivity.class);
+                break;
+            case 17:
+                intent.setClass(MainActivity.this, SectionActivity.class);
                 break;
         }
         startActivity(intent);

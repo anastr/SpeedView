@@ -3,7 +3,6 @@ package com.github.anastr.speedview;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -11,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.note.ImageNote;
@@ -35,6 +36,10 @@ public class WorkWithNoteActivity extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
         ok = findViewById(R.id.ok);
         textSpeed = findViewById(R.id.textSpeed);
+
+        speedView.getSections().get(0).setColor(Color.parseColor("#64DD17"));
+        speedView.getSections().get(1).setColor(Color.parseColor("#FFAB00"));
+        speedView.getSections().get(2).setColor(Color.parseColor("#F44336"));
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override

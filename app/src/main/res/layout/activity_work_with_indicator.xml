@@ -23,16 +23,11 @@
         app:sv_textSize="8sp"
         app:sv_startDegree="110"
         app:sv_endDegree="430"
-        app:sv_lowSpeedPercent="50"
-        app:sv_mediumSpeedPercent="78"
         app:sv_speedometerWidth="45dp"
         app:sv_indicator="NormalIndicator"
         app:sv_indicatorWidth="20dp"
         app:sv_centerCircleColor="#0000"
-        app:sv_indicatorColor="#df4346"
-        app:sv_lowSpeedColor="#4bbbc7"
-        app:sv_mediumSpeedColor="#ba682d"
-        app:sv_highSpeedColor="#c2308d" />
+        app:sv_indicatorColor="#df4346" />
 
     <LinearLayout
         android:layout_width="match_parent"

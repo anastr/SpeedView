@@ -1,7 +1,6 @@
 package com.github.anastr.speedview;
 
 import android.graphics.Color;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -9,6 +8,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedviewlib.SpeedView;
 
@@ -118,7 +119,7 @@ public class ControlActivity extends AppCompatActivity {
     public void setLowSpeedColor(View view) {
         EditText lowSpeedColor = findViewById(R.id.lowSpeedColor);
         try{
-            speedView.setLowSpeedColor(Color.parseColor(lowSpeedColor.getText().toString()));
+            speedView.getSections().get(0).setColor(Color.parseColor(lowSpeedColor.getText().toString()));
         } catch (Exception e) {
             lowSpeedColor.setError(e.getMessage());
         }
@@ -127,7 +128,7 @@ public class ControlActivity extends AppCompatActivity {
     public void setMediumSpeedColor(View view) {
         EditText mediumSpeedColor = findViewById(R.id.mediumSpeedColor);
         try{
-            speedView.setMediumSpeedColor(Color.parseColor(mediumSpeedColor.getText().toString()));
+            speedView.getSections().get(1).setColor(Color.parseColor(mediumSpeedColor.getText().toString()));
         } catch (Exception e) {
             mediumSpeedColor.setError(e.getMessage());
         }
@@ -136,7 +137,7 @@ public class ControlActivity extends AppCompatActivity {
     public void setHighSpeedColor(View view) {
         EditText highSpeedColor = findViewById(R.id.highSpeedColor);
         try{
-            speedView.setHighSpeedColor(Color.parseColor(highSpeedColor.getText().toString()));
+            speedView.getSections().get(2).setColor(Color.parseColor(highSpeedColor.getText().toString()));
         } catch (Exception e) {
             highSpeedColor.setError(e.getMessage());
         }
