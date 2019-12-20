@@ -20,7 +20,7 @@ class ImageLinearGauge @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     override fun defaultGaugeValues() {
-        super.setSpeedTextPosition(Position.CENTER)
+        super.speedTextPosition = Position.CENTER
         super.unitUnderSpeedText = true
     }
 

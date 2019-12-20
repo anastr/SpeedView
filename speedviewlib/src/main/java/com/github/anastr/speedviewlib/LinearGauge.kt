@@ -26,11 +26,10 @@ abstract class LinearGauge @JvmOverloads constructor(context: Context, attrs: At
     var orientation = Orientation.HORIZONTAL
         set(orientation) {
             field = orientation
-            if (!isAttachedToWindow)
-                return
-            requestLayout()
-            updateBackgroundBitmap()
-            invalidate()
+            if (isAttachedToWindow) {
+                requestLayout()
+                invalidateGauge()
+            }
         }
 
     init {

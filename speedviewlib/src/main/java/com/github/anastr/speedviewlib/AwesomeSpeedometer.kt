@@ -24,8 +24,20 @@ class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         get() = trianglesPaint.color
         set(trianglesColor) {
             trianglesPaint.color = trianglesColor
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
+        }
+
+    override var speedometerWidth
+        get() = super.speedometerWidth
+        set(speedometerWidth) {
+            super.speedometerWidth = speedometerWidth
+            // in case AwesomeSpeedometer not initialized
+            if (speedometerRect != null) {
+                val risk = speedometerWidth * .5f
+                speedometerRect.set(risk, risk, size - risk, size - risk)
+                updateGradient()
+                invalidateGauge()
+            }
         }
 
     init {
@@ -39,19 +51,19 @@ class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         super.speedTextColor = -0x1
         super.unitTextColor = -0x1
         super.textTypeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        super.setSpeedTextPosition(Position.CENTER)
+        super.speedTextPosition = Position.CENTER
         super.unitUnderSpeedText = true
     }
 
     override fun defaultSpeedometerValues() {
-        super.setIndicator(TriangleIndicator(context)
+        indicator = TriangleIndicator(context)
                 .setIndicatorWidth(dpTOpx(25f))
-                .setIndicatorColor(-0xff191a))
+                .setIndicatorColor(-0xff191a)
         super.setStartEndDegree(135, 135 + 320)
-        super.setSpeedometerWidth(dpTOpx(60f))
+        super.speedometerWidth = dpTOpx(60f)
         super.backgroundCircleColor = -0xdededf
         super.tickNumber = 9
-        super.setTickPadding(0)
+        super.tickPadding = 0
     }
 
     private fun init() {
@@ -79,7 +91,7 @@ class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun updateGradient() {
-        val stop = (sizePa * .5f - getSpeedometerWidth()) / (sizePa * .5f)
+        val stop = (sizePa * .5f - speedometerWidth) / (sizePa * .5f)
         val stop2 = stop + (1f - stop) * .1f
         val stop3 = stop + (1f - stop) * .36f
         val stop4 = stop + (1f - stop) * .64f
@@ -90,7 +102,7 @@ class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun initDraw() {
-        ringPaint.strokeWidth = getSpeedometerWidth()
+        ringPaint.strokeWidth = speedometerWidth
         markPaint.color = markColor
     }
 
@@ -121,7 +133,7 @@ class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         trianglesPath.lineTo(size * .5f - triangleWidth / 2f, padding.toFloat())
         trianglesPath.lineTo(size * .5f + triangleWidth / 2f, padding.toFloat())
 
-        val risk = getSpeedometerWidth() * .5f + padding
+        val risk = speedometerWidth * .5f + padding
         speedometerRect.set(risk, risk, size - risk, size - risk)
         c.drawArc(speedometerRect, 0f, 360f, false, ringPaint)
 
@@ -131,14 +143,14 @@ class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
 
     protected fun drawMarks(c: Canvas) {
         for (i in 0 until tickNumber) {
-            val d = getDegreeAtSpeed(getTicks()[i]) + 90f
+            val d = getDegreeAtSpeed(ticks[i]) + 90f
             c.save()
             c.rotate(d, size * .5f, size * .5f)
 
             c.drawPath(trianglesPath, trianglesPaint)
             if (i + 1 != tickNumber) {
                 c.save()
-                val d2 = getDegreeAtSpeed(getTicks()[i + 1]) + 90f
+                val d2 = getDegreeAtSpeed(ticks[i + 1]) + 90f
                 val eachDegree = d2 - d
                 for (j in 1..9) {
                     c.rotate(eachDegree * .1f, size * .5f, size * .5f)
@@ -154,15 +166,6 @@ class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
-    override fun setSpeedometerWidth(speedometerWidth: Float) {
-        super.setSpeedometerWidth(speedometerWidth)
-        val risk = speedometerWidth * .5f
-        speedometerRect.set(risk, risk, size - risk, size - risk)
-        updateGradient()
-        updateBackgroundBitmap()
-        invalidate()
-    }
-
     fun getSpeedometerColor(): Int {
         return speedometerColor
     }
@@ -170,7 +173,6 @@ class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
     fun setSpeedometerColor(speedometerColor: Int) {
         this.speedometerColor = speedometerColor
         updateGradient()
-        updateBackgroundBitmap()
-        invalidate()
+        invalidateGauge()
     }
 }

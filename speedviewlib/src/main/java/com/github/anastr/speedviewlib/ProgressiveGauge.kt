@@ -25,10 +25,7 @@ class ProgressiveGauge @JvmOverloads constructor(context: Context, attrs: Attrib
         get() = frontPaint.color
         set(speedometerColor) {
             frontPaint.color = speedometerColor
-            if (!isAttachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     /**
@@ -39,10 +36,7 @@ class ProgressiveGauge @JvmOverloads constructor(context: Context, attrs: Attrib
         get() = backPaint.color
         set(speedometerBackColor) {
             backPaint.color = speedometerBackColor
-            if (!isAttachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     init {
@@ -51,7 +45,7 @@ class ProgressiveGauge @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     override fun defaultGaugeValues() {
-        super.setSpeedTextPosition(Position.CENTER)
+        super.speedTextPosition = Position.CENTER
         super.unitUnderSpeedText = true
     }
 

@@ -32,9 +32,8 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         get() = circlePaint.color
         set(centerCircleColor) {
             circlePaint.color = centerCircleColor
-            if (!isAttachedToWindow)
-                return
-            invalidate()
+            if (isAttachedToWindow)
+                invalidate()
         }
 
     /**
@@ -49,9 +48,8 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         get() = withPointer
         set(withPointer) {
             this.withPointer = withPointer
-            if (!isAttachedToWindow)
-                return
-            invalidate()
+            if (isAttachedToWindow)
+                 invalidate()
         }
 
     init {
@@ -69,11 +67,11 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     override fun defaultSpeedometerValues() {
-        super.setIndicator(SpindleIndicator(context)
+        indicator = SpindleIndicator(context)
                 .setIndicatorWidth(dpTOpx(16f))
-                .setIndicatorColor(-0x1))
+                .setIndicatorColor(-0x1)
         super.backgroundCircleColor = -0xb73317
-        super.setSpeedometerWidth(dpTOpx(10f))
+        super.speedometerWidth = dpTOpx(10f)
     }
 
     private fun init() {
@@ -108,7 +106,7 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
         super.onSizeChanged(w, h, oldW, oldH)
 
-        val risk = getSpeedometerWidth() * .5f + dpTOpx(8f) + padding.toFloat()
+        val risk = speedometerWidth * .5f + dpTOpx(8f) + padding.toFloat()
         speedometerRect.set(risk, risk, size - risk, size - risk)
 
         updateRadial()
@@ -116,7 +114,7 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun initDraw() {
-        speedometerPaint.strokeWidth = getSpeedometerWidth()
+        speedometerPaint.strokeWidth = speedometerWidth
         speedometerPaint.shader = updateSweep()
         markPaint.color = markColor
     }
@@ -130,8 +128,8 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         if (withPointer) {
             canvas.save()
             canvas.rotate(90 + degree, size * .5f, size * .5f)
-            canvas.drawCircle(size * .5f, getSpeedometerWidth() * .5f + dpTOpx(8f) + padding.toFloat(), getSpeedometerWidth() * .5f + dpTOpx(8f), pointerBackPaint)
-            canvas.drawCircle(size * .5f, getSpeedometerWidth() * .5f + dpTOpx(8f) + padding.toFloat(), getSpeedometerWidth() * .5f + dpTOpx(1f), pointerPaint)
+            canvas.drawCircle(size * .5f, speedometerWidth * .5f + dpTOpx(8f) + padding.toFloat(), speedometerWidth * .5f + dpTOpx(8f), pointerBackPaint)
+            canvas.drawCircle(size * .5f, speedometerWidth * .5f + dpTOpx(8f) + padding.toFloat(), speedometerWidth * .5f + dpTOpx(1f), pointerPaint)
             canvas.restore()
         }
 
@@ -152,8 +150,8 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         initDraw()
 
         markPath.reset()
-        markPath.moveTo(size * .5f, getSpeedometerWidth() + dpTOpx(8f) + dpTOpx(4f) + padding.toFloat())
-        markPath.lineTo(size * .5f, getSpeedometerWidth() + dpTOpx(8f) + dpTOpx(4f) + padding.toFloat() + (size / 60).toFloat())
+        markPath.moveTo(size * .5f, speedometerWidth + dpTOpx(8f) + dpTOpx(4f) + padding.toFloat())
+        markPath.lineTo(size * .5f, speedometerWidth + dpTOpx(8f) + dpTOpx(4f) + padding.toFloat() + (size / 60).toFloat())
 
         c.save()
         c.rotate(90f + getStartDegree(), size * .5f, size * .5f)
@@ -188,7 +186,7 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
     private fun updateRadial() {
         val centerColor = Color.argb(160, Color.red(pointerColor), Color.green(pointerColor), Color.blue(pointerColor))
         val edgeColor = Color.argb(10, Color.red(pointerColor), Color.green(pointerColor), Color.blue(pointerColor))
-        val pointerGradient = RadialGradient(size * .5f, getSpeedometerWidth() * .5f + dpTOpx(8f) + padding.toFloat(), getSpeedometerWidth() * .5f + dpTOpx(8f), intArrayOf(centerColor, edgeColor), floatArrayOf(.4f, 1f), Shader.TileMode.CLAMP)
+        val pointerGradient = RadialGradient(size * .5f, speedometerWidth * .5f + dpTOpx(8f) + padding.toFloat(), speedometerWidth * .5f + dpTOpx(8f), intArrayOf(centerColor, edgeColor), floatArrayOf(.4f, 1f), Shader.TileMode.CLAMP)
         pointerBackPaint.shader = pointerGradient
     }
 
@@ -198,7 +196,8 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
 
     fun setSpeedometerColor(speedometerColor: Int) {
         this.speedometerColor = speedometerColor
-        invalidate()
+        if (isAttachedToWindow)
+            invalidate()
     }
 
     fun getPointerColor(): Int {
@@ -209,6 +208,7 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         this.pointerColor = pointerColor
         pointerPaint.color = pointerColor
         updateRadial()
-        invalidate()
+        if (isAttachedToWindow)
+            invalidate()
     }
 }

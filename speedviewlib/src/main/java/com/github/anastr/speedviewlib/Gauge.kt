@@ -30,8 +30,13 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     protected var textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     private val speedTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     private val unitTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
-    /** the text after speedText  */
+    /** unit text, the text after speed text.  */
     private var unit = "Km/h"
+        set(unit) {
+            field = unit
+            if (attachedToWindow)
+                invalidate()
+        }
 
     /**
      * automatically increase and decrease speed value around the [speed]
@@ -49,9 +54,23 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             tremble()
         }
 
-    /** the max range in speedometer, `default = 100`  */
+    /**
+     * the max range in speedometer, `default = 100`.
+     *
+     * any change will move [currentSpeed] to its new position
+     * immediately without animation.
+     *
+     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
+     */
     private var maxSpeed = 100f
-    /** the min range in speedometer, `default = 0`  */
+    /**
+     * the min range in speedometer, `default = 0`.
+     *
+     * any change will move [currentSpeed] to its new position
+     * immediately without animation.
+     *
+     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
+     */
     private var minSpeed = 0f
 
     /**
@@ -117,8 +136,17 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     private lateinit var trembleAnimator: ValueAnimator
     private lateinit var realSpeedAnimator: ValueAnimator
     private var canceled = false
-    private var onSpeedChangeListener: OnSpeedChangeListener? = null
-    private var onSectionChangeListener: OnSectionChangeListener? = null
+    /**
+     * Register a callback to be invoked when speed value changed (in integer).
+     * maybe null.
+     */
+    var onSpeedChangeListener: OnSpeedChangeListener? = null
+    /**
+     * Register a callback to be invoked when
+     * [section](https://github.com/anastr/SpeedView/wiki/Usage#control-division-of-the-speedometer) changed.
+     * maybe null.
+     */
+    var onSectionChangeListener: OnSectionChangeListener? = null
     /** this animatorListener to call [.tremble] method when animator done  */
     private lateinit var animatorListener: Animator.AnimatorListener
 
@@ -152,10 +180,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     var speedometerTextRightToLeft = false
         set(speedometerTextRightToLeft) {
             field = speedometerTextRightToLeft
-            if (!attachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     private var attachedToWindow = false
@@ -179,9 +204,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     var locale: Locale = Locale.getDefault()
         set(locale) {
             field = locale
-            if (!attachedToWindow)
-                return
-            invalidate()
+            if (attachedToWindow)
+                invalidate()
         }
 
     /**
@@ -212,10 +236,33 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             checkDecelerate()
         }
 
-    private var speedTextPosition = Position.BOTTOM_CENTER
-    /** space between unitText and speedText  */
+    /**
+     * change position of speed and Unit Text.
+     * @param position new Position (enum value).
+     */
+    var speedTextPosition = Position.BOTTOM_CENTER
+        set(speedTextPosition) {
+            field = speedTextPosition
+            invalidateGauge()
+        }
+
+    /** space between speedText and unitText in pixel.  */
     private var unitSpeedInterval = dpTOpx(1f)
+        set(unitSpeedInterval) {
+            field = unitSpeedInterval
+            invalidateGauge()
+        }
+
+    /**
+     * Speed-Unit Text padding in pixel,
+     * this value will be ignored if `{ #speedTextPosition} == Position.CENTER`.
+     */
     private var speedTextPadding = dpTOpx(20f)
+        set(speedTextPadding) {
+            field = speedTextPadding
+            if (attachedToWindow)
+                invalidate()
+        }
 
     /**
      * to make Unit Text under Speed Text.
@@ -233,10 +280,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
                 speedTextPaint.textAlign = Paint.Align.LEFT
                 unitTextPaint.textAlign = Paint.Align.LEFT
             }
-            if (!attachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     // just initialize to avoid NullPointerException
@@ -252,10 +296,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     var speedTextFormat = FLOAT_FORMAT.toInt()
         set(speedTextFormat) {
             field = speedTextFormat
-            if (!attachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     /**
@@ -267,10 +308,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     var tickTextFormat = INTEGER_FORMAT.toInt()
         set(tickTextFormat) {
             field = tickTextFormat
-            if (!attachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     init {
@@ -344,7 +382,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             textTypeface = Typeface.createFromAsset(getContext().assets, typefacePath)
         val position = a.getInt(R.styleable.Gauge_sv_speedTextPosition, -1)
         if (position != -1)
-            setSpeedTextPosition(Position.values()[position])
+            speedTextPosition = Position.values()[position]
         val speedFormat = a.getInt(R.styleable.Gauge_sv_speedTextFormat, -1)
         if (speedFormat != -1)
             speedTextFormat = speedFormat
@@ -440,9 +478,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     private fun getSpeedUnitTextWidth(): Float =
         if (unitUnderSpeedText)
-            max(speedTextPaint.measureText(getSpeedText()), unitTextPaint.measureText(getUnit()))
+            max(speedTextPaint.measureText(getSpeedText()), unitTextPaint.measureText(unit))
         else
-            speedTextPaint.measureText(getSpeedText()) + unitTextPaint.measureText(getUnit()) + unitSpeedInterval
+            speedTextPaint.measureText(getSpeedText()) + unitTextPaint.measureText(unit) + unitSpeedInterval
 
     /**
      * @return the height of speed & unit text at runtime.
@@ -489,10 +527,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         get() = textPaint.color
         set(textColor) {
             textPaint.color = textColor
-            if (!attachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     /**
@@ -505,9 +540,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         get() = speedTextPaint.color
         set(speedTextColor) {
             speedTextPaint.color = speedTextColor
-            if (!attachedToWindow)
-                return
-            invalidate()
+            if (attachedToWindow)
+                invalidate()
         }
 
     /**
@@ -520,9 +554,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         get() = unitTextPaint.color
         set(unitTextColor) {
             unitTextPaint.color = unitTextColor
-            if (!attachedToWindow)
-                return
-            invalidate()
+            if (attachedToWindow)
+                invalidate()
         }
 
     /**
@@ -536,9 +569,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         get() = textPaint.textSize
         set(textSize) {
             textPaint.textSize = textSize
-            if (!attachedToWindow)
-                return
-            invalidate()
+            if (attachedToWindow)
+                invalidate()
         }
 
     /**
@@ -552,9 +584,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         get() = speedTextPaint.textSize
         set(speedTextSize) {
             speedTextPaint.textSize = speedTextSize
-            if (!attachedToWindow)
-                return
-            invalidate()
+            if (attachedToWindow)
+                invalidate()
         }
 
     /**
@@ -568,10 +599,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         get() = unitTextPaint.textSize
         set(unitTextSize) {
             unitTextPaint.textSize = unitTextSize
-            if (!attachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     val viewSize: Int
@@ -588,10 +616,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         set(typeface) {
             speedTextPaint.typeface = typeface
             unitTextPaint.typeface = typeface
-            if (!attachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     /**
@@ -601,10 +626,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         get() = textPaint.typeface
         set(typeface) {
             textPaint.typeface = typeface
-            if (!attachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     override fun onDraw(canvas: Canvas) {
@@ -629,7 +651,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         currentIntSpeed = newSpeed
 
         // check onSectionChangeEvent.
-        val newSection = getSection()
+        val newSection = findSection()
         if (currentSection != newSection) {
             onSectionChangeEvent(currentSection, newSection)
             currentSection = newSection
@@ -999,7 +1021,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     fun setTrembleData(trembleDegree: Float, trembleDuration: Int) {
         this.trembleDegree = trembleDegree
         this.trembleDuration = trembleDuration
-        checkTrembleData()
     }
 
     /**
@@ -1065,45 +1086,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         cancelSpeedAnimator()
         this.minSpeed = minSpeed
         this.maxSpeed = maxSpeed
-        if (!attachedToWindow)
-            return
-        updateBackgroundBitmap()
-        setSpeedAt(speed)
-    }
-
-    /**
-     * @return unit text.
-     */
-    fun getUnit(): String {
-        return unit
-    }
-
-    /**
-     * unit text, the text after speed text.
-     * @param unit unit text.
-     */
-    fun setUnit(unit: String) {
-        this.unit = unit
-        if (!attachedToWindow)
-            return
-        invalidate()
-    }
-
-    /**
-     * Register a callback to be invoked when speed value changed (in integer).
-     * @param onSpeedChangeListener maybe null, The callback that will run.
-     */
-    fun setOnSpeedChangeListener(onSpeedChangeListener: OnSpeedChangeListener) {
-        this.onSpeedChangeListener = onSpeedChangeListener
-    }
-
-    /**
-     * Register a callback to be invoked when
-     * [section](https://github.com/anastr/SpeedView/wiki/Usage#control-division-of-the-speedometer) changed.
-     * @param onSectionChangeListener maybe null, The callback that will run.
-     */
-    fun setOnSectionChangeListener(onSectionChangeListener: OnSectionChangeListener) {
-        this.onSectionChangeListener = onSectionChangeListener
+        invalidateGauge()
+        if (attachedToWindow)
+            setSpeedAt(speed)
     }
 
     /**
@@ -1125,14 +1110,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             this.sections.add(it.inGauge(this))
         }
         this.sections.sortBy { it.speedOffset }
-        if (!attachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
+        invalidateGauge()
     }
 
     /**
-     * clear all [sections],
+     * clear old [sections],
      * and add [numberOfSections] equal to each other.
      */
     fun makeSections(numberOfSections: Int) {
@@ -1143,10 +1125,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             sections.add(Section(part, 0).inGauge(this))
             part += (1f / numberOfSections)
         }
-        if (!attachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
+        invalidateGauge()
     }
 
     /**
@@ -1155,10 +1134,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     fun removeSection(section: Section?) {
         section?.deleteObservers()
         sections.remove(section)
-        if (!attachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
+        invalidateGauge()
     }
 
     /**
@@ -1167,10 +1143,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     fun clearSections() {
         sections.forEach { it.deleteObservers() }
         sections.clear()
-        if (!attachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
+        invalidateGauge()
     }
 
     /**
@@ -1179,10 +1152,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     override fun update(section: Observable?, isPercentChanged: Any?) {
         if (isPercentChanged as Boolean)
             this.sections.sortBy { it.speedOffset }
-        if (!attachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
+        invalidateGauge()
     }
 
     override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
@@ -1198,7 +1168,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     /**
      * @return calculate current section.
      */
-    private fun getSection(): Section? {
+    private fun findSection(): Section? {
         sections.forEach {
             if ((maxSpeed - minSpeed) * it.speedOffset + minSpeed >= currentSpeed)
                 return it
@@ -1214,53 +1184,13 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
-     * @return the space between Speed Text and Unit Text.
+     * redraw the Gauge.
      */
-    fun getUnitSpeedInterval(): Float {
-        return unitSpeedInterval
-    }
-
-    /**
-     * change space between speedText and UnitText.
-     * @param unitSpeedInterval new space in pixel.
-     */
-    fun setUnitSpeedInterval(unitSpeedInterval: Float) {
-        this.unitSpeedInterval = unitSpeedInterval
-        if (!attachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
-    }
-
-    /**
-     * @return Speed-Unit Text padding.
-     */
-    fun getSpeedTextPadding(): Float {
-        return speedTextPadding
-    }
-
-    /**
-     * change the Speed-Unit Text padding,
-     * this value will ignore if `{ #speedTextPosition} == Position.CENTER`.
-     * @param speedTextPadding padding in pixel.
-     */
-    fun setSpeedTextPadding(speedTextPadding: Float) {
-        this.speedTextPadding = speedTextPadding
-        if (!attachedToWindow)
-            return
-        invalidate()
-    }
-
-    /**
-     * change position of speed and Unit Text.
-     * @param position new Position (enum value).
-     */
-    fun setSpeedTextPosition(position: Position) {
-        this.speedTextPosition = position
-        if (!attachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
+    fun invalidateGauge() {
+        if (attachedToWindow) {
+            updateBackgroundBitmap()
+            invalidate()
+        }
     }
 
     /**
@@ -1283,10 +1213,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     companion object {
-
-        const val LOW_SECTION: Byte = 1
-        const val MEDIUM_SECTION: Byte = 2
-        const val HIGH_SECTION: Byte = 3
 
         /** draw speed text as **integer** . */
         const val INTEGER_FORMAT: Byte = 0

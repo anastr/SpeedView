@@ -28,9 +28,8 @@ class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         get() = circlePaint.color
         set(centerCircleColor) {
             circlePaint.color = centerCircleColor
-            if (!isAttachedToWindow)
-                return
-            invalidate()
+            if (isAttachedToWindow)
+                invalidate()
         }
 
     init {
@@ -41,7 +40,7 @@ class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     override fun defaultGaugeValues() {}
 
     override fun defaultSpeedometerValues() {
-        super.setIndicator(NormalIndicator(context))
+        indicator = NormalIndicator(context)
         super.backgroundCircleColor = 0
     }
 
@@ -68,7 +67,7 @@ class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     private fun initDraw() {
-        speedometerPaint.strokeWidth = getSpeedometerWidth()
+        speedometerPaint.strokeWidth = speedometerWidth
         markPaint.color = markColor
     }
 
@@ -93,7 +92,7 @@ class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         markPath.lineTo(size * .5f, markH + padding)
         markPaint.strokeWidth = markH / 3f
 
-        val risk = getSpeedometerWidth() * .5f + padding
+        val risk = speedometerWidth * .5f + padding
         speedometerRect.set(risk, risk, size - risk, size - risk)
 
         for (i in sections.size-1 downTo 0) {

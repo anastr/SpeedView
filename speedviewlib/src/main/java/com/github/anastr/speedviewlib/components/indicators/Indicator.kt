@@ -78,7 +78,7 @@ abstract class Indicator<I : Indicator<I>> protected constructor(context: Contex
 
     private fun updateData(speedometer: Speedometer) {
         this.viewSize = speedometer.size.toFloat()
-        this.speedometerWidth = speedometer.getSpeedometerWidth()
+        this.speedometerWidth = speedometer.speedometerWidth
         this.padding = speedometer.padding
         this.isInEditMode = speedometer.isInEditMode
     }

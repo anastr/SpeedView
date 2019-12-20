@@ -43,16 +43,14 @@ class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Attribut
                 activeMarkPaint.maskFilter = null
                 speedBackgroundPaint.maskFilter = null
             }
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     var speedBackgroundColor: Int
         get() = speedBackgroundPaint.color
         set(speedBackgroundColor) {
             speedBackgroundPaint.color = speedBackgroundColor
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     var markWidth: Float
@@ -60,15 +58,15 @@ class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Attribut
         set(markWidth) {
             markPaint.strokeWidth = markWidth
             activeMarkPaint.strokeWidth = markWidth
-            invalidate()
+            if (isAttachedToWindow)
+                invalidate()
         }
 
     var rayColor: Int
         get() = rayPaint.color
         set(rayColor) {
             rayPaint.color = rayColor
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
 //    /**
@@ -212,7 +210,7 @@ class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun updateMarkPath() {
         markPath.reset()
         markPath.moveTo(size * .5f, padding.toFloat())
-        markPath.lineTo(size * .5f, getSpeedometerWidth() + padding)
+        markPath.lineTo(size * .5f, speedometerWidth + padding)
     }
 
     override fun setIndicator(indicator: Indicator.Indicators) {
@@ -235,6 +233,7 @@ class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Attribut
         if (degreeBetweenMark <= 0 || degreeBetweenMark > 20)
             return
         this.degreeBetweenMark = degreeBetweenMark
-        invalidate()
+        if (isAttachedToWindow)
+            invalidate()
     }
 }

@@ -22,8 +22,7 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
         get() = tubeBacPaint.color
         set(speedometerBackColor) {
             tubeBacPaint.color = speedometerBackColor
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     init {
@@ -39,7 +38,7 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
 
     override fun defaultSpeedometerValues() {
         super.backgroundCircleColor = 0
-        super.setSpeedometerWidth(dpTOpx(40f))
+        super.speedometerWidth = dpTOpx(40f)
     }
 
     private fun init() {
@@ -67,7 +66,7 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     private fun initDraw() {
-        tubePaint.strokeWidth = getSpeedometerWidth()
+        tubePaint.strokeWidth = speedometerWidth
         if (currentSection != null)
             tubePaint.color = currentSection!!.color
         else
@@ -88,9 +87,9 @@ class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attribu
 
     override fun updateBackgroundBitmap() {
         val c = createBackgroundBitmapCanvas()
-        tubeBacPaint.strokeWidth = getSpeedometerWidth()
+        tubeBacPaint.strokeWidth = speedometerWidth
 
-        val risk = getSpeedometerWidth() * .5f + padding
+        val risk = speedometerWidth * .5f + padding
         speedometerRect.set(risk, risk, size - risk, size - risk)
 
         c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()).toFloat(), false, tubeBacPaint)

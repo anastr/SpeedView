@@ -12,6 +12,7 @@ import com.github.anastr.speedviewlib.components.note.Note
 import com.github.anastr.speedviewlib.util.OnPrintTickLabel
 import java.util.*
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.text.Typography.degree
 
@@ -21,8 +22,19 @@ import kotlin.text.Typography.degree
  */
 abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Gauge(context, attrs, defStyleAttr) {
 
-    /** needle point to [currentSpeed], cannot be null  */
-    private lateinit var indicator: Indicator<*>
+    /**
+     * needle point to [currentSpeed], cannot be null
+     *
+     * add custom [indicator](https://github.com/anastr/SpeedView/wiki/Indicators).
+     */
+    var indicator: Indicator<*> = NoIndicator(context)
+        set(indicator) {
+            field = indicator
+            if (isAttachedToWindow) {
+                this.indicator.setTargetSpeedometer(this)
+                invalidate()
+            }
+        }
 
     /**
      * light effect behind the [indicator].
@@ -38,7 +50,17 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     private val circleBackPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val indicatorLightPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-    private var speedometerWidth = dpTOpx(30f)
+    /**
+     * the width of speedometer's bar in pixel.
+     */
+    open var speedometerWidth = dpTOpx(30f)
+        set(speedometerWidth) {
+            field = speedometerWidth
+            if (isAttachedToWindow) {
+                indicator.noticeSpeedometerWidthChange(speedometerWidth)
+                invalidateGauge()
+            }
+        }
 
     /**
      * change the color of all marks (if exist),
@@ -47,9 +69,8 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     var markColor = -0x1
         set(markColor) {
             field = markColor
-            if (!isAttachedToWindow)
-                return
-            invalidate()
+            if (isAttachedToWindow)
+                invalidate()
         }
 
     /**
@@ -61,10 +82,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         set(backgroundCircleColor) {
             field = backgroundCircleColor
             circleBackPaint.color = backgroundCircleColor
-            if (!isAttachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
     }
 
     private var startDegree = 135
@@ -97,19 +115,33 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             cancelSpeedAnimator()
             degree = getDegreeAtSpeed(speed)
             indicator.onSizeChange(this)
-            if (!isAttachedToWindow)
-                return
-            requestLayout()
-            updateBackgroundBitmap()
-            tremble()
-            invalidate()
+            if (isAttachedToWindow) {
+                requestLayout()
+                invalidateGauge()
+                tremble()
+            }
         }
 
     /** padding to fix speedometer cut when change [.speedometerMode]  */
     private var cutPadding = 0
 
-    /** ticks values(speed values) to draw  */
-    private val ticks = ArrayList<Float>()
+    /**
+     * ticks values (speed values) to draw -**not editable**-.
+     *
+     * to add custom speed value label at each tick point between [maxSpeed]
+     * and [minSpeed].
+     * @throws IllegalArgumentException if one of [ticks] out of range [[minSpeed], [maxSpeed]].
+     * @throws IllegalArgumentException If [ticks] are not ascending.
+     *
+     */
+    var ticks = ArrayList<Float>()
+        set(ticks) {
+            field.clear()
+            field.addAll(ticks)
+            checkTicks()
+            invalidateGauge()
+        }
+
     /** to rotate tick label  */
     private var tickRotation = true
     /**
@@ -117,8 +149,24 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      *  this will not redraw background bitmap.
      */
     protected var initTickPadding = 0f
-    private var tickPadding = (getSpeedometerWidth() + dpTOpx(3f)).toInt()
-    private var onPrintTickLabel: OnPrintTickLabel? = null
+    /**
+     * tick label's padding in pixel.
+     */
+    var tickPadding = (speedometerWidth + dpTOpx(3f)).toInt()
+        set(tickPadding) {
+            field = tickPadding
+            invalidateGauge()
+        }
+
+    /**
+     * create custom Tick label,
+     * maybe null.
+     */
+    var onPrintTickLabel: OnPrintTickLabel? = null
+        set(onPrintTickLabel) {
+            field = onPrintTickLabel
+            invalidateGauge()
+        }
 
     private var lastPercentSpeed = 0f
 
@@ -130,9 +178,8 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         get() = indicator.getIndicatorColor()
         set(indicatorColor) {
             indicator.noticeIndicatorColorChange(indicatorColor)
-            if (!isAttachedToWindow)
-                return
-            invalidate()
+            if (isAttachedToWindow)
+                invalidate()
         }
 
     /**
@@ -142,7 +189,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         get() {
             if (this.speedometerMode == Mode.NORMAL)
                 return width
-            return if (this.speedometerMode.isHalf) Math.max(width, height) else Math.max(width, height) * 2 - cutPadding * 2
+            return if (this.speedometerMode.isHalf) max(width, height) else max(width, height) * 2 - cutPadding * 2
         }
 
     /**
@@ -160,9 +207,8 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         get() = indicator.getIndicatorWidth()
         set(indicatorWidth) {
             indicator.noticeIndicatorWidthChange(indicatorWidth)
-            if (!isAttachedToWindow)
-                return
-            invalidate()
+            if (isAttachedToWindow)
+                invalidate()
         }
 
     /**
@@ -180,10 +226,10 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             val ticks = ArrayList<Float>()
             val tickEach = if (tickNumber != 1) (endDegree - startDegree).toFloat() / (tickNumber - 1).toFloat() else endDegree + 1f
             for (i in 0 until tickNumber) {
-                val tick = getSpeedAtDegree(tickEach * i + getStartDegree())
+                val tick = getSpeedAtDegree(tickEach * i + startDegree)
                 ticks.add(tick)
             }
-            setTicks(ticks)
+            this.ticks = ticks
         }
 
     /**
@@ -193,10 +239,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         get() = tickRotation
         set(tickRotation) {
             this.tickRotation = tickRotation
-            if (!isAttachedToWindow)
-                return
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     /**
@@ -243,7 +286,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
     private fun init() {
         indicatorLightPaint.style = Paint.Style.STROKE
-        indicator = NoIndicator(context)
+//        indicator = NoIndicator(context)
         defaultSpeedometerValues()
     }
 
@@ -439,23 +482,6 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         return (degree - startDegree) * (getMaxSpeed() - getMinSpeed()) / (endDegree - startDegree) + getMinSpeed()
     }
 
-    fun getSpeedometerWidth(): Float {
-        return speedometerWidth
-    }
-
-    /**
-     * change the width of speedometer's bar.
-     * @param speedometerWidth new width in pixel.
-     */
-    open fun setSpeedometerWidth(speedometerWidth: Float) {
-        this.speedometerWidth = speedometerWidth
-        if (!isAttachedToWindow)
-            return
-        indicator.noticeSpeedometerWidthChange(speedometerWidth)
-        updateBackgroundBitmap()
-        invalidate()
-    }
-
     protected fun getStartDegree(): Int {
         return startDegree
     }
@@ -508,11 +534,10 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             tickNumber = ticks.size
         cancelSpeedAnimator()
         degree = getDegreeAtSpeed(speed)
-        if (!isAttachedToWindow)
-            return
-        updateBackgroundBitmap()
-        tremble()
-        invalidate()
+        if (isAttachedToWindow){
+            invalidateGauge()
+            tremble()
+        }
     }
 
     /**
@@ -549,25 +574,25 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      */
     protected fun drawDefMinMaxSpeedPosition(c: Canvas) {
         textPaint.textAlign = when {
-            getStartDegree() % 360 <= 90 -> Paint.Align.RIGHT
-            getStartDegree() % 360 <= 180 -> Paint.Align.LEFT
-            getStartDegree() % 360 <= 270 -> Paint.Align.CENTER
+            startDegree % 360 <= 90 -> Paint.Align.RIGHT
+            startDegree % 360 <= 180 -> Paint.Align.LEFT
+            startDegree % 360 <= 270 -> Paint.Align.CENTER
             else -> Paint.Align.RIGHT
         }
         c.save()
-        c.rotate(getStartDegree() + 90f, size * .5f, size * .5f)
-        c.rotate(-(getStartDegree() + 90f), sizePa * .5f - textPaint.textSize + padding, textPaint.textSize + padding)
+        c.rotate(startDegree + 90f, size * .5f, size * .5f)
+        c.rotate(-(startDegree + 90f), sizePa * .5f - textPaint.textSize + padding, textPaint.textSize + padding)
         c.drawText(getMinSpeedText(), sizePa * .5f - textPaint.textSize + padding, textPaint.textSize + padding, textPaint)
         c.restore()
         textPaint.textAlign = when {
-            getEndDegree() % 360 <= 90 -> Paint.Align.RIGHT
-            getEndDegree() % 360 <= 180 -> Paint.Align.LEFT
-            getEndDegree() % 360 <= 270 -> Paint.Align.CENTER
+            endDegree % 360 <= 90 -> Paint.Align.RIGHT
+            endDegree % 360 <= 180 -> Paint.Align.LEFT
+            endDegree % 360 <= 270 -> Paint.Align.CENTER
             else -> Paint.Align.RIGHT
         }
         c.save()
-        c.rotate(getEndDegree() + 90f, size * .5f, size * .5f)
-        c.rotate(-(getEndDegree() + 90f), sizePa * .5f + textPaint.textSize + padding.toFloat(), textPaint.textSize + padding)
+        c.rotate(endDegree + 90f, size * .5f, size * .5f)
+        c.rotate(-(endDegree + 90f), sizePa * .5f + textPaint.textSize + padding.toFloat(), textPaint.textSize + padding)
         c.drawText(getMaxSpeedText(), sizePa * .5f + textPaint.textSize + padding.toFloat(), textPaint.textSize + padding, textPaint)
         c.restore()
     }
@@ -593,14 +618,11 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             if (onPrintTickLabel != null)
                 tick = onPrintTickLabel!!.getTickLabel(i, ticks[i])
 
-            // if onPrintTickLabel == null, or getTickLabel() return null.
             if (tick == null)
                 tick = if (tickTextFormat == FLOAT_FORMAT.toInt())
                     "%.1f".format(locale, ticks[i])
-//                    String.format(locale, "%.1f", ticks[i])
                 else
                     "%d".format(locale, ticks[i].toInt())
-//                    String.format(locale, "%d", ticks[i].toInt())
 
             c.translate(0f, initTickPadding + padding.toFloat() + tickPadding.toFloat())
             StaticLayout(tick, textPaint, size, Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false)
@@ -625,29 +647,6 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      */
     open fun setIndicator(indicator: Indicator.Indicators) {
         this.indicator = Indicator.createIndicator(context, indicator)
-        if (!isAttachedToWindow)
-            return
-        this.indicator.setTargetSpeedometer(this)
-        invalidate()
-    }
-
-    /**
-     * add custom [indicator](https://github.com/anastr/SpeedView/wiki/Indicators).
-     * @param indicator new indicator.
-     */
-    fun setIndicator(indicator: Indicator<*>) {
-        this.indicator = indicator
-        if (!isAttachedToWindow)
-            return
-        this.indicator.setTargetSpeedometer(this)
-        invalidate()
-    }
-
-    /**
-     * @return ticks values as list, don't edit the list.
-     */
-    fun getTicks(): List<Float> {
-        return ticks
     }
 
     /**
@@ -658,24 +657,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      * @throws IllegalArgumentException If [ticks] are not ascending.
      */
     fun setTicks(vararg ticks: Float) {
-        setTicks(ticks.asList())
-    }
-
-    /**
-     * to add custom speed value label at each tick point between [maxSpeed]
-     * and [minSpeed].
-     * @param ticks custom ticks values (speed values).
-     * @throws IllegalArgumentException if one of [ticks] out of range [[minSpeed], [maxSpeed]].
-     * @throws IllegalArgumentException If [ticks] are not ascending.
-     */
-    fun setTicks(ticks: List<Float>) {
-        this.ticks.clear()
-        this.ticks.addAll(ticks)
-        checkTicks()
-        if (!isAttachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
+        this.ticks = (ticks.asList() as ArrayList<Float>)
     }
 
     private fun checkTicks() {
@@ -686,36 +668,6 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             require(!(tick < getMinSpeed() || tick > getMaxSpeed())) { "ticks must be between [minSpeed, maxSpeed] !!" }
             lastTick = tick
         }
-    }
-
-    /**
-     * @return tick label's padding.
-     */
-    fun getTickPadding(): Int {
-        return tickPadding
-    }
-
-    /**
-     * @param tickPadding tick label's padding.
-     */
-    fun setTickPadding(tickPadding: Int) {
-        this.tickPadding = tickPadding
-        if (!isAttachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
-    }
-
-    /**
-     * create custom Tick label.
-     * @param onPrintTickLabel maybe null, The callback that will run.
-     */
-    fun setOnPrintTickLabel(onPrintTickLabel: OnPrintTickLabel) {
-        this.onPrintTickLabel = onPrintTickLabel
-        if (!isAttachedToWindow)
-            return
-        updateBackgroundBitmap()
-        invalidate()
     }
 
     private fun updateTranslated() {

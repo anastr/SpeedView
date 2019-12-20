@@ -40,16 +40,14 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
                 speedBackgroundPaint.maskFilter = null
                 circlePaint.maskFilter = null
             }
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     var speedBackgroundColor: Int
         get() = speedBackgroundPaint.color
         set(speedBackgroundColor) {
             speedBackgroundPaint.color = speedBackgroundColor
-            updateBackgroundBitmap()
-            invalidate()
+            invalidateGauge()
         }
 
     /**
@@ -60,9 +58,8 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
         get() = circlePaint.color
         set(centerCircleColor) {
             circlePaint.color = centerCircleColor
-            if (!isAttachedToWindow)
-                return
-            invalidate()
+            if (isAttachedToWindow)
+                invalidate()
         }
 
     init {
@@ -78,8 +75,8 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     override fun defaultSpeedometerValues() {
-        super.setIndicator(NormalSmallIndicator(context)
-                .setIndicatorColor(-0xff0014))
+        indicator = NormalSmallIndicator(context)
+                .setIndicatorColor(-0xff0014)
         super.backgroundCircleColor = -0xdededf
     }
 
@@ -119,7 +116,7 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     private fun initDraw() {
-        speedometerPaint.strokeWidth = getSpeedometerWidth()
+        speedometerPaint.strokeWidth = speedometerWidth
         markPaint.color = markColor
         smallMarkPaint.color = markColor
     }
@@ -145,8 +142,8 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         val smallMarkH = viewSizePa / 20f
         smallMarkPath.reset()
-        smallMarkPath.moveTo(size * .5f, getSpeedometerWidth() + padding)
-        smallMarkPath.lineTo(size * .5f, getSpeedometerWidth() + padding.toFloat() + smallMarkH)
+        smallMarkPath.moveTo(size * .5f, speedometerWidth + padding)
+        smallMarkPath.lineTo(size * .5f, speedometerWidth + padding.toFloat() + smallMarkH)
         smallMarkPaint.strokeWidth = 3f
 
         val markH = viewSizePa / 28f
@@ -155,7 +152,7 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
         markPath.lineTo(size * .5f, markH + padding)
         markPaint.strokeWidth = markH / 3f
 
-        val risk = getSpeedometerWidth() * .5f + padding
+        val risk = speedometerWidth * .5f + padding
         speedometerRect.set(risk, risk, size - risk, size - risk)
 
         for (i in sections.size-1 downTo 0) {

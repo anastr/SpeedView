@@ -15,5 +15,5 @@ interface OnPrintTickLabel {
      * @param tick speed value at the tick.
      * @return label to draw.
      */
-    fun getTickLabel(tickPosition: Int, tick: Float): CharSequence
+    fun getTickLabel(tickPosition: Int, tick: Float): CharSequence?
 }
