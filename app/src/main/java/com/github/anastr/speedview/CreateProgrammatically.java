@@ -2,12 +2,13 @@ package com.github.anastr.speedview;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedviewlib.AwesomeSpeedometer;
 import com.github.anastr.speedviewlib.DeluxeSpeedView;
@@ -89,7 +90,7 @@ public class CreateProgrammatically extends AppCompatActivity {
             case 6:
                 speedometer = new ImageSpeedometer(this);
                 speedometer.setIndicator(Indicator.Indicators.HalfLineIndicator);
-                speedometer.setIndicatorWidth(speedometer.dpTOpx(5f));
+                speedometer.getIndicator().setIndicatorWidth(speedometer.dpTOpx(5f));
                 speedometer.setSpeedTextColor(Color.WHITE);
                 speedometer.setUnitTextColor(Color.WHITE);
                 ((ImageSpeedometer)speedometer).setImageSpeedometer(R.drawable.for_image_speedometer);

@@ -16,12 +16,8 @@ class SpindleIndicator(context: Context) : Indicator<SpindleIndicator>(context) 
     override val defaultIndicatorWidth: Float
         get() = dpTOpx(16f)
 
-    init {
-        updateIndicator()
-    }
-
     override fun getTop(): Float {
-        return getViewSize() * .18f + padding
+        return getViewSize() * .18f + speedometer!!.padding
     }
 
     override fun draw(canvas: Canvas, degree: Float) {
@@ -34,14 +30,14 @@ class SpindleIndicator(context: Context) : Indicator<SpindleIndicator>(context) 
     override fun updateIndicator() {
         indicatorPath.reset()
         indicatorPath.moveTo(getCenterX(), getCenterY())
-        indicatorPath.quadTo(getCenterX() - getIndicatorWidth(), getViewSize() * .34f + padding, getCenterX(), getViewSize() * .18f + padding)
-        indicatorPath.quadTo(getCenterX() + getIndicatorWidth(), getViewSize() * .34f + padding, getCenterX(), getCenterY())
+        indicatorPath.quadTo(getCenterX() - indicatorWidth, getViewSize() * .34f + speedometer!!.padding, getCenterX(), getViewSize() * .18f + speedometer!!.padding)
+        indicatorPath.quadTo(getCenterX() + indicatorWidth, getViewSize() * .34f + speedometer!!.padding, getCenterX(), getCenterY())
 
-        indicatorPaint.color = getIndicatorColor()
+        indicatorPaint.color = indicatorColor
     }
 
     override fun setWithEffects(withEffects: Boolean) {
-        if (withEffects && !isInEditMode) {
+        if (withEffects && !speedometer!!.isInEditMode) {
             indicatorPaint.maskFilter = BlurMaskFilter(15f, BlurMaskFilter.Blur.SOLID)
         } else {
             indicatorPaint.maskFilter = null

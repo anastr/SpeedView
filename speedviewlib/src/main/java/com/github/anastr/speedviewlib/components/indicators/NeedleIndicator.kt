@@ -22,7 +22,6 @@ class NeedleIndicator(context: Context) : Indicator<NeedleIndicator>(context) {
 
     init {
         circlePaint.style = Paint.Style.STROKE
-        updateIndicator()
     }
 
     override fun getBottom(): Float {
@@ -40,23 +39,23 @@ class NeedleIndicator(context: Context) : Indicator<NeedleIndicator>(context) {
     override fun updateIndicator() {
         indicatorPath.reset()
         circlePath.reset()
-        indicatorPath.moveTo(getCenterX(), padding.toFloat())
-        bottomY = (getIndicatorWidth() * sin(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + padding.toFloat()
-        val xLeft = (getIndicatorWidth() * cos(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + padding.toFloat()
+        indicatorPath.moveTo(getCenterX(), speedometer!!.padding.toFloat())
+        bottomY = (indicatorWidth * sin(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + speedometer!!.padding.toFloat()
+        val xLeft = (indicatorWidth * cos(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + speedometer!!.padding.toFloat()
         indicatorPath.lineTo(xLeft, bottomY)
-        val rectF = RectF(getCenterX() - getIndicatorWidth(), getCenterY() - getIndicatorWidth(), getCenterX() + getIndicatorWidth(), getCenterY() + getIndicatorWidth())
+        val rectF = RectF(getCenterX() - indicatorWidth, getCenterY() - indicatorWidth, getCenterX() + indicatorWidth, getCenterY() + indicatorWidth)
         indicatorPath.arcTo(rectF, 260f, 20f)
 
-        val circleWidth = getIndicatorWidth() * .25f
-        circlePath.addCircle(getCenterX(), getCenterY(), getIndicatorWidth() - circleWidth * .5f + .6f, Path.Direction.CW)
+        val circleWidth = indicatorWidth * .25f
+        circlePath.addCircle(getCenterX(), getCenterY(), indicatorWidth - circleWidth * .5f + .6f, Path.Direction.CW)
 
-        indicatorPaint.color = getIndicatorColor()
-        circlePaint.color = getIndicatorColor()
+        indicatorPaint.color = indicatorColor
+        circlePaint.color = indicatorColor
         circlePaint.strokeWidth = circleWidth
     }
 
     override fun setWithEffects(withEffects: Boolean) {
-        if (withEffects && !isInEditMode)
+        if (withEffects && !speedometer!!.isInEditMode)
             indicatorPaint.maskFilter = BlurMaskFilter(15f, BlurMaskFilter.Blur.SOLID)
         else
             indicatorPaint.maskFilter = null

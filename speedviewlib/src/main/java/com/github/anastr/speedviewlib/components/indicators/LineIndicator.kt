@@ -17,10 +17,6 @@ class LineIndicator(context: Context, private val mode: Float) : Indicator<LineI
     override val defaultIndicatorWidth: Float
         get() = dpTOpx(8f)
 
-    init {
-        updateIndicator()
-    }
-
     override fun getBottom(): Float {
         return getCenterY() * mode
     }
@@ -34,16 +30,16 @@ class LineIndicator(context: Context, private val mode: Float) : Indicator<LineI
 
     override fun updateIndicator() {
         indicatorPath.reset()
-        indicatorPath.moveTo(getCenterX(), padding.toFloat())
+        indicatorPath.moveTo(getCenterX(), speedometer!!.padding.toFloat())
         indicatorPath.lineTo(getCenterX(), getCenterY() * mode)
 
         indicatorPaint.style = Paint.Style.STROKE
-        indicatorPaint.strokeWidth = getIndicatorWidth()
-        indicatorPaint.color = getIndicatorColor()
+        indicatorPaint.strokeWidth = indicatorWidth
+        indicatorPaint.color = indicatorColor
     }
 
     override fun setWithEffects(withEffects: Boolean) {
-        if (withEffects && !isInEditMode) {
+        if (withEffects && !speedometer!!.isInEditMode) {
             indicatorPaint.maskFilter = BlurMaskFilter(15f, BlurMaskFilter.Blur.SOLID)
         } else {
             indicatorPaint.maskFilter = null

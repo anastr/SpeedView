@@ -30,7 +30,7 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
             this.withEffects = withEffects
             if (isInEditMode)
                 return
-            indicatorEffects(withEffects)
+            indicator.withEffects(withEffects)
             if (withEffects) {
                 markPaint.maskFilter = BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID)
                 speedBackgroundPaint.maskFilter = BlurMaskFilter(8f, BlurMaskFilter.Blur.SOLID)
@@ -76,7 +76,7 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     override fun defaultSpeedometerValues() {
         indicator = NormalSmallIndicator(context)
-                .setIndicatorColor(-0xff0014)
+        indicator.indicatorColor = -0xff0014
         super.backgroundCircleColor = -0xdededf
     }
 
@@ -191,6 +191,6 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     override fun setIndicator(indicator: Indicator.Indicators) {
         super.setIndicator(indicator)
-        indicatorEffects(withEffects)
+        this.indicator.withEffects(withEffects)
     }
 }

@@ -15,16 +15,12 @@ class TriangleIndicator(context: Context) : Indicator<TriangleIndicator>(context
     override val defaultIndicatorWidth: Float
         get() = dpTOpx(25f)
 
-    init {
-        updateIndicator()
-    }
-
     override fun getTop(): Float {
         return indicatorTop
     }
 
     override fun getBottom(): Float {
-        return indicatorTop + getIndicatorWidth()
+        return indicatorTop + indicatorWidth
     }
 
     override fun draw(canvas: Canvas, degree: Float) {
@@ -36,19 +32,19 @@ class TriangleIndicator(context: Context) : Indicator<TriangleIndicator>(context
 
     override fun updateIndicator() {
         indicatorPath = Path()
-        indicatorTop = padding.toFloat() + speedometerWidth + dpTOpx(5f)
+        indicatorTop = speedometer!!.padding.toFloat() + speedometer!!.speedometerWidth + dpTOpx(5f)
         indicatorPath.moveTo(getCenterX(), indicatorTop)
-        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), indicatorTop + getIndicatorWidth())
-        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), indicatorTop + getIndicatorWidth())
+        indicatorPath.lineTo(getCenterX() - indicatorWidth, indicatorTop + indicatorWidth)
+        indicatorPath.lineTo(getCenterX() + indicatorWidth, indicatorTop + indicatorWidth)
         indicatorPath.moveTo(0f, 0f)
 
-        val endColor = Color.argb(0, Color.red(getIndicatorColor()), Color.green(getIndicatorColor()), Color.blue(getIndicatorColor()))
-        val linearGradient = LinearGradient(getCenterX(), indicatorTop, getCenterX(), indicatorTop + getIndicatorWidth(), getIndicatorColor(), endColor, Shader.TileMode.CLAMP)
+        val endColor = Color.argb(0, Color.red(indicatorColor), Color.green(indicatorColor), Color.blue(indicatorColor))
+        val linearGradient = LinearGradient(getCenterX(), indicatorTop, getCenterX(), indicatorTop + indicatorWidth, indicatorColor, endColor, Shader.TileMode.CLAMP)
         indicatorPaint.shader = linearGradient
     }
 
     override fun setWithEffects(withEffects: Boolean) {
-        if (withEffects && !isInEditMode) {
+        if (withEffects && !speedometer!!.isInEditMode) {
             indicatorPaint.maskFilter = BlurMaskFilter(15f, BlurMaskFilter.Blur.SOLID)
         } else {
             indicatorPaint.maskFilter = null

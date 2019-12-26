@@ -18,10 +18,6 @@ class KiteIndicator(context: Context) : Indicator<KiteIndicator>(context) {
     override val defaultIndicatorWidth: Float
         get() = dpTOpx(12f)
 
-    init {
-        updateIndicator()
-    }
-
     override fun getBottom(): Float {
         return bottomY
     }
@@ -35,17 +31,17 @@ class KiteIndicator(context: Context) : Indicator<KiteIndicator>(context) {
 
     override fun updateIndicator() {
         indicatorPath.reset()
-        indicatorPath.moveTo(getCenterX(), padding.toFloat())
-        bottomY = getViewSize() * .5f + padding
-        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), bottomY)
-        indicatorPath.lineTo(getCenterX(), bottomY + getIndicatorWidth())
-        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), bottomY)
+        indicatorPath.moveTo(getCenterX(), speedometer!!.padding.toFloat())
+        bottomY = getViewSize() * .5f + speedometer!!.padding
+        indicatorPath.lineTo(getCenterX() - indicatorWidth, bottomY)
+        indicatorPath.lineTo(getCenterX(), bottomY + indicatorWidth)
+        indicatorPath.lineTo(getCenterX() + indicatorWidth, bottomY)
 
-        indicatorPaint.color = getIndicatorColor()
+        indicatorPaint.color = indicatorColor
     }
 
     override fun setWithEffects(withEffects: Boolean) {
-        if (withEffects && !isInEditMode)
+        if (withEffects && !speedometer!!.isInEditMode)
             indicatorPaint.maskFilter = BlurMaskFilter(15f, BlurMaskFilter.Blur.SOLID)
         else
             indicatorPaint.maskFilter = null

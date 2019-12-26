@@ -57,8 +57,10 @@ class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
 
     override fun defaultSpeedometerValues() {
         indicator = TriangleIndicator(context)
-                .setIndicatorWidth(dpTOpx(25f))
-                .setIndicatorColor(-0xff191a)
+        indicator.apply {
+            indicatorWidth = dpTOpx(25f)
+            indicatorColor = -0xff191a
+        }
         super.setStartEndDegree(135, 135 + 320)
         super.speedometerWidth = dpTOpx(60f)
         super.backgroundCircleColor = -0xdededf

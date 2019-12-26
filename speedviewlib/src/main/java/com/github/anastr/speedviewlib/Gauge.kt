@@ -2,7 +2,6 @@ package com.github.anastr.speedviewlib
 
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.*
 import android.os.Build
@@ -43,7 +42,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      *
      * **if true** : the speed value automatically will be increases and decreases
      * by [trembleDegree] around last speed you set,
-     * used to add some reality to speedometer.<br></br>
+     * used to add some reality to speedometer.
+     *
      * **if false** : nothing will done.
      *
      * @see .setTrembleData
@@ -212,7 +212,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * Number expresses the Acceleration, between (0, 1]
      *
      * change accelerate, used by [realSpeedTo] [speedUp]
-     * and [slowDown] methods.<br></br>
+     * and [slowDown] methods.
+     *
      * must be between `(0, 1]`, default value 0.1f.
      * @throws IllegalArgumentException if `accelerate` out of range.
      */
@@ -226,7 +227,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * Number expresses the Deceleration, between (0, 1]
      *
      * change decelerate, used by [realSpeedTo] [speedUp]
-     * and [slowDown] methods.<br></br>
+     * and [slowDown] methods.
+     *
      * must be between `(0, 1]`, default value 0.1f.
      * @throws IllegalArgumentException if `decelerate` out of range.
      */
@@ -237,8 +239,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         }
 
     /**
-     * change position of speed and Unit Text.
-     * @param position new Position (enum value).
+     * change position of speed and Unit Text (enum value).
      */
     var speedTextPosition = Position.BOTTOM_CENTER
         set(speedTextPosition) {
@@ -720,10 +721,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * stop speedometer and run tremble if [withTremble] is true.
      * use this method just when you wont to stop `speedTo and realSpeedTo`.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     fun stop() {
-        if (Build.VERSION.SDK_INT < 11)
-            return
         if (!speedAnimator.isRunning && !realSpeedAnimator.isRunning)
             return
         speed = currentSpeed
@@ -739,19 +737,13 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         cancelTremble()
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private fun cancelTremble() {
-        if (Build.VERSION.SDK_INT < 11)
-            return
         canceled = true
         trembleAnimator.cancel()
         canceled = false
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private fun cancelSpeedMove() {
-        if (Build.VERSION.SDK_INT < 11)
-            return
         canceled = true
         speedAnimator.cancel()
         realSpeedAnimator.cancel()
@@ -791,10 +783,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
 
     /**
      * move speed to current value smoothly,
-     * it should be between [[minSpeed], [maxSpeed]].<br></br>
-     * <br></br>
-     * if `speed > maxSpeed` speed value will move to [maxSpeed],<br></br>
-     * if `speed < minSpeed` speed value will move to [minSpeed].<br></br>
+     * it should be between [[minSpeed], [maxSpeed]].
+     *
+     * if `speed > maxSpeed` speed value will move to [maxSpeed].
+     *
+     * if `speed < minSpeed` speed value will move to [minSpeed].
      *
      * it is the same [speedTo]
      * with default `moveDuration = 2000`.
@@ -811,9 +804,10 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
 
     /**
      * move speed to current value smoothly with animation duration,
-     * it should be between [[minSpeed], [maxSpeed]].<br></br>
-     * <br></br>
-     * if `speed > maxSpeed` speed value will move to [maxSpeed],<br></br>
+     * it should be between [[minSpeed], [maxSpeed]].
+     *
+     * if `speed > maxSpeed` speed value will move to [maxSpeed].
+     *
      * if `speed < minSpeed` speed value will move to [minSpeed].
      *
      * @param speed current speed to move.
@@ -824,18 +818,12 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * @see speedPercentTo
      * @see realSpeedTo
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     fun speedTo(speed: Float, moveDuration: Long) {
         var newSpeed = speed
         newSpeed = if (newSpeed > maxSpeed) maxSpeed else if (newSpeed < minSpeed) minSpeed else newSpeed
         if (newSpeed == this.speed)
             return
         this.speed = newSpeed
-
-        if (Build.VERSION.SDK_INT < 11) {
-            setSpeedAt(newSpeed)
-            return
-        }
 
         isSpeedIncrease = newSpeed > currentSpeed
 
@@ -883,9 +871,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
 
     /**
      * to make speedometer some real.
-     * <br></br>
+     *
      * when **speed up** : speed value will increase *slowly* by [accelerate].
-     * <br></br>
+     *
      * when **slow down** : speed value will decrease *rapidly* by [decelerate].
      * @param speed current speed to move.
      *
@@ -895,7 +883,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * @see speedUp
      * @see slowDown
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     fun realSpeedTo(speed: Float) {
         var newSpeed = speed
         val oldIsSpeedUp = this.speed > currentSpeed
@@ -904,10 +891,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             return
         this.speed = newSpeed
 
-        if (Build.VERSION.SDK_INT < 11) {
-            setSpeedAt(newSpeed)
-            return
-        }
         isSpeedIncrease = newSpeed > currentSpeed
         if (realSpeedAnimator.isRunning && oldIsSpeedUp == isSpeedIncrease)
             return
@@ -941,10 +924,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     /**
      * check if [withTremble] true, and run tremble.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected fun tremble() {
         cancelTremble()
-        if (!withTremble || Build.VERSION.SDK_INT < 11)
+        if (!withTremble)
             return
         val random = Random()
         var mad = trembleDegree * random.nextFloat() * (if (random.nextBoolean()) -1 else 1).toFloat()
@@ -1035,7 +1017,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
-     * change max speed.<br></br>
+     * change max speed.
+     *
      * this method will move [currentSpeed] to its new position
      * immediately without animation.
      *
@@ -1059,7 +1042,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
-     * change min speed.<br></br>
+     * change min speed.
+     *
      * this method will move [currentSpeed] to its new position
      * immediately without animation.
      *
@@ -1072,7 +1056,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
-     * change Min and Max speed.<br></br>
+     * change Min and Max speed.
+     *
      * this method will move [currentSpeed] to its new position
      * immediately without animation.
      *
@@ -1150,7 +1135,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * notification that an section has changed.
      */
     override fun update(section: Observable?, isPercentChanged: Any?) {
-        if (isPercentChanged as Boolean)
+        if (isPercentChanged as Boolean? == true)
             this.sections.sortBy { it.speedOffset }
         invalidateGauge()
     }

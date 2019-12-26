@@ -5,7 +5,6 @@ import android.graphics.*
 import android.text.Layout
 import android.text.StaticLayout
 import android.util.AttributeSet
-import com.github.anastr.speedviewlib.components.indicators.ImageIndicator
 import com.github.anastr.speedviewlib.components.indicators.Indicator
 import com.github.anastr.speedviewlib.components.indicators.NoIndicator
 import com.github.anastr.speedviewlib.components.note.Note
@@ -29,6 +28,8 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      */
     var indicator: Indicator<*> = NoIndicator(context)
         set(indicator) {
+            field.deleteObservers()
+            indicator.setTargetSpeedometer(this)
             field = indicator
             if (isAttachedToWindow) {
                 this.indicator.setTargetSpeedometer(this)
@@ -57,7 +58,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         set(speedometerWidth) {
             field = speedometerWidth
             if (isAttachedToWindow) {
-                indicator.noticeSpeedometerWidthChange(speedometerWidth)
+                indicator.updateIndicator()
                 invalidateGauge()
             }
         }
@@ -114,7 +115,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             updateTranslated()
             cancelSpeedAnimator()
             degree = getDegreeAtSpeed(speed)
-            indicator.onSizeChange(this)
+            indicator.updateIndicator()
             if (isAttachedToWindow) {
                 requestLayout()
                 invalidateGauge()
@@ -170,17 +171,17 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
     private var lastPercentSpeed = 0f
 
-    /**
-     * change indicator's color,
-     * this option will be ignored when using [ImageIndicator].
-     */
-    var indicatorColor: Int
-        get() = indicator.getIndicatorColor()
-        set(indicatorColor) {
-            indicator.noticeIndicatorColorChange(indicatorColor)
-            if (isAttachedToWindow)
-                invalidate()
-        }
+//    /**
+//     * change indicator's color,
+//     * this option will be ignored when using [ImageIndicator].
+//     */
+//    var indicatorColor: Int
+//        get() = indicator.getIndicatorColor()
+//        set(indicatorColor) {
+//            indicator.noticeIndicatorColorChange(indicatorColor)
+//            if (isAttachedToWindow)
+//                invalidate()
+//        }
 
     /**
      * @return size of speedometer.
@@ -198,18 +199,18 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     val sizePa: Int
         get() = size - padding * 2
 
-    /**
-     * change indicator width in pixel, this value have several meaning
-     * between [Indicator.Indicators], it will be ignored
-     * when using [ImageIndicator].
-     */
-    var indicatorWidth: Float
-        get() = indicator.getIndicatorWidth()
-        set(indicatorWidth) {
-            indicator.noticeIndicatorWidthChange(indicatorWidth)
-            if (isAttachedToWindow)
-                invalidate()
-        }
+//    /**
+//     * change indicator width in pixel, this value have several meaning
+//     * between [Indicator.Indicators], it will be ignored
+//     * when using [ImageIndicator].
+//     */
+//    var indicatorWidth: Float
+//        get() = indicator.getIndicatorWidth()
+//        set(indicatorWidth) {
+//            indicator.noticeIndicatorWidthChange(indicatorWidth)
+//            if (isAttachedToWindow)
+//                invalidate()
+//        }
 
     /**
      * number of tick points of speed value's label.
@@ -306,12 +307,12 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         speedometerWidth = a.getDimension(R.styleable.Speedometer_sv_speedometerWidth, speedometerWidth)
         startDegree = a.getInt(R.styleable.Speedometer_sv_startDegree, startDegree)
         endDegree = a.getInt(R.styleable.Speedometer_sv_endDegree, endDegree)
-        indicatorWidth = a.getDimension(R.styleable.Speedometer_sv_indicatorWidth, indicator.getIndicatorWidth())
+        indicator.indicatorWidth = a.getDimension(R.styleable.Speedometer_sv_indicatorWidth, indicator.indicatorWidth)
         cutPadding = a.getDimension(R.styleable.Speedometer_sv_cutPadding, cutPadding.toFloat()).toInt()
         tickNumber = a.getInteger(R.styleable.Speedometer_sv_tickNumber, ticks.size)
         tickRotation = a.getBoolean(R.styleable.Speedometer_sv_tickRotation, tickRotation)
         tickPadding = a.getDimension(R.styleable.Speedometer_sv_tickPadding, tickPadding.toFloat()).toInt()
-        indicatorColor = a.getColor(R.styleable.Speedometer_sv_indicatorColor, indicator.getIndicatorColor())
+        indicator.indicatorColor = a.getColor(R.styleable.Speedometer_sv_indicatorColor, indicator.indicatorColor)
         isWithIndicatorLight = a.getBoolean(R.styleable.Speedometer_sv_withIndicatorLight, isWithIndicatorLight)
         indicatorLightColor = a.getColor(R.styleable.Speedometer_sv_indicatorLightColor, indicatorLightColor)
         degree = startDegree.toFloat()
@@ -361,7 +362,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
         super.onSizeChanged(w, h, oldW, oldH)
-        indicator.onSizeChange(this)
+        indicator.updateIndicator()
         updateTranslated()
     }
 
@@ -633,20 +634,12 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     }
 
     /**
-     * call this method to apply/remove blur effect for indicator.
-     * @param withEffects effect.
-     */
-    protected fun indicatorEffects(withEffects: Boolean) {
-        indicator.withEffects(withEffects)
-    }
-
-    /**
      * change [indicator shape](https://github.com/anastr/SpeedView/wiki/Indicators).<br></br>
      * this method will get bach indicatorColor and indicatorWidth to default.
      * @param indicator new indicator (Enum value).
      */
     open fun setIndicator(indicator: Indicator.Indicators) {
-        this.indicator = Indicator.createIndicator(context, indicator)
+        this.indicator = Indicator.createIndicator(context, this, indicator)
     }
 
     /**

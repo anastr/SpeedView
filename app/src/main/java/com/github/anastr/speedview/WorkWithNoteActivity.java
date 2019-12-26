@@ -72,7 +72,7 @@ public class WorkWithNoteActivity extends AppCompatActivity {
                 .setPosition(Note.Position.CenterSpeedometer)
                 .setTextTypeFace(type)
                 .setTextSize(speedView.dpTOpx(20f));
-        speedView.addNote(note, 1000);
+        speedView.addNote(note, 2000);
     }
 
     public void noteCenterIndicator(View view) {
@@ -80,7 +80,7 @@ public class WorkWithNoteActivity extends AppCompatActivity {
                 .setPosition(Note.Position.CenterIndicator)
                 .setTextTypeFace(Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
                 .setTextSize(speedView.dpTOpx(13f));
-        speedView.addNote(note, 1000);
+        speedView.addNote(note, 2000);
     }
 
     public void noteTopIndicator(View view) {
@@ -88,7 +88,7 @@ public class WorkWithNoteActivity extends AppCompatActivity {
                 .setPosition(Note.Position.TopIndicator)
                 .setAlign(Note.Align.Bottom)
                 .setTextSize(speedView.dpTOpx(13f));
-        speedView.addNote(note, 1000);
+        speedView.addNote(note, 2000);
     }
 
     public void noteImageNote(View view) {
@@ -96,7 +96,7 @@ public class WorkWithNoteActivity extends AppCompatActivity {
                 , R.mipmap.ic_launcher )
                 .setPosition(Note.Position.BottomIndicator);
 
-        speedView.addNote(imageNote, 1000);
+        speedView.addNote(imageNote, 2000);
     }
 
     public void noteSpannableString(View view) {
@@ -113,6 +113,6 @@ public class WorkWithNoteActivity extends AppCompatActivity {
                 .setBackgroundColor(Color.parseColor("#EEFF41"))
                 .setPosition(Note.Position.QuarterSpeedometer)
                 .setTextSize(speedView.dpTOpx(10f));
-        speedView.addNote(note, 1000);
+        speedView.addNote(note, 2000);
     }
 }

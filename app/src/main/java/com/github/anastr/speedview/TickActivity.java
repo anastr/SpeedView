@@ -1,13 +1,14 @@
 package com.github.anastr.speedview;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedviewlib.Speedometer;
 import com.github.anastr.speedviewlib.util.OnPrintTickLabel;

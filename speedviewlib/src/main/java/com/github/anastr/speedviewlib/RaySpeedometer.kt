@@ -33,7 +33,7 @@ class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Attribut
             this.withEffects = withEffects
             if (isInEditMode)
                 return
-            indicatorEffects(withEffects)
+            indicator.withEffects(withEffects)
             if (withEffects) {
                 rayPaint.maskFilter = BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID)
                 activeMarkPaint.maskFilter = BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID)
@@ -215,7 +215,7 @@ class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Attribut
 
     override fun setIndicator(indicator: Indicator.Indicators) {
         super.setIndicator(indicator)
-        indicatorEffects(withEffects)
+        this.indicator.withEffects(withEffects)
     }
 
     fun getDegreeBetweenMark(): Int {

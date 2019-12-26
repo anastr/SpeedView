@@ -18,10 +18,6 @@ class NormalIndicator(context: Context) : Indicator<NormalIndicator>(context) {
     override val defaultIndicatorWidth: Float
         get() = dpTOpx(12f)
 
-    init {
-        updateIndicator()
-    }
-
     override fun getBottom(): Float {
         return bottomY
     }
@@ -35,18 +31,18 @@ class NormalIndicator(context: Context) : Indicator<NormalIndicator>(context) {
 
     override fun updateIndicator() {
         indicatorPath.reset()
-        indicatorPath.moveTo(getCenterX(), padding.toFloat())
-        bottomY = getViewSize() * 2f / 3f + padding
-        indicatorPath.lineTo(getCenterX() - getIndicatorWidth(), bottomY)
-        indicatorPath.lineTo(getCenterX() + getIndicatorWidth(), bottomY)
-        val rectF = RectF(getCenterX() - getIndicatorWidth(), bottomY - getIndicatorWidth(), getCenterX() + getIndicatorWidth(), bottomY + getIndicatorWidth())
+        indicatorPath.moveTo(getCenterX(), speedometer!!.padding.toFloat())
+        bottomY = getViewSize() * 2f / 3f + speedometer!!.padding
+        indicatorPath.lineTo(getCenterX() - indicatorWidth, bottomY)
+        indicatorPath.lineTo(getCenterX() + indicatorWidth, bottomY)
+        val rectF = RectF(getCenterX() - indicatorWidth, bottomY - indicatorWidth, getCenterX() + indicatorWidth, bottomY + indicatorWidth)
         indicatorPath.addArc(rectF, 0f, 180f)
 
-        indicatorPaint.color = getIndicatorColor()
+        indicatorPaint.color = indicatorColor
     }
 
     override fun setWithEffects(withEffects: Boolean) {
-        if (withEffects && !isInEditMode) {
+        if (withEffects && !speedometer!!.isInEditMode) {
             indicatorPaint.maskFilter = BlurMaskFilter(15f, BlurMaskFilter.Blur.SOLID)
         } else {
             indicatorPaint.maskFilter = null

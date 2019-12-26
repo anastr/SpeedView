@@ -1,13 +1,14 @@
 package com.github.anastr.speedview;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedviewlib.Speedometer;
 import com.github.anastr.speedviewlib.components.indicators.ImageIndicator;
@@ -58,7 +59,7 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
         seekBarWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int width, boolean b) {
-                speedometer.setIndicatorWidth(speedometer.dpTOpx(width));
+                speedometer.getIndicator().setIndicatorWidth(speedometer.dpTOpx(width));
                 textWidth.setText(String.format(Locale.getDefault(), "%ddp", width));
             }
 
