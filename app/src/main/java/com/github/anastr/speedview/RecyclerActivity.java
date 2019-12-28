@@ -1,13 +1,14 @@
 package com.github.anastr.speedview;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.github.anastr.speedviewlib.Speedometer;
 
@@ -49,6 +50,8 @@ public class RecyclerActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+            // set speed at 0 without animation (to start from this position).
+            holder.speedometer.setSpeedAt(0);
             holder.speedometer.speedTo(speeds.get(position));
         }
 

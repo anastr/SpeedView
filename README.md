@@ -2,13 +2,14 @@
 Dynamic Speedometer, Gauge for Android. **amazing**, **powerful**, and _multi shape_ :zap: , you can change (colors, bar width, shape, text, font ...everything !!), this Library has also made to build **games** with `accelerate` and `decelerate`,
  [see project on GitHub](https://github.com/anastr/SpeedView/).
 
-`minSdkVersion=8`
+`minSdkVersion=11`
 
-Library Size just ~ 51 KB.
+Library Size just ~ 47 KB.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-blue.svg?style=true)](https://android-arsenal.com/details/1/4169)
 [![API](https://img.shields.io/badge/API-+8-red.svg?style=flat)](#)
-[![Bintray](https://img.shields.io/bintray/v/anastr/maven/SpeedView.svg)](https://bintray.com/anastr/maven/SpeedView)
+[![Bintray](https://img.shields.io/bintray/v/anastr/maven/SpeedView.svg?color=green)](https://bintray.com/anastr/maven/SpeedView)
+[![Twitter](https://img.shields.io/badge/Twitter-@AnasAltairDent-blue.svg?style=flat)](http://twitter.com/AnasAltairDent)
 
 > this library has rewritten with Kotlin in version 1.4.0 manually, which means it may have some issues.
 > if you have any problem please open an issue, and you can use old version 1.3.1 written in java.
@@ -24,14 +25,34 @@ Library Size just ~ 51 KB.
 
 # Download
 
-this library required **kotlin version 1.3.50**, _you still can use it in java projects_.
+this library required **jcenter** and **kotlin version 1.3.61** or above, _you still can use it in java projects_.
 
-**add this line to** `build.gradle`:
+first add kotlin to your project, in `build.gradle` **project level**:
 
 ```gradle
+buildscript {
+    ext.kotlin_version = '1.3.61'
+    dependencies {
+        ...
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+...
+allprojects {
+    repositories {
+        ...
+        jcenter()
+    }
+}
+```
 
+add this line to `build.gradle` **app module level**:
+
+```gradle
+apply plugin: 'kotlin-android'
+...
 dependencies {
-	implementation 'com.github.anastr:speedviewlib:1.4.1'
+	implementation 'com.github.anastr:speedviewlib:1.5.0'
 }
 
 ```
@@ -42,7 +63,7 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.4.1</version>
+  <version>1.5.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -60,20 +81,20 @@ choose one of Speedometers, gauges and add it to your `Layout.xml`, here we use 
 
 for all speedometers and gauges, this simple method to smoothly change speed:
 ```java
-SpeedView speedometer = findViewById(R.id.speedView);
+SpeedView speedometer = findViewById(R.id.speedView)
 
 // move to 50 Km/s
-speedometer.speedTo(50);
+speedometer.speedTo(50)
 ```
 
 by default, the speed change Duration between last speed and new speed is `2000 ms`.<br>
 you can use other Duration by method :
 ```java
 // move to 50 Km/s with Duration = 4 sec
-speedometer.speedTo(50, 4000);
+speedometer.speedTo(50, 4000)
 ```
 
-automatically indicator move around current speed to add some reality to speedometer because of [Tremble](https://github.com/anastr/SpeedView/wiki/0.-Get-Started#tremble), you can stop it by `app:sv_withTremble="false"` Attribute or call `speedometer.setWithTremble(false);` method in the code.
+automatically indicator move around current speed to add some reality to speedometer because of [Tremble](https://github.com/anastr/SpeedView/wiki/0.-Get-Started#tremble), you can stop it by `app:sv_withTremble="false"` Attribute or call `speedometer.withTremble = false` method in the code.
 
 **for more control**, see The most important methods at [Get Started - Wiki](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) for **All Speedometers & Gauges**.<br>
 and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage) and [Work With Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).<br>
