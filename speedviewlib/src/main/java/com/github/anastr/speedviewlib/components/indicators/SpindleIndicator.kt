@@ -13,8 +13,9 @@ class SpindleIndicator(context: Context) : Indicator<SpindleIndicator>(context) 
 
     private val indicatorPath = Path()
 
-    override val defaultIndicatorWidth: Float
-        get() = dpTOpx(16f)
+    init {
+        width = dpTOpx(16f)
+    }
 
     override fun getTop(): Float {
         return getViewSize() * .18f + speedometer!!.padding
@@ -30,10 +31,10 @@ class SpindleIndicator(context: Context) : Indicator<SpindleIndicator>(context) 
     override fun updateIndicator() {
         indicatorPath.reset()
         indicatorPath.moveTo(getCenterX(), getCenterY())
-        indicatorPath.quadTo(getCenterX() - indicatorWidth, getViewSize() * .34f + speedometer!!.padding, getCenterX(), getViewSize() * .18f + speedometer!!.padding)
-        indicatorPath.quadTo(getCenterX() + indicatorWidth, getViewSize() * .34f + speedometer!!.padding, getCenterX(), getCenterY())
+        indicatorPath.quadTo(getCenterX() - width, getViewSize() * .34f + speedometer!!.padding, getCenterX(), getViewSize() * .18f + speedometer!!.padding)
+        indicatorPath.quadTo(getCenterX() + width, getViewSize() * .34f + speedometer!!.padding, getCenterX(), getCenterY())
 
-        indicatorPaint.color = indicatorColor
+        indicatorPaint.color = color
     }
 
     override fun setWithEffects(withEffects: Boolean) {

@@ -12,22 +12,21 @@ import android.graphics.RectF
  */
 class ImageIndicator
 /**
- * create indicator from bitmap, the indicator direction must be up.<br></br>
+ * create indicator from bitmap, the indicator direction must be up.
+ *
  * center indicator position will be center of speedometer.
  * @param context you can use `getApplicationContext()`.
  * @param bitmapIndicator the indicator.
- * @param width the custom width of the indicator.
- * @param height the custom height of the indicator.
+ * @param imageWidth the custom width of the indicator.
+ * @param imageHeight the custom height of the indicator.
  * @throws IllegalArgumentException if `width <= 0 OR height <= 0`.
  */
-@JvmOverloads constructor(context: Context, private val bitmapIndicator: Bitmap, private val width: Int = bitmapIndicator.width, private val height: Int = bitmapIndicator.height) : Indicator<ImageIndicator>(context) {
+@JvmOverloads constructor(context: Context, private val bitmapIndicator: Bitmap, private val imageWidth: Int = bitmapIndicator.width, private val imageHeight: Int = bitmapIndicator.height) : Indicator<ImageIndicator>(context) {
     private val bitmapRect = RectF()
 
-    override val defaultIndicatorWidth: Float
-        get() = 0f
-
     /**
-     * create indicator from resources, the indicator direction must be up.<br></br>
+     * create indicator from resources, the indicator direction must be up.
+     *
      * center indicator position will be center of speedometer.
      * @param context you can use `getApplicationContext()`.
      * @param resource the image id.
@@ -35,7 +34,8 @@ class ImageIndicator
     constructor(context: Context, resource: Int) : this(context, BitmapFactory.decodeResource(context.resources, resource))
 
     /**
-     * create indicator from resources, the indicator direction must be up.<br></br>
+     * create indicator from resources, the indicator direction must be up.
+     *
      * center indicator position will be center of speedometer.
      * @param context you can use `getApplicationContext()`.
      * @param resource the image id.
@@ -46,14 +46,14 @@ class ImageIndicator
     constructor(context: Context, resource: Int, width: Int, height: Int) : this(context, BitmapFactory.decodeResource(context.resources, resource), width, height)
 
     init {
-        require(width > 0) { "width must be bigger than 0" }
-        require(height > 0) { "height must be bigger than 0" }
+        require(imageWidth > 0) { "imageWidth must be bigger than 0" }
+        require(imageHeight > 0) { "imageHeight must be bigger than 0" }
     }
 
     override fun draw(canvas: Canvas, degree: Float) {
         canvas.save()
         canvas.rotate(90f + degree, getCenterX(), getCenterY())
-        bitmapRect.set(getCenterX() - width / 2f, getCenterY() - height / 2f, getCenterX() + width / 2f, getCenterY() + height / 2f)
+        bitmapRect.set(getCenterX() - imageWidth / 2f, getCenterY() - imageHeight / 2f, getCenterX() + imageWidth / 2f, getCenterY() + imageHeight / 2f)
         canvas.drawBitmap(bitmapIndicator, null, bitmapRect, indicatorPaint)
         canvas.restore()
     }

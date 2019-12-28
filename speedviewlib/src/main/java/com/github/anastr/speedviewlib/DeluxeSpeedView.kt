@@ -76,7 +76,7 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     override fun defaultSpeedometerValues() {
         indicator = NormalSmallIndicator(context)
-        indicator.indicatorColor = -0xff0014
+        indicator.color = -0xff0014
         super.backgroundCircleColor = -0xdededf
     }
 

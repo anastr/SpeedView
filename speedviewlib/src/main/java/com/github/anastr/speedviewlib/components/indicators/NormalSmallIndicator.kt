@@ -15,8 +15,9 @@ class NormalSmallIndicator(context: Context) : Indicator<NormalSmallIndicator>(c
     private val indicatorPath = Path()
     private var bottomY: Float = 0.toFloat()
 
-    override val defaultIndicatorWidth: Float
-        get() = dpTOpx(12f)
+    init {
+        width = dpTOpx(12f)
+    }
 
     override fun getTop(): Float {
         return getViewSize() / 5f + speedometer!!.padding
@@ -37,12 +38,12 @@ class NormalSmallIndicator(context: Context) : Indicator<NormalSmallIndicator>(c
         indicatorPath.reset()
         indicatorPath.moveTo(getCenterX(), getViewSize() / 5f + speedometer!!.padding)
         bottomY = getViewSize() * 3f / 5f + speedometer!!.padding
-        indicatorPath.lineTo(getCenterX() - indicatorWidth, bottomY)
-        indicatorPath.lineTo(getCenterX() + indicatorWidth, bottomY)
-        val rectF = RectF(getCenterX() - indicatorWidth, bottomY - indicatorWidth, getCenterX() + indicatorWidth, bottomY + indicatorWidth)
+        indicatorPath.lineTo(getCenterX() - width, bottomY)
+        indicatorPath.lineTo(getCenterX() + width, bottomY)
+        val rectF = RectF(getCenterX() - width, bottomY - width, getCenterX() + width, bottomY + width)
         indicatorPath.addArc(rectF, 0f, 180f)
 
-        indicatorPaint.color = indicatorColor
+        indicatorPaint.color = color
     }
 
     override fun setWithEffects(withEffects: Boolean) {

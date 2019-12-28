@@ -15,7 +15,6 @@ abstract class Indicator<I : Indicator<I>> (context: Context): Observable() {
 
     protected var indicatorPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val density: Float = context.resources.displayMetrics.density
-    protected abstract val defaultIndicatorWidth: Float
 
     protected var speedometer :Speedometer? = null
 
@@ -24,7 +23,7 @@ abstract class Indicator<I : Indicator<I>> (context: Context): Observable() {
      * between [Indicator.Indicators], it will be ignored
      * when using [ImageIndicator].
      */
-    var indicatorWidth: Float = 0f
+    var width: Float = 0f
         set(indicatorWidth) {
             field = indicatorWidth
             speedometer?.let { updateIndicator() }
@@ -36,7 +35,7 @@ abstract class Indicator<I : Indicator<I>> (context: Context): Observable() {
      * change indicator's color,
      * this option will be ignored when using [ImageIndicator].
      */
-    var indicatorColor = -0xde690d
+    var color = -0xde690d
         set(indicatorColor) {
             field = indicatorColor
             speedometer?.let { updateIndicator() }
@@ -68,8 +67,7 @@ abstract class Indicator<I : Indicator<I>> (context: Context): Observable() {
     fun getCenterY(): Float = if (speedometer != null) speedometer!!.size / 2f else 0f
 
     init {
-        indicatorPaint.color = indicatorColor
-        indicatorWidth = defaultIndicatorWidth
+        indicatorPaint.color = color
     }
 
     abstract fun draw(canvas: Canvas, degree: Float)

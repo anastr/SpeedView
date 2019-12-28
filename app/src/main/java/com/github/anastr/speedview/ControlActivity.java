@@ -101,7 +101,7 @@ public class ControlActivity extends AppCompatActivity {
     public void setIndicatorColor(View view) {
         EditText indicatorColor = findViewById(R.id.indicatorColor);
         try{
-            speedView.getIndicator().setIndicatorColor(Color.parseColor(indicatorColor.getText().toString()));
+            speedView.getIndicator().setColor(Color.parseColor(indicatorColor.getText().toString()));
         } catch (Exception e) {
             indicatorColor.setError(e.getMessage());
         }

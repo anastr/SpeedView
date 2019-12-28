@@ -14,8 +14,9 @@ class LineIndicator(context: Context, private val mode: Float) : Indicator<LineI
 
     private val indicatorPath = Path()
 
-    override val defaultIndicatorWidth: Float
-        get() = dpTOpx(8f)
+    init {
+        width = dpTOpx(8f)
+    }
 
     override fun getBottom(): Float {
         return getCenterY() * mode
@@ -34,8 +35,8 @@ class LineIndicator(context: Context, private val mode: Float) : Indicator<LineI
         indicatorPath.lineTo(getCenterX(), getCenterY() * mode)
 
         indicatorPaint.style = Paint.Style.STROKE
-        indicatorPaint.strokeWidth = indicatorWidth
-        indicatorPaint.color = indicatorColor
+        indicatorPaint.strokeWidth = width
+        indicatorPaint.color = color
     }
 
     override fun setWithEffects(withEffects: Boolean) {

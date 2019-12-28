@@ -12,15 +12,16 @@ class TriangleIndicator(context: Context) : Indicator<TriangleIndicator>(context
     private var indicatorPath = Path()
     private var indicatorTop = 0f
 
-    override val defaultIndicatorWidth: Float
-        get() = dpTOpx(25f)
+    init {
+        width = dpTOpx(25f)
+    }
 
     override fun getTop(): Float {
         return indicatorTop
     }
 
     override fun getBottom(): Float {
-        return indicatorTop + indicatorWidth
+        return indicatorTop + width
     }
 
     override fun draw(canvas: Canvas, degree: Float) {
@@ -34,12 +35,12 @@ class TriangleIndicator(context: Context) : Indicator<TriangleIndicator>(context
         indicatorPath = Path()
         indicatorTop = speedometer!!.padding.toFloat() + speedometer!!.speedometerWidth + dpTOpx(5f)
         indicatorPath.moveTo(getCenterX(), indicatorTop)
-        indicatorPath.lineTo(getCenterX() - indicatorWidth, indicatorTop + indicatorWidth)
-        indicatorPath.lineTo(getCenterX() + indicatorWidth, indicatorTop + indicatorWidth)
+        indicatorPath.lineTo(getCenterX() - width, indicatorTop + width)
+        indicatorPath.lineTo(getCenterX() + width, indicatorTop + width)
         indicatorPath.moveTo(0f, 0f)
 
-        val endColor = Color.argb(0, Color.red(indicatorColor), Color.green(indicatorColor), Color.blue(indicatorColor))
-        val linearGradient = LinearGradient(getCenterX(), indicatorTop, getCenterX(), indicatorTop + indicatorWidth, indicatorColor, endColor, Shader.TileMode.CLAMP)
+        val endColor = Color.argb(0, Color.red(color), Color.green(color), Color.blue(color))
+        val linearGradient = LinearGradient(getCenterX(), indicatorTop, getCenterX(), indicatorTop + width, color, endColor, Shader.TileMode.CLAMP)
         indicatorPaint.shader = linearGradient
     }
 

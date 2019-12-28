@@ -17,10 +17,8 @@ class NeedleIndicator(context: Context) : Indicator<NeedleIndicator>(context) {
     private val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var bottomY: Float = 0.toFloat()
 
-    override val defaultIndicatorWidth: Float
-        get() = dpTOpx(12f)
-
     init {
+        width = dpTOpx(12f)
         circlePaint.style = Paint.Style.STROKE
     }
 
@@ -40,17 +38,17 @@ class NeedleIndicator(context: Context) : Indicator<NeedleIndicator>(context) {
         indicatorPath.reset()
         circlePath.reset()
         indicatorPath.moveTo(getCenterX(), speedometer!!.padding.toFloat())
-        bottomY = (indicatorWidth * sin(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + speedometer!!.padding.toFloat()
-        val xLeft = (indicatorWidth * cos(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + speedometer!!.padding.toFloat()
+        bottomY = (width * sin(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + speedometer!!.padding.toFloat()
+        val xLeft = (width * cos(Math.toRadians(260.0))).toFloat() + getViewSize() * .5f + speedometer!!.padding.toFloat()
         indicatorPath.lineTo(xLeft, bottomY)
-        val rectF = RectF(getCenterX() - indicatorWidth, getCenterY() - indicatorWidth, getCenterX() + indicatorWidth, getCenterY() + indicatorWidth)
+        val rectF = RectF(getCenterX() - width, getCenterY() - width, getCenterX() + width, getCenterY() + width)
         indicatorPath.arcTo(rectF, 260f, 20f)
 
-        val circleWidth = indicatorWidth * .25f
-        circlePath.addCircle(getCenterX(), getCenterY(), indicatorWidth - circleWidth * .5f + .6f, Path.Direction.CW)
+        val circleWidth = width * .25f
+        circlePath.addCircle(getCenterX(), getCenterY(), width - circleWidth * .5f + .6f, Path.Direction.CW)
 
-        indicatorPaint.color = indicatorColor
-        circlePaint.color = indicatorColor
+        indicatorPaint.color = color
+        circlePaint.color = color
         circlePaint.strokeWidth = circleWidth
     }
 

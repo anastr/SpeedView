@@ -59,7 +59,7 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
         seekBarWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int width, boolean b) {
-                speedometer.getIndicator().setIndicatorWidth(speedometer.dpTOpx(width));
+                speedometer.getIndicator().setWidth(speedometer.dpTOpx(width));
                 textWidth.setText(String.format(Locale.getDefault(), "%ddp", width));
             }
 

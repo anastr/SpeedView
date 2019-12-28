@@ -69,8 +69,8 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
     override fun defaultSpeedometerValues() {
         indicator = SpindleIndicator(context)
         indicator.apply {
-            indicatorWidth = dpTOpx(16f)
-            indicatorColor = -0x1
+            width = dpTOpx(16f)
+            color = -0x1
         }
         super.backgroundCircleColor = -0xb73317
         super.speedometerWidth = dpTOpx(10f)
