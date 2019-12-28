@@ -4,6 +4,7 @@
     <attr name="sv_speedometerColor" format="color"/>
     <attr name="sv_speedometerBackColor" format="color"/>
     <attr name="sv_centerCircleColor" format="color" />
+    <attr name="sv_centerCircleRadius" format="dimension" />
 
     <attr name="sv_speedBackgroundColor" format="color" />
     <attr name="sv_withEffects" format="boolean" />
@@ -110,10 +111,12 @@
 
     <declare-styleable name="SpeedView" parent="Speedometer">
         <attr name="sv_centerCircleColor" />
+        <attr name="sv_centerCircleRadius" />
     </declare-styleable>
 
     <declare-styleable name="DeluxeSpeedView" parent="Speedometer">
         <attr name="sv_centerCircleColor" />
+        <attr name="sv_centerCircleRadius" />
         <attr name="sv_speedBackgroundColor" />
         <attr name="sv_withEffects" />
     </declare-styleable>
@@ -133,6 +136,7 @@
 
     <declare-styleable name="PointerSpeedometer" parent="Speedometer">
         <attr name="sv_centerCircleColor" />
+        <attr name="sv_centerCircleRadius" />
         <attr name="sv_speedometerColor" />
         <attr name="sv_pointerColor" format="color"/>
         <attr name="sv_withPointer" format="boolean"/>

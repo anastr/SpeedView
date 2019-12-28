@@ -498,14 +498,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     protected fun getSpeedText() = "%.${speedTextFormat}f".format(locale, currentSpeed)
 
     /**
-     * get Max speed as string to **Draw**.
+     * get tick as string to **Draw**.
      */
-    protected fun getMaxSpeedText() = "%.${tickTextFormat}f".format(locale, maxSpeed)
-
-    /**
-     * get Min speed as string to **Draw**.
-     */
-    protected fun getMinSpeedText() = "%.${tickTextFormat}f".format(locale, minSpeed)
+    protected fun getTickText(tick: Float) = "%.${tickTextFormat}f".format(locale, tick)
 
     /**
      * get current speed as **percent**.

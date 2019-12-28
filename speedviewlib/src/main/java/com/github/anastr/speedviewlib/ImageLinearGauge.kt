@@ -9,7 +9,7 @@ import android.util.AttributeSet
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-class ImageLinearGauge @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearGauge(context, attrs, defStyleAttr) {
+open class ImageLinearGauge @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearGauge(context, attrs, defStyleAttr) {
 
     private var image: Drawable? = null
 

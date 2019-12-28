@@ -12,49 +12,9 @@ import android.util.AttributeSet
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-class ImageSpeedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
+open class ImageSpeedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
 
     private var imageSpeedometer: Drawable? = null
-
-//    /**
-//     * this Speedometer doesn't use this method.
-//     * @param typeface nothing.
-//     */
-//    override var textTypeface: Typeface?
-//        get() = super.textTypeface
-//        @Deprecated("")
-//        set(typeface) {
-//        }
-//
-//    /**
-//     * this Speedometer doesn't use this method.
-//     * @return `0` always.
-//     */
-//    /**
-//     * this Speedometer doesn't use this method.
-//     * @param textSize nothing.
-//     */
-//    override var textSize: Float
-//        @Deprecated("")
-//        get() = 0f
-//        @Deprecated("")
-//        set(textSize) {
-//        }
-//
-//    /**
-//     * this Speedometer doesn't use this method.
-//     * @return `0` always.
-//     */
-//    /**
-//     * this Speedometer doesn't use this method.
-//     * @param textColor nothing.
-//     */
-//    override var textColor: Int
-//        @Deprecated("")
-//        get() = 0
-//        @Deprecated("")
-//        set(textColor) {
-//        }
 
     init {
         initAttributeSet(context, attrs)

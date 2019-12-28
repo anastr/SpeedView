@@ -580,10 +580,16 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             startDegree % 360 <= 270 -> Paint.Align.CENTER
             else -> Paint.Align.RIGHT
         }
+        var tickStart: CharSequence? = null
+        if (onPrintTickLabel != null)
+            tickStart = onPrintTickLabel!!.getTickLabel(0, getMinSpeed())
+
+        if (tickStart == null)
+            tickStart = getTickText(getMinSpeed())
         c.save()
         c.rotate(startDegree + 90f, size * .5f, size * .5f)
         c.rotate(-(startDegree + 90f), sizePa * .5f - textPaint.textSize + padding, textPaint.textSize + padding)
-        c.drawText(getMinSpeedText(), sizePa * .5f - textPaint.textSize + padding, textPaint.textSize + padding, textPaint)
+        c.drawText(tickStart.toString(), sizePa * .5f - textPaint.textSize + padding, textPaint.textSize + padding, textPaint)
         c.restore()
         textPaint.textAlign = when {
             endDegree % 360 <= 90 -> Paint.Align.RIGHT
@@ -591,10 +597,16 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             endDegree % 360 <= 270 -> Paint.Align.CENTER
             else -> Paint.Align.RIGHT
         }
+        var tickEnd: CharSequence? = null
+        if (onPrintTickLabel != null)
+            tickEnd = onPrintTickLabel!!.getTickLabel(1, getMaxSpeed())
+
+        if (tickEnd == null)
+            tickEnd = getTickText(getMaxSpeed())
         c.save()
         c.rotate(endDegree + 90f, size * .5f, size * .5f)
         c.rotate(-(endDegree + 90f), sizePa * .5f + textPaint.textSize + padding.toFloat(), textPaint.textSize + padding)
-        c.drawText(getMaxSpeedText(), sizePa * .5f + textPaint.textSize + padding.toFloat(), textPaint.textSize + padding, textPaint)
+        c.drawText(tickEnd.toString(), sizePa * .5f + textPaint.textSize + padding.toFloat(), textPaint.textSize + padding, textPaint)
         c.restore()
     }
 
@@ -620,13 +632,10 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
                 tick = onPrintTickLabel!!.getTickLabel(i, ticks[i])
 
             if (tick == null)
-                tick = if (tickTextFormat == FLOAT_FORMAT.toInt())
-                    "%.1f".format(locale, ticks[i])
-                else
-                    "%d".format(locale, ticks[i].toInt())
+                tick = getTickText(ticks[i])
 
             c.translate(0f, initTickPadding + padding.toFloat() + tickPadding.toFloat())
-            StaticLayout(tick, textPaint, size, Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false)
+            StaticLayout(tick, textPaint, size, Layout.Alignment.ALIGN_CENTER, 1f, 0f, false)
                     .draw(c)
 
             c.restore()

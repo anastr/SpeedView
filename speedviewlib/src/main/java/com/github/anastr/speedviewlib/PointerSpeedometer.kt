@@ -9,7 +9,7 @@ import com.github.anastr.speedviewlib.components.indicators.SpindleIndicator
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
+open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
 
     private val markPath = Path()
     private val speedometerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -25,13 +25,22 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
     private var withPointer = true
 
     /**
-     * change the color of the center circle (if exist),
-     * **this option is not available for all Speedometers**.
+     * change the color of the center circle.
      */
     var centerCircleColor: Int
         get() = circlePaint.color
         set(centerCircleColor) {
             circlePaint.color = centerCircleColor
+            if (isAttachedToWindow)
+                invalidate()
+        }
+
+    /**
+     * change the width of the center circle.
+     */
+    var centerCircleRadius = dpTOpx(12f)
+        set(centerCircleRadius) {
+            field = centerCircleRadius
             if (isAttachedToWindow)
                 invalidate()
         }
@@ -95,6 +104,7 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
         speedometerColor = a.getColor(R.styleable.PointerSpeedometer_sv_speedometerColor, speedometerColor)
         pointerColor = a.getColor(R.styleable.PointerSpeedometer_sv_pointerColor, pointerColor)
         circlePaint.color = a.getColor(R.styleable.PointerSpeedometer_sv_centerCircleColor, circlePaint.color)
+        centerCircleRadius = a.getDimension(R.styleable.SpeedView_sv_centerCircleRadius, centerCircleRadius)
         withPointer = a.getBoolean(R.styleable.PointerSpeedometer_sv_withPointer, withPointer)
         a.recycle()
         initAttributeValue()
@@ -140,9 +150,9 @@ class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: Attr
 
         val c = centerCircleColor
         circlePaint.color = Color.argb((Color.alpha(c) * .5f).toInt(), Color.red(c), Color.green(c), Color.blue(c))
-        canvas.drawCircle(size * .5f, size * .5f, widthPa / 14f, circlePaint)
+        canvas.drawCircle(size * .5f, size * .5f, centerCircleRadius + dpTOpx(6f), circlePaint)
         circlePaint.color = c
-        canvas.drawCircle(size * .5f, size * .5f, widthPa / 22f, circlePaint)
+        canvas.drawCircle(size * .5f, size * .5f, centerCircleRadius, circlePaint)
 
         drawNotes(canvas)
     }

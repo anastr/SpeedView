@@ -12,7 +12,7 @@ import com.github.anastr.speedviewlib.components.indicators.NormalIndicator
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
+open class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
 
     private val markPath = Path()
     private val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -21,13 +21,22 @@ class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private val speedometerRect = RectF()
 
     /**
-     * change the color of the center circle (if exist),
-     * **this option is not available for all Speedometers**.
+     * change the color of the center circle.
      */
     var centerCircleColor: Int
         get() = circlePaint.color
         set(centerCircleColor) {
             circlePaint.color = centerCircleColor
+            if (isAttachedToWindow)
+                invalidate()
+        }
+
+    /**
+     * change the width of the center circle.
+     */
+    var centerCircleRadius = dpTOpx(20f)
+        set(centerCircleRadius) {
+            field = centerCircleRadius
             if (isAttachedToWindow)
                 invalidate()
         }
@@ -57,6 +66,7 @@ class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.SpeedView, 0, 0)
 
         circlePaint.color = a.getColor(R.styleable.SpeedView_sv_centerCircleColor, circlePaint.color)
+        centerCircleRadius = a.getDimension(R.styleable.SpeedView_sv_centerCircleRadius, centerCircleRadius)
         a.recycle()
     }
 
@@ -77,7 +87,7 @@ class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         drawSpeedUnitText(canvas)
 
         drawIndicator(canvas)
-        canvas.drawCircle(size * .5f, size * .5f, widthPa / 12f, circlePaint)
+        canvas.drawCircle(size * .5f, size * .5f, centerCircleRadius, circlePaint)
 
         drawNotes(canvas)
     }

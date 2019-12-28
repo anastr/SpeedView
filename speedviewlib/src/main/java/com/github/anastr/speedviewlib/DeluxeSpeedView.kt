@@ -11,7 +11,7 @@ import com.github.anastr.speedviewlib.components.indicators.NormalSmallIndicator
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
+open class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
 
     private val markPath = Path()
     private val smallMarkPath = Path()
@@ -51,13 +51,22 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
 
     /**
-     * change the color of the center circle (if exist),
-     * **this option is not available for all Speedometers**.
+     * change the color of the center circle.
      */
     var centerCircleColor: Int
         get() = circlePaint.color
         set(centerCircleColor) {
             circlePaint.color = centerCircleColor
+            if (isAttachedToWindow)
+                invalidate()
+        }
+
+    /**
+     * change the width of the center circle.
+     */
+    var centerCircleRadius = dpTOpx(20f)
+        set(centerCircleRadius) {
+            field = centerCircleRadius
             if (isAttachedToWindow)
                 invalidate()
         }
@@ -102,6 +111,7 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
         speedBackgroundPaint.color = a.getColor(R.styleable.DeluxeSpeedView_sv_speedBackgroundColor, speedBackgroundPaint.color)
         withEffects = a.getBoolean(R.styleable.DeluxeSpeedView_sv_withEffects, withEffects)
         circlePaint.color = a.getColor(R.styleable.DeluxeSpeedView_sv_centerCircleColor, circlePaint.color)
+        centerCircleRadius = a.getDimension(R.styleable.SpeedView_sv_centerCircleRadius, centerCircleRadius)
         a.recycle()
         isWithEffects = withEffects
         initAttributeValue()
@@ -132,7 +142,7 @@ class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         drawSpeedUnitText(canvas)
         drawIndicator(canvas)
-        canvas.drawCircle(size * .5f, size * .5f, widthPa / 12f, circlePaint)
+        canvas.drawCircle(size * .5f, size * .5f, centerCircleRadius, circlePaint)
         drawNotes(canvas)
     }
 
