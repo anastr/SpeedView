@@ -8,11 +8,11 @@ import java.util.*
 /**
  * Created by Anas Altair on 10/25/2019.
  */
-class Section(speedOffset: Float, color: Int): Observable(), Parcelable {
+class Section(speedOffset: Float, color: Int, style: Style): Observable(), Parcelable {
 
-    constructor(section: Section) : this(section.speedOffset, section.color)
+    constructor(section: Section) : this(section.speedOffset, section.color, section.style)
 
-    constructor(parcel: Parcel) : this(parcel.readFloat(), parcel.readInt())
+    constructor(parcel: Parcel) : this(parcel.readFloat(), parcel.readInt(), parcel.readSerializable() as Style)
 
     /**
      * percent value to section range [0, 1]
@@ -38,6 +38,13 @@ class Section(speedOffset: Float, color: Int): Observable(), Parcelable {
             notifyObservers(false)
         }
 
+    var style: Style = style
+        set(value) {
+            field = value
+            setChanged()
+            notifyObservers(false)
+        }
+
     /**
      * add Observer to this section, **only one gauge can observe the section**.
      */
@@ -55,6 +62,7 @@ class Section(speedOffset: Float, color: Int): Observable(), Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeFloat(speedOffset)
         parcel.writeInt(color)
+        parcel.writeSerializable(style.ordinal)
     }
 
     override fun describeContents(): Int {
@@ -70,6 +78,10 @@ class Section(speedOffset: Float, color: Int): Observable(), Parcelable {
         override fun newArray(size: Int): Array<Section?> {
             return arrayOfNulls(size)
         }
+    }
+
+    enum class Style {
+        SQUARE, ROUND
     }
 
 }

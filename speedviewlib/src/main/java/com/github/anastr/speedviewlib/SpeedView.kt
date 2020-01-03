@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
+import com.github.anastr.speedviewlib.components.Section
 import com.github.anastr.speedviewlib.components.indicators.NormalIndicator
 
 /**
@@ -67,6 +68,9 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
 
         circlePaint.color = a.getColor(R.styleable.SpeedView_sv_centerCircleColor, circlePaint.color)
         centerCircleRadius = a.getDimension(R.styleable.SpeedView_sv_centerCircleRadius, centerCircleRadius)
+        val styleIndex = a.getInt(R.styleable.SpeedView_sv_sectionStyle, -1)
+        if (styleIndex != -1)
+            sections.forEach { it.style = Section.Style.values()[styleIndex] }
         a.recycle()
     }
 
@@ -105,9 +109,24 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
         val risk = speedometerWidth * .5f + padding
         speedometerRect.set(risk, risk, size - risk, size - risk)
 
-        for (i in sections.size-1 downTo 0) {
-            speedometerPaint.color = sections[i].color
-            c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()) * sections[i].speedOffset, false, speedometerPaint)
+        // here we calculate the extra length when strokeCap = ROUND.
+        // A: Arc Length, the extra length that taken ny ROUND stroke in one side.
+        // D: Diameter of circle.
+        // round angle padding =         A       * 360 / (           D             *   PI   )
+        val roundAngle = (speedometerWidth * .5f * 360 / (speedometerRect.width()  * Math.PI)).toFloat()
+        var startAngle = getStartDegree().toFloat()
+        sections.forEach {
+            speedometerPaint.color = it.color
+            val sweepAngle = (getEndDegree() - getStartDegree()) * it.speedOffset - (startAngle - getStartDegree())
+            if (it.style == Section.Style.ROUND) {
+                speedometerPaint.strokeCap = Paint.Cap.ROUND
+                c.drawArc(speedometerRect, startAngle + roundAngle, sweepAngle - roundAngle * 2f, false, speedometerPaint)
+            }
+            else {
+                speedometerPaint.strokeCap = Paint.Cap.BUTT
+                c.drawArc(speedometerRect, startAngle, sweepAngle, false, speedometerPaint)
+            }
+            startAngle += sweepAngle
         }
 
         c.save()

@@ -325,9 +325,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         speedTextPaint.textSize = dpTOpx(18f)
         unitTextPaint.color = -0x1000000
         unitTextPaint.textSize = dpTOpx(15f)
-        sections.add(Section(.6f, -0xff0100).inGauge(this))
-        sections.add(Section(.87f, -0x100).inGauge(this))
-        sections.add(Section(1f, -0x10000).inGauge(this))
+        sections.add(Section(.6f, -0xff0100, Section.Style.SQUARE).inGauge(this))
+        sections.add(Section(.87f, -0x100, Section.Style.SQUARE).inGauge(this))
+        sections.add(Section(1f, -0x10000, Section.Style.SQUARE).inGauge(this))
 
         if (Build.VERSION.SDK_INT >= 11) {
             speedAnimator = ValueAnimator.ofFloat(0f, 1f)
@@ -1097,12 +1097,12 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * clear old [sections],
      * and add [numberOfSections] equal to each other.
      */
-    fun makeSections(numberOfSections: Int) {
+    fun makeSections(numberOfSections: Int, color: Int, style: Section.Style) {
         sections.forEach { it.deleteObservers() }
         sections.clear()
         var part = 1f / numberOfSections
         for (i in 0 until numberOfSections) {
-            sections.add(Section(part, 0).inGauge(this))
+            sections.add(Section(part, color, style).inGauge(this))
             part += (1f / numberOfSections)
         }
         invalidateGauge()
