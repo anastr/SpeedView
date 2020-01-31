@@ -5,8 +5,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.os.Build
-import android.os.Bundle
-import android.os.Parcelable
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
@@ -641,7 +639,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             // to safe handle by call gauge.getCorrectIntSpeed().
             while (currentIntSpeed != newSpeed) {
                 currentIntSpeed += update
-                onSpeedChangeListener!!.onSpeedChange(this, isSpeedUp, byTremble)
+                onSpeedChangeListener!!.invoke(this, isSpeedUp, byTremble)
             }
         }
         currentIntSpeed = newSpeed
@@ -709,7 +707,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * @param newSection where speed value move to.
      */
     protected fun onSectionChangeEvent(previousSection: Section?, newSection: Section?) {
-        onSectionChangeListener?.onSectionChangeListener(previousSection, newSection)
+        onSectionChangeListener?.invoke(previousSection, newSection)
     }
 
     /**
@@ -971,22 +969,22 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         attachedToWindow = false
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
-        val bundle = Bundle()
-        bundle.putParcelable("superState", super.onSaveInstanceState())
-        bundle.putFloat("speed", speed)
-        bundle.putParcelableArrayList("sections", sections)
-        return bundle
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable?) {
-        val bundle = state as Bundle
-        speed = bundle.getFloat("speed")
-        sections.clear()
-        addSections(bundle.getParcelableArrayList("sections")!!)
-        super.onRestoreInstanceState(bundle.getParcelable("superState"))
-        setSpeedAt(speed)
-    }
+//    override fun onSaveInstanceState(): Parcelable? {
+//        val bundle = Bundle()
+//        bundle.putParcelable("superState", super.onSaveInstanceState())
+//        bundle.putFloat("speed", speed)
+//        bundle.putParcelableArrayList("sections", sections)
+//        return bundle
+//    }
+//
+//    override fun onRestoreInstanceState(state: Parcelable?) {
+//        val bundle = state as Bundle
+//        speed = bundle.getFloat("speed")
+//        sections.clear()
+//        addSections(bundle.getParcelableArrayList("sections")!!)
+//        super.onRestoreInstanceState(bundle.getParcelable("superState"))
+//        setSpeedAt(speed)
+//    }
 
     /**
      * tremble control.

@@ -8,12 +8,13 @@ import android.util.AttributeSet
 import com.github.anastr.speedviewlib.components.indicators.Indicator
 import com.github.anastr.speedviewlib.components.indicators.NoIndicator
 import com.github.anastr.speedviewlib.components.note.Note
-import com.github.anastr.speedviewlib.util.OnPrintTickLabel
+import com.github.anastr.speedviewlib.util.OnPrintTickLabelListener
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.text.Typography.degree
+
 
 /**
  * this Library build By Anas Altair
@@ -163,7 +164,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      * create custom Tick label,
      * maybe null.
      */
-    var onPrintTickLabel: OnPrintTickLabel? = null
+    var onPrintTickLabel: OnPrintTickLabelListener? = null
         set(onPrintTickLabel) {
             field = onPrintTickLabel
             invalidateGauge()
@@ -582,7 +583,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         }
         var tickStart: CharSequence? = null
         if (onPrintTickLabel != null)
-            tickStart = onPrintTickLabel!!.getTickLabel(0, getMinSpeed())
+            tickStart = onPrintTickLabel!!.invoke(0, getMinSpeed())
 
         if (tickStart == null)
             tickStart = getTickText(getMinSpeed())
@@ -599,7 +600,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         }
         var tickEnd: CharSequence? = null
         if (onPrintTickLabel != null)
-            tickEnd = onPrintTickLabel!!.getTickLabel(1, getMaxSpeed())
+            tickEnd = onPrintTickLabel!!.invoke(1, getMaxSpeed())
 
         if (tickEnd == null)
             tickEnd = getTickText(getMaxSpeed())
@@ -629,7 +630,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
             var tick: CharSequence? = null
             if (onPrintTickLabel != null)
-                tick = onPrintTickLabel!!.getTickLabel(i, ticks[i])
+                tick = onPrintTickLabel!!.invoke(i, ticks[i])
 
             if (tick == null)
                 tick = getTickText(ticks[i])

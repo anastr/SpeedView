@@ -1,17 +1,20 @@
 package com.github.anastr.speedview;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.anastr.speedviewlib.Gauge;
 import com.github.anastr.speedviewlib.PointerSpeedometer;
-import com.github.anastr.speedviewlib.util.OnSpeedChangeListener;
 
 import java.util.Locale;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function3;
 
 public class PointerActivity extends AppCompatActivity {
 
@@ -55,11 +58,12 @@ public class PointerActivity extends AppCompatActivity {
             }
         });
 
-        pointerSpeedometer.setOnSpeedChangeListener(new OnSpeedChangeListener() {
+        pointerSpeedometer.setOnSpeedChangeListener(new Function3<Gauge, Boolean, Boolean, Unit>() {
             @Override
-            public void onSpeedChange(Gauge gauge, boolean isSpeedUp, boolean isByTremble) {
+            public Unit invoke(Gauge gauge, Boolean aBoolean, Boolean aBoolean2) {
                 textSpeedChange.setText(String.format(Locale.getDefault(), "onSpeedChange %d"
                         , gauge.getCurrentIntSpeed()));
+                return Unit.INSTANCE;
             }
         });
     }

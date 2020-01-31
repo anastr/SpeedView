@@ -11,9 +11,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedviewlib.Speedometer;
-import com.github.anastr.speedviewlib.util.OnPrintTickLabel;
 
 import java.util.Locale;
+
+import kotlin.jvm.functions.Function2;
 
 public class TickActivity extends AppCompatActivity {
 
@@ -36,9 +37,9 @@ public class TickActivity extends AppCompatActivity {
 
         speedometer.speedPercentTo(53);
 
-        speedometer.setOnPrintTickLabel(new OnPrintTickLabel() {
+        speedometer.setOnPrintTickLabel(new Function2<Integer, Float, CharSequence>() {
             @Override
-            public CharSequence getTickLabel(int tickPosition, float tick) {
+            public CharSequence invoke(Integer tickPosition, Float tick) {
                 if (tick == 0) {
                     SpannableString s = new SpannableString(String.format(Locale.getDefault(), "%.1f", tick));
                     s.setSpan(new ForegroundColorSpan(0xffff1117), 0, 1, 0);
