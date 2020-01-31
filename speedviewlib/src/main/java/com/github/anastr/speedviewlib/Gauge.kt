@@ -27,8 +27,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     protected var textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     private val speedTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     private val unitTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
+
     /** unit text, the text after speed text.  */
-    private var unit = "Km/h"
+    var unit = "Km/h"
         set(unit) {
             field = unit
             if (attachedToWindow)
@@ -145,7 +146,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * maybe null.
      */
     var onSectionChangeListener: OnSectionChangeListener? = null
-    /** this animatorListener to call [.tremble] method when animator done  */
+    /** this animatorListener to call [tremble] method when animator done  */
     private lateinit var animatorListener: Animator.AnimatorListener
 
     /** to contain all drawing that doesn't change  */
@@ -712,7 +713,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
 
     /**
      * stop speedometer and run tremble if [withTremble] is true.
-     * use this method just when you wont to stop `speedTo and realSpeedTo`.
+     * use this method just when you wont to stop [speedTo] and [realSpeedTo].
      */
     fun stop() {
         if (!speedAnimator.isRunning && !realSpeedAnimator.isRunning)
@@ -765,34 +766,12 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * This value cannot be negative.
      *
      * @see speedTo
-     * @see speedTo
      * @see speedPercentTo
      * @see realSpeedTo
      */
     @JvmOverloads
     fun speedPercentTo(percent: Int, moveDuration: Long = 2000) {
         speedTo(getSpeedValue(percent.toFloat()), moveDuration)
-    }
-
-    /**
-     * move speed to current value smoothly,
-     * it should be between [[minSpeed], [maxSpeed]].
-     *
-     * if `speed > maxSpeed` speed value will move to [maxSpeed].
-     *
-     * if `speed < minSpeed` speed value will move to [minSpeed].
-     *
-     * it is the same [speedTo]
-     * with default `moveDuration = 2000`.
-     *
-     * @param speed current speed to move.
-     *
-     * @see speedTo
-     * @see speedPercentTo
-     * @see realSpeedTo
-     */
-    fun speedTo(speed: Float) {
-        speedTo(speed, 2000)
     }
 
     /**
@@ -805,13 +784,14 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      *
      * @param speed current speed to move.
      * @param moveDuration The length of animation, in milliseconds.
-     * This value cannot be negative.
+     * This value cannot be negative (2000 by default).
      *
      * @see speedTo
      * @see speedPercentTo
      * @see realSpeedTo
      */
-    fun speedTo(speed: Float, moveDuration: Long) {
+    @JvmOverloads
+    fun speedTo(speed: Float, moveDuration: Long = 2000) {
         var newSpeed = speed
         newSpeed = if (newSpeed > maxSpeed) maxSpeed else if (newSpeed < minSpeed) minSpeed else newSpeed
         if (newSpeed == this.speed)
@@ -870,7 +850,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * when **slow down** : speed value will decrease *rapidly* by [decelerate].
      * @param speed current speed to move.
      *
-     * @see speedTo
      * @see speedTo
      * @see speedPercentTo
      * @see speedUp
