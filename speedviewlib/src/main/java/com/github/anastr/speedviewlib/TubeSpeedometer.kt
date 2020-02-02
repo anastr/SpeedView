@@ -31,9 +31,9 @@ open class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: At
     }
 
     override fun defaultGaugeValues() {
-        sections[0].color = -0xff432c
-        sections[1].color = -0x3ef9
-        sections[2].color = -0xbbcca
+        sections[0].color = 0xff00BCD4.toInt()
+        sections[1].color = 0xffFFC107.toInt()
+        sections[2].color = 0xffF44336.toInt()
     }
 
     override fun defaultSpeedometerValues() {
@@ -44,7 +44,7 @@ open class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: At
     private fun init() {
         tubePaint.style = Paint.Style.STROKE
         tubeBacPaint.style = Paint.Style.STROKE
-        tubeBacPaint.color = -0x8a8a8b
+        tubeBacPaint.color = 0xff757575.toInt()
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null)

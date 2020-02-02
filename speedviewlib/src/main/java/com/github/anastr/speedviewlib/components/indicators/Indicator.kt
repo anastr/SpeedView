@@ -35,7 +35,7 @@ abstract class Indicator<out I : Indicator<I>> (context: Context): Observable() 
      * change indicator's color,
      * this option will be ignored when using [ImageIndicator].
      */
-    var color = -0xde690d
+    var color = 0xff2196F3.toInt()
         set(indicatorColor) {
             field = indicatorColor
             speedometer?.let { updateIndicator() }

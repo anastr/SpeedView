@@ -47,7 +47,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      * indicator light's color.
      * @see isWithIndicatorLight
      */
-    var indicatorLightColor = -0x4400a8de
+    var indicatorLightColor = 0xBBFF5722.toInt()
 
     private val circleBackPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val indicatorLightPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -68,7 +68,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      * change the color of all marks (if exist),
      * **this option is not available for all Speedometers**.
      */
-    var markColor = -0x1
+    var markColor = 0xFFFFFFFF.toInt()
         set(markColor) {
             field = markColor
             if (isAttachedToWindow)
@@ -80,7 +80,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      * you can set it `Color.TRANSPARENT`
      * to remove circle background.
      */
-    var backgroundCircleColor = -0x1
+    var backgroundCircleColor = 0xFFFFFFFF.toInt()
         set(backgroundCircleColor) {
             field = backgroundCircleColor
             circleBackPaint.color = backgroundCircleColor

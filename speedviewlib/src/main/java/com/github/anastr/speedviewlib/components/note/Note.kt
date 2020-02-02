@@ -36,7 +36,7 @@ abstract class Note<out N : Note<N>> protected constructor(context: Context) {
 
     init {
         triangleHeight = dpTOpx(12f)
-        backgroundPaint.color = -0x292829
+        backgroundPaint.color = 0xffd6d7d7.toInt()
         setPadding(dpTOpx(7f), dpTOpx(7f), dpTOpx(7f), dpTOpx(7f))
     }
 

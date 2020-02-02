@@ -86,12 +86,12 @@ open class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     override fun defaultGaugeValues() {
-        super.textColor = -0x1
+        super.textColor = 0xFFFFFFFF.toInt()
     }
 
     override fun defaultSpeedometerValues() {
-        super.backgroundCircleColor = -0xdededf
-        super.markColor = -0x1000000
+        super.backgroundCircleColor = 0xff212121.toInt()
+        super.markColor = 0xFF000000.toInt()
     }
 
     private fun initAttributeSet(context: Context, attrs: AttributeSet?) {
@@ -119,8 +119,8 @@ open class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Att
         activeMarkPaint.strokeWidth = dpTOpx(3f)
         rayPaint.style = Paint.Style.STROKE
         rayPaint.strokeWidth = dpTOpx(1.8f)
-        rayPaint.color = -0x1
-        speedBackgroundPaint.color = -0x1
+        rayPaint.color = 0xFFFFFFFF.toInt()
+        speedBackgroundPaint.color = 0xFFFFFFFF.toInt()
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null)

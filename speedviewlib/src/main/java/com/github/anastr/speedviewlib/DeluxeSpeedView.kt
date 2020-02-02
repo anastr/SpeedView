@@ -78,24 +78,24 @@ open class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     override fun defaultGaugeValues() {
-        super.textColor = -0x1
-        sections[0].color = -0xc878d1
-        sections[1].color = -0x5c7dcc
-        sections[2].color = -0x64dfe0
+        super.textColor = 0xFFFFFFFF.toInt()
+        sections[0].color = 0xff37872f.toInt()
+        sections[1].color = 0xffa38234.toInt()
+        sections[2].color = 0xff9b2020.toInt()
     }
 
     override fun defaultSpeedometerValues() {
         indicator = NormalSmallIndicator(context)
-        indicator.color = -0xff0014
-        super.backgroundCircleColor = -0xdededf
+        indicator.color = 0xff00ffec.toInt()
+        super.backgroundCircleColor = 0xff212121.toInt()
     }
 
     private fun init() {
         speedometerPaint.style = Paint.Style.STROKE
         markPaint.style = Paint.Style.STROKE
         smallMarkPaint.style = Paint.Style.STROKE
-        speedBackgroundPaint.color = -0x1
-        circlePaint.color = -0x1f1f20
+        speedBackgroundPaint.color = 0xFFFFFFFF.toInt()
+        circlePaint.color = 0xffe0e0e0.toInt()
 
         if (Build.VERSION.SDK_INT >= 11)
             setLayerType(LAYER_TYPE_SOFTWARE, null)

@@ -317,12 +317,12 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     private fun init() {
-        textPaint.color = -0x1000000
+        textPaint.color = 0xFF000000.toInt()
         textPaint.textSize = dpTOpx(10f)
         textPaint.textAlign = Paint.Align.CENTER
-        speedTextPaint.color = -0x1000000
+        speedTextPaint.color = 0xFF000000.toInt()
         speedTextPaint.textSize = dpTOpx(18f)
-        unitTextPaint.color = -0x1000000
+        unitTextPaint.color = 0xFF000000.toInt()
         unitTextPaint.textSize = dpTOpx(15f)
         sections.add(Section(.6f, -0xff0100, Section.Style.SQUARE).inGauge(this))
         sections.add(Section(.87f, -0x100, Section.Style.SQUARE).inGauge(this))

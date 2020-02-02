@@ -13,7 +13,7 @@ open class ImageLinearGauge @JvmOverloads constructor(context: Context, attrs: A
 
     private var image: Drawable? = null
 
-    private var backColor = -0x292829
+    private var backColor = 0xffd6d7d7.toInt()
 
     init {
         initAttributeSet(context, attrs)

@@ -50,8 +50,8 @@ open class ProgressiveGauge @JvmOverloads constructor(context: Context, attrs: A
     }
 
     private fun init() {
-        frontPaint.color = -0xff0001
-        backPaint.color = -0x292829
+        frontPaint.color = 0xFF00FFFF.toInt()
+        backPaint.color = 0xffd6d7d7.toInt()
     }
 
     private fun initAttributeSet(context: Context, attrs: AttributeSet?) {

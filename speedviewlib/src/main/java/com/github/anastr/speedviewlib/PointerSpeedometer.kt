@@ -19,8 +19,8 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
     private val markPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedometerRect = RectF()
 
-    private var speedometerColor = -0x111112
-    private var pointerColor = -0x1
+    private var speedometerColor = 0xFFEEEEEE.toInt()
+    private var pointerColor = 0xFFFFFFFF.toInt()
 
     private var withPointer = true
 
@@ -67,9 +67,9 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
     }
 
     override fun defaultGaugeValues() {
-        super.textColor = -0x1
-        super.speedTextColor = -0x1
-        super.unitTextColor = -0x1
+        super.textColor = 0xFFFFFFFF.toInt()
+        super.speedTextColor = 0xFFFFFFFF.toInt()
+        super.unitTextColor = 0xFFFFFFFF.toInt()
         super.speedTextSize = dpTOpx(24f)
         super.unitTextSize = dpTOpx(11f)
         super.speedTextTypeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
@@ -79,9 +79,9 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
         indicator = SpindleIndicator(context)
         indicator.apply {
             width = dpTOpx(16f)
-            color = -0x1
+            color = 0xFFFFFFFF.toInt()
         }
-        super.backgroundCircleColor = -0xb73317
+        super.backgroundCircleColor = 0xff48cce9.toInt()
         super.speedometerWidth = dpTOpx(10f)
     }
 
@@ -91,7 +91,7 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
         markPaint.style = Paint.Style.STROKE
         markPaint.strokeCap = Paint.Cap.ROUND
         markPaint.strokeWidth = dpTOpx(2f)
-        circlePaint.color = -0x1
+        circlePaint.color = 0xFFFFFFFF.toInt()
     }
 
     private fun initAttributeSet(context: Context, attrs: AttributeSet?) {

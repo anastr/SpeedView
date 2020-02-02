@@ -57,7 +57,7 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun init() {
         speedometerPaint.style = Paint.Style.STROKE
         markPaint.style = Paint.Style.STROKE
-        circlePaint.color = -0xbbbbbc
+        circlePaint.color = 0xFF444444.toInt()
     }
 
     private fun initAttributeSet(context: Context, attrs: AttributeSet?) {

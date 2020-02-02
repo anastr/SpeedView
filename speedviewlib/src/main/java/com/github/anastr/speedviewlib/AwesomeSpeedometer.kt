@@ -18,7 +18,7 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
     private val trianglesPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedometerRect = RectF()
 
-    private var speedometerColor = -0xff191a
+    private var speedometerColor = 0xff00e6e6.toInt()
 
     var trianglesColor: Int
         get() = trianglesPaint.color
@@ -47,9 +47,9 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
 
     override fun defaultGaugeValues() {
 
-        super.textColor = -0x3da0
-        super.speedTextColor = -0x1
-        super.unitTextColor = -0x1
+        super.textColor = 0xffffc260.toInt()
+        super.speedTextColor = 0xFFFFFFFF.toInt()
+        super.unitTextColor = 0xFFFFFFFF.toInt()
         super.textTypeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         super.speedTextPosition = Position.CENTER
         super.unitUnderSpeedText = true
@@ -59,11 +59,11 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
         indicator = TriangleIndicator(context)
         indicator.apply {
             width = dpTOpx(25f)
-            color = -0xff191a
+            color = 0xff00e6e6.toInt()
         }
         super.setStartEndDegree(135, 135 + 320)
         super.speedometerWidth = dpTOpx(60f)
-        super.backgroundCircleColor = -0xdededf
+        super.backgroundCircleColor = 0xff212121.toInt()
         super.tickNumber = 9
         super.tickPadding = 0
     }
@@ -72,7 +72,7 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
         markPaint.style = Paint.Style.STROKE
         textPaint.textAlign = Paint.Align.CENTER
         ringPaint.style = Paint.Style.STROKE
-        trianglesPaint.color = -0xc6b655
+        trianglesPaint.color = 0xff3949ab.toInt()
     }
 
     private fun initAttributeSet(context: Context, attrs: AttributeSet?) {
