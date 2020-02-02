@@ -9,6 +9,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.github.anastr.speedviewlib.Speedometer;
 import com.github.anastr.speedviewlib.components.indicators.ImageIndicator;
@@ -114,8 +115,8 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
     }
 
     public void imageIndicator(View view) {
-        ImageIndicator imageIndicator = new ImageIndicator(getApplicationContext(), R.drawable.image_indicator1
-                ,speedometer.getWidth(), speedometer.getHeight());
+        ImageIndicator imageIndicator = new ImageIndicator(getApplicationContext()
+                , ContextCompat.getDrawable(this, R.drawable.image_indicator1));
         speedometer.setIndicator(imageIndicator);
     }
 }

@@ -11,7 +11,7 @@ import java.util.*
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
 @Suppress("UNCHECKED_CAST")
-abstract class Indicator<I : Indicator<I>> (context: Context): Observable() {
+abstract class Indicator<out I : Indicator<I>> (context: Context): Observable() {
 
     protected var indicatorPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val density: Float = context.resources.displayMetrics.density

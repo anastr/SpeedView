@@ -4,15 +4,13 @@ import android.content.Context
 import android.graphics.*
 
 /**
- *
- *
  * small popup dialog with simple note shown with limited or unlimited time.
- *
  *
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-abstract class Note<N : Note<N>> protected constructor(context: Context) {
+@Suppress("UNCHECKED_CAST")
+abstract class Note<out N : Note<N>> protected constructor(context: Context) {
 
     private val density: Float = context.resources.displayMetrics.density
 

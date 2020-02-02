@@ -1,10 +1,8 @@
 package com.github.anastr.speedviewlib.components.indicators
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.RectF
+import android.graphics.drawable.Drawable
 
 /**
  * this Library build By Anas Altair
@@ -15,50 +13,21 @@ class ImageIndicator
  * create indicator from bitmap, the indicator direction must be up.
  *
  * center indicator position will be center of speedometer.
- * @param context you can use `getApplicationContext()`.
+ * @param context you can use `applicationContext`.
  * @param bitmapIndicator the indicator.
- * @param imageWidth the custom width of the indicator.
- * @param imageHeight the custom height of the indicator.
- * @throws IllegalArgumentException if `width <= 0 OR height <= 0`.
  */
-@JvmOverloads constructor(context: Context, private val bitmapIndicator: Bitmap, private val imageWidth: Int = bitmapIndicator.width, private val imageHeight: Int = bitmapIndicator.height) : Indicator<ImageIndicator>(context) {
-    private val bitmapRect = RectF()
-
-    /**
-     * create indicator from resources, the indicator direction must be up.
-     *
-     * center indicator position will be center of speedometer.
-     * @param context you can use `getApplicationContext()`.
-     * @param resource the image id.
-     */
-    constructor(context: Context, resource: Int) : this(context, BitmapFactory.decodeResource(context.resources, resource))
-
-    /**
-     * create indicator from resources, the indicator direction must be up.
-     *
-     * center indicator position will be center of speedometer.
-     * @param context you can use `getApplicationContext()`.
-     * @param resource the image id.
-     * @param width the custom width of the indicator.
-     * @param height the custom height of the indicator.
-     * @throws IllegalArgumentException if `width <= 0 OR height <= 0`.
-     */
-    constructor(context: Context, resource: Int, width: Int, height: Int) : this(context, BitmapFactory.decodeResource(context.resources, resource), width, height)
-
-    init {
-        require(imageWidth > 0) { "imageWidth must be bigger than 0" }
-        require(imageHeight > 0) { "imageHeight must be bigger than 0" }
-    }
+constructor(context: Context, private val bitmapIndicator: Drawable) : Indicator<ImageIndicator>(context) {
 
     override fun draw(canvas: Canvas, degree: Float) {
         canvas.save()
         canvas.rotate(90f + degree, getCenterX(), getCenterY())
-        bitmapRect.set(getCenterX() - imageWidth / 2f, getCenterY() - imageHeight / 2f, getCenterX() + imageWidth / 2f, getCenterY() + imageHeight / 2f)
-        canvas.drawBitmap(bitmapIndicator, null, bitmapRect, indicatorPaint)
+        bitmapIndicator.draw(canvas)
         canvas.restore()
     }
 
-    override fun updateIndicator() {}
+    override fun updateIndicator() {
+        bitmapIndicator.setBounds(0, 0, getViewSize().toInt(), getViewSize().toInt())
+    }
 
     override fun setWithEffects(withEffects: Boolean) {}
 }
