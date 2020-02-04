@@ -326,29 +326,30 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-
         val defaultSize = dpTOpx(250f).toInt()
 
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val w = MeasureSpec.getSize(widthMeasureSpec)
+        val h = MeasureSpec.getSize(heightMeasureSpec)
 
-        val size: Int
-
-        size = if (widthMode == MeasureSpec.EXACTLY)
-            measuredWidth
+        var size = if (widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY)
+            min(w, h)
+        else if (widthMode == MeasureSpec.EXACTLY)
+            w
         else if (heightMode == MeasureSpec.EXACTLY)
-            measuredHeight
-        else if (widthMode == MeasureSpec.UNSPECIFIED && heightMode == MeasureSpec.UNSPECIFIED)
-            defaultSize
-        else if (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST)
-            min(defaultSize, min(measuredWidth, measuredHeight))
+            h
+        else if ((widthMode == MeasureSpec.UNSPECIFIED && heightMode == MeasureSpec.UNSPECIFIED)
+                || (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST))
+            min(defaultSize, min(w, h))
         else {
             if (widthMode == MeasureSpec.AT_MOST)
-                min(defaultSize, measuredWidth)
+                min(defaultSize, w)
             else
-                min(defaultSize, measuredHeight)
+                min(defaultSize, h)
         }
+
+        size = max(size, max(suggestedMinimumWidth, suggestedMinimumHeight))
 
         var newW = size / this.speedometerMode.divWidth
         var newH = size / this.speedometerMode.divHeight
@@ -679,7 +680,15 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     }
 
     enum class Mode(internal val minDegree: Int, internal val maxDegree: Int, val isHalf: Boolean, internal val divWidth: Int, internal val divHeight: Int) {
-        NORMAL(0, 360 * 2, false, 1, 1), LEFT(90, 270, true, 2, 1), TOP(180, 360, true, 1, 2), RIGHT(270, 450, true, 2, 1), BOTTOM(0, 180, true, 1, 2), TOP_LEFT(180, 270, false, 1, 1), TOP_RIGHT(270, 360, false, 1, 1), BOTTOM_RIGHT(0, 90, false, 1, 1), BOTTOM_LEFT(90, 180, false, 1, 1);
+        NORMAL(0, 360 * 2, false, 1, 1)
+        , LEFT(90, 270, true, 2, 1)
+        , TOP(180, 360, true, 1, 2)
+        , RIGHT(270, 450, true, 2, 1)
+        , BOTTOM(0, 180, true, 1, 2)
+        , TOP_LEFT(180, 270, false, 1, 1)
+        , TOP_RIGHT(270, 360, false, 1, 1)
+        , BOTTOM_RIGHT(0, 90, false, 1, 1)
+        , BOTTOM_LEFT(90, 180, false, 1, 1);
 
         val isLeft: Boolean
             get() = this == LEFT || this == TOP_LEFT || this == BOTTOM_LEFT
