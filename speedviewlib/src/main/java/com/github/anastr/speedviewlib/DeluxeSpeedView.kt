@@ -174,10 +174,10 @@ open class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: At
         // D: Diameter of circle.
         // round angle padding =         A       * 360 / (           D             *   PI   )
         val roundAngle = (speedometerWidth * .5f * 360 / (speedometerRect.width()  * Math.PI)).toFloat()
-        var startAngle = getStartDegree().toFloat()
         sections.forEach {
             speedometerPaint.color = it.color
-            val sweepAngle = (getEndDegree() - getStartDegree()) * it.speedOffset - (startAngle - getStartDegree())
+            val startAngle = (getEndDegree() - getStartDegree()) * it.startOffset + getStartDegree()
+            val sweepAngle = (getEndDegree() - getStartDegree()) * it.endOffset - (startAngle - getStartDegree())
             if (it.style == Section.Style.ROUND) {
                 speedometerPaint.strokeCap = Paint.Cap.ROUND
                 c.drawArc(speedometerRect, startAngle + roundAngle, sweepAngle - roundAngle * 2f, false, speedometerPaint)
@@ -186,7 +186,6 @@ open class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: At
                 speedometerPaint.strokeCap = Paint.Cap.BUTT
                 c.drawArc(speedometerRect, startAngle, sweepAngle, false, speedometerPaint)
             }
-            startAngle += sweepAngle
         }
 
         c.save()

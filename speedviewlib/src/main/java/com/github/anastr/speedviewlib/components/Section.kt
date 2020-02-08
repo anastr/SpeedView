@@ -3,29 +3,47 @@ package com.github.anastr.speedviewlib.components
 import android.os.Parcel
 import android.os.Parcelable
 import com.github.anastr.speedviewlib.Gauge
-import java.util.*
 
 /**
  * Created by Anas Altair on 10/25/2019.
  */
-class Section(speedOffset: Float, color: Int, style: Style): Observable(), Parcelable {
+class Section(startOffset: Float, endOffset: Float, color: Int, style: Style): Parcelable {
 
-    constructor(section: Section) : this(section.speedOffset, section.color, section.style)
+    var gauge: Gauge? = null
 
-    constructor(parcel: Parcel) : this(parcel.readFloat(), parcel.readInt(), parcel.readSerializable() as Style)
+    constructor(section: Section) : this(section.startOffset, section.endOffset, section.color, section.style)
+
+    constructor(parcel: Parcel) : this(parcel.readFloat(), parcel.readFloat(), parcel.readInt(), parcel.readSerializable() as Style)
+
+    private var _startOffset: Float = startOffset
+    private var _endOffset: Float = endOffset
 
     /**
-     * percent value to section range [0, 1]
+     * start percent value to section range [0, 1]
      * 0 means 0%
      * 1 means 100%
-     * @throws NullPointerException if [speedOffset] out of range.
+     * @throws IllegalArgumentException if [startOffset] is invalid.
      */
-    var speedOffset: Float = speedOffset
+    var startOffset
+        get() = _startOffset
         set(value) {
-            field = value
-            setChanged()
-            checkPercent()
-            notifyObservers(true)
+            _startOffset = value
+            gauge?.checkSection(this)
+            gauge?.invalidateGauge()
+        }
+
+    /**
+     * end percent value to section range [0, 1]
+     * 0 means 0%
+     * 1 means 100%
+     * @throws IllegalArgumentException if [endOffset] is invalid.
+     */
+    var endOffset
+        get() = _endOffset
+        set(value) {
+            _endOffset = value
+            gauge?.checkSection(this)
+            gauge?.invalidateGauge()
         }
 
     /**
@@ -34,33 +52,35 @@ class Section(speedOffset: Float, color: Int, style: Style): Observable(), Parce
     var color: Int = color
         set(value) {
             field = value
-            setChanged()
-            notifyObservers(false)
+            gauge?.invalidateGauge()
         }
 
     var style: Style = style
         set(value) {
             field = value
-            setChanged()
-            notifyObservers(false)
+            gauge?.invalidateGauge()
         }
+
+    fun setStartEndOffset(startOffset: Float, endOffset: Float) {
+        _startOffset = startOffset
+        _endOffset = endOffset
+        gauge?.checkSection(this)
+        gauge?.invalidateGauge()
+    }
 
     /**
      * add Observer to this section, **only one gauge can observe the section**.
      */
-    fun inGauge(gauge: Gauge): Section {
-        deleteObservers()
-        addObserver(gauge)
+    internal fun inGauge(gauge: Gauge): Section {
+        this.gauge = gauge
         return this
     }
 
-
-    private fun checkPercent() {
-        require(!(speedOffset > 1f || speedOffset < 0f)) { "speedOffset must be between [0, 1]" }
-    }
+    internal fun clearGauge() { gauge = null }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeFloat(speedOffset)
+        parcel.writeFloat(startOffset)
+        parcel.writeFloat(endOffset)
         parcel.writeInt(color)
         parcel.writeSerializable(style.ordinal)
     }

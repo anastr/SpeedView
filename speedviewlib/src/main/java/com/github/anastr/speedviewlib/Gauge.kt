@@ -324,9 +324,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         speedTextPaint.textSize = dpTOpx(18f)
         unitTextPaint.color = 0xFF000000.toInt()
         unitTextPaint.textSize = dpTOpx(15f)
-        sections.add(Section(.6f, -0xff0100, Section.Style.SQUARE).inGauge(this))
-        sections.add(Section(.87f, -0x100, Section.Style.SQUARE).inGauge(this))
-        sections.add(Section(1f, -0x10000, Section.Style.SQUARE).inGauge(this))
+        sections.add(Section(0f, .6f, 0xFF00FF00.toInt(), Section.Style.SQUARE).inGauge(this))
+        sections.add(Section(.6f, .87f, 0xFFFFFF00.toInt(), Section.Style.SQUARE).inGauge(this))
+        sections.add(Section(.87f, 1f, 0xFFFF0000.toInt(), Section.Style.SQUARE).inGauge(this))
 
         if (Build.VERSION.SDK_INT >= 11) {
             speedAnimator = ValueAnimator.ofFloat(0f, 1f)
@@ -403,12 +403,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         speedUnitTextCanvas = Canvas(speedUnitTextBitmap)
     }
 
-    private fun checkSectionsOffset() {
-        for (i in 1 until sections.size) {
-            require(sections[i-1].speedOffset <= sections[i].speedOffset) { "offset at section(${i-1}) must be smaller than next section's offset" }
-        }
-    }
-
     private fun checkAccelerate() {
         require(!(accelerate > 1f || accelerate <= 0)) { "accelerate must be between (0, 1]" }
     }
@@ -420,6 +414,19 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     private fun checkTrembleData() {
         require(trembleDegree >= 0) { "trembleDegree  can't be Negative" }
         require(trembleDuration >= 0) { "trembleDuration  can't be Negative" }
+    }
+
+    internal fun checkSection(section: Section) {
+        val i = sections.indexOf(section)
+        require(section.startOffset < section.endOffset) { "endOffset must be bigger than startOffset" }
+        sections.getOrNull(i-1)?.let {
+            require(it.endOffset <= section.startOffset
+                    && it.endOffset < section.endOffset) { "Section at index ($i) is conflicted with previous section" }
+        }
+        sections.getOrNull(i+1)?.let {
+            require(it.startOffset >= section.endOffset
+                    && it.startOffset > section.startOffset) { "Section at index ($i) is conflicted with next section" }
+        }
     }
 
     /**
@@ -1049,37 +1056,37 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
-     * add list of sections to the gauge,
-     * [sections] will be resorted by [Section.speedOffset].
-     * @throws IllegalArgumentException if section.speedOffset out of range.
+     * add list of sections to the gauge.
+     * @throws IllegalArgumentException if [Section.startOffset] or [Section.endOffset] are invalid.
      */
     fun addSections(vararg sections: Section) {
         addSections(sections.asList())
     }
 
     /**
-     * add list of sections to the gauge,
-     * [sections] will be resorted by [Section.speedOffset].
-     * @throws IllegalArgumentException if section.speedOffset out of range.
+     * add list of sections to the gauge.
+     * @throws IllegalArgumentException if [Section.startOffset] or [Section.endOffset] are invalid.
      */
     fun addSections(sections: List<Section>) {
         sections.forEach {
             this.sections.add(it.inGauge(this))
+            checkSection(it)
         }
-        this.sections.sortBy { it.speedOffset }
         invalidateGauge()
     }
 
     /**
      * clear old [sections],
-     * and add [numberOfSections] equal to each other.
+     * and add [numberOfSections] equal to each others.
      */
     fun makeSections(numberOfSections: Int, color: Int, style: Section.Style) {
-        sections.forEach { it.deleteObservers() }
+        sections.forEach { it.clearGauge() }
         sections.clear()
+        var prevPart = 0f
         var part = 1f / numberOfSections
         for (i in 0 until numberOfSections) {
-            sections.add(Section(part, color, style).inGauge(this))
+            sections.add(Section(prevPart, part, color, style).inGauge(this))
+            prevPart = part
             part += (1f / numberOfSections)
         }
         invalidateGauge()
@@ -1089,7 +1096,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * remove section from this gauge.
      */
     fun removeSection(section: Section?) {
-        section?.deleteObservers()
+        section?.clearGauge()
         sections.remove(section)
         invalidateGauge()
     }
@@ -1098,7 +1105,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * remove all sections.
      */
     fun clearSections() {
-        sections.forEach { it.deleteObservers() }
+        sections.forEach { it.clearGauge() }
         sections.clear()
         invalidateGauge()
     }
@@ -1107,8 +1114,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * notification that an section has changed.
      */
     override fun update(section: Observable?, isPercentChanged: Any?) {
-        if (isPercentChanged as Boolean? == true)
-            this.sections.sortBy { it.speedOffset }
         invalidateGauge()
     }
 
@@ -1127,7 +1132,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     private fun findSection(): Section? {
         sections.forEach {
-            if ((maxSpeed - minSpeed) * it.speedOffset + minSpeed >= currentSpeed)
+            if ((maxSpeed - minSpeed) * it.startOffset + minSpeed <= currentSpeed
+                    && (maxSpeed - minSpeed) * it.endOffset + minSpeed >= currentSpeed)
                 return it
         }
         return null
