@@ -474,7 +474,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      * @return current Degree at that speed.
      */
     protected fun getDegreeAtSpeed(speed: Float): Float {
-        return (speed - getMinSpeed()) * (endDegree - startDegree) / (getMaxSpeed() - getMinSpeed()) + startDegree
+        return (speed - minSpeed) * (endDegree - startDegree) / (maxSpeed - minSpeed) + startDegree
     }
 
     /**
@@ -482,7 +482,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      * @return current speed at that degree.
      */
     protected fun getSpeedAtDegree(degree: Float): Float {
-        return (degree - startDegree) * (getMaxSpeed() - getMinSpeed()) / (endDegree - startDegree) + getMinSpeed()
+        return (degree - startDegree) * (maxSpeed - minSpeed) / (endDegree - startDegree) + minSpeed
     }
 
     protected fun getStartDegree(): Int {
@@ -584,10 +584,10 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         }
         var tickStart: CharSequence? = null
         if (onPrintTickLabel != null)
-            tickStart = onPrintTickLabel!!.invoke(0, getMinSpeed())
+            tickStart = onPrintTickLabel!!.invoke(0, minSpeed)
 
         if (tickStart == null)
-            tickStart = getTickText(getMinSpeed())
+            tickStart = getTickText(minSpeed)
         c.save()
         c.rotate(startDegree + 90f, size * .5f, size * .5f)
         c.rotate(-(startDegree + 90f), sizePa * .5f - textPaint.textSize + padding, textPaint.textSize + padding)
@@ -601,10 +601,10 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         }
         var tickEnd: CharSequence? = null
         if (onPrintTickLabel != null)
-            tickEnd = onPrintTickLabel!!.invoke(1, getMaxSpeed())
+            tickEnd = onPrintTickLabel!!.invoke(1, maxSpeed)
 
         if (tickEnd == null)
-            tickEnd = getTickText(getMaxSpeed())
+            tickEnd = getTickText(maxSpeed)
         c.save()
         c.rotate(endDegree + 90f, size * .5f, size * .5f)
         c.rotate(-(endDegree + 90f), sizePa * .5f + textPaint.textSize + padding.toFloat(), textPaint.textSize + padding)
@@ -665,11 +665,11 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun checkTicks() {
-        var lastTick = getMinSpeed() - 1f
+        var lastTick = minSpeed - 1f
         for (tick in ticks) {
             require(lastTick != tick) { "you mustn't have double ticks" }
             require(lastTick <= tick) { "ticks must be ascending order" }
-            require(!(tick < getMinSpeed() || tick > getMaxSpeed())) { "ticks must be between [minSpeed, maxSpeed] !!" }
+            require(!(tick < minSpeed || tick > maxSpeed)) { "ticks must be between [minSpeed, maxSpeed] !!" }
             lastTick = tick
         }
     }

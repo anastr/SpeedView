@@ -7,7 +7,7 @@ import com.github.anastr.speedviewlib.Gauge
 /**
  * Created by Anas Altair on 10/25/2019.
  */
-class Section(startOffset: Float, endOffset: Float, color: Int, style: Style): Parcelable {
+class Section @JvmOverloads constructor(startOffset: Float, endOffset: Float, color: Int, style: Style = Style.SQUARE): Parcelable {
 
     var gauge: Gauge? = null
 
@@ -26,11 +26,7 @@ class Section(startOffset: Float, endOffset: Float, color: Int, style: Style): P
      */
     var startOffset
         get() = _startOffset
-        set(value) {
-            _startOffset = value
-            gauge?.checkSection(this)
-            gauge?.invalidateGauge()
-        }
+        set(value) = setStartEndOffset(value, endOffset)
 
     /**
      * end percent value to section range [0, 1]
@@ -40,11 +36,7 @@ class Section(startOffset: Float, endOffset: Float, color: Int, style: Style): P
      */
     var endOffset
         get() = _endOffset
-        set(value) {
-            _endOffset = value
-            gauge?.checkSection(this)
-            gauge?.invalidateGauge()
-        }
+        set(value) = setStartEndOffset(startOffset, value)
 
     /**
      * section color, for speedometer family (not for all speedometer).
@@ -55,12 +47,21 @@ class Section(startOffset: Float, endOffset: Float, color: Int, style: Style): P
             gauge?.invalidateGauge()
         }
 
+    /**
+     * style to ths section.
+     */
     var style: Style = style
         set(value) {
             field = value
             gauge?.invalidateGauge()
         }
 
+    /**
+     * change both offsets at once.
+     * @param startOffset start of the section [0, 1)
+     * @param endOffset end of the section (0, 1]
+     * @throws IllegalArgumentException if [startOffset] or [endOffset] are invalid.
+     */
     fun setStartEndOffset(startOffset: Float, endOffset: Float) {
         _startOffset = startOffset
         _endOffset = endOffset
@@ -69,13 +70,17 @@ class Section(startOffset: Float, endOffset: Float, color: Int, style: Style): P
     }
 
     /**
-     * add Observer to this section, **only one gauge can observe the section**.
+     * add gauge to this section to attache to, **a section can attache to one gauge**.
      */
     internal fun inGauge(gauge: Gauge): Section {
         this.gauge = gauge
         return this
     }
 
+    /**
+     * remove gauge that this section attached to,
+     * to avoid call `invalidate()` from this section.
+     */
     internal fun clearGauge() { gauge = null }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

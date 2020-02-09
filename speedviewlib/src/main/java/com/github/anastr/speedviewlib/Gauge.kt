@@ -53,15 +53,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             tremble()
         }
 
-    /**
-     * the max range in speedometer, `default = 100`.
-     *
-     * any change will move [currentSpeed] to its new position
-     * immediately without animation.
-     *
-     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
-     */
-    private var maxSpeed = 100f
+    private var _minSpeed = 0f
+    private var _maxSpeed = 100f
+
     /**
      * the min range in speedometer, `default = 0`.
      *
@@ -70,7 +64,21 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      *
      * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
      */
-    private var minSpeed = 0f
+    var minSpeed: Float
+        get() = _minSpeed
+        set(value) = setMinMaxSpeed(value, maxSpeed)
+    
+    /**
+     * the max range in speedometer, `default = 100`.
+     *
+     * any change will move [currentSpeed] to its new position
+     * immediately without animation.
+     *
+     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
+     */
+    var maxSpeed: Float
+        get() = _maxSpeed
+        set(value) = setMinMaxSpeed(minSpeed, value)
 
     /**
      * @return the last speed which you set by [speedTo]
@@ -324,9 +332,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         speedTextPaint.textSize = dpTOpx(18f)
         unitTextPaint.color = 0xFF000000.toInt()
         unitTextPaint.textSize = dpTOpx(15f)
-        sections.add(Section(0f, .6f, 0xFF00FF00.toInt(), Section.Style.SQUARE).inGauge(this))
-        sections.add(Section(.6f, .87f, 0xFFFFFF00.toInt(), Section.Style.SQUARE).inGauge(this))
-        sections.add(Section(.87f, 1f, 0xFFFF0000.toInt(), Section.Style.SQUARE).inGauge(this))
+        sections.add(Section(0f, .6f, 0xFF00FF00.toInt()).inGauge(this))
+        sections.add(Section(.6f, .87f, 0xFFFFFF00.toInt()).inGauge(this))
+        sections.add(Section(.87f, 1f, 0xFFFF0000.toInt()).inGauge(this))
 
         if (Build.VERSION.SDK_INT >= 11) {
             speedAnimator = ValueAnimator.ofFloat(0f, 1f)
@@ -450,7 +458,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     /**
      * add default values for Gauge inside this method,
      * call super setting method to set default value,
-     * Ex : `super.setBackgroundCircleColor(Color.TRANSPARENT);`
+     * Ex : `super.setBackgroundCircleColor(Color.TRANSPARENT)`
      */
     protected abstract fun defaultGaugeValues()
 
@@ -827,7 +835,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * @see slowDown
      */
     fun speedUp() {
-        realSpeedTo(getMaxSpeed())
+        realSpeedTo(maxSpeed)
     }
 
     /**
@@ -985,56 +993,6 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     }
 
     /**
-     * get max speed in speedometer, default max speed is 100.
-     * @return max speed.
-     *
-     * @see getMinSpeed
-     * @see setMaxSpeed
-     */
-    fun getMaxSpeed(): Float {
-        return maxSpeed
-    }
-
-    /**
-     * change max speed.
-     *
-     * this method will move [currentSpeed] to its new position
-     * immediately without animation.
-     *
-     * @param maxSpeed new MAX Speed.
-     *
-     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
-     */
-    fun setMaxSpeed(maxSpeed: Float) {
-        setMinMaxSpeed(minSpeed, maxSpeed)
-    }
-
-    /**
-     * get min speed in speedometer, default min speed is 0.
-     * @return min speed.
-     *
-     * @see .getMaxSpeed
-     * @see .setMinSpeed
-     */
-    fun getMinSpeed(): Float {
-        return minSpeed
-    }
-
-    /**
-     * change min speed.
-     *
-     * this method will move [currentSpeed] to its new position
-     * immediately without animation.
-     *
-     * @param minSpeed new MIN Speed.
-     *
-     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
-     */
-    fun setMinSpeed(minSpeed: Float) {
-        setMinMaxSpeed(minSpeed, maxSpeed)
-    }
-
-    /**
      * change Min and Max speed.
      *
      * this method will move [currentSpeed] to its new position
@@ -1048,8 +1006,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     fun setMinMaxSpeed(minSpeed: Float, maxSpeed: Float) {
         require(minSpeed < maxSpeed) { "minSpeed must be smaller than maxSpeed !!" }
         cancelSpeedAnimator()
-        this.minSpeed = minSpeed
-        this.maxSpeed = maxSpeed
+        _minSpeed = minSpeed
+        _maxSpeed = maxSpeed
         invalidateGauge()
         if (attachedToWindow)
             setSpeedAt(speed)
