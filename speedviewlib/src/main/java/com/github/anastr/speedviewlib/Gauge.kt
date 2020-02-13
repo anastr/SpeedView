@@ -13,6 +13,7 @@ import android.view.animation.LinearInterpolator
 import com.github.anastr.speedviewlib.components.Section
 import com.github.anastr.speedviewlib.util.OnSectionChangeListener
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener
+import com.github.anastr.speedviewlib.util.doOnSections
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.max
@@ -187,7 +188,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     open var speedometerWidth = dpTOpx(30f)
         set(speedometerWidth) {
             field = speedometerWidth
-            sections.forEach { it.width = speedometerWidth }
+            doOnSections { it.width = speedometerWidth }
             if (isAttachedToWindow)
                 invalidateGauge()
         }

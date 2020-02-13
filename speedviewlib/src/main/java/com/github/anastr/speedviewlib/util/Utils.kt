@@ -31,7 +31,6 @@ typealias OnPrintTickLabelListener = (tickPosition :Int, tick :Float) -> CharSeq
  */
 typealias OnSectionChangeListener = (previousSection :Section?, newSection : Section?) -> Unit
 
-
 /**
  * A callback that notifies clients when the speed has been
  * changed (just when speed change in integer).
@@ -45,3 +44,17 @@ typealias OnSectionChangeListener = (previousSection :Section?, newSection : Sec
  * [isByTremble] true if speed has changed by Tremble.
  */
 typealias OnSpeedChangeListener = (gauge: Gauge, isSpeedUp: Boolean, isByTremble: Boolean) -> Unit
+
+/**
+ * do an action on all [Gauge.sections], with
+ * only one redraw (after complete) to avoid redrawing
+ * the speedometer on every change.
+ * @param [action] an action to invoke for every section.
+ */
+fun Gauge.doOnSections(action: (section: Section) -> Unit) {
+    val sections = ArrayList(this.sections)
+    // this will also clear observers.
+    this.clearSections()
+    sections.forEach { action.invoke(it) }
+    this.addSections(sections)
+}

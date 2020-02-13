@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import com.github.anastr.speedviewlib.components.Section
+import com.github.anastr.speedviewlib.util.doOnSections
 import kotlinx.android.synthetic.main.activity_section.*
 
 class SectionActivity : AppCompatActivity() {
@@ -24,20 +25,14 @@ class SectionActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        button_random_color.setOnClickListener {randomColors()}
+        button_random_color.setOnClickListener { randomColors() }
 
         seekBar.progress = 5
         speedView.speedTo(50f)
     }
 
     private fun randomColors() {
-        val sections = ArrayList(speedView.sections)
-        speedView.clearSections() // this will also clear observers
-
-        sections.forEach {
-            it.color = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
-        }
-        speedView.addSections(sections)
+        speedView.doOnSections { it.color = Color.rgb((0..255).random(), (0..255).random(), (0..255).random()) }
 
         /*
           the next code is slow, because if you call
