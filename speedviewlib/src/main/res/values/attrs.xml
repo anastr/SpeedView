@@ -22,6 +22,7 @@
     <attr name="sv_image" format="reference" />
 
     <declare-styleable name="Gauge">
+        <attr name="sv_speedometerWidth" format="dimension" />
         <attr name="sv_textColor" format="color" />
         <attr name="sv_speedTextColor" format="color"/>
         <attr name="sv_unitTextColor" format="color"/>
@@ -75,7 +76,6 @@
         <attr name="sv_indicatorLightColor" format="color" />
         <attr name="sv_markColor" format="color" />
         <attr name="sv_backgroundCircleColor" format="color" />
-        <attr name="sv_speedometerWidth" format="dimension" />
 
         <attr name="sv_startDegree" format="integer" />
         <attr name="sv_endDegree" format="integer" />

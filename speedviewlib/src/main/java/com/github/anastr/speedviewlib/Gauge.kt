@@ -67,7 +67,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     var minSpeed: Float
         get() = _minSpeed
         set(value) = setMinMaxSpeed(value, maxSpeed)
-    
+
     /**
      * the max range in speedometer, `default = 100`.
      *
@@ -180,6 +180,17 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     val sections = ArrayList<Section>()
     var currentSection: Section? = null
         private set
+
+    /**
+     * the width of speedometer's bar in pixel.
+     */
+    open var speedometerWidth = dpTOpx(30f)
+        set(speedometerWidth) {
+            field = speedometerWidth
+            sections.forEach { it.width = speedometerWidth }
+            if (isAttachedToWindow)
+                invalidateGauge()
+        }
 
     /**
      * to support Right To Left Text.
@@ -332,9 +343,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         speedTextPaint.textSize = dpTOpx(18f)
         unitTextPaint.color = 0xFF000000.toInt()
         unitTextPaint.textSize = dpTOpx(15f)
-        sections.add(Section(0f, .6f, 0xFF00FF00.toInt()).inGauge(this))
-        sections.add(Section(.6f, .87f, 0xFFFFFF00.toInt()).inGauge(this))
-        sections.add(Section(.87f, 1f, 0xFFFF0000.toInt()).inGauge(this))
+        sections.add(Section(0f, .6f, 0xFF00FF00.toInt(), speedometerWidth).inGauge(this))
+        sections.add(Section(.6f, .87f, 0xFFFFFF00.toInt(), speedometerWidth).inGauge(this))
+        sections.add(Section(.87f, 1f, 0xFFFF0000.toInt(), speedometerWidth).inGauge(this))
 
         if (Build.VERSION.SDK_INT >= 11) {
             speedAnimator = ValueAnimator.ofFloat(0f, 1f)
@@ -365,6 +376,8 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         minSpeed = a.getFloat(R.styleable.Gauge_sv_minSpeed, minSpeed)
         speed = minSpeed
         currentSpeed = minSpeed
+        speedometerWidth = a.getDimension(R.styleable.Gauge_sv_speedometerWidth, speedometerWidth)
+        sections.forEach { it.width = speedometerWidth }
         withTremble = a.getBoolean(R.styleable.Gauge_sv_withTremble, withTremble)
         textPaint.color = a.getColor(R.styleable.Gauge_sv_textColor, textPaint.color)
         textPaint.textSize = a.getDimension(R.styleable.Gauge_sv_textSize, textPaint.textSize)
@@ -1043,7 +1056,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         var prevPart = 0f
         var part = 1f / numberOfSections
         for (i in 0 until numberOfSections) {
-            sections.add(Section(prevPart, part, color, style).inGauge(this))
+            sections.add(Section(prevPart, part, color, speedometerWidth, style).inGauge(this))
             prevPart = part
             part += (1f / numberOfSections)
         }

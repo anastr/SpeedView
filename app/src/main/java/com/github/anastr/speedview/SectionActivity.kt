@@ -39,7 +39,6 @@ class SectionActivity : AppCompatActivity() {
         }
         speedView.addSections(sections)
 
-
         /*
           the next code is slow, because if you call
           `section.color = ...`

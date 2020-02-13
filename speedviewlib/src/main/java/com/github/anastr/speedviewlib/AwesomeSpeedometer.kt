@@ -47,6 +47,7 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
 
     override fun defaultGaugeValues() {
 
+        super.speedometerWidth = dpTOpx(60f)
         super.textColor = 0xffffc260.toInt()
         super.speedTextColor = 0xFFFFFFFF.toInt()
         super.unitTextColor = 0xFFFFFFFF.toInt()
@@ -62,7 +63,6 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
             color = 0xff00e6e6.toInt()
         }
         super.setStartEndDegree(135, 135 + 320)
-        super.speedometerWidth = dpTOpx(60f)
         super.backgroundCircleColor = 0xff212121.toInt()
         super.tickNumber = 9
         super.tickPadding = 0

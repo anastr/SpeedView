@@ -7,13 +7,28 @@ import com.github.anastr.speedviewlib.Gauge
 /**
  * Created by Anas Altair on 10/25/2019.
  */
-class Section @JvmOverloads constructor(startOffset: Float, endOffset: Float, color: Int, style: Style = Style.SQUARE): Parcelable {
+class Section @JvmOverloads constructor(startOffset: Float, endOffset: Float, color: Int, width: Float = 0f, style: Style = Style.SQUARE): Parcelable {
 
-    var gauge: Gauge? = null
+    private var gauge: Gauge? = null
 
-    constructor(section: Section) : this(section.startOffset, section.endOffset, section.color, section.style)
+    var width: Float = width
+        set(value) {
+            field = value
+            gauge?.invalidateGauge()
+        }
+    var padding: Float = 0f
+        set(value) {
+            field = value
+            gauge?.invalidateGauge()
+        }
 
-    constructor(parcel: Parcel) : this(parcel.readFloat(), parcel.readFloat(), parcel.readInt(), parcel.readSerializable() as Style)
+    constructor(section: Section) : this(section.startOffset, section.endOffset, section.color, section.width, section.style) {
+        padding = section.padding
+    }
+
+    constructor(parcel: Parcel) : this(parcel.readFloat(), parcel.readFloat(), parcel.readInt(), parcel.readFloat(), parcel.readSerializable() as Style) {
+        padding = parcel.readFloat()
+    }
 
     private var _startOffset: Float = startOffset
     private var _endOffset: Float = endOffset
@@ -87,7 +102,9 @@ class Section @JvmOverloads constructor(startOffset: Float, endOffset: Float, co
         parcel.writeFloat(startOffset)
         parcel.writeFloat(endOffset)
         parcel.writeInt(color)
+        parcel.writeFloat(width)
         parcel.writeSerializable(style.ordinal)
+        parcel.writeFloat(padding)
     }
 
     override fun describeContents(): Int {

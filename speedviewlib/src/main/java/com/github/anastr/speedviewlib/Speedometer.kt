@@ -52,16 +52,12 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     private val circleBackPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val indicatorLightPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-    /**
-     * the width of speedometer's bar in pixel.
-     */
-    open var speedometerWidth = dpTOpx(30f)
+    override var speedometerWidth
+        get() = super.speedometerWidth
         set(speedometerWidth) {
-            field = speedometerWidth
-            if (isAttachedToWindow) {
+            super.speedometerWidth = speedometerWidth
+            if (isAttachedToWindow)
                 indicator.updateIndicator()
-                invalidateGauge()
-            }
         }
 
     /**
@@ -305,7 +301,6 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             setIndicator(Indicator.Indicators.values()[ind])
         markColor = a.getColor(R.styleable.Speedometer_sv_markColor, markColor)
         backgroundCircleColor = a.getColor(R.styleable.Speedometer_sv_backgroundCircleColor, backgroundCircleColor)
-        speedometerWidth = a.getDimension(R.styleable.Speedometer_sv_speedometerWidth, speedometerWidth)
         startDegree = a.getInt(R.styleable.Speedometer_sv_startDegree, startDegree)
         endDegree = a.getInt(R.styleable.Speedometer_sv_endDegree, endDegree)
         indicator.width = a.getDimension(R.styleable.Speedometer_sv_indicatorWidth, indicator.width)

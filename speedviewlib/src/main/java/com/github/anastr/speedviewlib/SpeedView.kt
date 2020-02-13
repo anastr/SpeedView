@@ -81,7 +81,6 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun initDraw() {
-        speedometerPaint.strokeWidth = speedometerWidth
         markPaint.color = markColor
     }
 
@@ -106,19 +105,19 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
         markPath.lineTo(size * .5f, markH + padding)
         markPaint.strokeWidth = markH / 3f
 
-        val risk = speedometerWidth * .5f + padding
-        speedometerRect.set(risk, risk, size - risk, size - risk)
-
-        // here we calculate the extra length when strokeCap = ROUND.
-        // A: Arc Length, the extra length that taken ny ROUND stroke in one side.
-        // D: Diameter of circle.
-        // round angle padding =         A       * 360 / (           D             *   PI   )
-        val roundAngle = (speedometerWidth * .5f * 360 / (speedometerRect.width()  * Math.PI)).toFloat()
         sections.forEach {
+            val risk = it.width * .5f + padding + it.padding
+            speedometerRect.set(risk, risk, size - risk, size - risk)
+            speedometerPaint.strokeWidth = it.width
             speedometerPaint.color = it.color
             val startAngle = (getEndDegree() - getStartDegree()) * it.startOffset + getStartDegree()
             val sweepAngle = (getEndDegree() - getStartDegree()) * it.endOffset - (startAngle - getStartDegree())
             if (it.style == Section.Style.ROUND) {
+                // here we calculate the extra length when strokeCap = ROUND.
+                // A: Arc Length, the extra length that taken ny ROUND stroke in one side.
+                // D: Diameter of circle.
+                // round angle padding =         A       * 360 / (           D             *   PI   )
+                val roundAngle = (it.width * .5f * 360 / (speedometerRect.width()  * Math.PI)).toFloat()
                 speedometerPaint.strokeCap = Paint.Cap.ROUND
                 c.drawArc(speedometerRect, startAngle + roundAngle, sweepAngle - roundAngle * 2f, false, speedometerPaint)
             }

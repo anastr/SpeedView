@@ -31,6 +31,7 @@ open class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: At
     }
 
     override fun defaultGaugeValues() {
+        super.speedometerWidth = dpTOpx(40f)
         sections[0].color = 0xff00BCD4.toInt()
         sections[1].color = 0xffFFC107.toInt()
         sections[2].color = 0xffF44336.toInt()
@@ -38,7 +39,6 @@ open class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: At
 
     override fun defaultSpeedometerValues() {
         super.backgroundCircleColor = 0
-        super.speedometerWidth = dpTOpx(40f)
     }
 
     private fun init() {
