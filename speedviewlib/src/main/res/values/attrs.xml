@@ -63,10 +63,6 @@
             <enum name="INTEGER" value="0" />
             <enum name="FLOAT" value="1" />
         </attr>
-        <attr name="sv_tickTextFormat" format="enum" >
-            <enum name="INTEGER" value="0" />
-            <enum name="FLOAT" value="1" />
-        </attr>
 
     </declare-styleable>
 
@@ -112,6 +108,10 @@
         <attr name="sv_tickNumber" format="integer" />
         <attr name="sv_tickRotation" format="boolean" />
         <attr name="sv_tickPadding" format="dimension" />
+        <attr name="sv_tickTextFormat" format="enum" >
+            <enum name="INTEGER" value="0" />
+            <enum name="FLOAT" value="1" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="SpeedView" parent="Speedometer">

@@ -22,6 +22,9 @@ import kotlin.math.max
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
+
+typealias SpeedTextListener = (speed: Float) -> CharSequence
+
 abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr), Observer {
 
     private val speedUnitTextBitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -310,24 +313,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     /**
      * number of decimal places
      *
-     * change speed text's format [[INTEGER_FORMAT] or [FLOAT_FORMAT]]
-     * or number of decimal places you want.
+     * change speed text's format by custom text.
      */
-    var speedTextFormat = FLOAT_FORMAT.toInt()
+    var speedTextListener: SpeedTextListener = { speed -> "%.1f".format(locale, speed) }
         set(speedTextFormat) {
             field = speedTextFormat
-            invalidateGauge()
-        }
-
-    /**
-     * number of decimal places
-     *
-     * change tick text's format [[INTEGER_FORMAT] or [FLOAT_FORMAT]]
-     * or number of decimal places you want.
-     */
-    var tickTextFormat = INTEGER_FORMAT.toInt()
-        set(tickTextFormat) {
-            field = tickTextFormat
             invalidateGauge()
         }
 
@@ -406,11 +396,10 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         if (position != -1)
             speedTextPosition = Position.values()[position]
         val speedFormat = a.getInt(R.styleable.Gauge_sv_speedTextFormat, -1)
-        if (speedFormat != -1)
-            speedTextFormat = speedFormat
-        val tickFormat = a.getInt(R.styleable.Gauge_sv_tickTextFormat, -1)
-        if (tickFormat != -1)
-            tickTextFormat = tickFormat
+        if (speedFormat == 0)
+            speedTextListener = { speed -> "%.0f".format(locale, speed) }
+        else if (speedFormat == 1)
+            speedTextListener = { speed -> "%.1f".format(locale, speed) }
         a.recycle()
         checkAccelerate()
         checkDecelerate()
@@ -507,9 +496,9 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     private fun getSpeedUnitTextWidth(): Float =
         if (unitUnderSpeedText)
-            max(speedTextPaint.measureText(getSpeedText()), unitTextPaint.measureText(unit))
+            max(speedTextPaint.measureText(getSpeedText().toString()), unitTextPaint.measureText(unit))
         else
-            speedTextPaint.measureText(getSpeedText()) + unitTextPaint.measureText(unit) + unitSpeedInterval
+            speedTextPaint.measureText(getSpeedText().toString()) + unitTextPaint.measureText(unit) + unitSpeedInterval
 
     /**
      * @return the height of speed & unit text at runtime.
@@ -523,12 +512,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     /**
      * get current speed as string to **Draw**.
      */
-    protected fun getSpeedText() = "%.${speedTextFormat}f".format(locale, currentSpeed)
-
-    /**
-     * get tick as string to **Draw**.
-     */
-    protected fun getTickText(tick: Float) = "%.${tickTextFormat}f".format(locale, tick)
+    protected fun getSpeedText() = speedTextListener.invoke(currentSpeed)
 
     /**
      * get current speed as **percent**.
@@ -689,7 +673,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      */
     protected fun drawSpeedUnitText(canvas: Canvas) {
         val r = getSpeedUnitTextBounds()
-        updateSpeedUnitTextBitmap(getSpeedText())
+        updateSpeedUnitTextBitmap(getSpeedText().toString())
         canvas.drawBitmap(speedUnitTextBitmap, r.left - speedUnitTextBitmap.width * .5f + r.width() * .5f
                 , r.top - speedUnitTextBitmap.height * .5f + r.height() * .5f, speedUnitTextBitmapPaint)
     }
@@ -1145,13 +1129,5 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         BOTTOM_LEFT  (0f, 1f, 0f, 1f, 1, -1),
         BOTTOM_CENTER(.5f, 1f, .5f, 1f, 0, -1),
         BOTTOM_RIGHT (1f, 1f, 1f, 1f, -1, -1)
-    }
-
-    companion object {
-
-        /** draw speed text as **integer** . */
-        const val INTEGER_FORMAT: Byte = 0
-        /** draw speed text as **.1 float**.  */
-        const val FLOAT_FORMAT: Byte = 1
     }
 }

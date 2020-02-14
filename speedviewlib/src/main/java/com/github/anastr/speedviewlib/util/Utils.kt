@@ -10,14 +10,16 @@ import com.github.anastr.speedviewlib.components.Section
  */
 
 /**
- * callback to draw custom TickLabel for each Tick.
+ * A callback that notifies clients when the speed has been
+ * changed (just when speed change in integer).
  *
- * [tickPosition] position of ticks, start from 0.
+ * Notification that the speed has changed.
  *
- * [tick] speed value at the tick.
- * @return label to draw.
+ * @param [gauge] the gauge who change.
+ * @param [isSpeedUp] if speed increase.
+ * @param [isByTremble] true if speed has changed by Tremble.
  */
-typealias OnPrintTickLabelListener = (tickPosition :Int, tick :Float) -> CharSequence
+typealias OnSpeedChangeListener = (gauge: Gauge, isSpeedUp: Boolean, isByTremble: Boolean) -> Unit
 
 /**
  * A callback that notifies clients when
@@ -25,25 +27,20 @@ typealias OnPrintTickLabelListener = (tickPosition :Int, tick :Float) -> CharSeq
  *
  * Notification that the section has changed.
  *
- * [previousSection] where speed value came from, or null if there is no previous section.
- *
- * [newSection] where speed value moved to, or null if there is no section where speed moved to.
+ * @param [previousSection] where speed value came from, or null if there is no previous section.
+ * @param [newSection] where speed value moved to, or null if there is no section where speed moved to.
  */
 typealias OnSectionChangeListener = (previousSection :Section?, newSection : Section?) -> Unit
 
 /**
- * A callback that notifies clients when the speed has been
- * changed (just when speed change in integer).
+ * callback to draw custom TickLabel for each Tick.
  *
- * Notification that the speed has changed.
- *
- * [gauge] the gauge who change.
- *
- * [isSpeedUp] if speed increase.
- *
- * [isByTremble] true if speed has changed by Tremble.
+ * @param [tickPosition] position of ticks, start from 0.
+ * @param [tick] speed value at the tick.
+ * @return label to draw.
  */
-typealias OnSpeedChangeListener = (gauge: Gauge, isSpeedUp: Boolean, isByTremble: Boolean) -> Unit
+typealias OnPrintTickLabelListener = (tickPosition :Int, tick :Float) -> CharSequence
+
 
 /**
  * do an action on all [Gauge.sections], with

@@ -311,6 +311,11 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         indicator.color = a.getColor(R.styleable.Speedometer_sv_indicatorColor, indicator.color)
         isWithIndicatorLight = a.getBoolean(R.styleable.Speedometer_sv_withIndicatorLight, isWithIndicatorLight)
         indicatorLightColor = a.getColor(R.styleable.Speedometer_sv_indicatorLightColor, indicatorLightColor)
+        val tickFormat = a.getInt(R.styleable.Speedometer_sv_tickTextFormat, -1)
+        if (tickFormat == 0)
+            onPrintTickLabel = { _, speed -> "%.0f".format(locale, speed) }
+        else if (tickFormat == 1)
+            onPrintTickLabel = { _, speed -> "%.1f".format(locale, speed) }
         degree = startDegree.toFloat()
         a.recycle()
         checkStartAndEndDegree()
@@ -580,9 +585,9 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         var tickStart: CharSequence? = null
         if (onPrintTickLabel != null)
             tickStart = onPrintTickLabel!!.invoke(0, minSpeed)
-
+        // if (onPrintTickLabel is null or it returns null)
         if (tickStart == null)
-            tickStart = getTickText(minSpeed)
+            tickStart = "%.0f".format(locale, minSpeed)
         c.save()
         c.rotate(startDegree + 90f, size * .5f, size * .5f)
         c.rotate(-(startDegree + 90f), sizePa * .5f - textPaint.textSize + padding, textPaint.textSize + padding)
@@ -597,9 +602,9 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         var tickEnd: CharSequence? = null
         if (onPrintTickLabel != null)
             tickEnd = onPrintTickLabel!!.invoke(1, maxSpeed)
-
+        // if (onPrintTickLabel is null or it returns null)
         if (tickEnd == null)
-            tickEnd = getTickText(maxSpeed)
+            tickEnd = "%.0f".format(locale, maxSpeed)
         c.save()
         c.rotate(endDegree + 90f, size * .5f, size * .5f)
         c.rotate(-(endDegree + 90f), sizePa * .5f + textPaint.textSize + padding.toFloat(), textPaint.textSize + padding)
@@ -627,9 +632,9 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             var tick: CharSequence? = null
             if (onPrintTickLabel != null)
                 tick = onPrintTickLabel!!.invoke(i, ticks[i])
-
+            // if (onPrintTickLabel is null or it returns null)
             if (tick == null)
-                tick = getTickText(ticks[i])
+                tick = "%.0f".format(locale, ticks[i])
 
             c.translate(0f, initTickPadding + padding.toFloat() + tickPadding.toFloat())
             StaticLayout(tick, textPaint, size, Layout.Alignment.ALIGN_CENTER, 1f, 0f, false)
