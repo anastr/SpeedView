@@ -457,10 +457,10 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
      * @return [backgroundBitmap]'s canvas.
      */
     override fun createBackgroundBitmapCanvas(): Canvas {
-        if (width == 0 || height == 0)
+        if (size == 0)
             return Canvas()
         backgroundBitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(backgroundBitmap!!)
+        val canvas = Canvas(backgroundBitmap)
         canvas.drawCircle(size * .5f, size * .5f, size * .5f - padding, circleBackPaint)
 
         // to fix preview mode issue

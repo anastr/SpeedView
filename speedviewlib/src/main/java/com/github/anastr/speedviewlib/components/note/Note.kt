@@ -20,7 +20,7 @@ abstract class Note<out N : Note<N>> protected constructor(context: Context) {
     private var paddingTop: Float = 0.toFloat()
     private var paddingRight: Float = 0.toFloat()
     private var paddingBottom: Float = 0.toFloat()
-    private var backgroundBitmap: Bitmap? = null
+    private var backgroundBitmap: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
     private var position = Position.CenterIndicator
     private var align = Align.Top
     private var noteW = 0
@@ -81,13 +81,15 @@ abstract class Note<out N : Note<N>> protected constructor(context: Context) {
      * notice that background dialog changed (color, size, Corners Round ....).
      */
     private fun updateBackgroundBitmap() {
-        backgroundBitmap = Bitmap.createBitmap(noteW, noteH, Bitmap.Config.ARGB_8888)
-        val c = Canvas(backgroundBitmap!!)
-        when (align) {
-            Align.Left -> bitmapLeft(c)
-            Align.Top -> bitmapTop(c)
-            Align.Right -> bitmapRight(c)
-            Align.Bottom -> bitmapBottom(c)
+        if (noteW > 0 && noteH > 0) {
+            backgroundBitmap = Bitmap.createBitmap(noteW, noteH, Bitmap.Config.ARGB_8888)
+            val c = Canvas(backgroundBitmap)
+            when (align) {
+                Align.Left -> bitmapLeft(c)
+                Align.Top -> bitmapTop(c)
+                Align.Right -> bitmapRight(c)
+                Align.Bottom -> bitmapBottom(c)
+            }
         }
     }
 
@@ -134,19 +136,19 @@ abstract class Note<out N : Note<N>> protected constructor(context: Context) {
     fun draw(canvas: Canvas, posX: Float, posY: Float) {
         when (align) {
             Align.Left -> {
-                canvas.drawBitmap(backgroundBitmap!!, posX - noteW, posY - noteH / 2f, paint)
+                canvas.drawBitmap(backgroundBitmap, posX - noteW, posY - noteH / 2f, paint)
                 drawContains(canvas, posX - noteW + paddingLeft, posY - noteH / 2f + paddingTop)
             }
             Align.Top -> {
-                canvas.drawBitmap(backgroundBitmap!!, posX - noteW / 2f, posY - noteH, paint)
+                canvas.drawBitmap(backgroundBitmap, posX - noteW / 2f, posY - noteH, paint)
                 drawContains(canvas, posX - containsW / 2f, posY - noteH + paddingTop)
             }
             Align.Right -> {
-                canvas.drawBitmap(backgroundBitmap!!, posX, posY - noteH / 2f, paint)
+                canvas.drawBitmap(backgroundBitmap, posX, posY - noteH / 2f, paint)
                 drawContains(canvas, posX + triangleHeight + paddingLeft, posY - noteH / 2f + paddingTop)
             }
             Align.Bottom -> {
-                canvas.drawBitmap(backgroundBitmap!!, posX - noteW / 2f, posY, paint)
+                canvas.drawBitmap(backgroundBitmap, posX - noteW / 2f, posY, paint)
                 drawContains(canvas, posX - containsW / 2f, posY + triangleHeight + paddingTop)
             }
         }

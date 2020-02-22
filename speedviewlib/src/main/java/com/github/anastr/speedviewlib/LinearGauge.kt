@@ -16,7 +16,7 @@ abstract class LinearGauge @JvmOverloads constructor(context: Context, attrs: At
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     /** to draw part of bitmap  */
     private val rect = Rect()
-    private var foregroundBitmap: Bitmap? = null
+    private var foregroundBitmap: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
 
     /**
      * horizontal or vertical direction .
@@ -72,7 +72,7 @@ abstract class LinearGauge @JvmOverloads constructor(context: Context, attrs: At
         if (widthPa == 0 || heightPa == 0)
             return Canvas()
         foregroundBitmap = Bitmap.createBitmap(widthPa, heightPa, Bitmap.Config.ARGB_8888)
-        return Canvas(foregroundBitmap!!)
+        return Canvas(foregroundBitmap)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -84,7 +84,7 @@ abstract class LinearGauge @JvmOverloads constructor(context: Context, attrs: At
             rect.set(0, heightPa - (heightPa * getOffsetSpeed()).toInt(), widthPa, heightPa)
 
         canvas.translate(padding.toFloat(), padding.toFloat())
-        canvas.drawBitmap(foregroundBitmap!!, rect, rect, paint)
+        canvas.drawBitmap(foregroundBitmap, rect, rect, paint)
         canvas.translate((-padding).toFloat(), (-padding).toFloat())
 
         drawSpeedUnitText(canvas)

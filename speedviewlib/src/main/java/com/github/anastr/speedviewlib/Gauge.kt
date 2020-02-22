@@ -162,7 +162,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     private lateinit var animatorListener: Animator.AnimatorListener
 
     /** to contain all drawing that doesn't change  */
-    protected var backgroundBitmap: Bitmap? = null
+    protected var backgroundBitmap: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
     private val backgroundBitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     var padding = 0
@@ -640,8 +640,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     override fun onDraw(canvas: Canvas) {
         canvas.translate(translatedDx, translatedDy)
 
-        if (backgroundBitmap != null)
-            canvas.drawBitmap(backgroundBitmap!!, 0f, 0f, backgroundBitmapPaint)
+        canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint)
 
         // check onSpeedChangeEvent.
         val newSpeed = currentSpeed.toInt()
@@ -712,7 +711,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         if (width == 0 || height == 0)
             return Canvas()
         backgroundBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        return Canvas(backgroundBitmap!!)
+        return Canvas(backgroundBitmap)
     }
 
     /**

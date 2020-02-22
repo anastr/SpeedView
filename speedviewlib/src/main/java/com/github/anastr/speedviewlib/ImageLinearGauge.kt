@@ -36,11 +36,11 @@ open class ImageLinearGauge @JvmOverloads constructor(context: Context, attrs: A
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        if (image == null
-                || image!!.intrinsicWidth == -1 || image!!.intrinsicHeight == -1)
-            return
         val w = measuredWidth
         val h = measuredHeight
+        if (image == null || w == 0 || h == 0
+                || image!!.intrinsicWidth <= 0 || image!!.intrinsicHeight <= 0)
+            return
         val imageW = image!!.intrinsicWidth.toFloat()
         val imageH = image!!.intrinsicHeight.toFloat()
         val view_w_to_h = (w / h).toFloat()
