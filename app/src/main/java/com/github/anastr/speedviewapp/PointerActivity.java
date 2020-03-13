@@ -1,4 +1,4 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +27,7 @@ public class PointerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pointer);
+        setTitle("Pointer Speedometer");
 
         pointerSpeedometer = findViewById(R.id.pointerSpeedometer);
         seekBarSpeed = findViewById(R.id.seekBarSpeed);

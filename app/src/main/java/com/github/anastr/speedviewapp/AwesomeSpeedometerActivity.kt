@@ -1,10 +1,10 @@
-package com.github.anastr.speedview
+package com.github.anastr.speedviewapp
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.github.anastr.speedviewlib.AwesomeSpeedometer
 import java.util.*
 
@@ -15,6 +15,7 @@ class AwesomeSpeedometerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_awesome_speedometer)
+        title = "Awesome Speedometer View"
 
         val awesomeSpeedometer = findViewById<AwesomeSpeedometer>(R.id.awesomeSpeedometer)
         val seekBar = findViewById<SeekBar>(R.id.seekBar)

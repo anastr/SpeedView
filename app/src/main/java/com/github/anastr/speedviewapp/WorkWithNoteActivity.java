@@ -1,4 +1,4 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -31,6 +31,7 @@ public class WorkWithNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_with_note);
+        setTitle("Work With Note");
 
         speedView = findViewById(R.id.speedView);
         seekBar = findViewById(R.id.seekBar);

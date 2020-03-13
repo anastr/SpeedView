@@ -1,4 +1,4 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
 import android.graphics.Color;
 import android.os.Bundle;

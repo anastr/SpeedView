@@ -1,4 +1,4 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -27,6 +27,7 @@ public class TickActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tick);
+        setTitle("Work With Ticks");
 
         speedometer = findViewById(R.id.speedometer);
         withRotation = findViewById(R.id.cb_withRotation);

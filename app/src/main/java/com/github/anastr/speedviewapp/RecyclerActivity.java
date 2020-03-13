@@ -1,4 +1,4 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.github.anastr.speedview.ControlActivity"
+    tools:context="com.github.anastr.speedviewapp.ControlActivity"
     tools:ignore="HardcodedText">
 
     <com.github.anastr.speedviewlib.SpeedView

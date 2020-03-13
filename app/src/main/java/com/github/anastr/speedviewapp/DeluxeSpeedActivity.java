@@ -1,4 +1,4 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +25,7 @@ public class DeluxeSpeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deluxe_speed);
+        setTitle("Deluxe Speed View");
 
         deluxeSpeedView = findViewById(R.id.deluxeSpeedView);
         seekBar = findViewById(R.id.seekBar);

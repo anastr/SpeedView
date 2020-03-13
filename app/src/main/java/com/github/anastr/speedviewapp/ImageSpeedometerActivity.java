@@ -1,6 +1,5 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,13 +8,13 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.github.anastr.speedviewlib.SpeedView;
+import com.github.anastr.speedviewlib.ImageSpeedometer;
 
 import java.util.Locale;
 
-public class SpeedViewActivity extends AppCompatActivity {
+public class ImageSpeedometerActivity extends AppCompatActivity {
 
-    SpeedView speedView;
+    ImageSpeedometer imageSpeedometer;
     SeekBar seekBar;
     Button ok;
     TextView textSpeed;
@@ -23,9 +22,10 @@ public class SpeedViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_speed_view);
+        setContentView(R.layout.activity_image_speedometer);
+        setTitle("Image Speedometer");
 
-        speedView = findViewById(R.id.speedView);
+        imageSpeedometer = findViewById(R.id.imageSpeedometer);
         seekBar = findViewById(R.id.seekBar);
         ok = findViewById(R.id.ok);
         textSpeed = findViewById(R.id.textSpeed);
@@ -33,7 +33,7 @@ public class SpeedViewActivity extends AppCompatActivity {
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                speedView.speedTo(seekBar.getProgress());
+                imageSpeedometer.speedTo(seekBar.getProgress());
             }
         });
 
@@ -45,18 +45,11 @@ public class SpeedViewActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
-    }
-
-    public void openControlActivity(View view) {
-        Intent intent = new Intent(SpeedViewActivity.this, ControlActivity.class);
-        startActivity(intent);
     }
 }

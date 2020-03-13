@@ -1,4 +1,4 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +28,7 @@ public class WorkWithIndicatorActivity extends AppCompatActivity implements Adap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_with_indicator);
+        setTitle("Work With Indicator");
 
         speedometer = findViewById(R.id.speedometer);
         textWidth = findViewById(R.id.textWidth);

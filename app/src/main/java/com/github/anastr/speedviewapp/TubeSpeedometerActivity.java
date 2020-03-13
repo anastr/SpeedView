@@ -1,11 +1,12 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedviewlib.TubeSpeedometer;
 
@@ -22,6 +23,7 @@ public class TubeSpeedometerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tube_speedometer);
+        setTitle("Tube Speedometer");
 
         tubeSpeedometer = findViewById(R.id.speedometer);
         seekBar = findViewById(R.id.seekBar);

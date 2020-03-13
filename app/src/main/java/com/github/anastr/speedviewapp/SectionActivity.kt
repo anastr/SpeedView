@@ -1,4 +1,4 @@
-package com.github.anastr.speedview
+package com.github.anastr.speedviewapp
 
 import android.graphics.Color
 import android.os.Bundle
@@ -13,6 +13,7 @@ class SectionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_section)
+        title = "Sections"
 
         seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

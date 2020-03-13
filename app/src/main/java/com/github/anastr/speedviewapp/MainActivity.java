@@ -1,16 +1,19 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.github.anastr.speedview.lineargauge.ImageLinearGaugeActivity;
-import com.github.anastr.speedview.lineargauge.ProgressiveGaugeActivity;
+import com.github.anastr.speedviewapp.lineargauge.ImageLinearGaugeActivity;
+import com.github.anastr.speedviewapp.lineargauge.ProgressiveGaugeActivity;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -29,8 +32,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "5. Pointer Speedometer",
                 "6. Tube Speedometer",
                 "7. Image Speedometer",
-                "1.. ProgressiveGauge",
-                "2.. ImageLinearGauge",
+                "1.. Progressive Gauge",
+                "2.. Image Linear Gauge",
                 "Work With Indicator",
                 "Work With Note",
                 "Create Speedometer Programmatically",
@@ -109,5 +112,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.about_item:
+                startActivity(new Intent(this, AboutActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

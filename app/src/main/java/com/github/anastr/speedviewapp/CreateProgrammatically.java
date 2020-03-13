@@ -1,4 +1,4 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -35,6 +35,7 @@ public class CreateProgrammatically extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_programmatically);
+        setTitle("Create Speedometer Programmatically");
 
         rootSpeedometer = findViewById(R.id.root_speedometer);
 

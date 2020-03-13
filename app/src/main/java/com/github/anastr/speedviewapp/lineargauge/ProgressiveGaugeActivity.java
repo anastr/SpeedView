@@ -1,44 +1,39 @@
-package com.github.anastr.speedview.lineargauge;
+package com.github.anastr.speedviewapp.lineargauge;
 
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.github.anastr.speedview.R;
-import com.github.anastr.speedviewlib.ImageLinearGauge;
-import com.github.anastr.speedviewlib.LinearGauge;
+import com.github.anastr.speedviewapp.R;
+import com.github.anastr.speedviewlib.ProgressiveGauge;
 
 import java.util.Locale;
 
-public class ImageLinearGaugeActivity extends AppCompatActivity {
+public class ProgressiveGaugeActivity extends AppCompatActivity {
 
-    ImageLinearGauge imageLinearGauge;
+    ProgressiveGauge progressiveGauge;
     SeekBar seekBar;
     Button ok;
     TextView textSpeed;
-    CheckBox checkBoxOrientation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_linear_gauge);
+        setContentView(R.layout.activity_progressive_gauge);
+        setTitle("Progressive Gauge");
 
-        imageLinearGauge = (ImageLinearGauge) findViewById(R.id.gauge);
+        progressiveGauge = (ProgressiveGauge) findViewById(R.id.gauge);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         ok = (Button) findViewById(R.id.ok);
         textSpeed = (TextView) findViewById(R.id.textSpeed);
-        checkBoxOrientation = (CheckBox) findViewById(R.id.cb_orientation);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageLinearGauge.speedTo(seekBar.getProgress());
+                progressiveGauge.speedTo(seekBar.getProgress());
             }
         });
 
@@ -54,16 +49,6 @@ public class ImageLinearGaugeActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-
-        checkBoxOrientation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b)
-                    imageLinearGauge.setOrientation(LinearGauge.Orientation.VERTICAL);
-                else
-                    imageLinearGauge.setOrientation(LinearGauge.Orientation.HORIZONTAL);
             }
         });
     }

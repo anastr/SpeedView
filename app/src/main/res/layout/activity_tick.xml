@@ -11,7 +11,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:ignore="HardcodedText"
-    tools:context="com.github.anastr.speedview.TickActivity">
+    tools:context="com.github.anastr.speedviewapp.TickActivity">
 
     <com.github.anastr.speedviewlib.SpeedView
         android:id="@+id/speedometer"

@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:background="#212121"
-    tools:context="com.github.anastr.speedview.AwesomeSpeedometerActivity">
+    tools:context="com.github.anastr.speedviewapp.AwesomeSpeedometerActivity">
 
     <com.github.anastr.speedviewlib.AwesomeSpeedometer
         android:id="@+id/awesomeSpeedometer"

@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.github.anastr.speedview.StartEndDegreeActivity">
+    tools:context="com.github.anastr.speedviewapp.StartEndDegreeActivity">
 
     <com.github.anastr.speedviewlib.PointerSpeedometer
         android:id="@+id/speedometer"

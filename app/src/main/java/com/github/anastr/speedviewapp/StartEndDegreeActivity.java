@@ -1,9 +1,10 @@
-package com.github.anastr.speedview;
+package com.github.anastr.speedviewapp;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedviewlib.Speedometer;
 
@@ -19,6 +20,7 @@ public class StartEndDegreeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_end_degree);
+        setTitle("Work With Start and End Degree");
 
         speedometer = findViewById(R.id.speedometer);
         seekBarStartDegree = findViewById(R.id.seekBarStartDegree);
