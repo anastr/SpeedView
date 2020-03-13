@@ -39,7 +39,7 @@ typealias OnSectionChangeListener = (previousSection :Section?, newSection : Sec
  * @param [tick] speed value at the tick.
  * @return label to draw.
  */
-typealias OnPrintTickLabelListener = (tickPosition :Int, tick :Float) -> CharSequence
+typealias OnPrintTickLabelListener = (tickPosition :Int, tick :Float) -> CharSequence?
 
 
 /**
