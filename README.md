@@ -12,6 +12,9 @@ Library Size just ~ 47 KB.
 [![Bintray](https://img.shields.io/bintray/v/anastr/maven/SpeedView.svg?color=green)](https://bintray.com/anastr/maven/SpeedView)
 [![Twitter](https://img.shields.io/badge/Twitter-@AnasAltairDent-blue.svg?style=flat)](http://twitter.com/AnasAltairDent)
 
+ download demo on Google Play:\
+ <a href='https://play.google.com/store/apps/details?id=com.github.anastr.speedviewapp&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img  width="25%" alt='SpeedView Demo on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
+
 > this library has rewritten with Kotlin in version 1.4.0 manually, which means it may have some issues.
 > if you have any problem please open an issue, and you can use old version 1.3.1 written in java.
 
