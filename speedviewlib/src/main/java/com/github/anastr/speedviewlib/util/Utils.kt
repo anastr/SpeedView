@@ -55,3 +55,13 @@ fun Gauge.doOnSections(action: (section: Section) -> Unit) {
     sections.forEach { action.invoke(it) }
     this.addSections(sections)
 }
+
+/**
+ * here we calculate the extra length when strokeCap = ROUND.
+ * round angle padding =         A       * 360 / (           D             *   PI   )
+ * @param [a] Arc Length, the extra length that taken ny ROUND stroke in one side.
+ * @param [d] Diameter of circle.
+ */
+fun getRoundAngle(a: Float, d: Float): Float {
+    return (a * .5f * 360 / (d  * Math.PI)).toFloat()
+}

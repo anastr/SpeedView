@@ -8,6 +8,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import com.github.anastr.speedviewlib.components.Section
 import com.github.anastr.speedviewlib.components.indicators.NormalIndicator
+import com.github.anastr.speedviewlib.util.getRoundAngle
 
 /**
  * this Library build By Anas Altair
@@ -113,11 +114,7 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
             val startAngle = (getEndDegree() - getStartDegree()) * it.startOffset + getStartDegree()
             val sweepAngle = (getEndDegree() - getStartDegree()) * it.endOffset - (startAngle - getStartDegree())
             if (it.style == Section.Style.ROUND) {
-                // here we calculate the extra length when strokeCap = ROUND.
-                // A: Arc Length, the extra length that taken ny ROUND stroke in one side.
-                // D: Diameter of circle.
-                // round angle padding =         A       * 360 / (           D             *   PI   )
-                val roundAngle = (it.width * .5f * 360 / (speedometerRect.width()  * Math.PI)).toFloat()
+                val roundAngle = getRoundAngle(it.width, speedometerRect.width())
                 speedometerPaint.strokeCap = Paint.Cap.ROUND
                 c.drawArc(speedometerRect, startAngle + roundAngle, sweepAngle - roundAngle * 2f, false, speedometerPaint)
             }

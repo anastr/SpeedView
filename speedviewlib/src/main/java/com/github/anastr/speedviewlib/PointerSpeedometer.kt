@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import com.github.anastr.speedviewlib.components.indicators.SpindleIndicator
+import com.github.anastr.speedviewlib.util.getRoundAngle
 
 /**
  * this Library build By Anas Altair
@@ -135,7 +136,9 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
         super.onDraw(canvas)
         initDraw()
 
-        canvas.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()).toFloat(), false, speedometerPaint)
+        val roundAngle = getRoundAngle(speedometerWidth, speedometerRect.width())
+        canvas.drawArc(speedometerRect, getStartDegree() + roundAngle
+                , (getEndDegree() - getStartDegree()) - roundAngle * 2f, false, speedometerPaint)
 
         if (withPointer) {
             canvas.save()
