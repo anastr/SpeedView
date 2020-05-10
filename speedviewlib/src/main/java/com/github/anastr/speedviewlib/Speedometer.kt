@@ -15,7 +15,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.text.Typography.degree
 
-
 /**
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
@@ -124,13 +123,18 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     private var cutPadding = 0
 
     /**
-     * ticks values (speed values) to draw -**not editable**-.
+     * ticks values ([0, 1f] scale) to draw -**not editable**-.
      *
-     * to add custom speed value label at each tick point between [maxSpeed]
-     * and [minSpeed].
-     * @throws IllegalArgumentException if one of [ticks] out of range [[minSpeed], [maxSpeed]].
-     * @throws IllegalArgumentException If [ticks] are not ascending.
+     * the value of each tick is point to a percent value of speed,
+     * for Ex:
      *
+     * if [minSpeed] = 0 and [maxSpeed] = 100
+     * and your ticks (.1f, .4f, .8f, 1f),
+     * then you will see ticks at(10, 40, 80, 100) speed value.
+     *
+     * order isn't important.
+     *
+     * @throws IllegalArgumentException if one of [ticks] out of range [0f, 1f].
      */
     var ticks = ArrayList<Float>()
         set(ticks) {
@@ -222,11 +226,9 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         set(tickNumber) {
             require(tickNumber >= 0) { "tickNumber mustn't be negative" }
             val ticks = ArrayList<Float>()
-            val tickEach = if (tickNumber != 1) (endDegree - startDegree).toFloat() / (tickNumber - 1).toFloat() else endDegree + 1f
-            for (i in 0 until tickNumber) {
-                val tick = getSpeedAtDegree(tickEach * i + startDegree)
-                ticks.add(tick)
-            }
+            val tickEach = if (tickNumber == 1) 0f else 1f / (tickNumber - 1).toFloat()
+            for (i in 0 until tickNumber)
+                ticks.add(tickEach * i)
             this.ticks = ticks
         }
 
@@ -533,8 +535,6 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         this.startDegree = startDegree
         this.endDegree = endDegree
         checkStartAndEndDegree()
-        if (ticks.size != 0)
-            tickNumber = ticks.size
         cancelSpeedAnimator()
         degree = getDegreeAtSpeed(speed)
         if (isAttachedToWindow){
@@ -622,19 +622,20 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
         textPaint.textAlign = Paint.Align.LEFT
 
-        for (i in ticks.indices) {
-            val d = getDegreeAtSpeed(ticks[i]) + 90f
+        val range = endDegree - startDegree
+        ticks.forEachIndexed { index, t ->
+            val d = startDegree + range * t
             c.save()
-            c.rotate(d, size * .5f, size * .5f)
+            c.rotate(d + 90f, size * .5f, size * .5f)
             if (!tickRotation)
-                c.rotate(-d, size * .5f, initTickPadding + textPaint.textSize + padding.toFloat() + tickPadding.toFloat())
+                c.rotate(-(d + 90f), size * .5f, initTickPadding + textPaint.textSize + padding.toFloat() + tickPadding.toFloat())
 
             var tick: CharSequence? = null
             if (onPrintTickLabel != null)
-                tick = onPrintTickLabel!!.invoke(i, ticks[i])
+                tick = onPrintTickLabel!!.invoke(index, getSpeedAtDegree(d))
             // if (onPrintTickLabel is null or it returns null)
             if (tick == null)
-                tick = "%.0f".format(locale, ticks[i])
+                tick = "%.0f".format(locale, getSpeedAtDegree(d))
 
             c.translate(0f, initTickPadding + padding.toFloat() + tickPadding.toFloat())
             StaticLayout(tick, textPaint, size, Layout.Alignment.ALIGN_CENTER, 1f, 0f, false)
@@ -653,25 +654,9 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         this.indicator = Indicator.createIndicator(context, this, indicator)
     }
 
-    /**
-     * to add custom speed value label at each tick point between [maxSpeed]
-     * and [minSpeed].
-     * @param ticks custom ticks values (speed values).
-     * @throws IllegalArgumentException if one of [ticks] out of range [[minSpeed], [maxSpeed]].
-     * @throws IllegalArgumentException If [ticks] are not ascending.
-     */
-    fun setTicks(vararg ticks: Float) {
-        this.ticks = (ticks.asList() as ArrayList<Float>)
-    }
-
     private fun checkTicks() {
-        var lastTick = minSpeed - 1f
-        for (tick in ticks) {
-            require(lastTick != tick) { "you mustn't have double ticks" }
-            require(lastTick <= tick) { "ticks must be ascending order" }
-            require(!(tick < minSpeed || tick > maxSpeed)) { "ticks must be between [minSpeed, maxSpeed] !!" }
-            lastTick = tick
-        }
+        for (tick in ticks)
+            require(!(tick < 0f || tick > 1f)) { "ticks must be between [0f, 1f] !!" }
     }
 
     private fun updateTranslated() {

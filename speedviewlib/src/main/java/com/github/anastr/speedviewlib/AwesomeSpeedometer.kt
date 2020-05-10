@@ -144,15 +144,16 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
     }
 
     protected fun drawMarks(c: Canvas) {
-        for (i in 0 until tickNumber) {
-            val d = getDegreeAtSpeed(ticks[i]) + 90f
+        val range = getEndDegree() - getStartDegree()
+        ticks.forEachIndexed { index, t ->
+            val d = getStartDegree() + range * t
             c.save()
-            c.rotate(d, size * .5f, size * .5f)
+            c.rotate(d + 90f, size * .5f, size * .5f)
 
             c.drawPath(trianglesPath, trianglesPaint)
-            if (i + 1 != tickNumber) {
+            if (index + 1 != tickNumber) {
                 c.save()
-                val d2 = getDegreeAtSpeed(ticks[i + 1]) + 90f
+                val d2 = getStartDegree() + range * ticks[index + 1]
                 val eachDegree = d2 - d
                 for (j in 1..9) {
                     c.rotate(eachDegree * .1f, size * .5f, size * .5f)
