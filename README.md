@@ -27,6 +27,17 @@ Library Size just ~ 47 KB.
 <img src="images/ProgressiveGauge.gif" width="49%" />
 <img src="images/ImageLinearGauge.gif" width="49%" />
 
+# Donations
+if you like this project, **you can support it** and support the creator of it, and we are really thankful for your donations 😄.
+
+All donations accepted in **[Bountysource](https://salt.bountysource.com/teams/speedview)**:
+- **5$:** good job, here's a cup of tea (_we know you don't like coffee_:wink:).
+- **10$:** very nice library, you saved my day.
+- **15$:** really appreciate your work, keep going!.
+- **100$, maybe more:** you are a **_Dentist_**, and you have done all of this!!
+
+go to [project in bountysource](https://salt.bountysource.com/checkout/amount?team=speedview) for more options.
+
 # Download
 
 this library required **jcenter** and **kotlin version 1.3.61** or above, _you still can use it in java projects_.
