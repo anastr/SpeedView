@@ -5,7 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
-import com.github.anastr.speedviewlib.components.Section
+import com.github.anastr.speedviewlib.components.Style
 import com.github.anastr.speedviewlib.components.indicators.NormalIndicator
 import com.github.anastr.speedviewlib.util.getRoundAngle
 
@@ -68,7 +68,7 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
         centerCircleRadius = a.getDimension(R.styleable.SpeedView_sv_centerCircleRadius, centerCircleRadius)
         val styleIndex = a.getInt(R.styleable.SpeedView_sv_sectionStyle, -1)
         if (styleIndex != -1)
-            sections.forEach { it.style = Section.Style.values()[styleIndex] }
+            sections.forEach { it.style = Style.values()[styleIndex] }
         a.recycle()
     }
 
@@ -99,7 +99,7 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
             speedometerPaint.color = it.color
             val startAngle = (getEndDegree() - getStartDegree()) * it.startOffset + getStartDegree()
             val sweepAngle = (getEndDegree() - getStartDegree()) * it.endOffset - (startAngle - getStartDegree())
-            if (it.style == Section.Style.ROUND) {
+            if (it.style == Style.ROUND) {
                 val roundAngle = getRoundAngle(it.width, speedometerRect.width())
                 speedometerPaint.strokeCap = Paint.Cap.ROUND
                 c.drawArc(speedometerRect, startAngle + roundAngle, sweepAngle - roundAngle * 2f, false, speedometerPaint)

@@ -3,6 +3,7 @@ package com.github.anastr.speedviewlib
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import com.github.anastr.speedviewlib.components.Style
 import com.github.anastr.speedviewlib.components.indicators.SpindleIndicator
 import com.github.anastr.speedviewlib.util.getRoundAngle
 
@@ -12,12 +13,10 @@ import com.github.anastr.speedviewlib.util.getRoundAngle
  */
 open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
 
-    private val markPath = Path()
     private val speedometerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val pointerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val pointerBackPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val customMarkPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedometerRect = RectF()
 
     private var speedometerColor = 0xFFEEEEEE.toInt()
@@ -78,6 +77,11 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
     }
 
     override fun defaultSpeedometerValues() {
+        super.marksNumber = 8
+        super.marksPadding = speedometerWidth + dpTOpx(12f)
+        super.markStyle = Style.ROUND
+        super.markHeight = dpTOpx(5f)
+        super.markWidth = dpTOpx(2f)
         indicator = SpindleIndicator(context)
         indicator.apply {
             width = dpTOpx(16f)
@@ -89,9 +93,6 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
     private fun init() {
         speedometerPaint.style = Paint.Style.STROKE
         speedometerPaint.strokeCap = Paint.Cap.ROUND
-        customMarkPaint.style = Paint.Style.STROKE
-        customMarkPaint.strokeCap = Paint.Cap.ROUND
-        customMarkPaint.strokeWidth = dpTOpx(2f)
         circlePaint.color = 0xFFFFFFFF.toInt()
     }
 
@@ -129,7 +130,6 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
     private fun initDraw() {
         speedometerPaint.strokeWidth = speedometerWidth
         speedometerPaint.shader = updateSweep()
-        customMarkPaint.color = markColor
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -163,21 +163,6 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
     override fun updateBackgroundBitmap() {
         val c = createBackgroundBitmapCanvas()
         initDraw()
-
-        markPath.reset()
-        markPath.moveTo(size * .5f, speedometerWidth + dpTOpx(8f) + dpTOpx(4f) + padding.toFloat())
-        markPath.lineTo(size * .5f, speedometerWidth + dpTOpx(8f) + dpTOpx(4f) + padding.toFloat() + (size / 60).toFloat())
-
-        c.save()
-        c.rotate(90f + getStartDegree(), size * .5f, size * .5f)
-        val everyDegree = (getEndDegree() - getStartDegree()) * .111f
-        var i = getStartDegree().toFloat()
-        while (i < getEndDegree() - 2f * everyDegree) {
-            c.rotate(everyDegree, size * .5f, size * .5f)
-            c.drawPath(markPath, customMarkPaint)
-            i += everyDegree
-        }
-        c.restore()
 
         drawMarks(c)
 

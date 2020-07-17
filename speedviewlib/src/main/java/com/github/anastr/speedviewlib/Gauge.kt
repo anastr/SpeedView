@@ -11,6 +11,7 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import com.github.anastr.speedviewlib.components.Section
+import com.github.anastr.speedviewlib.components.Style
 import com.github.anastr.speedviewlib.util.OnSectionChangeListener
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener
 import com.github.anastr.speedviewlib.util.doOnSections
@@ -1034,7 +1035,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * clear old [sections],
      * and add [numberOfSections] equal to each others.
      */
-    fun makeSections(numberOfSections: Int, color: Int, style: Section.Style) {
+    fun makeSections(numberOfSections: Int, color: Int, style: Style) {
         sections.forEach { it.clearGauge() }
         sections.clear()
         var prevPart = 0f

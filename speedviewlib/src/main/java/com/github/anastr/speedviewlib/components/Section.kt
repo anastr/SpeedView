@@ -7,7 +7,7 @@ import com.github.anastr.speedviewlib.Gauge
 /**
  * Created by Anas Altair on 10/25/2019.
  */
-class Section @JvmOverloads constructor(startOffset: Float, endOffset: Float, color: Int, width: Float = 0f, style: Style = Style.SQUARE): Parcelable {
+class Section @JvmOverloads constructor(startOffset: Float, endOffset: Float, color: Int, width: Float = 0f, style: Style = Style.BUTT): Parcelable {
 
     private var gauge: Gauge? = null
 
@@ -120,10 +120,6 @@ class Section @JvmOverloads constructor(startOffset: Float, endOffset: Float, co
         override fun newArray(size: Int): Array<Section?> {
             return arrayOfNulls(size)
         }
-    }
-
-    enum class Style {
-        SQUARE, ROUND
     }
 
 }

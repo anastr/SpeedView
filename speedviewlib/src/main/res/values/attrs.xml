@@ -15,8 +15,8 @@
     </attr>
 
     <attr name="sv_sectionStyle" format="enum" >
-        <enum name="SQUARE" value="0" />
-        <enum name="ROUND" value="1" />
+        <enum name="ROUND" value="0" />
+        <enum name="BUTT" value="1" />
     </attr>
 
     <attr name="sv_image" format="reference" />
@@ -82,6 +82,10 @@
         <attr name="sv_markHeight" format="dimension" />
         <attr name="sv_markWidth" format="dimension" />
         <attr name="sv_markColor" format="color" />
+        <attr name="sv_markStyle" format="enum" >
+            <enum name="ROUND" value="0" />
+            <enum name="BUTT" value="1" />
+        </attr>
 
         <attr name="sv_indicator" format="enum" >
             <enum name="NoIndicator" value="0" />

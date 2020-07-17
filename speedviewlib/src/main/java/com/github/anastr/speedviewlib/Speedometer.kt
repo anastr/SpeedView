@@ -5,6 +5,7 @@ import android.graphics.*
 import android.text.Layout
 import android.text.StaticLayout
 import android.util.AttributeSet
+import com.github.anastr.speedviewlib.components.Style
 import com.github.anastr.speedviewlib.components.indicators.Indicator
 import com.github.anastr.speedviewlib.components.indicators.NoIndicator
 import com.github.anastr.speedviewlib.components.note.Note
@@ -89,6 +90,15 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         get() = markPaint.strokeWidth
         set(markWidth) {
             markPaint.strokeWidth = markWidth
+            invalidateGauge()
+        }
+    var markStyle
+        get() = if (markPaint.strokeCap == Paint.Cap.ROUND) Style.ROUND else Style.BUTT
+        set(markStyle) {
+            if (markStyle == Style.ROUND)
+                markPaint.strokeCap = Paint.Cap.ROUND
+            else
+                markPaint.strokeCap = Paint.Cap.BUTT
             invalidateGauge()
         }
 
@@ -311,6 +321,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         markPaint.style = Paint.Style.STROKE
         markColor = 0xFFFFFFFF.toInt()
         markWidth = dpTOpx(3f)
+        markStyle = Style.BUTT
 //        indicator = NoIndicator(context)
         defaultSpeedometerValues()
     }
@@ -331,6 +342,9 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         markHeight = a.getDimension(R.styleable.Speedometer_sv_markHeight, markHeight)
         markWidth = a.getDimension(R.styleable.Speedometer_sv_markWidth, markWidth)
         markColor = a.getColor(R.styleable.Speedometer_sv_markColor, markColor)
+        val markStyleIndex = a.getInt(R.styleable.Speedometer_sv_markStyle, -1)
+        if (markStyleIndex != -1)
+            markStyle = Style.values()[markStyleIndex]
         backgroundCircleColor = a.getColor(R.styleable.Speedometer_sv_backgroundCircleColor, backgroundCircleColor)
         startDegree = a.getInt(R.styleable.Speedometer_sv_startDegree, startDegree)
         endDegree = a.getInt(R.styleable.Speedometer_sv_endDegree, endDegree)
