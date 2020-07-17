@@ -61,15 +61,9 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
     private val markPath = Path()
     protected val markPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    var markHeight = dpTOpx(9f)
-        set(markHeight) {
-            field = markHeight
-            invalidateGauge()
-        }
-    var markWidth
-        get() = markPaint.strokeWidth
-        set(markWidth) {
-            markPaint.strokeWidth = markWidth
+    var marksNumber = 0
+        set(marksNumber) {
+            field = marksNumber
             invalidateGauge()
         }
     /**
@@ -81,9 +75,20 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         set(markColor) {
             markPaint.color = markColor
         }
-    var marksNumber = 0
-        set(marksNumber) {
-            field = marksNumber
+    var marksPadding = 0f
+        set(marksPadding) {
+            field = marksPadding
+            invalidateGauge()
+        }
+    var markHeight = dpTOpx(9f)
+        set(markHeight) {
+            field = markHeight
+            invalidateGauge()
+        }
+    var markWidth
+        get() = markPaint.strokeWidth
+        set(markWidth) {
+            markPaint.strokeWidth = markWidth
             invalidateGauge()
         }
 
@@ -321,6 +326,10 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         val ind = a.getInt(R.styleable.Speedometer_sv_indicator, -1)
         if (ind != -1)
             setIndicator(Indicator.Indicators.values()[ind])
+        marksNumber = a.getInt(R.styleable.Speedometer_sv_marksNumber, marksNumber)
+        marksPadding = a.getDimension(R.styleable.Speedometer_sv_marksPadding, marksPadding)
+        markHeight = a.getDimension(R.styleable.Speedometer_sv_markHeight, markHeight)
+        markWidth = a.getDimension(R.styleable.Speedometer_sv_markWidth, markWidth)
         markColor = a.getColor(R.styleable.Speedometer_sv_markColor, markColor)
         backgroundCircleColor = a.getColor(R.styleable.Speedometer_sv_backgroundCircleColor, backgroundCircleColor)
         startDegree = a.getInt(R.styleable.Speedometer_sv_startDegree, startDegree)
@@ -417,8 +426,8 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
     protected fun drawMarks(canvas: Canvas) {
         markPath.reset()
-        markPath.moveTo(size * .5f, padding.toFloat())
-        markPath.lineTo(size * .5f, markHeight + padding)
+        markPath.moveTo(size * .5f, marksPadding + padding)
+        markPath.lineTo(size * .5f, marksPadding + markHeight + padding)
 
         canvas.save()
         canvas.rotate(90f + getStartDegree(), size * .5f, size * .5f)

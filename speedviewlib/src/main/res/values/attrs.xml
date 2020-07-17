@@ -70,13 +70,18 @@
         <attr name="sv_indicatorColor" format="color" />
         <attr name="sv_withIndicatorLight" format="boolean" />
         <attr name="sv_indicatorLightColor" format="color" />
-        <attr name="sv_markColor" format="color" />
         <attr name="sv_backgroundCircleColor" format="color" />
 
         <attr name="sv_startDegree" format="integer" />
         <attr name="sv_endDegree" format="integer" />
 
         <attr name="sv_indicatorWidth" format="dimension" />
+
+        <attr name="sv_marksNumber" format="integer" />
+        <attr name="sv_marksPadding" format="dimension" />
+        <attr name="sv_markHeight" format="dimension" />
+        <attr name="sv_markWidth" format="dimension" />
+        <attr name="sv_markColor" format="color" />
 
         <attr name="sv_indicator" format="enum" >
             <enum name="NoIndicator" value="0" />
@@ -138,7 +143,7 @@
         <attr name="sv_withEffects" />
         <attr name="sv_rayColor" format="color"/>
         <attr name="sv_degreeBetweenMark" format="integer"/>
-        <attr name="sv_markWidth" format="dimension"/>
+        <attr name="sv_rayMarkWidth" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="PointerSpeedometer" parent="Speedometer">

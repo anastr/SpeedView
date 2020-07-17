@@ -101,7 +101,7 @@ open class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Att
 
         rayPaint.color = a.getColor(R.styleable.RaySpeedometer_sv_rayColor, rayPaint.color)
         val degreeBetweenMark = a.getInt(R.styleable.RaySpeedometer_sv_degreeBetweenMark, this.degreeBetweenMark)
-        val rayMarkWidth = a.getDimension(R.styleable.RaySpeedometer_sv_markWidth, rayMarkPaint.strokeWidth)
+        val rayMarkWidth = a.getDimension(R.styleable.RaySpeedometer_sv_rayMarkWidth, rayMarkPaint.strokeWidth)
         rayMarkPaint.strokeWidth = rayMarkWidth
         activeMarkPaint.strokeWidth = rayMarkWidth
         speedBackgroundPaint.color = a.getColor(R.styleable.RaySpeedometer_sv_speedBackgroundColor, speedBackgroundPaint.color)
