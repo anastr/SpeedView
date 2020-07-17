@@ -13,7 +13,7 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
 
     private val markPath = Path()
     private val trianglesPath = Path()
-    private val markPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val customMarkPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val ringPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val trianglesPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedometerRect = RectF()
@@ -69,7 +69,7 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
     }
 
     private fun init() {
-        markPaint.style = Paint.Style.STROKE
+        customMarkPaint.style = Paint.Style.STROKE
         textPaint.textAlign = Paint.Align.CENTER
         ringPaint.style = Paint.Style.STROKE
         trianglesPaint.color = 0xff3949ab.toInt()
@@ -105,7 +105,7 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
 
     private fun initDraw() {
         ringPaint.strokeWidth = speedometerWidth
-        markPaint.color = markColor
+        customMarkPaint.color = markColor
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -124,7 +124,7 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
         markPath.reset()
         markPath.moveTo(size * .5f, padding.toFloat())
         markPath.lineTo(size * .5f, markH + padding)
-        markPaint.strokeWidth = markH / 5f
+        customMarkPaint.strokeWidth = markH / 5f
 
         val triangleHeight = viewSizePa / 20f
         initTickPadding = triangleHeight
@@ -139,11 +139,12 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
         speedometerRect.set(risk, risk, size - risk, size - risk)
         c.drawArc(speedometerRect, 0f, 360f, false, ringPaint)
 
+        drawCustomMarks(c)
         drawMarks(c)
         drawTicks(c)
     }
 
-    protected fun drawMarks(c: Canvas) {
+    protected fun drawCustomMarks(c: Canvas) {
         val range = getEndDegree() - getStartDegree()
         ticks.forEachIndexed { index, t ->
             val d = getStartDegree() + range * t
@@ -158,10 +159,10 @@ open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs:
                 for (j in 1..9) {
                     c.rotate(eachDegree * .1f, size * .5f, size * .5f)
                     if (j == 5)
-                        markPaint.strokeWidth = size.toFloat() / 22f / 5f
+                        customMarkPaint.strokeWidth = size.toFloat() / 22f / 5f
                     else
-                        markPaint.strokeWidth = size.toFloat() / 22f / 9f
-                    c.drawPath(markPath, markPaint)
+                        customMarkPaint.strokeWidth = size.toFloat() / 22f / 9f
+                    c.drawPath(markPath, customMarkPaint)
                 }
                 c.restore()
             }

@@ -94,6 +94,8 @@ open class TubeSpeedometer @JvmOverloads constructor(context: Context, attrs: At
 
         c.drawArc(speedometerRect, getStartDegree().toFloat(), (getEndDegree() - getStartDegree()).toFloat(), false, tubeBacPaint)
 
+        drawMarks(c)
+
         if (tickNumber > 0)
             drawTicks(c)
         else

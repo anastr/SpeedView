@@ -18,7 +18,7 @@ open class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Att
     private val markPath = Path()
     private val ray1Path = Path()
     private val ray2Path = Path()
-    private val markPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val rayMarkPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val activeMarkPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedBackgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val rayPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -53,11 +53,11 @@ open class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Att
             invalidateGauge()
         }
 
-    var markWidth: Float
-        get() = markPaint.strokeWidth
-        set(markWidth) {
-            markPaint.strokeWidth = markWidth
-            activeMarkPaint.strokeWidth = markWidth
+    var rayMarkWidth: Float
+        get() = rayMarkPaint.strokeWidth
+        set(markRayWidth) {
+            rayMarkPaint.strokeWidth = markRayWidth
+            activeMarkPaint.strokeWidth = markRayWidth
             if (isAttachedToWindow)
                 invalidate()
         }
@@ -101,9 +101,9 @@ open class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Att
 
         rayPaint.color = a.getColor(R.styleable.RaySpeedometer_sv_rayColor, rayPaint.color)
         val degreeBetweenMark = a.getInt(R.styleable.RaySpeedometer_sv_degreeBetweenMark, this.degreeBetweenMark)
-        val markWidth = a.getDimension(R.styleable.RaySpeedometer_sv_markWidth, markPaint.strokeWidth)
-        markPaint.strokeWidth = markWidth
-        activeMarkPaint.strokeWidth = markWidth
+        val rayMarkWidth = a.getDimension(R.styleable.RaySpeedometer_sv_markWidth, rayMarkPaint.strokeWidth)
+        rayMarkPaint.strokeWidth = rayMarkWidth
+        activeMarkPaint.strokeWidth = rayMarkWidth
         speedBackgroundPaint.color = a.getColor(R.styleable.RaySpeedometer_sv_speedBackgroundColor, speedBackgroundPaint.color)
         withEffects = a.getBoolean(R.styleable.RaySpeedometer_sv_withEffects, withEffects)
         a.recycle()
@@ -113,8 +113,8 @@ open class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     private fun init() {
-        markPaint.style = Paint.Style.STROKE
-        markPaint.strokeWidth = dpTOpx(3f)
+        rayMarkPaint.style = Paint.Style.STROKE
+        rayMarkPaint.strokeWidth = dpTOpx(3f)
         activeMarkPaint.style = Paint.Style.STROKE
         activeMarkPaint.strokeWidth = dpTOpx(3f)
         rayPaint.style = Paint.Style.STROKE
@@ -143,8 +143,8 @@ open class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Att
         var i = getStartDegree()
         while (i < getEndDegree()) {
             if (degree <= i) {
-                markPaint.color = markColor
-                canvas.drawPath(markPath, markPaint)
+                rayMarkPaint.color = markColor
+                canvas.drawPath(markPath, rayMarkPaint)
                 canvas.rotate(degreeBetweenMark.toFloat(), size * .5f, size * .5f)
                 i += degreeBetweenMark
                 continue
@@ -200,6 +200,8 @@ open class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: Att
                 c.drawPath(ray2Path, rayPaint)
         }
         c.restore()
+
+        drawMarks(c)
 
         if (tickNumber > 0)
             drawTicks(c)

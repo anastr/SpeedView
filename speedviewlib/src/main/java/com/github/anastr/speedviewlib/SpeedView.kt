@@ -3,7 +3,6 @@ package com.github.anastr.speedviewlib
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
 import com.github.anastr.speedviewlib.components.Section
@@ -16,10 +15,8 @@ import com.github.anastr.speedviewlib.util.getRoundAngle
  */
 open class SpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
 
-    private val markPath = Path()
     private val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedometerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val markPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedometerRect = RectF()
 
     /**
@@ -53,11 +50,11 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
     override fun defaultSpeedometerValues() {
         indicator = NormalIndicator(context)
         super.backgroundCircleColor = 0
+        super.marksNumber = 8
     }
 
     private fun init() {
         speedometerPaint.style = Paint.Style.STROKE
-        markPaint.style = Paint.Style.STROKE
         circlePaint.color = 0xFF444444.toInt()
     }
 
@@ -81,10 +78,6 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
         updateBackgroundBitmap()
     }
 
-    private fun initDraw() {
-        markPaint.color = markColor
-    }
-
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -98,13 +91,6 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     override fun updateBackgroundBitmap() {
         val c = createBackgroundBitmapCanvas()
-        initDraw()
-
-        val markH = viewSizePa / 28f
-        markPath.reset()
-        markPath.moveTo(size * .5f, padding.toFloat())
-        markPath.lineTo(size * .5f, markH + padding)
-        markPaint.strokeWidth = markH / 3f
 
         sections.forEach {
             val risk = it.width * .5f + padding + it.padding
@@ -124,16 +110,7 @@ open class SpeedView @JvmOverloads constructor(context: Context, attrs: Attribut
             }
         }
 
-        c.save()
-        c.rotate(90f + getStartDegree(), size * .5f, size * .5f)
-        val everyDegree = (getEndDegree() - getStartDegree()) * .111f
-        var i = getStartDegree().toFloat()
-        while (i < getEndDegree() - 2f * everyDegree) {
-            c.rotate(everyDegree, size * .5f, size * .5f)
-            c.drawPath(markPath, markPaint)
-            i += everyDegree
-        }
-        c.restore()
+        drawMarks(c)
 
         if (tickNumber > 0)
             drawTicks(c)

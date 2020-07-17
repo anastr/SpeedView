@@ -59,15 +59,32 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
                 indicator.updateIndicator()
         }
 
+    private val markPath = Path()
+    protected val markPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    var markHeight = dpTOpx(9f)
+        set(markHeight) {
+            field = markHeight
+            invalidateGauge()
+        }
+    var markWidth
+        get() = markPaint.strokeWidth
+        set(markWidth) {
+            markPaint.strokeWidth = markWidth
+            invalidateGauge()
+        }
     /**
      * change the color of all marks (if exist),
      * **this option is not available for all Speedometers**.
      */
-    var markColor = 0xFFFFFFFF.toInt()
+    var markColor
+        get() = markPaint.color
         set(markColor) {
-            field = markColor
-            if (isAttachedToWindow)
-                invalidate()
+            markPaint.color = markColor
+        }
+    var marksNumber = 0
+        set(marksNumber) {
+            field = marksNumber
+            invalidateGauge()
         }
 
     /**
@@ -286,6 +303,9 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
     private fun init() {
         indicatorLightPaint.style = Paint.Style.STROKE
+        markPaint.style = Paint.Style.STROKE
+        markColor = 0xFFFFFFFF.toInt()
+        markWidth = dpTOpx(3f)
 //        indicator = NoIndicator(context)
         defaultSpeedometerValues()
     }
@@ -393,6 +413,21 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         degree = getDegreeAtSpeed(currentSpeed)
+    }
+
+    protected fun drawMarks(canvas: Canvas) {
+        markPath.reset()
+        markPath.moveTo(size * .5f, padding.toFloat())
+        markPath.lineTo(size * .5f, markHeight + padding)
+
+        canvas.save()
+        canvas.rotate(90f + getStartDegree(), size * .5f, size * .5f)
+        val everyDegree = (getEndDegree() - getStartDegree()) / (marksNumber + 1f)
+        for (i in 1..marksNumber) {
+            canvas.rotate(everyDegree, size * .5f, size * .5f)
+            canvas.drawPath(markPath, markPaint)
+        }
+        canvas.restore()
     }
 
     /**

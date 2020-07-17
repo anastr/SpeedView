@@ -56,6 +56,7 @@ open class ImageSpeedometer @JvmOverloads constructor(context: Context, attrs: A
             imageSpeedometer!!.setBounds(viewLeft.toInt() + padding, viewTop.toInt() + padding, viewRight.toInt() - padding, viewBottom.toInt() - padding)
             imageSpeedometer!!.draw(c)
         }
+        drawMarks(c)
         drawTicks(c)
     }
 

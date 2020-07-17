@@ -17,7 +17,7 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
     private val pointerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val pointerBackPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val markPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val customMarkPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedometerRect = RectF()
 
     private var speedometerColor = 0xFFEEEEEE.toInt()
@@ -89,9 +89,9 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
     private fun init() {
         speedometerPaint.style = Paint.Style.STROKE
         speedometerPaint.strokeCap = Paint.Cap.ROUND
-        markPaint.style = Paint.Style.STROKE
-        markPaint.strokeCap = Paint.Cap.ROUND
-        markPaint.strokeWidth = dpTOpx(2f)
+        customMarkPaint.style = Paint.Style.STROKE
+        customMarkPaint.strokeCap = Paint.Cap.ROUND
+        customMarkPaint.strokeWidth = dpTOpx(2f)
         circlePaint.color = 0xFFFFFFFF.toInt()
     }
 
@@ -129,7 +129,7 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
     private fun initDraw() {
         speedometerPaint.strokeWidth = speedometerWidth
         speedometerPaint.shader = updateSweep()
-        markPaint.color = markColor
+        customMarkPaint.color = markColor
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -174,10 +174,12 @@ open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs:
         var i = getStartDegree().toFloat()
         while (i < getEndDegree() - 2f * everyDegree) {
             c.rotate(everyDegree, size * .5f, size * .5f)
-            c.drawPath(markPath, markPaint)
+            c.drawPath(markPath, customMarkPaint)
             i += everyDegree
         }
         c.restore()
+
+        drawMarks(c)
 
         if (tickNumber > 0)
             drawTicks(c)

@@ -15,11 +15,9 @@ import com.github.anastr.speedviewlib.util.getRoundAngle
  */
 open class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
 
-    private val markPath = Path()
     private val smallMarkPath = Path()
     private val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedometerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val markPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val smallMarkPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedBackgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val speedometerRect = RectF()
@@ -89,11 +87,11 @@ open class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: At
         indicator = NormalSmallIndicator(context)
         indicator.color = 0xff00ffec.toInt()
         super.backgroundCircleColor = 0xff212121.toInt()
+        super.marksNumber = 8
     }
 
     private fun init() {
         speedometerPaint.style = Paint.Style.STROKE
-        markPaint.style = Paint.Style.STROKE
         smallMarkPaint.style = Paint.Style.STROKE
         speedBackgroundPaint.color = 0xFFFFFFFF.toInt()
         circlePaint.color = 0xffe0e0e0.toInt()
@@ -132,7 +130,6 @@ open class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: At
 
     private fun initDraw() {
         speedometerPaint.strokeWidth = speedometerWidth
-        markPaint.color = markColor
         smallMarkPaint.color = markColor
     }
 
@@ -161,12 +158,6 @@ open class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: At
         smallMarkPath.lineTo(size * .5f, speedometerWidth + padding.toFloat() + smallMarkH)
         smallMarkPaint.strokeWidth = 3f
 
-        val markH = viewSizePa / 28f
-        markPath.reset()
-        markPath.moveTo(size * .5f, padding.toFloat())
-        markPath.lineTo(size * .5f, markH + padding)
-        markPaint.strokeWidth = markH / 3f
-
         sections.forEach {
             val risk = it.width * .5f + padding + it.padding
             speedometerRect.set(risk, risk, size - risk, size - risk)
@@ -187,19 +178,6 @@ open class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: At
 
         c.save()
         c.rotate(90f + getStartDegree(), size * .5f, size * .5f)
-        val everyDegree = (getEndDegree() - getStartDegree()) * .111f
-        run {
-            var i = getStartDegree().toFloat()
-            while (i < getEndDegree() - 2f * everyDegree) {
-                c.rotate(everyDegree, size * .5f, size * .5f)
-                c.drawPath(markPath, markPaint)
-                i += everyDegree
-            }
-        }
-        c.restore()
-
-        c.save()
-        c.rotate(90f + getStartDegree(), size * .5f, size * .5f)
         var i = getStartDegree().toFloat()
         while (i < getEndDegree() - 10f) {
             c.rotate(10f, size * .5f, size * .5f)
@@ -207,6 +185,8 @@ open class DeluxeSpeedView @JvmOverloads constructor(context: Context, attrs: At
             i += 10f
         }
         c.restore()
+
+        drawMarks(c)
 
         if (tickNumber > 0)
             drawTicks(c)
