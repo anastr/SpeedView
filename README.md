@@ -12,8 +12,6 @@ Library Size just ~ 47 KB.
 [![Bintray](https://img.shields.io/bintray/v/anastr/maven/SpeedView.svg?color=green)](https://bintray.com/anastr/maven/SpeedView)
 [![Twitter](https://img.shields.io/badge/Twitter-@AnasAltairDent-blue.svg?style=flat)](http://twitter.com/AnasAltairDent)
 
-[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Q5Q01XY6A)
-
  download demo on Google Play:\
  <a href='https://play.google.com/store/apps/details?id=com.github.anastr.speedviewapp&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img  width="25%" alt='SpeedView Demo on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
@@ -32,7 +30,7 @@ Library Size just ~ 47 KB.
 # Donations
 if you like this project, **you can support it** and support the creator of it, and we are really thankful for your donations 😄.
 
-All donations accepted in **[Bountysource](https://salt.bountysource.com/teams/speedview)** and **[ko-fi](https://ko-fi.com/Q5Q01XY6A)**:
+All donations accepted in **[Bountysource](https://salt.bountysource.com/teams/speedview)**:
 - **5$:** good job, here's a cup of tea (_we know you don't like coffee_:wink:).
 - **10$:** very nice library, you saved my day.
 - **15$:** really appreciate your work, keep going!.
