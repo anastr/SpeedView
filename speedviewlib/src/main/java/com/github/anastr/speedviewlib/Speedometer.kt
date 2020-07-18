@@ -51,6 +51,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
     private val circleBackPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val indicatorLightPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    protected val markPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     override var speedometerWidth
         get() = super.speedometerWidth
@@ -61,7 +62,6 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         }
 
     private val markPath = Path()
-    protected val markPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     var marksNumber = 0
         set(marksNumber) {
             field = marksNumber
@@ -438,6 +438,11 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
         degree = getDegreeAtSpeed(currentSpeed)
     }
 
+    /**
+     * draw marks depending on [marksNumber],
+     * this method must be called in subSpeedometer's [updateBackgroundBitmap] method.
+     * @param canvas marks should be drawn on [backgroundBitmap].
+     */
     protected fun drawMarks(canvas: Canvas) {
         markPath.reset()
         markPath.moveTo(size * .5f, marksPadding + padding)
@@ -455,7 +460,7 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
 
     /**
      * draw indicator at current [degree],
-     * this method must call in subSpeedometer's `onDraw` method.
+     * this method must be called in subSpeedometer's `onDraw` method.
      * @param canvas view canvas to draw.
      */
     protected fun drawIndicator(canvas: Canvas) {

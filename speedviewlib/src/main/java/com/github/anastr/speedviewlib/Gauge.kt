@@ -162,7 +162,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     /** this animatorListener to call [tremble] method when animator done  */
     private lateinit var animatorListener: Animator.AnimatorListener
 
-    /** to contain all drawing that doesn't change  */
+    /** to contain all drawing that don't change  */
     protected var backgroundBitmap: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
     private val backgroundBitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
