@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import com.github.anastr.speedviewlib.components.Section
+import com.github.anastr.speedviewlib.components.Style
 import com.github.anastr.speedviewlib.util.doOnSections
 import kotlinx.android.synthetic.main.activity_section.*
 
@@ -17,7 +17,7 @@ class SectionActivity : AppCompatActivity() {
 
         seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                speedView.makeSections(progress, 0, Section.Style.SQUARE)
+                speedView.makeSections(progress, 0, Style.BUTT)
                 textSpeed.text = "$progress"
                 randomColors()
             }

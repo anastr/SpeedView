@@ -13,7 +13,7 @@
 
     <com.github.anastr.speedviewlib.SpeedView
         android:id="@+id/speedView"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         app:sv_withIndicatorLight="true"/>

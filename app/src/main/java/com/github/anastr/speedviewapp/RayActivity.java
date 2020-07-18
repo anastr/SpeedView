@@ -1,11 +1,12 @@
 package com.github.anastr.speedviewapp;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedviewlib.RaySpeedometer;
 
@@ -78,7 +79,7 @@ public class RayActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 textWidth.setText(String.format(Locale.getDefault(), "%ddp", progress));
 
-                raySpeedometer.setMarkWidth((int) raySpeedometer.dpTOpx(progress));
+                raySpeedometer.setRayMarkWidth((int) raySpeedometer.dpTOpx(progress));
             }
 
             @Override

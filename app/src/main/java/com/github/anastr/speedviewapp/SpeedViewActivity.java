@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
+import com.github.anastr.speedviewlib.components.Style;
 
 import java.util.Locale;
 
@@ -70,10 +71,10 @@ public class SpeedViewActivity extends AppCompatActivity {
 
         speedView.getSections().clear();
         speedView.addSections(new Section(0f, .1f, Color.LTGRAY, speedView.dpTOpx(30f))
-                , new Section(.1f, .2f, Color.GRAY, speedView.dpTOpx(30f), Section.Style.ROUND)
+                , new Section(.1f, .2f, Color.GRAY, speedView.dpTOpx(30f), Style.ROUND)
                 , new Section(.2f, .3f, Color.DKGRAY, speedView.dpTOpx(30f))
                 , new Section(.3f, .4f, Color.BLACK, speedView.dpTOpx(30f))
-                , new Section(.4f, .5f, Color.CYAN, speedView.dpTOpx(30f), Section.Style.ROUND)
+                , new Section(.4f, .5f, Color.CYAN, speedView.dpTOpx(30f), Style.ROUND)
                 , new Section(.5f, .6f, Color.BLUE, speedView.dpTOpx(30f))
                 , new Section(.6f, .7f, Color.GREEN, speedView.dpTOpx(30f))
                 , new Section(.7f, .8f, Color.YELLOW, speedView.dpTOpx(30f))
