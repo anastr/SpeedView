@@ -13,6 +13,8 @@
         android:layout_height="match_parent"
         android:padding="10dp"
         android:layout_gravity="center"
+        app:sv_speedometerWidth="24dp"
+        app:sv_centerCircleRadius="16dp"
         app:sv_speedTextFormat="INTEGER"
         app:sv_speedTextSize="11sp"
         app:sv_unitTextSize="8sp"/>

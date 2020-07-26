@@ -14,9 +14,8 @@
 
     <com.github.anastr.speedviewlib.AwesomeSpeedometer
         android:id="@+id/awesomeSpeedometer"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:sv_speedometerWidth="75dp"
         app:sv_indicatorWidth="35dp"
         app:sv_speedometerColor="#ef3737"
         app:sv_trianglesColor="#25b9b4"

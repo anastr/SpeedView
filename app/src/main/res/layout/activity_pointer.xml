@@ -14,7 +14,7 @@
 
     <com.github.anastr.speedviewlib.PointerSpeedometer
         android:id="@+id/pointerSpeedometer"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         app:sv_unitTextSize="15sp"
