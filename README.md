@@ -4,7 +4,7 @@ Dynamic Speedometer, Gauge for Android. **amazing**, **powerful**, and _multi sh
 
 `minSdkVersion=11`
 
-Library Size just ~ 47 KB.
+Library Size just ~ 48 KB.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-blue.svg?style=true)](https://android-arsenal.com/details/1/4169)
 [![Gitter](https://badges.gitter.im/AnasTr/SpeedView.svg)](https://gitter.im/AnasTr/SpeedView?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -40,13 +40,13 @@ go to [project in bountysource](https://salt.bountysource.com/checkout/amount?te
 
 # Download
 
-this library required **jcenter** and **kotlin version 1.3.61** or above, _you still can use it in java projects_.
+this library required **jcenter** and **kotlin version 1.3.72** or above, _you still can use it in java projects_.
 
 first add kotlin to your project, in `build.gradle` **project level**:
 
 ```gradle
 buildscript {
-    ext.kotlin_version = '1.3.61'
+    ext.kotlin_version = '1.3.72'
     dependencies {
         ...
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -67,7 +67,7 @@ add this line to `build.gradle` **app module level**:
 apply plugin: 'kotlin-android'
 ...
 dependencies {
-	implementation 'com.github.anastr:speedviewlib:1.5.2'
+	implementation 'com.github.anastr:speedviewlib:1.5.3'
 }
 
 ```
@@ -78,7 +78,7 @@ for **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.5.2</version>
+  <version>1.5.3</version>
   <type>pom</type>
 </dependency>
 ```
@@ -224,7 +224,7 @@ and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/ana
       <pre>
 &lt; com.github.anastr.speedviewlib.ProgressiveGauge
         android:id="@+id/gauge"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
       </pre>
     </td>
