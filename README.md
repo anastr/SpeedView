@@ -95,7 +95,7 @@ choose one of Speedometers, gauges and add it to your `Layout.xml`, here we use 
 ```
 
 for all speedometers and gauges, this simple method to smoothly change speed:
-```java
+```kotlin
 SpeedView speedometer = findViewById(R.id.speedView)
 
 // move to 50 Km/s
@@ -104,15 +104,23 @@ speedometer.speedTo(50)
 
 by default, the speed change Duration between last speed and new speed is `2000 ms`.<br>
 you can use other Duration by method :
-```java
+```kotlin
 // move to 50 Km/s with Duration = 4 sec
 speedometer.speedTo(50, 4000)
 ```
 
-automatically indicator move around current speed to add some reality to speedometer because of [Tremble](https://github.com/anastr/SpeedView/wiki/0.-Get-Started#tremble), you can stop it by `app:sv_withTremble="false"` Attribute or call `speedometer.withTremble = false` method in the code.
+automatically indicator move around current speed to add some reality to speedometer because of [Tremble](https://github.com/anastr/SpeedView/wiki/0.-Get-Started#tremble), you can stop it by `app:sv_withTremble="false"` Attribute or call this method in the code.
+```kotlin
+speedometer.withTremble = false
+```
 
 **for more control**, see The most important methods at [Get Started - Wiki](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) for **All Speedometers & Gauges**.<br>
-and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage) and [Work With Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).<br>
+and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage).
+
+more advanced features:
+- Work with [Indicators - Wiki](https://github.com/anastr/SpeedView/wiki/Indicators).
+- Work With [Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).
+
 <img src="/images/usage/StartEndDegree.png" width="40%" />
 <img src="/images/usage/WorkWithNote.gif" width="35%" />
 
