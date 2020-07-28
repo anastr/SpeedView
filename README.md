@@ -121,8 +121,7 @@ more advanced features:
 - Work with [Indicators - Wiki](https://github.com/anastr/SpeedView/wiki/Indicators).
 - Work With [Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).
 
-<img src="/images/usage/StartEndDegree.png" width="40%" />
-<img src="/images/usage/WorkWithNote.gif" width="35%" />
+<img src="/images/usage/StartEndDegree.png" width="40%" /> <img src="/images/usage/WorkWithNote.gif" width="35%" />
 
 ## All Speedometers, Gauges :
 
