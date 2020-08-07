@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "1.. Progressive Gauge",
                 "2.. Image Linear Gauge",
                 "Work With Indicator",
+                "Work With Marks",
                 "Work With Note",
                 "Create Speedometer Programmatically",
                 "Work With Start and End Degree",
@@ -87,27 +88,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 intent.setClass(MainActivity.this, WorkWithIndicatorActivity.class);
                 break;
             case 10:
-                intent.setClass(MainActivity.this, WorkWithNoteActivity.class);
+                intent.setClass(MainActivity.this, MarksActivity.class);
                 break;
             case 11:
-                intent.setClass(MainActivity.this, CreateProgrammatically.class);
+                intent.setClass(MainActivity.this, WorkWithNoteActivity.class);
                 break;
             case 12:
-                intent.setClass(MainActivity.this, StartEndDegreeActivity.class);
+                intent.setClass(MainActivity.this, CreateProgrammatically.class);
                 break;
             case 13:
-                intent.setClass(MainActivity.this, WorkWithModesActivity.class);
+                intent.setClass(MainActivity.this, StartEndDegreeActivity.class);
                 break;
             case 14:
-                intent.setClass(MainActivity.this, SpeedTextPositionActivity.class);
+                intent.setClass(MainActivity.this, WorkWithModesActivity.class);
                 break;
             case 15:
-                intent.setClass(MainActivity.this, TickActivity.class);
+                intent.setClass(MainActivity.this, SpeedTextPositionActivity.class);
                 break;
             case 16:
-                intent.setClass(MainActivity.this, RecyclerActivity.class);
+                intent.setClass(MainActivity.this, TickActivity.class);
                 break;
             case 17:
+                intent.setClass(MainActivity.this, RecyclerActivity.class);
+                break;
+            case 18:
                 intent.setClass(MainActivity.this, SectionActivity.class);
                 break;
         }
