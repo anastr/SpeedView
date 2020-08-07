@@ -13,6 +13,18 @@ android {
         versionCode 2
         versionName "1.1"
     }
+
+    flavorDimensions "default"
+    productFlavors {
+        develop {
+            applicationIdSuffix ".develop"
+            resValue "string", "app_name", "SpeedView Test"
+        }
+        product {
+            resValue "string", "app_name", "SpeedView"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
