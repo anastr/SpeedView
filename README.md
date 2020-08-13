@@ -30,7 +30,7 @@ Library Size just ~ 48 KB.
 # Donations
 if you like this project, **you can support it** and support the creator of it, and we are really thankful for your donations 😄.
 
-All donations accepted in **[Bountysource](https://salt.bountysource.com/teams/speedview)**:
+All donations accepted in **[Bountysource](https://www.bountysource.com/teams/speedview)**:
 - **5$:** good job, here's a cup of tea (_we know you don't like coffee_:wink:).
 - **10$:** very nice library, you saved my day.
 - **15$:** really appreciate your work, keep going!.
