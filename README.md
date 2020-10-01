@@ -102,14 +102,14 @@ SpeedView speedometer = findViewById(R.id.speedView)
 speedometer.speedTo(50)
 ```
 
-by default, the speed change Duration between last speed and new speed is `2000 ms`.<br>
+by default, the speed change Duration between the last speed and new speed is `2000 ms`.<br>
 you can use other Duration by method :
 ```kotlin
 // move to 50 Km/s with Duration = 4 sec
 speedometer.speedTo(50, 4000)
 ```
 
-automatically indicator move around current speed to add some reality to speedometer because of [Tremble](https://github.com/anastr/SpeedView/wiki/0.-Get-Started#tremble), you can stop it by `app:sv_withTremble="false"` Attribute or call this method in the code.
+automatically indicator moves around current speed to add some reality to the speedometer because of [Tremble](https://github.com/anastr/SpeedView/wiki/0.-Get-Started#tremble), you can stop it by `app:sv_withTremble="false"` Attribute or call this method in the code.
 ```kotlin
 speedometer.withTremble = false
 ```
@@ -135,7 +135,7 @@ more advanced features:
   <tr>
     <td width="24%"> <a href="https://github.com/anastr/SpeedView/wiki/1.-SpeedView">1. SpeedView - Wiki</a></td>
     <td width="22%"><img src="/images/SpeedView3.png"/></td>
-    <td>
+    <td>
        <pre>
 &lt; com.github.anastr.speedviewlib.SpeedView
         android:id="@+id/speedView"
@@ -148,7 +148,7 @@ more advanced features:
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/2.-DeluxeSpeedView">2. DeluxeSpeedView - Wiki</a></td>
     <td><img src="/images/DeluxeSpeedView2.png"/></td>
-    <td>
+    <td>
       <pre>
 &lt; com.github.anastr.speedviewlib.DeluxeSpeedView
         android:id="@+id/deluxeSpeedView"
@@ -161,7 +161,7 @@ more advanced features:
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/3.-AwesomeSpeedometer">3. AwesomeSpeedometer - Wiki</a></td>
     <td><img src="/images/AwesomeSpeedometer.png"/></td>
-    <td>
+    <td>
       <pre>
 &lt; com.github.anastr.speedviewlib.AwesomeSpeedometer
         android:id="@+id/awesomeSpeedometer"
@@ -174,7 +174,7 @@ more advanced features:
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/4.-RaySpeedometer">4. RaySpeedometer - Wiki</a></td>
     <td><img src="/images/RaySpeedometer.png"/></td>
-    <td>
+    <td>
       <pre>
 &lt; com.github.anastr.speedviewlib.RaySpeedometer
         android:id="@+id/raySpeedometer"
@@ -187,7 +187,7 @@ more advanced features:
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/5.-PointerSpeedometer">5. PointerSpeedometer - Wiki</a></td>
     <td><img src="/images/PointerSpeedometer.png"/></td>
-    <td>
+    <td>
       <pre>
 &lt; com.github.anastr.speedviewlib.PointerSpeedometer
         android:id="@+id/pointerSpeedometer"
@@ -200,7 +200,7 @@ more advanced features:
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/6.-TubeSpeedometer">6. TubeSpeedometer - Wiki</a></td>
     <td><img src="/images/TubeSpeedometer.png"/></td>
-    <td>
+    <td>
       <pre>
 &lt; com.github.anastr.speedviewlib.TubeSpeedometer
         android:id="@+id/tubeSpeedometer"
@@ -213,7 +213,7 @@ more advanced features:
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/7.-ImageSpeedometer">7. ImageSpeedometer - Wiki</a></td>
     <td><img src="/images/ImageSpeedometer.png"/></td>
-    <td>
+    <td>
       <pre>
 &lt; com.github.anastr.speedviewlib.ImageSpeedometer
         android:id="@+id/imageSpeedometer"
@@ -227,7 +227,7 @@ more advanced features:
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/8.-ProgressiveGauge">8. ProgressiveGauge - Wiki</a></td>
     <td><img src="/images/ProgressiveGauge.png"/></td>
-    <td>
+    <td>
       <pre>
 &lt; com.github.anastr.speedviewlib.ProgressiveGauge
         android:id="@+id/gauge"
@@ -240,7 +240,7 @@ more advanced features:
   <tr>
     <td> <a href="https://github.com/anastr/SpeedView/wiki/9.-ImageLinearGauge">9. ImageLinearGauge - Wiki</a></td>
     <td><img src="/images/ImageLinearGauge.png"/></td>
-    <td>
+    <td>
       <pre>
 &lt; com.github.anastr.speedviewlib.ImageLinearGauge
         android:id="@+id/gauge"
@@ -253,15 +253,15 @@ more advanced features:
 </table>
 
 ## TODO
-* build start animation.
+* build start the animation.
 * add fuel gauge component.
 * build new custom speedometer.
 
-your `pull request` is always Welcome, please review the **[rules of contribution](https://github.com/anastr/SpeedView/blob/master/CONTRIBUTING.md)** to make useful change.
+your `pull request` is always Welcome, please review the **[rules of contribution](https://github.com/anastr/SpeedView/blob/master/CONTRIBUTING.md)** to make the useful change.
 
 ## Coming Soon ...
 I will try to draw this Speedometer.
-if you have any idea, image, template please **open new issue** and give me the image , and i well try to add it to the Library.
+if you have any idea, image, template please **open new issue** and give me the image, and i will try to add it to the Library.
 
 <img src="/images/new2.png" width="30%" /> <img src="/images/new3.png" width="30%" />
 
