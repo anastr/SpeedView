@@ -9,14 +9,13 @@ Library Size just ~ 48 KB.
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-blue.svg?style=true)](https://android-arsenal.com/details/1/4169)
 [![Gitter](https://badges.gitter.im/AnasTr/SpeedView.svg)](https://gitter.im/AnasTr/SpeedView?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![API](https://img.shields.io/badge/API-+11-red.svg?style=flat)](#)
-[![Bintray](https://img.shields.io/bintray/v/anastr/maven/SpeedView.svg?color=green)](https://bintray.com/anastr/maven/SpeedView)
 [![Twitter](https://img.shields.io/badge/Twitter-@AnasAltairDent-blue.svg?style=flat)](http://twitter.com/AnasAltairDent)
 
- download demo on Google Play:\
+Download demo on Google Play:\
  <a href='https://play.google.com/store/apps/details?id=com.github.anastr.speedviewapp&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img  width="25%" alt='SpeedView Demo on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
-> this library has rewritten with Kotlin in version 1.4.0 manually, which means it may have some issues.
-> if you have any problem please open an issue, and you can use old version 1.3.1 written in java.
+> This library has rewritten with Kotlin in version 1.4.0 manually, which means it may have some issues.
+> If you have any problem please open an issue, or you can use old version 1.3.1 written in java.
 
 **Speedometers...**<br/>
 <img src="images/SpeedView.gif" width="32%" />
@@ -27,26 +26,15 @@ Library Size just ~ 48 KB.
 <img src="images/ProgressiveGauge.gif" width="49%" />
 <img src="images/ImageLinearGauge.gif" width="49%" />
 
-# Donations
-if you like this project, **you can support it** and support the creator of it, and we are really thankful for your donations 😄.
-
-All donations accepted in **[Bountysource](https://www.bountysource.com/teams/speedview)**:
-- **5$:** good job, here's a cup of tea (_we know you don't like coffee_:wink:).
-- **10$:** very nice library, you saved my day.
-- **15$:** really appreciate your work, keep going!.
-- **100$, maybe more:** you are a **_Dentist_**, and you have done all of this!!
-
-go to [project in bountysource](https://salt.bountysource.com/checkout/amount?team=speedview) for more options.
-
 # Download
 
-this library required **jcenter** and **kotlin version 1.3.72** or above, _you still can use it in java projects_.
+Starting from version `1.5.4` this library uploaded to `mavenCentral`, the old versions was on `jcenter`. To work with this library you need `Kotlin` version `1.4.31` or above.
 
-first add kotlin to your project, in `build.gradle` **project level**:
+First add kotlin to your project, in `build.gradle` **project level**:
 
 ```gradle
 buildscript {
-    ext.kotlin_version = '1.3.72'
+    ext.kotlin_version = '1.4.31'
     dependencies {
         ...
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -56,35 +44,35 @@ buildscript {
 allprojects {
     repositories {
         ...
-        jcenter()
+        mavenCentral()
     }
 }
 ```
 
-add this line to `build.gradle` **app module level**:
+Then add this line to `build.gradle` **app module level**:
 
 ```gradle
 apply plugin: 'kotlin-android'
 ...
 dependencies {
-	implementation 'com.github.anastr:speedviewlib:1.5.3'
+	implementation 'com.github.anastr:speedviewlib:1.5.4'
 }
 
 ```
 
-for **maven**
+For **maven**
 
 ```maven
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.5.3</version>
+  <version>1.5.4</version>
   <type>pom</type>
 </dependency>
 ```
 **[Get Starting](https://github.com/anastr/SpeedView/wiki/0.-Get-Started)** with _SpeedView Library_.
 # Simple Usage
-choose one of Speedometers, gauges and add it to your `Layout.xml`, here we use **SpeedView**.<br>
+Choose one of Speedometers, gauges and add it to your `Layout.xml`, here we use **SpeedView**.<br>
 ```xml
 
 <com.github.anastr.speedviewlib.SpeedView
@@ -94,7 +82,7 @@ choose one of Speedometers, gauges and add it to your `Layout.xml`, here we use 
 
 ```
 
-for all speedometers and gauges, this simple method to smoothly change speed:
+For all speedometers and gauges, this simple method to smoothly change the speed:
 ```kotlin
 SpeedView speedometer = findViewById(R.id.speedView)
 
@@ -102,22 +90,22 @@ SpeedView speedometer = findViewById(R.id.speedView)
 speedometer.speedTo(50)
 ```
 
-by default, the speed change Duration between last speed and new speed is `2000 ms`.<br>
-you can use other Duration by method :
+By default, speed change duration between last speed and new one is `2000 ms`.<br>
+You can pass your duration by this method :
 ```kotlin
 // move to 50 Km/s with Duration = 4 sec
 speedometer.speedTo(50, 4000)
 ```
 
-automatically indicator move around current speed to add some reality to speedometer because of [Tremble](https://github.com/anastr/SpeedView/wiki/0.-Get-Started#tremble), you can stop it by `app:sv_withTremble="false"` Attribute or call this method in the code.
+Automatically, indicator moves around current speed to add some reality to speedometer because of [Tremble](https://github.com/anastr/SpeedView/wiki/0.-Get-Started#tremble), you can stop it by `app:sv_withTremble="false"`attribute or call this in your code:
 ```kotlin
 speedometer.withTremble = false
 ```
 
-**for more control**, see The most important methods at [Get Started - Wiki](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) for **All Speedometers & Gauges**.<br>
-and also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage).
+**For more control**, see the most important methods at [Get Started - Wiki](https://github.com/anastr/SpeedView/wiki/0.-Get-Started) for **All Speedometers & Gauges**.<br>
+And also you can see **Advanced Usage** in [Usage - Wiki](https://github.com/anastr/SpeedView/wiki/Usage).
 
-more advanced features:
+More advanced features:
 - Work with [Indicators - Wiki](https://github.com/anastr/SpeedView/wiki/Indicators).
 - Work With [Notes - Wiki](https://github.com/anastr/SpeedView/wiki/Notes).
 
@@ -253,17 +241,11 @@ more advanced features:
 </table>
 
 ## TODO
-* build start animation.
-* add fuel gauge component.
-* build new custom speedometer.
+* Build start animation.
+* Add fuel gauge component.
+* Build new custom speedometer.
 
-your `pull request` is always Welcome, please review the **[rules of contribution](https://github.com/anastr/SpeedView/blob/master/CONTRIBUTING.md)** to make useful change.
-
-## Coming Soon ...
-I will try to draw this Speedometer.
-if you have any idea, image, template please **open new issue** and give me the image , and i well try to add it to the Library.
-
-<img src="/images/new2.png" width="30%" /> <img src="/images/new3.png" width="30%" />
+Your `pull request` is always welcome, please review the **[rules of contribution](https://github.com/anastr/SpeedView/blob/master/CONTRIBUTING.md)** to make a useful change.
 
 # LICENSE
 ```
