@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
-import android.os.Build
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
@@ -17,15 +16,17 @@ import com.github.anastr.speedviewlib.util.OnSpeedChangeListener
 import com.github.anastr.speedviewlib.util.doOnSections
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.abs
 import kotlin.math.max
+
+
+typealias SpeedTextListener = (speed: Float) -> CharSequence
 
 /**
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-
-typealias SpeedTextListener = (speed: Float) -> CharSequence
-
+@Suppress("MemberVisibilityCanBePrivate")
 abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr), Observer {
 
     private val speedUnitTextBitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -33,7 +34,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
     private val speedTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     private val unitTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
 
-    /** unit text, the text after speed text.  */
+    /** unit text, the text after speed text. */
     var unit = "Km/h"
         set(unit) {
             field = unit
@@ -339,22 +340,20 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         sections.add(Section(.6f, .87f, 0xFFFFFF00.toInt(), speedometerWidth).inGauge(this))
         sections.add(Section(.87f, 1f, 0xFFFF0000.toInt(), speedometerWidth).inGauge(this))
 
-        if (Build.VERSION.SDK_INT >= 11) {
-            speedAnimator = ValueAnimator.ofFloat(0f, 1f)
-            trembleAnimator = ValueAnimator.ofFloat(0f, 1f)
-            realSpeedAnimator = ValueAnimator.ofFloat(0f, 1f)
-            animatorListener = object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {}
+        speedAnimator = ValueAnimator.ofFloat(0f, 1f)
+        trembleAnimator = ValueAnimator.ofFloat(0f, 1f)
+        realSpeedAnimator = ValueAnimator.ofFloat(0f, 1f)
+        animatorListener = object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {}
 
-                override fun onAnimationEnd(animation: Animator) {
-                    if (!canceled)
-                        tremble()
-                }
-
-                override fun onAnimationCancel(animation: Animator) {}
-
-                override fun onAnimationRepeat(animation: Animator) {}
+            override fun onAnimationEnd(animation: Animator) {
+                if (!canceled)
+                    tremble()
             }
+
+            override fun onAnimationCancel(animation: Animator) {}
+
+            override fun onAnimationRepeat(animation: Animator) {}
         }
         defaultGaugeValues()
     }
@@ -646,7 +645,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         // check onSpeedChangeEvent.
         val newSpeed = currentSpeed.toInt()
         if (newSpeed != currentIntSpeed && onSpeedChangeListener != null) {
-            val byTremble = Build.VERSION.SDK_INT >= 11 && trembleAnimator.isRunning
+            val byTremble = trembleAnimator.isRunning
             val isSpeedUp = newSpeed > currentIntSpeed
             val update = if (isSpeedUp) 1 else -1
             // this loop to pass on all speed values,
@@ -884,7 +883,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         realSpeedAnimator = ValueAnimator.ofInt(currentSpeed.toInt(), newSpeed.toInt())
         realSpeedAnimator.repeatCount = ValueAnimator.INFINITE
         realSpeedAnimator.interpolator = LinearInterpolator()
-        realSpeedAnimator.duration = Math.abs(((newSpeed - currentSpeed) * 10).toLong())
+        realSpeedAnimator.duration = abs(((newSpeed - currentSpeed) * 10).toLong())
         val finalSpeed = newSpeed
         realSpeedAnimator.addUpdateListener {
             if (isSpeedIncrease) {
@@ -936,14 +935,10 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * @param percentSpeed between [0, 100].
      * @return speed value at current percentSpeed.
      */
-    private fun getSpeedValue(percentSpeed: Float): Float {
-        var percentSpeed_ = percentSpeed
-        percentSpeed_ = when {
-            percentSpeed_ > 100 -> 100f
-            percentSpeed_ < 0 -> 0f
-            else -> percentSpeed_
-        }
-        return percentSpeed_ * (maxSpeed - minSpeed) * .01f + minSpeed
+    private fun getSpeedValue(percentSpeed: Float): Float = when {
+        percentSpeed > 100f -> maxSpeed
+        percentSpeed < 0f -> minSpeed
+        else -> percentSpeed * (maxSpeed - minSpeed) * .01f + minSpeed
     }
 
     override fun onAttachedToWindow() {

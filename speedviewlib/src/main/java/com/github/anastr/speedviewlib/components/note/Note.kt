@@ -9,7 +9,7 @@ import android.graphics.*
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "MemberVisibilityCanBePrivate")
 abstract class Note<out N : Note<N>> protected constructor(context: Context) {
 
     private val density: Float = context.resources.displayMetrics.density

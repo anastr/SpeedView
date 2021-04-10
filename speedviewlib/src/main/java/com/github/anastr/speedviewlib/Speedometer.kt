@@ -20,6 +20,7 @@ import kotlin.text.Typography.degree
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
+@Suppress("MemberVisibilityCanBePrivate")
 abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Gauge(context, attrs, defStyleAttr) {
 
     /**
@@ -470,11 +471,11 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
     }
 
     protected fun drawIndicatorLight(canvas: Canvas) {
-        val MAX_LIGHT_SWEEP = 30f
-        var sweep = abs(getPercentSpeed() - lastPercentSpeed) * MAX_LIGHT_SWEEP
+        val maxLightSweep = 30f
+        var sweep = abs(getPercentSpeed() - lastPercentSpeed) * maxLightSweep
         lastPercentSpeed = getPercentSpeed()
-        if (sweep > MAX_LIGHT_SWEEP)
-            sweep = MAX_LIGHT_SWEEP
+        if (sweep > maxLightSweep)
+            sweep = maxLightSweep
         val colors = intArrayOf(indicatorLightColor, 0x00FFFFFF)
         val lightSweep = SweepGradient(size * .5f, size * .5f, colors, floatArrayOf(0f, sweep / 360f))
         indicatorLightPaint.shader = lightSweep
@@ -754,4 +755,3 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
             get() = !isHalf && this != NORMAL
     }
 }
-
