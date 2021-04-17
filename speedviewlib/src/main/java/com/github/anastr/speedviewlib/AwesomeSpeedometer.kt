@@ -9,7 +9,11 @@ import com.github.anastr.speedviewlib.components.indicators.TriangleIndicator
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-open class AwesomeSpeedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
+open class AwesomeSpeedometer @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0,
+) : Speedometer(context, attrs, defStyleAttr) {
 
     private val markPath = Path()
     private val trianglesPath = Path()

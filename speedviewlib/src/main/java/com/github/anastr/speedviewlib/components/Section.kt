@@ -8,7 +8,13 @@ import com.github.anastr.speedviewlib.Gauge
  * Created by Anas Altair on 10/25/2019.
  */
 @Suppress("MemberVisibilityCanBePrivate")
-class Section @JvmOverloads constructor(startOffset: Float, endOffset: Float, color: Int, width: Float = 0f, style: Style = Style.BUTT): Parcelable {
+class Section @JvmOverloads constructor(
+        startOffset: Float,
+        endOffset: Float,
+        color: Int,
+        width: Float = 0f,
+        style: Style = Style.BUTT,
+): Parcelable {
 
     private var gauge: Gauge? = null
 

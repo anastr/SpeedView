@@ -13,7 +13,11 @@ import com.github.anastr.speedviewlib.components.indicators.Indicator
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-open class RaySpeedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
+open class RaySpeedometer @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0,
+) : Speedometer(context, attrs, defStyleAttr) {
 
     private val markPath = Path()
     private val ray1Path = Path()

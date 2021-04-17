@@ -12,7 +12,11 @@ import android.util.AttributeSet
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-open class ImageSpeedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
+open class ImageSpeedometer @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0,
+) : Speedometer(context, attrs, defStyleAttr) {
 
     private var imageSpeedometer: Drawable? = null
 

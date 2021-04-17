@@ -11,7 +11,11 @@ import com.github.anastr.speedviewlib.util.getRoundAngle
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-open class PointerSpeedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Speedometer(context, attrs, defStyleAttr) {
+open class PointerSpeedometer @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0,
+) : Speedometer(context, attrs, defStyleAttr) {
 
     private val speedometerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val pointerPaint = Paint(Paint.ANTI_ALIAS_FLAG)

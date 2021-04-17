@@ -21,7 +21,11 @@ import kotlin.text.Typography.degree
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
 @Suppress("MemberVisibilityCanBePrivate")
-abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Gauge(context, attrs, defStyleAttr) {
+abstract class Speedometer @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0,
+) : Gauge(context, attrs, defStyleAttr) {
 
     /**
      * needle point to [currentSpeed], cannot be null
