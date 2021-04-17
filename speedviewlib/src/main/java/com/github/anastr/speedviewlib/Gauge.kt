@@ -115,7 +115,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
      * @see speed
      */
     var currentSpeed = minSpeed
-        private set
+        private set(value) {
+            field = value
+            checkSpeedIntChange()
+            checkSectionChange()
+        }
 
     /**
      * given a state of the speed change if it's increase or decrease.
@@ -637,11 +641,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             invalidateGauge()
         }
 
-    override fun onDraw(canvas: Canvas) {
-        canvas.translate(translatedDx, translatedDy)
-
-        canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint)
-
+    internal fun checkSpeedIntChange() {
         // check onSpeedChangeEvent.
         val newSpeed = currentSpeed.toInt()
         if (newSpeed != currentIntSpeed && onSpeedChangeListener != null) {
@@ -656,13 +656,21 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
             }
         }
         currentIntSpeed = newSpeed
+    }
 
+    internal fun checkSectionChange() {
         // check onSectionChangeEvent.
         val newSection = findSection()
-        if (currentSection != newSection) {
+        if (currentSection !== newSection) {
             onSectionChangeEvent(currentSection, newSection)
             currentSection = newSection
         }
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        canvas.translate(translatedDx, translatedDy)
+
+        canvas.drawBitmap(backgroundBitmap, 0f, 0f, backgroundBitmapPaint)
     }
 
     /**
@@ -1006,6 +1014,7 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         cancelSpeedAnimator()
         _minSpeed = minSpeed
         _maxSpeed = maxSpeed
+        checkSectionChange()
         invalidateGauge()
         if (attachedToWindow)
             setSpeedAt(speed)

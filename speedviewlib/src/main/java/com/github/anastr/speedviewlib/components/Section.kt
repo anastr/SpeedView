@@ -82,6 +82,7 @@ class Section @JvmOverloads constructor(startOffset: Float, endOffset: Float, co
         _startOffset = startOffset
         _endOffset = endOffset
         gauge?.checkSection(this)
+        gauge?.checkSectionChange()
         gauge?.invalidateGauge()
     }
 
