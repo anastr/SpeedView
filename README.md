@@ -55,7 +55,7 @@ Then add this line to `build.gradle` **app module level**:
 apply plugin: 'kotlin-android'
 ...
 dependencies {
-	implementation 'com.github.anastr:speedviewlib:1.5.4'
+	implementation 'com.github.anastr:speedviewlib:1.5.5'
 }
 
 ```
@@ -66,7 +66,7 @@ For **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.5.4</version>
+  <version>1.5.5</version>
   <type>pom</type>
 </dependency>
 ```
