@@ -702,8 +702,17 @@ abstract class Speedometer @JvmOverloads constructor(context: Context, attrs: At
                 tick = "%.0f".format(locale, getSpeedAtDegree(d))
 
             c.translate(0f, initTickPadding + padding.toFloat() + tickPadding.toFloat())
-            StaticLayout(tick, textPaint, size, Layout.Alignment.ALIGN_CENTER, 1f, 0f, false)
-                    .draw(c)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                StaticLayout.Builder.obtain(tick, 0, tick.length, textPaint, size)
+                        .setAlignment(Layout.Alignment.ALIGN_CENTER)
+                        .build()
+                        .draw(c)
+            }
+            else {
+                @Suppress("DEPRECATION")
+                StaticLayout(tick, textPaint, size, Layout.Alignment.ALIGN_CENTER, 1f, 0f, true)
+                        .draw(c)
+            }
 
             c.restore()
         }
