@@ -941,6 +941,11 @@ abstract class Gauge constructor(context: Context, attrs: AttributeSet? = null, 
         else -> percentSpeed * (maxSpeed - minSpeed) * .01f + minSpeed
     }
 
+    override fun onVisibilityAggregated(isVisible: Boolean) {
+        super.onVisibilityAggregated(isVisible)
+        if (isVisible) tremble() else cancelSpeedAnimator()
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         attachedToWindow = true
