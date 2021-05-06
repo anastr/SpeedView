@@ -15,7 +15,6 @@ import com.github.anastr.speedviewlib.util.OnSectionChangeListener
 import com.github.anastr.speedviewlib.util.OnSpeedChangeListener
 import com.github.anastr.speedviewlib.util.doOnSections
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -190,8 +189,9 @@ abstract class Gauge constructor(
     var heightPa = 0
         private set
 
-    /** All sections -_Read Only_- */
-    val sections = ArrayList<Section>()
+    private val _sections = mutableListOf<Section>()
+    /** All sections. */
+    val sections : List<Section> get() = _sections
     var currentSection: Section? = null
         private set
 
@@ -344,9 +344,9 @@ abstract class Gauge constructor(
         speedTextPaint.textSize = dpTOpx(18f)
         unitTextPaint.color = 0xFF000000.toInt()
         unitTextPaint.textSize = dpTOpx(15f)
-        sections.add(Section(0f, .6f, 0xFF00FF00.toInt(), speedometerWidth).inGauge(this))
-        sections.add(Section(.6f, .87f, 0xFFFFFF00.toInt(), speedometerWidth).inGauge(this))
-        sections.add(Section(.87f, 1f, 0xFFFF0000.toInt(), speedometerWidth).inGauge(this))
+        _sections.add(Section(0f, .6f, 0xFF00FF00.toInt(), speedometerWidth).inGauge(this))
+        _sections.add(Section(.6f, .87f, 0xFFFFFF00.toInt(), speedometerWidth).inGauge(this))
+        _sections.add(Section(.87f, 1f, 0xFFFF0000.toInt(), speedometerWidth).inGauge(this))
 
         animatorListener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
@@ -373,7 +373,7 @@ abstract class Gauge constructor(
         speed = minSpeed
         currentSpeed = minSpeed
         speedometerWidth = a.getDimension(R.styleable.Gauge_sv_speedometerWidth, speedometerWidth)
-        sections.forEach { it.width = speedometerWidth }
+        _sections.forEach { it.width = speedometerWidth }
         withTremble = a.getBoolean(R.styleable.Gauge_sv_withTremble, withTremble)
         textPaint.color = a.getColor(R.styleable.Gauge_sv_textColor, textPaint.color)
         textPaint.textSize = a.getDimension(R.styleable.Gauge_sv_textSize, textPaint.textSize)
@@ -433,13 +433,13 @@ abstract class Gauge constructor(
     }
 
     internal fun checkSection(section: Section) {
-        val i = sections.indexOf(section)
+        val i = _sections.indexOf(section)
         require(section.startOffset < section.endOffset) { "endOffset must be bigger than startOffset" }
-        sections.getOrNull(i-1)?.let {
+        _sections.getOrNull(i-1)?.let {
             require(it.endOffset <= section.startOffset
                     && it.endOffset < section.endOffset) { "Section at index ($i) is conflicted with previous section" }
         }
-        sections.getOrNull(i+1)?.let {
+        _sections.getOrNull(i+1)?.let {
             require(it.startOffset >= section.endOffset
                     && it.startOffset > section.startOffset) { "Section at index ($i) is conflicted with next section" }
         }
@@ -1044,7 +1044,7 @@ abstract class Gauge constructor(
      */
     fun addSections(sections: List<Section>) {
         sections.forEach {
-            this.sections.add(it.inGauge(this))
+            this._sections.add(it.inGauge(this))
             checkSection(it)
         }
         invalidateGauge()
@@ -1055,12 +1055,12 @@ abstract class Gauge constructor(
      * and add [numberOfSections] equal to each others.
      */
     fun makeSections(numberOfSections: Int, color: Int, style: Style) {
-        sections.forEach { it.clearGauge() }
-        sections.clear()
+        _sections.forEach { it.clearGauge() }
+        _sections.clear()
         var prevPart = 0f
         var part = 1f / numberOfSections
         for (i in 0 until numberOfSections) {
-            sections.add(Section(prevPart, part, color, speedometerWidth, style).inGauge(this))
+            _sections.add(Section(prevPart, part, color, speedometerWidth, style).inGauge(this))
             prevPart = part
             part += (1f / numberOfSections)
         }
@@ -1072,7 +1072,7 @@ abstract class Gauge constructor(
      */
     fun removeSection(section: Section?) {
         section?.clearGauge()
-        sections.remove(section)
+        _sections.remove(section)
         invalidateGauge()
     }
 
@@ -1080,8 +1080,8 @@ abstract class Gauge constructor(
      * remove all sections.
      */
     fun clearSections() {
-        sections.forEach { it.clearGauge() }
-        sections.clear()
+        _sections.forEach { it.clearGauge() }
+        _sections.clear()
         invalidateGauge()
     }
 
@@ -1106,7 +1106,7 @@ abstract class Gauge constructor(
      * @return calculate current section.
      */
     private fun findSection(): Section? {
-        sections.forEach {
+        _sections.forEach {
             if ((maxSpeed - minSpeed) * it.startOffset + minSpeed <= currentSpeed
                     && (maxSpeed - minSpeed) * it.endOffset + minSpeed >= currentSpeed)
                 return it
