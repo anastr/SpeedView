@@ -96,6 +96,7 @@ class Section @JvmOverloads constructor(
      * add gauge to this section to attache to, **a section can attache to one gauge**.
      */
     internal fun inGauge(gauge: Gauge): Section {
+        require(this.gauge == null) { "This instance of Section is already attached to a Gauge." }
         this.gauge = gauge
         return this
     }
