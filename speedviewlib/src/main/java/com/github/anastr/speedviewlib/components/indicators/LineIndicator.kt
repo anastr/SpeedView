@@ -10,16 +10,17 @@ import android.graphics.Path
  * this Library build By Anas Altair
  * see it on [GitHub](https://github.com/anastr/SpeedView)
  */
-class LineIndicator(context: Context, private val mode: Float) : Indicator<LineIndicator>(context) {
+class LineIndicator(context: Context, private val length: Float) : Indicator<LineIndicator>(context) {
 
     private val indicatorPath = Path()
 
     init {
+        require(length in 0f..1f) { "Length must be between [0,1]." }
         width = dpTOpx(8f)
     }
 
     override fun getBottom(): Float {
-        return getCenterY() * mode
+        return getCenterY() * length
     }
 
     override fun draw(canvas: Canvas, degree: Float) {
@@ -32,7 +33,7 @@ class LineIndicator(context: Context, private val mode: Float) : Indicator<LineI
     override fun updateIndicator() {
         indicatorPath.reset()
         indicatorPath.moveTo(getCenterX(), speedometer!!.padding.toFloat())
-        indicatorPath.lineTo(getCenterX(), getCenterY() * mode)
+        indicatorPath.lineTo(getCenterX(), getCenterY() * length)
 
         indicatorPaint.style = Paint.Style.STROKE
         indicatorPaint.strokeWidth = width
@@ -45,11 +46,5 @@ class LineIndicator(context: Context, private val mode: Float) : Indicator<LineI
         } else {
             indicatorPaint.maskFilter = null
         }
-    }
-
-    companion object {
-        const val LINE = 1f
-        const val HALF_LINE = .5f
-        const val QUARTER_LINE = .25f
     }
 }
