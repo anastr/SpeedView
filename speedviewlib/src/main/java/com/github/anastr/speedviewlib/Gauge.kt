@@ -1,6 +1,7 @@
 package com.github.anastr.speedviewlib
 
 import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
@@ -37,7 +38,7 @@ abstract class Gauge constructor(
     private val speedTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     private val unitTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
 
-    /** unit text, the text after speed text. */
+    /** Unit text, the text after speed text. */
     var unit = "Km/h"
         set(unit) {
             field = unit
@@ -46,13 +47,13 @@ abstract class Gauge constructor(
         }
 
     /**
-     * automatically increase and decrease speed value around the [speed]
+     * Automatically increase and decrease speed value around the [speed]
      *
-     * **if true** : the speed value automatically will be increases and decreases
+     * **If true** : the speed value automatically will be increases and decreases
      * by [trembleDegree] around last speed you set,
-     * used to add some reality to speedometer.
+     * used to add some reality to the gauge.
      *
-     * **if false** : nothing will done.
+     * **If false** : nothing will happen.
      *
      * @see .setTrembleData
      */
@@ -66,33 +67,33 @@ abstract class Gauge constructor(
     private var _maxSpeed = 100f
 
     /**
-     * the min range in speedometer, `default = 0`.
+     * The minimum value of gauge, `default = 0`.
      *
-     * any change will move [currentSpeed] to its new position
+     * Any change will move [currentSpeed] to its new position
      * immediately without animation.
      *
-     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
+     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`.
      */
     var minSpeed: Float
         get() = _minSpeed
         set(value) = setMinMaxSpeed(value, maxSpeed)
 
     /**
-     * the max range in speedometer, `default = 100`.
+     * The maximum value of gauge, `default = 100`.
      *
      * any change will move [currentSpeed] to its new position
      * immediately without animation.
      *
-     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
+     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`.
      */
     var maxSpeed: Float
         get() = _maxSpeed
         set(value) = setMinMaxSpeed(minSpeed, value)
 
     /**
-     * @return the last speed which you set by [speedTo]
+     * @return The last speed which you set by [speedTo]
      * or [speedTo] or [speedPercentTo],
-     * or if you stop speedometer By [stop] method.
+     * or if you stop the gauge By [stop] method.
      *
      * @see currentSpeed
      */
@@ -100,20 +101,20 @@ abstract class Gauge constructor(
         private set
 
     /**
-     * what is speed now in **integer**.
-     * safe method to handle all speed values in [onSpeedChangeListener].
+     * What speed is right now in **Integer**.
+     * A safe way to handle all speed values in [onSpeedChangeListener].
      *
-     * @return current speed in Integer
+     * @return Current speed in Integer.
      * @see currentSpeed
      */
     var currentIntSpeed = 0
         private set
 
     /**
-     * what is speed now in **float**.
+     * What speed is right now in **float**.
      * It will give different results if [withTremble] is running.
      *
-     * @return current speed now.
+     * @return Current speed.
      * @see withTremble
      * @see speed
      */
@@ -125,15 +126,15 @@ abstract class Gauge constructor(
         }
 
     /**
-     * given a state of the speed change if it's increase or decrease.
-     * @return is speed increase in the last change or not.
+     * Given a state of speed changes if it's increase or decrease.
+     * @return is speed increased in the last change or not.
      */
     var isSpeedIncrease = false
         private set
 
     /**
-     * a degree to increases and decreases speed value around [speed]
-     * default : 4 speed value.
+     * A degree to increases and decreases speed value around [speed].
+     * Default : 4 speed value.
      * @throws IllegalArgumentException If trembleDegree is Negative.
      */
     var trembleDegree = 4f
@@ -142,8 +143,8 @@ abstract class Gauge constructor(
             checkTrembleData()
         }
     /**
-     * tremble Animation duration in millisecond.
-     * default : 1000 millisecond.
+     * Tremble animation duration in millisecond.
+     * Default : 1000 millisecond.
      * @throws IllegalArgumentException If trembleDuration is Negative.
      */
     var trembleDuration = 1000
@@ -167,23 +168,28 @@ abstract class Gauge constructor(
      * maybe null.
      */
     var onSectionChangeListener: OnSectionChangeListener? = null
-    /** this animatorListener to call [tremble] method when animator done  */
-    private lateinit var animatorListener: Animator.AnimatorListener
+    /** This animatorListener to call [tremble] method when animator done  */
+    private val animatorListener = object : AnimatorListenerAdapter() {
+        override fun onAnimationEnd(animation: Animator) {
+            if (!canceled)
+                tremble()
+        }
+    }
 
-    /** to contain all drawing that don't change  */
+    /** To contain all drawing that don't change with speed value. */
     protected var backgroundBitmap: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
     private val backgroundBitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     var padding = 0
         private set
     /**
-     * view width without padding
+     * View width without padding.
      * @return View width without padding.
      */
     var widthPa = 0
         private set
     /**
-     * View height without padding
+     * View height without padding.
      * @return View height without padding.
      */
     var heightPa = 0
@@ -196,7 +202,7 @@ abstract class Gauge constructor(
         private set
 
     /**
-     * the width of speedometer's bar in pixel.
+     * The width of speedometer's bar in pixel.
      */
     open var speedometerWidth = dpTOpx(30f)
         set(speedometerWidth) {
@@ -207,7 +213,7 @@ abstract class Gauge constructor(
         }
 
     /**
-     * to support Right To Left Text.
+     * To support right-to-left text.
      */
     var speedometerTextRightToLeft = false
         set(speedometerTextRightToLeft) {
@@ -218,18 +224,18 @@ abstract class Gauge constructor(
     private var attachedToWindow = false
 
     /**
-     * @return canvas translate dx.
+     * @return Canvas translate dx.
      */
     protected var translatedDx = 0f
     /**
-     * @return canvas translate dy.
+     * @return Canvas translate dy.
      */
     protected var translatedDy = 0f
 
     /**
-     * object to set text digits locale.
+     * An object to set text digits locale.
      *
-     * set Locale to localizing digits to the given locale,
+     * Set Locale to localizing digits to the given locale,
      * for speed Text and speedometer Text.
      * `null` value means no localization.
      */
@@ -243,11 +249,11 @@ abstract class Gauge constructor(
     /**
      * Number expresses the Acceleration, between (0, 1]
      *
-     * change accelerate, used by [realSpeedTo] [speedUp]
+     * Change accelerate, used by [realSpeedTo] [speedUp]
      * and [slowDown] methods.
      *
-     * must be between `(0, 1]`, default value 0.1f.
-     * @throws IllegalArgumentException if `accelerate` out of range.
+     * Must be between `(0, 1]`, default value 0.1f.
+     * @throws IllegalArgumentException If `accelerate` out of range.
      */
     var accelerate = .1f
         set(accelerate) {
@@ -258,11 +264,11 @@ abstract class Gauge constructor(
     /**
      * Number expresses the Deceleration, between (0, 1]
      *
-     * change decelerate, used by [realSpeedTo] [speedUp]
+     * Change decelerate, used by [realSpeedTo] [speedUp]
      * and [slowDown] methods.
      *
-     * must be between `(0, 1]`, default value 0.1f.
-     * @throws IllegalArgumentException if `decelerate` out of range.
+     * Must be between `(0, 1]`, default value 0.1f.
+     * @throws IllegalArgumentException If `decelerate` out of range.
      */
     var decelerate = .1f
         set(decelerate) {
@@ -271,7 +277,7 @@ abstract class Gauge constructor(
         }
 
     /**
-     * change position of speed and Unit Text (enum value).
+     * Change position of speed and Unit Text.
      */
     var speedTextPosition = Position.BOTTOM_CENTER
         set(speedTextPosition) {
@@ -279,7 +285,7 @@ abstract class Gauge constructor(
             invalidateGauge()
         }
 
-    /** space between speedText and unitText in pixel.  */
+    /** Space between speedText and unitText in pixel.  */
     private var unitSpeedInterval = dpTOpx(1f)
         set(unitSpeedInterval) {
             field = unitSpeedInterval
@@ -288,7 +294,7 @@ abstract class Gauge constructor(
 
     /**
      * Speed-Unit Text padding in pixel,
-     * this value will be ignored if `{ #speedTextPosition} == Position.CENTER`.
+     * this value will be ignored if `[speedTextPosition] == Position.CENTER`.
      */
     private var speedTextPadding = dpTOpx(20f)
         set(speedTextPadding) {
@@ -298,10 +304,10 @@ abstract class Gauge constructor(
         }
 
     /**
-     * to make Unit Text under Speed Text.
+     * To make Unit Text under Speed Text.
      *
-     * if true: drawing unit text **under** speed text.
-     * false: drawing unit text and speed text **side by side**.
+     * If true: Drawing unit text **under** speed text.
+     * IF false: Drawing unit text and speed text **side by side**.
      */
     var unitUnderSpeedText = false
         set(unitUnderSpeedText) {
@@ -321,9 +327,7 @@ abstract class Gauge constructor(
     private var speedUnitTextCanvas: Canvas? = null
 
     /**
-     * number of decimal places
-     *
-     * change speed text's format by custom text.
+     * To change speed text's format by custom text.
      */
     var speedTextListener: SpeedTextListener = { speed -> "%.1f".format(locale, speed) }
         set(speedTextFormat) {
@@ -348,18 +352,6 @@ abstract class Gauge constructor(
         _sections.add(Section(.6f, .87f, 0xFFFFFF00.toInt(), speedometerWidth).inGauge(this))
         _sections.add(Section(.87f, 1f, 0xFFFF0000.toInt(), speedometerWidth).inGauge(this))
 
-        animatorListener = object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {}
-
-            override fun onAnimationEnd(animation: Animator) {
-                if (!canceled)
-                    tremble()
-            }
-
-            override fun onAnimationCancel(animation: Animator) {}
-
-            override fun onAnimationRepeat(animation: Animator) {}
-        }
         defaultGaugeValues()
     }
 
@@ -446,8 +438,8 @@ abstract class Gauge constructor(
     }
 
     /**
-     * convert dp to **pixel**.
-     * @param dp to convert.
+     * Convert dp to **pixel**.
+     * @param dp To convert.
      * @return Dimension in pixel.
      */
     fun dpTOpx(dp: Float): Float {
@@ -455,8 +447,8 @@ abstract class Gauge constructor(
     }
 
     /**
-     * convert pixel to **dp**.
-     * @param px to convert.
+     * Convert pixel to **dp**.
+     * @param px To convert.
      * @return Dimension in dp.
      */
     fun pxTOdp(px: Float): Float {
@@ -464,19 +456,19 @@ abstract class Gauge constructor(
     }
 
     /**
-     * add default values for Gauge inside this method,
+     * Add default values for the Gauge inside this method,
      * call super setting method to set default value,
      * Ex : `super.setBackgroundCircleColor(Color.TRANSPARENT)`
      */
     protected abstract fun defaultGaugeValues()
 
     /**
-     * notice that [backgroundBitmap] must recreate.
+     * Notify to update [backgroundBitmap].
      */
     protected abstract fun updateBackgroundBitmap()
 
     /**
-     * notice that padding or size have changed.
+     * Notify that padding or size have been changed.
      */
     private fun updatePadding(left: Int, top: Int, right: Int, bottom: Int) {
         padding = max(max(left, right), max(top, bottom))
@@ -485,7 +477,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * speed-unit text position and size.
+     * Speed-unit text position and size.
      * @return speed-unit's rect.
      */
     protected fun getSpeedUnitTextBounds(): RectF {
@@ -497,7 +489,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * @return the width of speed & unit text at runtime.
+     * @return The width of speed-unit text at runtime.
      */
     private fun getSpeedUnitTextWidth(): Float =
             if (unitUnderSpeedText)
@@ -506,7 +498,7 @@ abstract class Gauge constructor(
                 speedTextPaint.measureText(getSpeedText().toString()) + unitTextPaint.measureText(unit) + unitSpeedInterval
 
     /**
-     * @return the height of speed & unit text at runtime.
+     * @return The height of speed-unit text at runtime.
      */
     private fun getSpeedUnitTextHeight(): Float =
             if (unitUnderSpeedText)
@@ -515,23 +507,23 @@ abstract class Gauge constructor(
                 max(speedTextPaint.textSize, unitTextPaint.textSize)
 
     /**
-     * get current speed as string to **Draw**.
+     * Get current speed as string to **Draw**.
      */
     protected fun getSpeedText() = speedTextListener.invoke(currentSpeed)
 
     /**
-     * get current speed as **percent**.
-     * @return percent speed, between [0,100].
+     * Get current speed as **percent**.
+     * @return Percent speed, between [0,100].
      */
     fun getPercentSpeed(): Float = (currentSpeed - minSpeed) * 100f / (maxSpeed - minSpeed)
 
     /**
-     * @return offset speed, between [0,1].
+     * @return Offset speed, between [0,1].
      */
     fun getOffsetSpeed(): Float = (currentSpeed - minSpeed) / (maxSpeed - minSpeed)
 
     /**
-     * change all text color without **speed, unit text**.
+     * Change all text color without **speed, unit text**.
      *
      * @see speedTextColor
      * @see unitTextColor
@@ -544,7 +536,7 @@ abstract class Gauge constructor(
         }
 
     /**
-     * change just speed text color.
+     * Change just speed text color.
      *
      * @see unitTextColor
      * @see textColor
@@ -558,7 +550,7 @@ abstract class Gauge constructor(
         }
 
     /**
-     * change just unit text color.
+     * Change just unit text color.
      *
      * @see speedTextColor
      * @see textColor
@@ -572,7 +564,7 @@ abstract class Gauge constructor(
         }
 
     /**
-     * change all text size without **speed and unit text**.
+     * Change all text size without **speed and unit text**.
      *
      * @see dpTOpx
      * @see speedTextSize
@@ -587,7 +579,7 @@ abstract class Gauge constructor(
         }
 
     /**
-     * change just speed text size.
+     * Change just speed text size.
      *
      * @see dpTOpx
      * @see textSize
@@ -602,7 +594,7 @@ abstract class Gauge constructor(
         }
 
     /**
-     * change just unit text size.
+     * Change just unit text size.
      *
      * @see dpTOpx
      * @see speedTextSize
@@ -675,9 +667,9 @@ abstract class Gauge constructor(
     }
 
     /**
-     * draw speed and unit text at [speedTextPosition],
-     * this method must call in subSpeedometer's `onDraw` method.
-     * @param canvas view canvas to draw.
+     * Draw speed and unit text at [speedTextPosition],
+     * this method must be called in subSpeedometer's `onDraw` method.
+     * @param canvas View canvas to draw.
      */
     protected fun drawSpeedUnitText(canvas: Canvas) {
         val r = getSpeedUnitTextBounds()
@@ -687,8 +679,9 @@ abstract class Gauge constructor(
     }
 
     /**
-     * clear [speedUnitTextBitmap] and draw speed and unit Text
-     * taking into consideration [speedometerTextRightToLeft] and [unitUnderSpeedText].
+     * Clear [speedUnitTextBitmap] and draw speed and unit text.
+     *
+     * Taking into consideration [speedometerTextRightToLeft] and [unitUnderSpeedText].
      */
     private fun updateSpeedUnitTextBitmap(speedText: String) {
         speedUnitTextBitmap.eraseColor(0)
@@ -713,7 +706,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * create canvas to draw [backgroundBitmap].
+     * Create canvas to draw [backgroundBitmap].
      * @return [backgroundBitmap]'s canvas.
      */
     protected open fun createBackgroundBitmapCanvas(): Canvas {
@@ -725,16 +718,16 @@ abstract class Gauge constructor(
 
     /**
      * Implement this method to handle section change event.
-     * @param previousSection where speed value came from.
-     * @param newSection where speed value move to.
+     * @param previousSection Where speed value came from.
+     * @param newSection Where speed value move to.
      */
     protected fun onSectionChangeEvent(previousSection: Section?, newSection: Section?) {
         onSectionChangeListener?.invoke(previousSection, newSection)
     }
 
     /**
-     * stop speedometer and run tremble if [withTremble] is true.
-     * use this method just when you wont to stop [speedTo] and [realSpeedTo].
+     * Stop speedometer and run tremble if [withTremble] is true.
+     * Use this method just when you wont to stop [speedTo] and [realSpeedTo].
      */
     fun stop() {
         if (speedAnimator?.isRunning == false && realSpeedAnimator?.isRunning == false)
@@ -745,7 +738,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * cancel all animators without call [tremble].
+     * Cancel all animators without calling [tremble].
      */
     protected fun cancelSpeedAnimator() {
         cancelSpeedMove()
@@ -767,8 +760,8 @@ abstract class Gauge constructor(
     }
 
     /**
-     * move speed value to new speed without animation.
-     * @param speed current speed to move.
+     * Move speed value to new speed without animation.
+     * @param speed Current speed to move.
      */
     fun setSpeedAt(speed: Float) {
         var newSpeed = speed
@@ -782,8 +775,8 @@ abstract class Gauge constructor(
     }
 
     /**
-     * move speed to percent value.
-     * @param percent percent value to move, must be between [0,100].
+     * Move speed to percent value.
+     * @param percent Percent value to move, must be between [0,100].
      * @param moveDuration The length of the animation, in milliseconds.
      * This value cannot be negative.
      *
@@ -797,14 +790,14 @@ abstract class Gauge constructor(
     }
 
     /**
-     * move speed to current value smoothly with animation duration,
+     * Move speed to current value smoothly with animation,
      * it should be between [[minSpeed], [maxSpeed]].
      *
-     * if `speed > maxSpeed` speed value will move to [maxSpeed].
+     * If `speed > maxSpeed` speed value will move to [maxSpeed].
      *
-     * if `speed < minSpeed` speed value will move to [minSpeed].
+     * If `speed < minSpeed` speed value will move to [minSpeed].
      *
-     * @param speed current speed to move.
+     * @param speed Current speed to move.
      * @param moveDuration The length of animation, in milliseconds.
      * This value cannot be negative (2000 by default).
      *
@@ -836,7 +829,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * this method use [realSpeedTo] to speed up
+     * This method use [realSpeedTo] to speed up
      * the speedometer to [maxSpeed].
      *
      * @see realSpeedTo
@@ -847,7 +840,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * this method use [realSpeedTo] to slow down
+     * This method use [realSpeedTo] to slow down
      * the speedometer to [minSpeed].
      *
      * @see realSpeedTo
@@ -858,7 +851,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * move speed to percent value by using [realSpeedTo] method.
+     * Move speed to percent value by using [realSpeedTo] method.
      * @param percent percent value to move, must be between [0,100].
      */
     fun realSpeedPercentTo(percent: Float) {
@@ -866,11 +859,11 @@ abstract class Gauge constructor(
     }
 
     /**
-     * to make speedometer some real.
+     * To make speedometer some real.
      *
-     * when **speed up** : speed value will increase *slowly* by [accelerate].
+     * When **speed up** : speed value will increase *slowly* by [accelerate].
      *
-     * when **slow down** : speed value will decrease *rapidly* by [decelerate].
+     * When **slow down** : speed value will decrease *rapidly* by [decelerate].
      * @param speed current speed to move.
      *
      * @see speedTo
@@ -918,7 +911,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * check if [withTremble] true, and run tremble.
+     * Check if [withTremble] true, and run tremble.
      */
     protected fun tremble() {
         cancelTremble()
@@ -945,8 +938,8 @@ abstract class Gauge constructor(
     }
 
     /**
-     * @param percentSpeed between [0, 100].
-     * @return speed value at current percentSpeed.
+     * @param percentSpeed Between [0, 100].
+     * @return Speed value at current percentSpeed.
      */
     private fun getSpeedValue(percentSpeed: Float): Float = when {
         percentSpeed > 100f -> maxSpeed
@@ -997,11 +990,11 @@ abstract class Gauge constructor(
 //    }
 
     /**
-     * tremble control.
-     * @param trembleDegree a speed value to increases and decreases current around [speed].
-     * @param trembleDuration tremble Animation duration in millisecond.
+     * Tremble control.
+     * @param trembleDegree A speed value to increases and decreases current [speed] around.
+     * @param trembleDuration Tremble Animation duration in millisecond.
      *
-     * @throws IllegalArgumentException If trembleDegree OR trembleDuration is Negative.
+     * @throws IllegalArgumentException If trembleDegree or trembleDuration is negative.
      */
     fun setTrembleData(trembleDegree: Float, trembleDuration: Int) {
         this.trembleDegree = trembleDegree
@@ -1009,15 +1002,15 @@ abstract class Gauge constructor(
     }
 
     /**
-     * change Min and Max speed.
+     * Change [minSpeed] and [maxSpeed].
      *
-     * this method will move [currentSpeed] to its new position
+     * This method will move [currentSpeed] to its new position
      * immediately without animation.
      *
-     * @param minSpeed new MIN Speed.
-     * @param maxSpeed new MAX Speed.
+     * @param minSpeed New min speed value.
+     * @param maxSpeed New max speed value.
      *
-     * @throws IllegalArgumentException if `minSpeed >= maxSpeed`
+     * @throws IllegalArgumentException If `minSpeed >= maxSpeed`
      */
     fun setMinMaxSpeed(minSpeed: Float, maxSpeed: Float) {
         require(minSpeed < maxSpeed) { "minSpeed must be smaller than maxSpeed !!" }
@@ -1031,16 +1024,16 @@ abstract class Gauge constructor(
     }
 
     /**
-     * add list of sections to the gauge.
-     * @throws IllegalArgumentException if [Section.startOffset] or [Section.endOffset] are invalid.
+     * Add list of sections to the gauge.
+     * @throws IllegalArgumentException If [Section.startOffset] or [Section.endOffset] are invalid.
      */
     fun addSections(vararg sections: Section) {
         addSections(sections.asList())
     }
 
     /**
-     * add list of sections to the gauge.
-     * @throws IllegalArgumentException if [Section.startOffset] or [Section.endOffset] are invalid.
+     * Add list of sections to the gauge.
+     * @throws IllegalArgumentException If [Section.startOffset] or [Section.endOffset] are invalid.
      */
     fun addSections(sections: List<Section>) {
         sections.forEach {
@@ -1051,7 +1044,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * clear old [sections],
+     * Clear old [sections],
      * and add [numberOfSections] equal to each others.
      */
     fun makeSections(numberOfSections: Int, color: Int, style: Style) {
@@ -1068,7 +1061,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * remove section from this gauge.
+     * Remove section from this gauge.
      */
     fun removeSection(section: Section?) {
         section?.clearGauge()
@@ -1077,7 +1070,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * remove all sections.
+     * Remove all sections.
      */
     fun clearSections() {
         _sections.forEach { it.clearGauge() }
@@ -1086,7 +1079,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * notification that an section has changed.
+     * Notification that an section has changed.
      */
     override fun update(section: Observable?, isPercentChanged: Any?) {
         invalidateGauge()
@@ -1103,7 +1096,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * @return calculate current section.
+     * @return Calculate current section.
      */
     private fun findSection(): Section? {
         _sections.forEach {
@@ -1115,14 +1108,14 @@ abstract class Gauge constructor(
     }
 
     /**
-     * @return whether this view attached to Layout or not.
+     * @return Whether this view attached to layout or not.
      */
     override fun isAttachedToWindow(): Boolean {
         return attachedToWindow
     }
 
     /**
-     * redraw the Gauge.
+     * Redraw the Gauge.
      */
     fun invalidateGauge() {
         if (attachedToWindow) {
@@ -1132,7 +1125,7 @@ abstract class Gauge constructor(
     }
 
     /**
-     * position of Speed-Unit Text.
+     * Position of speed-unit text.
      */
     enum class Position constructor(internal val x: Float, internal val y: Float
                                     , internal val width: Float, internal val height: Float
