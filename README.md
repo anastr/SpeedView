@@ -14,7 +14,7 @@ Library Size just ~ 48 KB.
 Download demo on Google Play:\
  <a href='https://play.google.com/store/apps/details?id=com.github.anastr.speedviewapp&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img  width="25%" alt='SpeedView Demo on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
-> This library has rewritten with Kotlin in version 1.4.0 manually, which means it may have some issues.
+> This library has rewritten with Kotlin in version 1.4.0 manually.
 > If you have any problem please open an issue, or you can use old version 1.3.1 written in java.
 
 **Speedometers...**<br/>
@@ -28,13 +28,13 @@ Download demo on Google Play:\
 
 # Download
 
-Starting from version `1.5.4` this library uploaded to `mavenCentral`, the old versions was on `jcenter`. To work with this library you need `Kotlin` version `1.4.31` or above.
+Starting from version `1.5.4` this library uploaded to `mavenCentral`, the old versions was on `jcenter`. To work with this library you need `Kotlin` version `1.5.20` or above.
 
 First add kotlin to your project, in `build.gradle` **project level**:
 
 ```gradle
 buildscript {
-    ext.kotlin_version = '1.4.31'
+    ext.kotlin_version = '1.5.20'
     dependencies {
         ...
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -55,7 +55,7 @@ Then add this line to `build.gradle` **app module level**:
 apply plugin: 'kotlin-android'
 ...
 dependencies {
-	implementation 'com.github.anastr:speedviewlib:1.5.5'
+	implementation 'com.github.anastr:speedviewlib:1.5.51'
 }
 
 ```
@@ -66,7 +66,7 @@ For **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.5.5</version>
+  <version>1.5.51</version>
   <type>pom</type>
 </dependency>
 ```
