@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         app:sv_markColor="#414141"
-        app:sv_degreeBetweenMark="5"
         app:sv_markWidth="3dp"/>
 
     <CheckBox

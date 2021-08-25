@@ -949,7 +949,9 @@ abstract class Gauge constructor(
 
     override fun onVisibilityAggregated(isVisible: Boolean) {
         super.onVisibilityAggregated(isVisible)
-        if (isVisible) tremble() else cancelSpeedAnimator()
+        if (speedAnimator?.isRunning == false && realSpeedAnimator?.isRunning == false) {
+            if (isVisible) tremble() else cancelTremble()
+        }
     }
 
     override fun jumpDrawablesToCurrentState() {
