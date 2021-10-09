@@ -4,12 +4,12 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '29.0.3'
+    compileSdkVersion 31
+    buildToolsVersion '31.0.0'
 
     defaultConfig {
         minSdkVersion 11
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
     }
@@ -56,76 +56,84 @@ artifacts {
     archives androidSourcesJar
 }
 
-version = '1.5.51'
+version = '1.5.52'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = 'com.github.anastr'
-            artifactId = 'speedviewlib'
-            version = this.version
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = 'com.github.anastr'
+                artifactId = 'speedviewlib'
+                version = this.version
 
-            // Two artifacts, the `aar` (or `jar`) and the sources
-            if (project.plugins.findPlugin("com.android.library")) {
-                artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
-            } else {
-                artifact("$buildDir/libs/${project.getName()}-${version}.jar")
-            }
-            artifact androidSourcesJar
+                // Two artifacts, the `aar` (or `jar`) and the sources
+                if (project.plugins.findPlugin("com.android.library")) {
+                    artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+                } else {
+                    artifact("$buildDir/libs/${project.getName()}-${version}.jar")
+                }
+                artifact androidSourcesJar
 
-            pom {
-                name = 'SpeedView'
-                description = 'Dynamic Speedometer and Gauge for Android. amazing, powerful, and multi shape.'
-                url = 'https://github.com/anastr/SpeedView'
-                licenses {
-                    license {
-                        name = 'The Apache Software License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'anastr'
-                        name = 'Anas Altair'
-                        email = properties.getProperty("userEmail")
-                    }
-                }
-                scm {
-                    connection = 'scm:git:github.com/anastr/SpeedView.git'
-                    developerConnection = 'scm:git:ssh://github.com/anastr/SpeedView.git'
+                pom {
+                    name = 'SpeedView'
+                    description = 'Dynamic Speedometer and Gauge for Android. amazing, powerful, and multi shape.'
                     url = 'https://github.com/anastr/SpeedView'
-                }
-                withXml {
-                    def dependenciesNode = asNode().appendNode('dependencies')
+                    signing {
+                        sign publishing.publications.release
+//                        sign configurations.archives
+                    }
+                    licenses {
+                        license {
+                            name = 'The Apache Software License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'anastr'
+                            name = 'Anas Altair'
+                            email = properties.getProperty("userEmail")
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:github.com/anastr/SpeedView.git'
+                        developerConnection = 'scm:git:ssh://github.com/anastr/SpeedView.git'
+                        url = 'https://github.com/anastr/SpeedView'
+                    }
+                    withXml {
+                        def dependenciesNode = asNode().appendNode('dependencies')
 
-                    project.configurations.implementation.allDependencies.each {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
+                        project.configurations.implementation.allDependencies.each {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+                        }
                     }
                 }
             }
         }
-    }
-    repositories {
-        maven {
-            name = "sonatype"
-            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            credentials {
-                username = properties.getProperty("ossrhUsername")
-                password = properties.getProperty("ossrhPassword")
+        repositories {
+            maven {
+                name = "sonatype"
+                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                credentials {
+                    username = properties.getProperty("ossrhUsername")
+                    password = properties.getProperty("ossrhPassword")
+                }
             }
         }
     }
 }
 
-signing {
-    sign publishing.publications
-}
+//signing {
+//    sign publishing.publications.release
+//    sign configurations.archives
+////    sign publishing.publications
+//}
 
 dependencies {
 }
