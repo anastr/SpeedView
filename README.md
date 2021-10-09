@@ -34,7 +34,7 @@ First add kotlin to your project, in `build.gradle` **project level**:
 
 ```gradle
 buildscript {
-    ext.kotlin_version = '1.5.20'
+    ext.kotlin_version = '1.5.31'
     dependencies {
         ...
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -55,7 +55,7 @@ Then add this line to `build.gradle` **app module level**:
 apply plugin: 'kotlin-android'
 ...
 dependencies {
-	implementation 'com.github.anastr:speedviewlib:1.5.51'
+	implementation 'com.github.anastr:speedviewlib:1.5.52'
 }
 
 ```
@@ -66,7 +66,7 @@ For **maven**
 <dependency>
   <groupId>com.github.anastr</groupId>
   <artifactId>speedviewlib</artifactId>
-  <version>1.5.51</version>
+  <version>1.5.52</version>
   <type>pom</type>
 </dependency>
 ```
