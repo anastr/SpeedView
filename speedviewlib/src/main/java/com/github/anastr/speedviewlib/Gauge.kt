@@ -956,7 +956,9 @@ abstract class Gauge constructor(
 
     override fun jumpDrawablesToCurrentState() {
         super.jumpDrawablesToCurrentState()
-        cancelSpeedAnimator()
+        if (trembleAnimator?.isRunning == true) {
+            cancelTremble()
+        }
     }
 
     override fun onAttachedToWindow() {
