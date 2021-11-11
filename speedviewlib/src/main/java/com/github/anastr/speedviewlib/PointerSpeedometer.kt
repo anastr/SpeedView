@@ -83,6 +83,7 @@ open class PointerSpeedometer @JvmOverloads constructor(
     override fun defaultSpeedometerValues() {
         super.marksNumber = 8
         super.marksPadding = speedometerWidth + dpTOpx(12f)
+        super.tickPadding = speedometerWidth + dpTOpx(10f)
         super.markStyle = Style.ROUND
         super.markHeight = dpTOpx(5f)
         super.markWidth = dpTOpx(2f)

@@ -69,7 +69,7 @@ open class AwesomeSpeedometer @JvmOverloads constructor(
         super.setStartEndDegree(135, 135 + 320)
         super.backgroundCircleColor = 0xff212121.toInt()
         super.tickNumber = 9
-        super.tickPadding = 0
+        super.tickPadding = 0f
     }
 
     private fun init() {

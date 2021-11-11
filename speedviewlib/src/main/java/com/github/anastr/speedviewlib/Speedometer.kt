@@ -191,7 +191,7 @@ abstract class Speedometer @JvmOverloads constructor(
     /**
      * tick label's padding in pixel.
      */
-    var tickPadding = (speedometerWidth + dpTOpx(3f)).toInt()
+    var tickPadding = (speedometerWidth + dpTOpx(3f))
         set(tickPadding) {
             field = tickPadding
             invalidateGauge()
@@ -357,7 +357,7 @@ abstract class Speedometer @JvmOverloads constructor(
         cutPadding = a.getDimension(R.styleable.Speedometer_sv_cutPadding, cutPadding.toFloat()).toInt()
         tickNumber = a.getInteger(R.styleable.Speedometer_sv_tickNumber, ticks.size)
         tickRotation = a.getBoolean(R.styleable.Speedometer_sv_tickRotation, tickRotation)
-        tickPadding = a.getDimension(R.styleable.Speedometer_sv_tickPadding, tickPadding.toFloat()).toInt()
+        tickPadding = a.getDimension(R.styleable.Speedometer_sv_tickPadding, tickPadding)
         indicator.color = a.getColor(R.styleable.Speedometer_sv_indicatorColor, indicator.color)
         isWithIndicatorLight = a.getBoolean(R.styleable.Speedometer_sv_withIndicatorLight, isWithIndicatorLight)
         indicatorLightColor = a.getColor(R.styleable.Speedometer_sv_indicatorLightColor, indicatorLightColor)
