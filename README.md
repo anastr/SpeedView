@@ -6,8 +6,8 @@ Dynamic Speedometer, Gauge for Android. **amazing**, **powerful**, and _multi sh
 
 Library Size just ~ 48 KB.
 
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-blue.svg?style=true)](https://android-arsenal.com/details/1/4169)
-[![Gitter](https://badges.gitter.im/AnasTr/SpeedView.svg)](https://gitter.im/AnasTr/SpeedView?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-green.svg?style=true)](https://android-arsenal.com/details/1/4169)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.anastr/speedviewlib?color=cyan)](https://mvnrepository.com/artifact/com.github.anastr/speedviewlib/latest)
 [![API](https://img.shields.io/badge/API-+11-red.svg?style=flat)](#)
 [![Twitter](https://img.shields.io/badge/Twitter-@AnasAltairDent-blue.svg?style=flat)](http://twitter.com/AnasAltairDent)
 
