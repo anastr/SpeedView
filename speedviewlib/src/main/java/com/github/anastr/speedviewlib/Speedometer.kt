@@ -43,6 +43,13 @@ abstract class Speedometer @JvmOverloads constructor(
             }
         }
 
+    /** Fulcrum point for indicator to rotate around. */
+    private val fulcrumPoint = PointF(.5f, .5f)
+    val fulcrumX: Float
+        get() = fulcrumPoint.x
+    val fulcrumY: Float
+        get() = fulcrumPoint.y
+
     /**
      * light effect behind the [indicator].
      */
@@ -469,9 +476,12 @@ abstract class Speedometer @JvmOverloads constructor(
      * @param canvas view canvas to draw.
      */
     protected fun drawIndicator(canvas: Canvas) {
+        canvas.save()
+        canvas.translate(size * (fulcrumX - .5f), size * (fulcrumY - .5f))
         if (isWithIndicatorLight)
             drawIndicatorLight(canvas)
         indicator.draw(canvas, degree)
+        canvas.restore()
     }
 
     protected fun drawIndicatorLight(canvas: Canvas) {
@@ -605,9 +615,23 @@ abstract class Speedometer @JvmOverloads constructor(
         checkStartAndEndDegree()
         cancelSpeedAnimator()
         degree = getDegreeAtSpeed(speed)
-        if (isAttachedToWindow){
+        if (isAttachedToWindow) {
             invalidateGauge()
             tremble()
+        }
+    }
+
+    /**
+     * Set fulcrum point for [indicator] to rotate around.
+     * @param xOffset `[0f, 1f]` scale for fulcrum point on X axis.
+     * @param xOffset `[0f, 1f]` scale for fulcrum point on Y axis.
+     */
+    fun setFulcrum(xOffset: Float, yOffset: Float) {
+        require((0f..1f).contains(xOffset)) { "Fulcrum X should be between [0f, 1f]" }
+        require((0f..1f).contains(yOffset)) { "Fulcrum Y should be between [0f, 1f]" }
+        fulcrumPoint.set(xOffset, yOffset)
+        if (isAttachedToWindow) {
+            invalidate()
         }
     }
 
