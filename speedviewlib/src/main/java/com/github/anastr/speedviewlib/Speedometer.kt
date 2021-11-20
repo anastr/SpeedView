@@ -28,9 +28,10 @@ abstract class Speedometer @JvmOverloads constructor(
 ) : Gauge(context, attrs, defStyleAttr) {
 
     /**
-     * needle point to [currentSpeed], cannot be null
+     * Needle point at [currentSpeed]. You can add only one indicator,
+     * and a single indicator can be added to only one speedometer.
      *
-     * add custom [indicator](https://github.com/anastr/SpeedView/wiki/Indicators).
+     * Add custom [indicator](https://github.com/anastr/SpeedView/wiki/Indicators).
      */
     var indicator: Indicator<*> = NoIndicator(context)
         set(indicator) {
@@ -43,7 +44,9 @@ abstract class Speedometer @JvmOverloads constructor(
             }
         }
 
-    /** Fulcrum point for indicator to rotate around. */
+    /**
+     *  Fulcrum point for indicator to rotate around.
+     */
     private val fulcrumPoint = PointF(.5f, .5f)
     val fulcrumX: Float
         get() = fulcrumPoint.x
@@ -51,12 +54,12 @@ abstract class Speedometer @JvmOverloads constructor(
         get() = fulcrumPoint.y
 
     /**
-     * light effect behind the [indicator].
+     * Light effect behind the [indicator].
      */
     var isWithIndicatorLight = false
 
     /**
-     * indicator light's color.
+     * Indicator light's color.
      * @see isWithIndicatorLight
      */
     var indicatorLightColor = 0xBBFF5722.toInt()
@@ -80,7 +83,7 @@ abstract class Speedometer @JvmOverloads constructor(
             invalidateGauge()
         }
     /**
-     * change the color of all marks (if exist),
+     * Change the color of all marks (if exist),
      * **this option is not available for all Speedometers**.
      */
     var markColor
@@ -104,6 +107,9 @@ abstract class Speedometer @JvmOverloads constructor(
             markPaint.strokeWidth = markWidth
             invalidateGauge()
         }
+    /**
+     * It can be [Style.ROUND] or [Style.BUTT].
+     */
     var markStyle
         get() = if (markPaint.strokeCap == Paint.Cap.ROUND) Style.ROUND else Style.BUTT
         set(markStyle) {
@@ -130,19 +136,19 @@ abstract class Speedometer @JvmOverloads constructor(
     private var endDegree = 135 + 270
 
     /**
-     * to rotate indicator
-     * @return current degree where indicator must be.
+     * To rotate indicator.
+     * @return Current degree where indicator must be.
      */
     protected var degree = startDegree.toFloat()
         private set
 
-    /** array to contain all notes that will be draw  */
+    /** Array to contain all notes that will be drawn */
     private val notes = ArrayList<Note<*>>()
 
     /**
-     * change speedometer shape, style and indicator position.<br></br>
-     * this option will return [.startDegree] to the **minimum** value,
-     * and [.endDegree] to the **maximum** value
+     * Change speedometer shape, style and indicator position.<br></br>
+     * This option will reset [startDegree] to its new **minimum** value,
+     * and [endDegree] to its new **maximum** value
      * if the speedometerMode doesn't equal to `Mode.NORMAL`.
      */
     var speedometerMode = Mode.NORMAL
@@ -163,40 +169,39 @@ abstract class Speedometer @JvmOverloads constructor(
             }
         }
 
-    /** padding to fix speedometer cut when change [.speedometerMode]  */
+    /** Padding to fix speedometer cut when change [speedometerMode]  */
     private var cutPadding = 0
 
     /**
-     * ticks values ([0, 1f] scale) to draw -**not editable**-.
+     * Ticks values (`[0, 1f]` scale) to draw -**not editable**-.
      *
-     * the value of each tick is point to a percent value of speed,
+     * The value of each tick is point at a percent value of speed,
      * for Ex:
      *
-     * if [minSpeed] = 0 and [maxSpeed] = 100
+     * If [minSpeed] = 0 and [maxSpeed] = 100
      * and your ticks (.1f, .4f, .8f, 1f),
      * then you will see ticks at(10, 40, 80, 100) speed value.
      *
-     * order isn't important.
+     * Order isn't important.
      *
-     * @throws IllegalArgumentException if one of [ticks] out of range [0f, 1f].
+     * @throws IllegalArgumentException If one of [ticks] out of range `[0f, 1f]`.
      */
-    var ticks = ArrayList<Float>()
+    var ticks: List<Float> = emptyList()
         set(ticks) {
-            field.clear()
-            field.addAll(ticks)
+            field = ticks
             checkTicks()
             invalidateGauge()
         }
 
-    /** to rotate tick label  */
+    /** To rotate tick label  */
     private var tickRotation = true
     /**
-     *  first padding, set by speedometer.
+     *  First padding, set by speedometer.
      *  this will not redraw background bitmap.
      */
     protected var initTickPadding = 0f
     /**
-     * tick label's padding in pixel.
+     * Tick label's padding in pixel.
      */
     var tickPadding = (speedometerWidth + dpTOpx(3f))
         set(tickPadding) {
@@ -205,8 +210,8 @@ abstract class Speedometer @JvmOverloads constructor(
         }
 
     /**
-     * create custom Tick label,
-     * maybe null.
+     * Create custom Tick label,
+     * might be null.
      */
     var onPrintTickLabel: OnPrintTickLabelListener? = null
         set(onPrintTickLabel) {
@@ -229,7 +234,7 @@ abstract class Speedometer @JvmOverloads constructor(
 //        }
 
     /**
-     * @return size of speedometer.
+     * @return Size of speedometer.
      */
     val size: Int
         get() {
@@ -239,7 +244,7 @@ abstract class Speedometer @JvmOverloads constructor(
         }
 
     /**
-     * @return size of speedometer without padding.
+     * @return Size of speedometer without padding.
      */
     val sizePa: Int
         get() = size - padding * 2
@@ -258,11 +263,11 @@ abstract class Speedometer @JvmOverloads constructor(
 //        }
 
     /**
-     * number of tick points of speed value's label.
+     * Number of ticks.
      *
-     * to add speed value label at each tick point between [maxSpeed]
+     * To add speed value label at each tick point between [maxSpeed]
      * and [minSpeed].
-     * @throws IllegalArgumentException if `tickNumber < 0`.
+     * @throws IllegalArgumentException If `tickNumber < 0`.
      */
     // tick each degree
     var tickNumber: Int
@@ -277,7 +282,7 @@ abstract class Speedometer @JvmOverloads constructor(
         }
 
     /**
-     * to make speed value's label rotate at each tick.
+     * To make tick's label rotated at each value.
      */
     var isTickRotation: Boolean
         get() = tickRotation
@@ -287,7 +292,7 @@ abstract class Speedometer @JvmOverloads constructor(
         }
 
     /**
-     * @return current position of center X to use in drawing.
+     * @return Current position of center X to be used in drawing.
      */
     protected val viewCenterX: Float
         get() {
@@ -299,7 +304,7 @@ abstract class Speedometer @JvmOverloads constructor(
         }
 
     /**
-     * @return current position of center Y to use in drawing.
+     * @return Current position of center Y to be used in drawing.
      */
     protected val viewCenterY: Float
         get() {
@@ -437,7 +442,7 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * add default values for Speedometer inside this method,
+     * Add default values for Speedometer inside this method,
      * call super setting method to set default value,
      * Ex :
      *
@@ -451,9 +456,9 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * draw marks depending on [marksNumber],
+     * Draw marks depending on [marksNumber],
      * this method must be called in subSpeedometer's [updateBackgroundBitmap] method.
-     * @param canvas marks should be drawn on [backgroundBitmap].
+     * @param canvas Marks should be drawn on [backgroundBitmap].
      */
     protected fun drawMarks(canvas: Canvas) {
         markPath.reset()
@@ -471,9 +476,9 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * draw indicator at current [degree],
+     * Draw indicator that points at current [degree],
      * this method must be called in subSpeedometer's `onDraw` method.
-     * @param canvas view canvas to draw.
+     * @param canvas View canvas to draw.
      */
     protected fun drawIndicator(canvas: Canvas) {
         canvas.save()
@@ -506,9 +511,9 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * draw Notes,
+     * Draw Notes,
      * every Speedometer must call this method at End of it's `onDraw()` method.
-     * @param canvas view canvas to draw notes.
+     * @param canvas View canvas to draw notes.
      */
     protected fun drawNotes(canvas: Canvas) {
         for (note in notes) {
@@ -533,7 +538,7 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * create canvas to draw [backgroundBitmap].
+     * Create canvas to draw [backgroundBitmap].
      * @return [backgroundBitmap]'s canvas.
      */
     override fun createBackgroundBitmapCanvas(): Canvas {
@@ -550,16 +555,16 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * @param speed to know the degree at it.
-     * @return current Degree at that speed.
+     * @param speed To know the degree at it.
+     * @return Degree at that speed.
      */
     protected fun getDegreeAtSpeed(speed: Float): Float {
         return (speed - minSpeed) * (endDegree - startDegree) / (maxSpeed - minSpeed) + startDegree
     }
 
     /**
-     * @param degree to know the speed at it.
-     * @return current speed at that degree.
+     * @param degree To know the speed at it.
+     * @return Speed at that degree.
      */
     protected fun getSpeedAtDegree(degree: Float): Float {
         return (degree - startDegree) * (maxSpeed - minSpeed) / (endDegree - startDegree) + minSpeed
@@ -570,13 +575,13 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * change the start of speedometer (at [minSpeed]).<br></br>
-     * this method will recreate ticks, and if you have set custom tick,
+     * Change the start point of speedometer (at [minSpeed]).<br></br>
+     * This method will recreate ticks, and if you have set custom tick,
      * it will be removed, by calling [tickNumber] method.
-     * @param startDegree the start of speedometer.
-     * @throws IllegalArgumentException if `startDegree` negative.
-     * @throws IllegalArgumentException if `startDegree >= endDegree`.
-     * @throws IllegalArgumentException if the difference between `endDegree and startDegree` bigger than 360.
+     * @param startDegree The start of speedometer.
+     * @throws IllegalArgumentException If `startDegree` is negative.
+     * @throws IllegalArgumentException If `startDegree >= endDegree`.
+     * @throws IllegalArgumentException If the difference between `endDegree and startDegree` bigger than 360.
      */
     fun setStartDegree(startDegree: Int) {
         setStartEndDegree(startDegree, endDegree)
@@ -587,27 +592,27 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * change the end of speedometer (at [maxSpeed]).<br></br>
-     * this method will recreate ticks, and if you have set custom tick,
+     * Change the end point of speedometer (at [maxSpeed]).<br></br>
+     * This method will recreate ticks, and if you have set custom tick,
      * it will be removed, by calling [tickNumber] method.
-     * @param endDegree the end of speedometer.
-     * @throws IllegalArgumentException if `endDegree` negative.
-     * @throws IllegalArgumentException if `endDegree <= startDegree`.
-     * @throws IllegalArgumentException if the difference between `endDegree and startDegree` bigger than 360.
+     * @param endDegree The end of speedometer.
+     * @throws IllegalArgumentException If `endDegree` is negative.
+     * @throws IllegalArgumentException If `endDegree <= startDegree`.
+     * @throws IllegalArgumentException If the difference between `endDegree and startDegree` bigger than 360.
      */
     fun setEndDegree(endDegree: Int) {
         setStartEndDegree(startDegree, endDegree)
     }
 
     /**
-     * change start and end of speedometer.<br></br>
-     * this method will recreate ticks, and if you have set custom tick,
+     * Change start and end of speedometer.<br></br>
+     * This method will recreate ticks, and if you have set custom tick,
      * it will be removed, by calling [tickNumber] method.
-     * @param startDegree the start of speedometer.
-     * @param endDegree the end of speedometer.
-     * @throws IllegalArgumentException if `startDegree OR endDegree` negative.
-     * @throws IllegalArgumentException if `startDegree >= endDegree`.
-     * @throws IllegalArgumentException if the difference between `endDegree and startDegree` bigger than 360.
+     * @param startDegree The start of speedometer.
+     * @param endDegree The end of speedometer.
+     * @throws IllegalArgumentException If `startDegree OR endDegree` are negative.
+     * @throws IllegalArgumentException If `startDegree >= endDegree`.
+     * @throws IllegalArgumentException If the difference between `endDegree and startDegree` bigger than 360.
      */
     fun setStartEndDegree(startDegree: Int, endDegree: Int) {
         this.startDegree = startDegree
@@ -637,9 +642,9 @@ abstract class Speedometer @JvmOverloads constructor(
 
     /**
      * Display new [Note](https://github.com/anastr/SpeedView/wiki/Notes)
-     * for custom seconds.
-     * @param note to display.
-     * @param showTimeMillisecond time to remove Note, 3 sec by default.
+     * for [showTimeMillisecond].
+     * @param note To display.
+     * @param showTimeMillisecond Time to remove Note, 3 sec by default.
      */
     fun addNote(note: Note<*>, showTimeMillisecond: Long = 3000) {
         note.build(width)
@@ -656,7 +661,7 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * remove All [Notes](https://github.com/anastr/SpeedView/wiki/Notes).
+     * Remove All [Notes](https://github.com/anastr/SpeedView/wiki/Notes).
      */
     fun removeAllNotes() {
         notes.clear()
@@ -664,8 +669,8 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * draw minSpeedText and maxSpeedText at default Position.
-     * @param c canvas to draw.
+     * Draw minSpeedText and maxSpeedText at default positions.
+     * @param c Canvas to draw.
      */
     protected fun drawDefMinMaxSpeedPosition(c: Canvas) {
         textPaint.textAlign = when {
@@ -705,11 +710,11 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * draw speed value at each tick point.
-     * @param c canvas to draw.
+     * Draw speed value at each tick point.
+     * @param c Canvas to draw.
      */
     protected fun drawTicks(c: Canvas) {
-        if (ticks.size == 0)
+        if (ticks.isEmpty())
             return
 
         textPaint.textAlign = Paint.Align.LEFT
@@ -747,9 +752,9 @@ abstract class Speedometer @JvmOverloads constructor(
     }
 
     /**
-     * change [indicator shape](https://github.com/anastr/SpeedView/wiki/Indicators).<br></br>
-     * this method will get bach indicatorColor and indicatorWidth to default.
-     * @param indicator new indicator (Enum value).
+     * Change [indicator shape](https://github.com/anastr/SpeedView/wiki/Indicators).<br></br>
+     * This method will get back indicatorColor and indicatorWidth to default.
+     * @param indicator New indicator (Enum value).
      */
     open fun setIndicator(indicator: Indicator.Indicators) {
         this.indicator = Indicator.createIndicator(context, this, indicator)
