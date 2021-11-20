@@ -43,7 +43,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "Speed Text Position",
                 "Work With Ticks",
                 "SpeedView with Recycler",
-                "Sections"
+                "Sections",
+                "Fulcrum",
         };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -113,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 18:
                 intent.setClass(MainActivity.this, SectionActivity.class);
+                break;
+            case 19:
+                intent.setClass(MainActivity.this, FulcrumActivity.class);
                 break;
         }
         startActivity(intent);
