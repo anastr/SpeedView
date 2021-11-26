@@ -9,7 +9,7 @@ import android.graphics.Canvas
  */
 class NoIndicator(context: Context) : Indicator<NoIndicator>(context) {
 
-    override fun draw(canvas: Canvas, degree: Float) {}
+    override fun draw(canvas: Canvas) {}
 
     override fun updateIndicator() {}
 

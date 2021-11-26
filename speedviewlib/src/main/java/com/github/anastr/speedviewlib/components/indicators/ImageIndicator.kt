@@ -18,11 +18,8 @@ class ImageIndicator
  */
 constructor(context: Context, private val bitmapIndicator: Drawable) : Indicator<ImageIndicator>(context) {
 
-    override fun draw(canvas: Canvas, degree: Float) {
-        canvas.save()
-        canvas.rotate(90f + degree, getCenterX(), getCenterY())
+    override fun draw(canvas: Canvas) {
         bitmapIndicator.draw(canvas)
-        canvas.restore()
     }
 
     override fun updateIndicator() {

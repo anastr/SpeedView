@@ -70,7 +70,7 @@ abstract class Indicator<out I : Indicator<I>> (context: Context): Observable() 
         indicatorPaint.color = color
     }
 
-    abstract fun draw(canvas: Canvas, degree: Float)
+    abstract fun draw(canvas: Canvas)
     /**
      * called when size change or color, width.
      * also when speedometer changed.

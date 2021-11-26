@@ -21,11 +21,8 @@ class SpindleIndicator(context: Context) : Indicator<SpindleIndicator>(context) 
         return getViewSize() * .18f + speedometer!!.padding
     }
 
-    override fun draw(canvas: Canvas, degree: Float) {
-        canvas.save()
-        canvas.rotate(90f + degree, getCenterX(), getCenterY())
+    override fun draw(canvas: Canvas) {
         canvas.drawPath(indicatorPath, indicatorPaint)
-        canvas.restore()
     }
 
     override fun updateIndicator() {

@@ -483,9 +483,10 @@ abstract class Speedometer @JvmOverloads constructor(
     protected fun drawIndicator(canvas: Canvas) {
         canvas.save()
         canvas.translate(size * (fulcrumX - .5f), size * (fulcrumY - .5f))
+        canvas.rotate(90f + degree, size * .5f, size * .5f)
         if (isWithIndicatorLight)
             drawIndicatorLight(canvas)
-        indicator.draw(canvas, degree)
+        indicator.draw(canvas)
         canvas.restore()
     }
 
@@ -503,7 +504,7 @@ abstract class Speedometer @JvmOverloads constructor(
         val risk = indicator.getTop() + indicatorLightPaint.strokeWidth * .5f
         val speedometerRect = RectF(risk, risk, size - risk, size - risk)
         canvas.save()
-        canvas.rotate(degree, size * .5f, size * .5f)
+        canvas.rotate(-90f, size * .5f, size * .5f)
         if (isSpeedIncrease)
             canvas.scale(1f, -1f, size * .5f, size * .5f)
         canvas.drawArc(speedometerRect, 0f, sweep, false, indicatorLightPaint)

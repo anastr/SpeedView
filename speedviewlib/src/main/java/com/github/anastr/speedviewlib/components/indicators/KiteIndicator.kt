@@ -23,11 +23,8 @@ class KiteIndicator(context: Context) : Indicator<KiteIndicator>(context) {
         return bottomY
     }
 
-    override fun draw(canvas: Canvas, degree: Float) {
-        canvas.save()
-        canvas.rotate(90f + degree, getCenterX(), getCenterY())
+    override fun draw(canvas: Canvas) {
         canvas.drawPath(indicatorPath, indicatorPaint)
-        canvas.restore()
     }
 
     override fun updateIndicator() {
