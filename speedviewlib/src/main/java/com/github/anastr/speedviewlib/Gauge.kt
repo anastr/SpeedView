@@ -1132,12 +1132,12 @@ abstract class Gauge constructor(
      * Position of speed-unit text.
      */
     sealed class Position constructor(
-        internal val x: Float,
-        internal val y: Float,
-        internal val width: Float,
-        internal val height: Float,
-        internal val paddingH: Int, // horizontal padding
-        internal val paddingV: Int // vertical padding
+        internal open val x: Float,
+        internal open val y: Float,
+        internal open val width: Float,
+        internal open val height: Float,
+        internal open val paddingH: Int, // horizontal padding
+        internal open val paddingV: Int // vertical padding
     ) {
         object TOP_LEFT     : Position(0f, 0f, 0f, 0f, 1, 1)
         object TOP_CENTER   : Position(.5f, 0f, .5f, 0f, 0, 1)
@@ -1148,6 +1148,15 @@ abstract class Gauge constructor(
         object BOTTOM_LEFT  : Position(0f, 1f, 0f, 1f, 1, -1)
         object BOTTOM_CENTER: Position(.5f, 1f, .5f, 1f, 0, -1)
         object BOTTOM_RIGHT : Position(1f, 1f, 1f, 1f, -1, -1)
+
+        data class CUSTOM(
+            override val x: Float,
+            override val y: Float,
+            override val width: Float,
+            override val height: Float,
+            override val paddingH: Int, // horizontal padding
+            override val paddingV: Int // vertical padding
+        ) : Position(x, y, width, height, paddingH, paddingV)
 
         companion object {
             @JvmStatic
