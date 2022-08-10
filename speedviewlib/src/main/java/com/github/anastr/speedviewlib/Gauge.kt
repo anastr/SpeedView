@@ -279,7 +279,7 @@ abstract class Gauge constructor(
     /**
      * Change position of speed and Unit Text.
      */
-    var speedTextPosition = Position.BOTTOM_CENTER
+    var speedTextPosition : Position = Position.BOTTOM_CENTER
         set(speedTextPosition) {
             field = speedTextPosition
             invalidateGauge()
@@ -1131,19 +1131,29 @@ abstract class Gauge constructor(
     /**
      * Position of speed-unit text.
      */
-    enum class Position constructor(internal val x: Float, internal val y: Float
-                                    , internal val width: Float, internal val height: Float
-                                    , internal val paddingH: Int // horizontal padding
-                                    , internal val paddingV: Int // vertical padding
+    sealed class Position constructor(
+        internal val x: Float,
+        internal val y: Float,
+        internal val width: Float,
+        internal val height: Float,
+        internal val paddingH: Int, // horizontal padding
+        internal val paddingV: Int // vertical padding
     ) {
-        TOP_LEFT     (0f, 0f, 0f, 0f, 1, 1),
-        TOP_CENTER   (.5f, 0f, .5f, 0f, 0, 1),
-        TOP_RIGHT    (1f, 0f, 1f, 0f, -1, 1),
-        LEFT         (0f, .5f, 0f, .5f, 1, 0),
-        CENTER       (.5f, .5f, .5f, .5f, 0, 0),
-        RIGHT        (1f, .5f, 1f, .5f, -1, 0),
-        BOTTOM_LEFT  (0f, 1f, 0f, 1f, 1, -1),
-        BOTTOM_CENTER(.5f, 1f, .5f, 1f, 0, -1),
-        BOTTOM_RIGHT (1f, 1f, 1f, 1f, -1, -1)
+        object TOP_LEFT     : Position(0f, 0f, 0f, 0f, 1, 1)
+        object TOP_CENTER   : Position(.5f, 0f, .5f, 0f, 0, 1)
+        object TOP_RIGHT    : Position(1f, 0f, 1f, 0f, -1, 1)
+        object LEFT         : Position(0f, .5f, 0f, .5f, 1, 0)
+        object CENTER       : Position(.5f, .5f, .5f, .5f, 0, 0)
+        object RIGHT        : Position(1f, .5f, 1f, .5f, -1, 0)
+        object BOTTOM_LEFT  : Position(0f, 1f, 0f, 1f, 1, -1)
+        object BOTTOM_CENTER: Position(.5f, 1f, .5f, 1f, 0, -1)
+        object BOTTOM_RIGHT : Position(1f, 1f, 1f, 1f, -1, -1)
+
+        companion object {
+            @JvmStatic
+            fun values() : Array<Position> {
+                return arrayOf(TOP_LEFT, TOP_CENTER, TOP_RIGHT, LEFT, CENTER, RIGHT, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT)
+            }
+        }
     }
 }
