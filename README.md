@@ -14,9 +14,6 @@ Library Size just ~ 48 KB.
 Download demo on Google Play:\
  <a href='https://play.google.com/store/apps/details?id=com.github.anastr.speedviewapp&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img  width="25%" alt='SpeedView Demo on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
-> This library has rewritten with Kotlin in version 1.4.0 manually.
-> If you have any problem please open an issue, or you can use old version 1.3.1 written in java.
-
 **Speedometers...**<br/>
 <img src="images/SpeedView.gif" width="32%" />
 <img src="images/AwesomeSpeedometer.gif" width="32%" />
@@ -25,6 +22,14 @@ Download demo on Google Play:\
 **Gauges...**<br/>
 <img src="images/ProgressiveGauge.gif" width="49%" />
 <img src="images/ImageLinearGauge.gif" width="49%" />
+
+# Donations
+
+This project needs you! If you would like to support this project, the creator of this project or the continuous maintenance of this project, feel free to donate. Your donation is highly appreciated. Thank you!
+
+[![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=VQ9DDY2KSQLJW)
+
+
 
 # Download
 
