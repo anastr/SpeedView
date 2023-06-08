@@ -1,16 +1,23 @@
 package com.github.anastr.speedviewapp
 
 import android.os.Bundle
+import android.widget.CheckBox
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
+import com.github.anastr.speedviewlib.SpeedView
 import com.github.anastr.speedviewlib.components.Style
-import kotlinx.android.synthetic.main.activity_marks.*
 
 class MarksActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_marks)
+
+        val speedometer = findViewById<SpeedView>(R.id.speedometer)
+        val styleCheckbox = findViewById<CheckBox>(R.id.styleCheckbox)
+        val seekBarMarks = findViewById<SeekBar>(R.id.seekBarMarks)
+        val seekBarHeight = findViewById<SeekBar>(R.id.seekBarHeight)
+        val seekBarWidth = findViewById<SeekBar>(R.id.seekBarWidth)
 
         speedometer.speedTo(60f)
 

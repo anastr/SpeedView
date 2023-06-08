@@ -2,14 +2,21 @@ package com.github.anastr.speedviewapp
 
 import android.os.Bundle
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_fulcrum.*
+import com.github.anastr.speedviewlib.SpeedView
 
 class FulcrumActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fulcrum)
+
+        val speedometer = findViewById<SpeedView>(R.id.speedometer)
+        val seekBarFulcrumX = findViewById<SeekBar>(R.id.seekBarFulcrumX)
+        val seekBarFulcrumY = findViewById<SeekBar>(R.id.seekBarFulcrumY)
+        val textFulcrumX = findViewById<TextView>(R.id.textFulcrumX)
+        val textFulcrumY = findViewById<TextView>(R.id.textFulcrumY)
 
         speedometer.speedTo(50f)
 

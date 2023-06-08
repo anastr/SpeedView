@@ -2,18 +2,27 @@ package com.github.anastr.speedviewapp
 
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Button
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.github.anastr.speedviewlib.SpeedView
 import com.github.anastr.speedviewlib.components.Style
 import com.github.anastr.speedviewlib.util.doOnSections
-import kotlinx.android.synthetic.main.activity_section.*
 
 class SectionActivity : AppCompatActivity() {
+
+    private lateinit var speedView: SpeedView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_section)
         title = "Sections"
+
+        speedView = findViewById(R.id.speedView)
+        val textSpeed = findViewById<TextView>(R.id.textSpeed)
+        val seekBar = findViewById<SeekBar>(R.id.seekBar)
+        val buttonRandomColor = findViewById<Button>(R.id.button_random_color)
 
         seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -26,7 +35,7 @@ class SectionActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        button_random_color.setOnClickListener { randomColors() }
+        buttonRandomColor.setOnClickListener { randomColors() }
 
         seekBar.progress = 5
         speedView.speedTo(50f)
