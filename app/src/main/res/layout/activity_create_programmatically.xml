@@ -51,10 +51,10 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/b_create_speedometer"
             android:text="Create Random Speedometer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:onClick="addRandomSpeedometer"
             android:layout_weight="1" />
 
     </LinearLayout>
