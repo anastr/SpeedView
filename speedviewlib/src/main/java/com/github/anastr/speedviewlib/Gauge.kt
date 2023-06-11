@@ -360,8 +360,9 @@ abstract class Gauge constructor(
             return
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.Gauge, 0, 0)
 
-        maxSpeed = a.getFloat(R.styleable.Gauge_sv_maxSpeed, maxSpeed)
-        minSpeed = a.getFloat(R.styleable.Gauge_sv_minSpeed, minSpeed)
+        val maxSpeed = a.getFloat(R.styleable.Gauge_sv_maxSpeed, maxSpeed)
+        val minSpeed = a.getFloat(R.styleable.Gauge_sv_minSpeed, minSpeed)
+        setMinMaxSpeed(minSpeed, maxSpeed)
         speed = minSpeed
         currentSpeed = minSpeed
         speedometerWidth = a.getDimension(R.styleable.Gauge_sv_speedometerWidth, speedometerWidth)
