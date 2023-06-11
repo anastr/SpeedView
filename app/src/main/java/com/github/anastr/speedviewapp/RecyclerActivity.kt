@@ -1,72 +1,55 @@
-package com.github.anastr.speedviewapp;
+package com.github.anastr.speedviewapp
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.github.anastr.speedviewapp.RecyclerActivity.RVAdapter.MyViewHolder
+import com.github.anastr.speedviewlib.Speedometer
+import java.util.Random
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class RecyclerActivity : AppCompatActivity() {
 
-import com.github.anastr.speedviewlib.Speedometer;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_recycler)
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-public class RecyclerActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycler);
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        List<Integer> speeds = new ArrayList<>();
-        for (int i=0; i<100; i++)
-            speeds.add(new Random().nextInt(99)+1);
-        recyclerView.setAdapter(new RVAdapter(speeds));
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val gridLayoutManager = GridLayoutManager(this, 2)
+        recyclerView.layoutManager = gridLayoutManager
+        recyclerView.setHasFixedSize(true)
+        val speeds: MutableList<Int> = ArrayList()
+        for (i in 0..99) speeds.add(Random().nextInt(99) + 1)
+        recyclerView.adapter = RVAdapter(speeds)
     }
 
-    public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
-
-        List<Integer> speeds;
-
-        RVAdapter(List<Integer> speeds) {
-            this.speeds = speeds;
+    class RVAdapter internal constructor(private val speeds: List<Int>) :
+        RecyclerView.Adapter<MyViewHolder>() {
+        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): MyViewHolder {
+            val v =
+                LayoutInflater.from(viewGroup.context).inflate(R.layout.card_view, viewGroup, false)
+            return MyViewHolder(v)
         }
 
-        @NonNull
-        @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_view, viewGroup, false);
-            return new MyViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             // set speed at 0 without animation (to start from this position).
-            holder.speedometer.setSpeedAt(0);
-            holder.speedometer.speedTo(speeds.get(position));
+            holder.speedometer.setSpeedAt(0f)
+            holder.speedometer.speedTo(speeds[position].toFloat())
         }
 
-        @Override
-        public int getItemCount() {
-            return speeds.size();
+        override fun getItemCount(): Int {
+            return speeds.size
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder{
+        class MyViewHolder(itemView: View) : ViewHolder(itemView) {
+            var speedometer: Speedometer
 
-            Speedometer speedometer;
-
-            MyViewHolder(View itemView) {
-                super(itemView);
-                speedometer = itemView.findViewById(R.id.speedometer);
+            init {
+                speedometer = itemView.findViewById(R.id.speedometer)
             }
         }
     }
