@@ -47,9 +47,9 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/b_open_control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="openControlActivity"
         android:text="control" />
 
 </LinearLayout>
