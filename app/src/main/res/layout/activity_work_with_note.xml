@@ -55,23 +55,23 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/b_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Center"
-            android:onClick="noteCenter"/>
+            android:text="Center"/>
 
         <Button
+            android:id="@+id/b_center_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CenterIndicator"
-            android:onClick="noteCenterIndicator"/>
+            android:text="CenterIndicator"/>
 
         <Button
+            android:id="@+id/b_top_center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TopIndicator"
-            android:onClick="noteTopIndicator"/>
+            android:text="TopIndicator"/>
 
     </LinearLayout>
 
@@ -80,18 +80,18 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/b_image"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="ImageNote"
-            android:onClick="noteImageNote"/>
+            android:text="ImageNote"/>
 
         <Button
+            android:id="@+id/b_spannable"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="SpannableString"
-            android:onClick="noteSpannableString"/>
+            android:text="SpannableString"/>
 
     </LinearLayout>
 
