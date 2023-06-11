@@ -1,65 +1,54 @@
-package com.github.anastr.speedviewapp;
+package com.github.anastr.speedviewapp
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import androidx.appcompat.app.AppCompatActivity
+import com.github.anastr.speedviewlib.Gauge
+import com.github.anastr.speedviewlib.Speedometer
 
-import androidx.appcompat.app.AppCompatActivity;
+class SpeedTextPositionActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-import com.github.anastr.speedviewlib.Speedometer;
+    private lateinit var speedometer: Speedometer
 
-import java.util.ArrayList;
-import java.util.List;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_speed_text_position)
+        title = "Speed Text Position"
 
-public class SpeedTextPositionActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+        speedometer = findViewById(R.id.speedometer)
+        speedometer.speedTo(40f)
+        val spinner = findViewById<Spinner>(R.id.spinner)!!
+        spinner.onItemSelectedListener = this
+        val categories: MutableList<String> = ArrayList()
+        categories.add("TOP_LEFT")
+        categories.add("TOP_CENTER")
+        categories.add("TOP_RIGHT")
+        categories.add("LEFT")
+        categories.add("CENTER")
+        categories.add("RIGHT")
+        categories.add("BOTTOM_LEFT")
+        categories.add("BOTTOM_CENTER")
+        categories.add("BOTTOM_RIGHT")
+        val dataAdapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categories)
+        spinner.adapter = dataAdapter
+        spinner.setSelection(7)
 
-    Speedometer speedometer;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_speed_text_position);
-        setTitle("Speed Text Position");
-
-        speedometer = findViewById(R.id.speedometer);
-
-        assert speedometer != null;
-        speedometer.speedTo(40);
-
-        Spinner spinner = findViewById(R.id.spinner);
-        assert spinner != null;
-        spinner.setOnItemSelectedListener(this);
-
-        List<String> categories = new ArrayList<>();
-        categories.add("TOP_LEFT");
-        categories.add("TOP_CENTER");
-        categories.add("TOP_RIGHT");
-        categories.add("LEFT");
-        categories.add("CENTER");
-        categories.add("RIGHT");
-        categories.add("BOTTOM_LEFT");
-        categories.add("BOTTOM_CENTER");
-        categories.add("BOTTOM_RIGHT");
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
-        spinner.setAdapter(dataAdapter);
-        spinner.setSelection(7);
+        findViewById<View>(R.id.b_unit_switch).setOnClickListener { unitUnderSpeedTextClick() }
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        speedometer.setSpeedTextPosition(Speedometer.Position.values()[position]);
+    override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+        speedometer.speedTextPosition = Gauge.Position.values()[position]
         // simple usage:
         // speedometer.setSpeedTextPosition(Speedometer.Position.TOP_LEFT);
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-    }
+    override fun onNothingSelected(arg0: AdapterView<*>?) {}
 
-    public void unitUnderSpeedTextClick(View view) {
-        speedometer.setUnitUnderSpeedText(!speedometer.getUnitUnderSpeedText());
+    private fun unitUnderSpeedTextClick() {
+        speedometer.unitUnderSpeedText = !speedometer.unitUnderSpeedText
     }
 }
