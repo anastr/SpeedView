@@ -43,11 +43,11 @@
             android:background="#a8ff83"/>
 
         <Button
+            android:id="@+id/b_image_indicator"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
-            android:text="image"
-            android:onClick="imageIndicator"/>
+            android:text="image"/>
 
     </LinearLayout>
 

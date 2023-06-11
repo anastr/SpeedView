@@ -1,123 +1,85 @@
-package com.github.anastr.speedviewapp;
+package com.github.anastr.speedviewapp
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.SeekBar;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.SeekBar
+import android.widget.Spinner
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.github.anastr.speedviewlib.Speedometer
+import com.github.anastr.speedviewlib.components.indicators.ImageIndicator
+import com.github.anastr.speedviewlib.components.indicators.Indicator
+import java.util.Locale
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+class WorkWithIndicatorActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-import com.github.anastr.speedviewlib.Speedometer;
-import com.github.anastr.speedviewlib.components.indicators.ImageIndicator;
-import com.github.anastr.speedviewlib.components.indicators.Indicator;
+    private lateinit var speedometer: Speedometer
+    private lateinit var textWidth: TextView
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_work_with_indicator)
 
-public class WorkWithIndicatorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+        title = "Work With Indicator"
+        speedometer = findViewById(R.id.speedometer)
+        textWidth = findViewById(R.id.textWidth)
 
-    Speedometer speedometer;
-    TextView textWidth;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_work_with_indicator);
-        setTitle("Work With Indicator");
-
-        speedometer = findViewById(R.id.speedometer);
-        textWidth = findViewById(R.id.textWidth);
-
-        assert speedometer != null;
-        speedometer.speedTo(40);
-
-        Spinner spinner = findViewById(R.id.spinner);
-        assert spinner != null;
-        spinner.setOnItemSelectedListener(this);
-
-        List<String> categories = new ArrayList<>();
-        categories.add("NoIndicator");
-        categories.add("NormalIndicator");
-        categories.add("NormalSmallIndicator");
-        categories.add("TriangleIndicator");
-        categories.add("SpindleIndicator");
-        categories.add("LineIndicator");
-        categories.add("HalfLineIndicator");
-        categories.add("QuarterLineIndicator");
-        categories.add("KiteIndicator");
-        categories.add("NeedleIndicator");
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
-        spinner.setAdapter(dataAdapter);
-        spinner.setSelection(1);
-
-        SeekBar seekBarWidth = findViewById(R.id.seekBar);
-        assert seekBarWidth != null;
-        seekBarWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int width, boolean b) {
-                speedometer.getIndicator().setWidth(speedometer.dpTOpx(width));
-                textWidth.setText(String.format(Locale.getDefault(), "%ddp", width));
+        speedometer.speedTo(40f)
+        val spinner = findViewById<Spinner>(R.id.spinner)!!
+        spinner.onItemSelectedListener = this
+        val categories: MutableList<String> = ArrayList()
+        categories.add("NoIndicator")
+        categories.add("NormalIndicator")
+        categories.add("NormalSmallIndicator")
+        categories.add("TriangleIndicator")
+        categories.add("SpindleIndicator")
+        categories.add("LineIndicator")
+        categories.add("HalfLineIndicator")
+        categories.add("QuarterLineIndicator")
+        categories.add("KiteIndicator")
+        categories.add("NeedleIndicator")
+        val dataAdapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categories)
+        spinner.adapter = dataAdapter
+        spinner.setSelection(1)
+        val seekBarWidth = findViewById<SeekBar>(R.id.seekBar)!!
+        seekBarWidth.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, width: Int, b: Boolean) {
+                speedometer.indicator.width = speedometer.dpTOpx(width.toFloat())
+                textWidth.text = String.format(Locale.getDefault(), "%ddp", width)
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
+        findViewById<View>(R.id.b_image_indicator).setOnClickListener { imageIndicator() }
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        switch (position) {
-            case 0:
-                speedometer.setIndicator(Indicator.Indicators.NoIndicator);
-                break;
-            case 1:
-                speedometer.setIndicator(Indicator.Indicators.NormalIndicator);
-                break;
-            case 2:
-                speedometer.setIndicator(Indicator.Indicators.NormalSmallIndicator);
-                break;
-            case 3:
-                speedometer.setIndicator(Indicator.Indicators.TriangleIndicator);
-                break;
-            case 4:
-                speedometer.setIndicator(Indicator.Indicators.SpindleIndicator);
-                break;
-            case 5:
-                speedometer.setIndicator(Indicator.Indicators.LineIndicator);
-                break;
-            case 6:
-                speedometer.setIndicator(Indicator.Indicators.HalfLineIndicator);
-                break;
-            case 7:
-                speedometer.setIndicator(Indicator.Indicators.QuarterLineIndicator);
-                break;
-            case 8:
-                speedometer.setIndicator(Indicator.Indicators.KiteIndicator);
-                break;
-            case 9:
-                speedometer.setIndicator(Indicator.Indicators.NeedleIndicator);
-                break;
+    override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+        when (position) {
+            0 -> speedometer.setIndicator(Indicator.Indicators.NoIndicator)
+            1 -> speedometer.setIndicator(Indicator.Indicators.NormalIndicator)
+            2 -> speedometer.setIndicator(Indicator.Indicators.NormalSmallIndicator)
+            3 -> speedometer.setIndicator(Indicator.Indicators.TriangleIndicator)
+            4 -> speedometer.setIndicator(Indicator.Indicators.SpindleIndicator)
+            5 -> speedometer.setIndicator(Indicator.Indicators.LineIndicator)
+            6 -> speedometer.setIndicator(Indicator.Indicators.HalfLineIndicator)
+            7 -> speedometer.setIndicator(Indicator.Indicators.QuarterLineIndicator)
+            8 -> speedometer.setIndicator(Indicator.Indicators.KiteIndicator)
+            9 -> speedometer.setIndicator(Indicator.Indicators.NeedleIndicator)
         }
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-    }
+    override fun onNothingSelected(arg0: AdapterView<*>?) {}
 
-    public void imageIndicator(View view) {
-        ImageIndicator imageIndicator = new ImageIndicator(getApplicationContext()
-                , ContextCompat.getDrawable(this, R.drawable.image_indicator1));
-        speedometer.setIndicator(imageIndicator);
+    private fun imageIndicator() {
+        val imageIndicator = ImageIndicator(
+            applicationContext, ContextCompat.getDrawable(this, R.drawable.image_indicator1)!!
+        )
+        speedometer.indicator = imageIndicator
     }
 }
