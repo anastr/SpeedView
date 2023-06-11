@@ -1,55 +1,44 @@
-package com.github.anastr.speedviewapp.lineargauge;
+package com.github.anastr.speedviewapp.lineargauge
 
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.os.Bundle
+import android.widget.Button
+import android.widget.SeekBar
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.github.anastr.speedviewapp.R
+import com.github.anastr.speedviewlib.ProgressiveGauge
+import java.util.Locale
 
-import com.github.anastr.speedviewapp.R;
-import com.github.anastr.speedviewlib.ProgressiveGauge;
+class ProgressiveGaugeActivity : AppCompatActivity() {
 
-import java.util.Locale;
+    private lateinit var progressiveGauge: ProgressiveGauge
+    private lateinit var seekBar: SeekBar
+    private lateinit var ok: Button
+    private lateinit var textSpeed: TextView
 
-public class ProgressiveGaugeActivity extends AppCompatActivity {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_progressive_gauge)
 
-    ProgressiveGauge progressiveGauge;
-    SeekBar seekBar;
-    Button ok;
-    TextView textSpeed;
+        title = "Progressive Gauge"
+        progressiveGauge = findViewById(R.id.gauge)
+        seekBar = findViewById(R.id.seekBar)
+        ok = findViewById(R.id.ok)
+        textSpeed = findViewById(R.id.textSpeed)
+        ok.setOnClickListener {
+            progressiveGauge.speedTo(
+                seekBar.progress.toFloat()
+            )
+        }
+        seekBar.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    textSpeed.text = String.format(Locale.getDefault(), "%d", progress)
+                }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_progressive_gauge);
-        setTitle("Progressive Gauge");
-
-        progressiveGauge = (ProgressiveGauge) findViewById(R.id.gauge);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
-        ok = (Button) findViewById(R.id.ok);
-        textSpeed = (TextView) findViewById(R.id.textSpeed);
-
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressiveGauge.speedTo(seekBar.getProgress());
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
             }
-        });
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textSpeed.setText(String.format(Locale.getDefault(), "%d", progress));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
+        )
     }
 }
