@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
+import com.github.anastr.speedviewapp.compose.SpeedViewComposeActivity
 import com.github.anastr.speedviewapp.lineargauge.ImageLinearGaugeActivity
 import com.github.anastr.speedviewapp.lineargauge.ProgressiveGaugeActivity
 
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         "SpeedView with Recycler" to RecyclerActivity::class.java,
         "Sections" to SectionActivity::class.java,
         "Fulcrum" to FulcrumActivity::class.java,
+        "Compose" to SpeedViewComposeActivity::class.java,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

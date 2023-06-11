@@ -41,6 +41,7 @@
         <activity android:name=".lineargauge.ImageLinearGaugeActivity" />
         <activity android:name=".TickActivity" />
         <activity android:name=".RecyclerActivity" />
+        <activity android:name=".compose.SpeedViewComposeActivity" />
     </application>
 
 </manifest>
