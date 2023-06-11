@@ -1,60 +1,48 @@
-package com.github.anastr.speedviewapp;
+package com.github.anastr.speedviewapp
 
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import androidx.appcompat.app.AppCompatActivity
+import com.github.anastr.speedviewlib.Speedometer
 
-import com.github.anastr.speedviewlib.Speedometer;
+class WorkWithModesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-import java.util.ArrayList;
-import java.util.List;
+    private lateinit var speedometer: Speedometer
 
-public class WorkWithModesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_work_with_modes)
 
-    Speedometer speedometer;
+        title = "Work With Modes"
+        speedometer = findViewById(R.id.speedometer)
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_work_with_modes);
-        setTitle("Work With Modes");
-
-        speedometer = findViewById(R.id.speedometer);
-
-        assert speedometer != null;
-        speedometer.speedTo(40);
-
-        Spinner spinner = findViewById(R.id.spinner);
-        assert spinner != null;
-        spinner.setOnItemSelectedListener(this);
-
-        List<String> categories = new ArrayList<>();
-        categories.add("NORMAL");
-        categories.add("LEFT");
-        categories.add("TOP");
-        categories.add("RIGHT");
-        categories.add("BOTTOM");
-        categories.add("TOP_LEFT");
-        categories.add("TOP_RIGHT");
-        categories.add("BOTTOM_RIGHT");
-        categories.add("BOTTOM_LEFT");
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
-        spinner.setAdapter(dataAdapter);
-        spinner.setSelection(0);
+        speedometer.speedTo(40f)
+        val spinner = findViewById<Spinner>(R.id.spinner)!!
+        spinner.onItemSelectedListener = this
+        val categories: MutableList<String> = ArrayList()
+        categories.add("NORMAL")
+        categories.add("LEFT")
+        categories.add("TOP")
+        categories.add("RIGHT")
+        categories.add("BOTTOM")
+        categories.add("TOP_LEFT")
+        categories.add("TOP_RIGHT")
+        categories.add("BOTTOM_RIGHT")
+        categories.add("BOTTOM_LEFT")
+        val dataAdapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categories)
+        spinner.adapter = dataAdapter
+        spinner.setSelection(0)
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        speedometer.setSpeedometerMode(Speedometer.Mode.values()[position]);
+    override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+        speedometer.speedometerMode = Speedometer.Mode.values()[position]
         // simple usage:
         // speedometer.setSpeedometerMode(Speedometer.Mode.RIGHT);
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-    }
+    override fun onNothingSelected(arg0: AdapterView<*>?) {}
 }
