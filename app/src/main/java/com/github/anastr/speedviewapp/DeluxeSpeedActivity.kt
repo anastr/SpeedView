@@ -1,75 +1,53 @@
-package com.github.anastr.speedviewapp;
+package com.github.anastr.speedviewapp
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.os.Bundle
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.SeekBar
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.github.anastr.speedviewlib.DeluxeSpeedView
+import java.util.Locale
 
-import com.github.anastr.speedviewlib.DeluxeSpeedView;
+class DeluxeSpeedActivity : AppCompatActivity() {
 
-import java.util.Locale;
+    private lateinit var deluxeSpeedView: DeluxeSpeedView
+    private lateinit var seekBar: SeekBar
+    private lateinit var ok: Button
+    private lateinit var textSpeed: TextView
+    private lateinit var withTremble: CheckBox
+    private lateinit var withEffects: CheckBox
 
-public class DeluxeSpeedActivity extends AppCompatActivity {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_deluxe_speed)
+        title = "Deluxe Speed View"
 
-    DeluxeSpeedView deluxeSpeedView;
-    SeekBar seekBar;
-    Button ok;
-    TextView textSpeed;
-    CheckBox withTremble, withEffects;
+        deluxeSpeedView = findViewById(R.id.deluxeSpeedView)
+        seekBar = findViewById(R.id.seekBar)
+        ok = findViewById(R.id.ok)
+        textSpeed = findViewById(R.id.textSpeed)
+        withTremble = findViewById(R.id.withTremble)
+        withEffects = findViewById(R.id.withEffects)
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_deluxe_speed);
-        setTitle("Deluxe Speed View");
-
-        deluxeSpeedView = findViewById(R.id.deluxeSpeedView);
-        seekBar = findViewById(R.id.seekBar);
-        ok = findViewById(R.id.ok);
-        textSpeed = findViewById(R.id.textSpeed);
-        withTremble = findViewById(R.id.withTremble);
-        withEffects = findViewById(R.id.withEffects);
-
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deluxeSpeedView.speedTo(seekBar.getProgress());
-            }
-        });
-
-        withTremble.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                deluxeSpeedView.setWithTremble(isChecked);
-            }
-        });
-
-        withEffects.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                deluxeSpeedView.setWithEffects(isChecked);
-            }
-        });
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textSpeed.setText(String.format(Locale.getDefault(), "%d", progress));
+        ok.setOnClickListener {
+            deluxeSpeedView.speedTo(
+                seekBar.progress.toFloat()
+            )
+        }
+        withTremble.setOnCheckedChangeListener { _, isChecked ->
+            deluxeSpeedView.withTremble = isChecked
+        }
+        withEffects.setOnCheckedChangeListener { _, isChecked ->
+            deluxeSpeedView.isWithEffects = isChecked
+        }
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                textSpeed.text = String.format(Locale.getDefault(), "%d", progress)
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
     }
 }
