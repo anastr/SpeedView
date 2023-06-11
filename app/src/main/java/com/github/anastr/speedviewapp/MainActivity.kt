@@ -1,140 +1,71 @@
-package com.github.anastr.speedviewapp;
+package com.github.anastr.speedviewapp
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.content.Intent
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import androidx.appcompat.app.AppCompatActivity
+import com.github.anastr.speedviewapp.lineargauge.ImageLinearGaugeActivity
+import com.github.anastr.speedviewapp.lineargauge.ProgressiveGaugeActivity
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
 
-import com.github.anastr.speedviewapp.lineargauge.ImageLinearGaugeActivity;
-import com.github.anastr.speedviewapp.lineargauge.ProgressiveGaugeActivity;
+    private val screens = arrayOf(
+        "1. Speed View" to SpeedViewActivity::class.java,
+        "2. Deluxe Speed View" to DeluxeSpeedActivity::class.java,
+        "3. Awesome Speedometer View" to AwesomeSpeedometerActivity::class.java,
+        "4. Ray Speedometer View" to RayActivity::class.java,
+        "5. Pointer Speedometer" to PointerActivity::class.java,
+        "6. Tube Speedometer" to TubeSpeedometerActivity::class.java,
+        "7. Image Speedometer" to ImageSpeedometerActivity::class.java,
+        "1.. Progressive Gauge" to ProgressiveGaugeActivity::class.java,
+        "2.. Image Linear Gauge" to ImageLinearGaugeActivity::class.java,
+        "Work With Indicator" to WorkWithIndicatorActivity::class.java,
+        "Work With Marks" to MarksActivity::class.java,
+        "Work With Note" to WorkWithNoteActivity::class.java,
+        "Create Speedometer Programmatically" to CreateProgrammatically::class.java,
+        "Work With Start and End Degree" to StartEndDegreeActivity::class.java,
+        "Work With Modes" to WorkWithModesActivity::class.java,
+        "Speed Text Position" to SpeedTextPositionActivity::class.java,
+        "Work With Ticks" to TickActivity::class.java,
+        "SpeedView with Recycler" to RecyclerActivity::class.java,
+        "Sections" to SectionActivity::class.java,
+        "Fulcrum" to FulcrumActivity::class.java,
+    )
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        ListView listView = findViewById(R.id.list);
-
-        String[] values = new String[] {
-                "1. Speed View",
-                "2. Deluxe Speed View",
-                "3. Awesome Speedometer View",
-                "4. Ray Speedometer View",
-                "5. Pointer Speedometer",
-                "6. Tube Speedometer",
-                "7. Image Speedometer",
-                "1.. Progressive Gauge",
-                "2.. Image Linear Gauge",
-                "Work With Indicator",
-                "Work With Marks",
-                "Work With Note",
-                "Create Speedometer Programmatically",
-                "Work With Start and End Degree",
-                "Work With Modes",
-                "Speed Text Position",
-                "Work With Ticks",
-                "SpeedView with Recycler",
-                "Sections",
-                "Fulcrum",
-        };
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(this);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        val listView = findViewById<ListView>(R.id.list)
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1, android.R.id.text1, screens.map { it.first }
+        )
+        listView.adapter = adapter
+        listView.onItemClickListener = this
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Intent intent = new Intent ();
-        switch (position) {
-            case 0:
-                intent.setClass(MainActivity.this, SpeedViewActivity.class);
-                break;
-            case 1:
-                intent.setClass(MainActivity.this, DeluxeSpeedActivity.class);
-                break;
-            case 2:
-                intent.setClass(MainActivity.this, AwesomeSpeedometerActivity.class);
-                break;
-            case 3:
-                intent.setClass(MainActivity.this, RayActivity.class);
-                break;
-            case 4:
-                intent.setClass(MainActivity.this, PointerActivity.class);
-                break;
-            case 5:
-                intent.setClass(MainActivity.this, TubeSpeedometerActivity.class);
-                break;
-            case 6:
-                intent.setClass(MainActivity.this, ImageSpeedometerActivity.class);
-                break;
-            case 7:
-                intent.setClass(MainActivity.this, ProgressiveGaugeActivity.class);
-                break;
-            case 8:
-                intent.setClass(MainActivity.this, ImageLinearGaugeActivity.class);
-                break;
-            case 9:
-                intent.setClass(MainActivity.this, WorkWithIndicatorActivity.class);
-                break;
-            case 10:
-                intent.setClass(MainActivity.this, MarksActivity.class);
-                break;
-            case 11:
-                intent.setClass(MainActivity.this, WorkWithNoteActivity.class);
-                break;
-            case 12:
-                intent.setClass(MainActivity.this, CreateProgrammatically.class);
-                break;
-            case 13:
-                intent.setClass(MainActivity.this, StartEndDegreeActivity.class);
-                break;
-            case 14:
-                intent.setClass(MainActivity.this, WorkWithModesActivity.class);
-                break;
-            case 15:
-                intent.setClass(MainActivity.this, SpeedTextPositionActivity.class);
-                break;
-            case 16:
-                intent.setClass(MainActivity.this, TickActivity.class);
-                break;
-            case 17:
-                intent.setClass(MainActivity.this, RecyclerActivity.class);
-                break;
-            case 18:
-                intent.setClass(MainActivity.this, SectionActivity.class);
-                break;
-            case 19:
-                intent.setClass(MainActivity.this, FulcrumActivity.class);
-                break;
+    override fun onItemClick(adapterView: AdapterView<*>?, view: View, position: Int, id: Long) {
+        val intent = Intent(this, screens[position].second)
+        startActivity(intent)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.about_item -> {
+                startActivity(Intent(this, AboutActivity::class.java))
+                return true
+            }
         }
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.about_item:
-                startActivity(new Intent(this, AboutActivity.class));
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 }
