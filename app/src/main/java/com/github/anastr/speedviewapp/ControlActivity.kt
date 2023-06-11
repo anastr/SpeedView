@@ -1,145 +1,135 @@
-package com.github.anastr.speedviewapp;
+package com.github.anastr.speedviewapp
 
-import android.graphics.Color;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.graphics.Color
+import android.os.Bundle
+import android.view.View
+import android.widget.CheckBox
+import android.widget.CompoundButton
+import android.widget.EditText
+import android.widget.SeekBar
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.github.anastr.speedviewlib.SpeedView
+import java.util.Locale
 
-import androidx.appcompat.app.AppCompatActivity;
+class ControlActivity : AppCompatActivity() {
 
-import com.github.anastr.speedviewlib.SpeedView;
+    private lateinit var speedView: SpeedView
+    private lateinit var seekBar: SeekBar
+    private lateinit var maxSpeed: EditText
+    private lateinit var speedometerWidth: EditText
+    private lateinit var withTremble: CheckBox
+    private lateinit var textSpeed: TextView
 
-import java.util.Locale;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_control)
 
-public class ControlActivity extends AppCompatActivity {
-
-    SpeedView speedView;
-    SeekBar seekBar;
-    EditText maxSpeed, speedometerWidth;
-    CheckBox withTremble;
-    TextView textSpeed;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_control);
-
-        speedView = findViewById(R.id.awesomeSpeedometer);
-        seekBar = findViewById(R.id.seekBar);
-        textSpeed = findViewById(R.id.textSpeed);
-        maxSpeed = findViewById(R.id.maxSpeed);
-        speedometerWidth = findViewById(R.id.speedometerWidth);
-        withTremble = findViewById(R.id.withTremble);
-
-        withTremble.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                speedView.setWithTremble(isChecked);
-            }
-        });
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textSpeed.setText(String.format(Locale.getDefault(), "%d", progress));
+        speedView = findViewById(R.id.awesomeSpeedometer)
+        seekBar = findViewById(R.id.seekBar)
+        textSpeed = findViewById(R.id.textSpeed)
+        maxSpeed = findViewById(R.id.maxSpeed)
+        speedometerWidth = findViewById(R.id.speedometerWidth)
+        withTremble = findViewById(R.id.withTremble)
+        withTremble.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            speedView.withTremble = isChecked
+        }
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                textSpeed.text = String.format(Locale.getDefault(), "%d", progress)
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+        speedView.speedTo(50f)
 
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        speedView.speedTo(50);
+        findViewById<View>(R.id.b_set_speed).setOnClickListener { setSpeed() }
+        findViewById<View>(R.id.b_set_max_speed).setOnClickListener { setMaxSpeed() }
+        findViewById<View>(R.id.b_set_speedometer_width).setOnClickListener { setSpeedometerWidth() }
+        findViewById<View>(R.id.b_set_speed_text_size).setOnClickListener { setSpeedTextSize() }
+        findViewById<View>(R.id.b_set_indicator_color).setOnClickListener { setIndicatorColor() }
+        findViewById<View>(R.id.b_set_center_circle_color).setOnClickListener { setCenterCircleColor() }
+        findViewById<View>(R.id.b_set_low_speed_color).setOnClickListener { setLowSpeedColor() }
+        findViewById<View>(R.id.b_set_medium_speed_color).setOnClickListener { setMediumSpeedColor() }
+        findViewById<View>(R.id.b_set_high_speed_color).setOnClickListener { setHighSpeedColor() }
     }
 
-    public void setSpeed(View view) {
-        speedView.speedTo(seekBar.getProgress());
+    private fun setSpeed() {
+        speedView.speedTo(seekBar.progress.toFloat())
     }
 
-    public void setMaxSpeed(View view) {
+    private fun setMaxSpeed() {
         try {
-            int max = Integer.parseInt(maxSpeed.getText().toString());
-            seekBar.setMax(max);
-            speedView.setMaxSpeed(max);
-        }
-        catch (Exception e) {
-            maxSpeed.setError(e.getMessage());
+            val max = maxSpeed.text.toString().toInt()
+            seekBar.max = max
+            speedView.maxSpeed = max.toFloat()
+        } catch (e: Exception) {
+            maxSpeed.error = e.message
         }
     }
 
-    public void setSpeedometerWidth(View view) {
+    private fun setSpeedometerWidth() {
         try {
-            float width = Float.parseFloat(speedometerWidth.getText().toString());
-            speedView.setSpeedometerWidth(width);
-        }
-        catch (Exception e) {
-            speedometerWidth.setError(e.getMessage());
+            val width = speedometerWidth.text.toString().toFloat()
+            speedView.speedometerWidth = width
+        } catch (e: Exception) {
+            speedometerWidth.error = e.message
         }
     }
 
-    public void setSpeedTextSize(View view) {
-        EditText speedTextSize = findViewById(R.id.speedTextSize);
+    private fun setSpeedTextSize() {
+        val speedTextSize = findViewById<EditText>(R.id.speedTextSize)
         try {
-            float size = Float.parseFloat(speedTextSize.getText().toString());
-            speedView.setSpeedTextSize(size);
-        }
-        catch (Exception e) {
-            speedTextSize.setError(e.getMessage());
-        }
-    }
-
-    public void setIndicatorColor(View view) {
-        EditText indicatorColor = findViewById(R.id.indicatorColor);
-        try{
-            speedView.getIndicator().setColor(Color.parseColor(indicatorColor.getText().toString()));
-        } catch (Exception e) {
-            indicatorColor.setError(e.getMessage());
+            val size = speedTextSize.text.toString().toFloat()
+            speedView.speedTextSize = size
+        } catch (e: Exception) {
+            speedTextSize.error = e.message
         }
     }
 
-    public void setCenterCircleColor(View view) {
-        EditText centerCircleColor = findViewById(R.id.centerCircleColor);
-        try{
-            speedView.setCenterCircleColor(Color.parseColor(centerCircleColor.getText().toString()));
-        } catch (Exception e) {
-            centerCircleColor.setError(e.getMessage());
+    private fun setIndicatorColor() {
+        val indicatorColor = findViewById<EditText>(R.id.indicatorColor)
+        try {
+            speedView.indicator.color = Color.parseColor(indicatorColor.text.toString())
+        } catch (e: Exception) {
+            indicatorColor.error = e.message
         }
     }
 
-    public void setLowSpeedColor(View view) {
-        EditText lowSpeedColor = findViewById(R.id.lowSpeedColor);
-        try{
-            speedView.getSections().get(0).setColor(Color.parseColor(lowSpeedColor.getText().toString()));
-        } catch (Exception e) {
-            lowSpeedColor.setError(e.getMessage());
+    private fun setCenterCircleColor() {
+        val centerCircleColor = findViewById<EditText>(R.id.centerCircleColor)
+        try {
+            speedView.centerCircleColor = Color.parseColor(centerCircleColor.text.toString())
+        } catch (e: Exception) {
+            centerCircleColor.error = e.message
         }
     }
 
-    public void setMediumSpeedColor(View view) {
-        EditText mediumSpeedColor = findViewById(R.id.mediumSpeedColor);
-        try{
-            speedView.getSections().get(1).setColor(Color.parseColor(mediumSpeedColor.getText().toString()));
-        } catch (Exception e) {
-            mediumSpeedColor.setError(e.getMessage());
+    private fun setLowSpeedColor() {
+        val lowSpeedColor = findViewById<EditText>(R.id.lowSpeedColor)
+        try {
+            speedView.sections[0].color = Color.parseColor(lowSpeedColor.text.toString())
+        } catch (e: Exception) {
+            lowSpeedColor.error = e.message
         }
     }
 
-    public void setHighSpeedColor(View view) {
-        EditText highSpeedColor = findViewById(R.id.highSpeedColor);
-        try{
-            speedView.getSections().get(2).setColor(Color.parseColor(highSpeedColor.getText().toString()));
-        } catch (Exception e) {
-            highSpeedColor.setError(e.getMessage());
+    private fun setMediumSpeedColor() {
+        val mediumSpeedColor = findViewById<EditText>(R.id.mediumSpeedColor)
+        try {
+            speedView.sections[1].color = Color.parseColor(mediumSpeedColor.text.toString())
+        } catch (e: Exception) {
+            mediumSpeedColor.error = e.message
+        }
+    }
+
+    private fun setHighSpeedColor() {
+        val highSpeedColor = findViewById<EditText>(R.id.highSpeedColor)
+        try {
+            speedView.sections[2].color = Color.parseColor(highSpeedColor.text.toString())
+        } catch (e: Exception) {
+            highSpeedColor.error = e.message
         }
     }
 }

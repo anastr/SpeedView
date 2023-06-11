@@ -52,10 +52,10 @@
                     tools:text="50" />
 
                 <Button
+                    android:id="@+id/b_set_speed"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="setSpeed"
                     android:text="Go" />
             </LinearLayout>
 
@@ -86,10 +86,10 @@
                     android:inputType="number"/>
 
                 <Button
+                    android:id="@+id/b_set_max_speed"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="setMaxSpeed"
                     android:text="set"/>
 
             </LinearLayout>
@@ -114,10 +114,10 @@
                     android:inputType="number" />
 
                 <Button
+                    android:id="@+id/b_set_speedometer_width"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="setSpeedometerWidth"
                     android:text="set"/>
 
             </LinearLayout>
@@ -142,10 +142,10 @@
                     android:inputType="number" />
 
                 <Button
+                    android:id="@+id/b_set_speed_text_size"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="setSpeedTextSize"
                     android:text="set"/>
 
             </LinearLayout>
@@ -169,10 +169,10 @@
                     android:hint="indicator Color"/>
 
                 <Button
+                    android:id="@+id/b_set_indicator_color"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="setIndicatorColor"
                     android:text="set"/>
 
             </LinearLayout>
@@ -196,10 +196,10 @@
                     android:hint="center Circle Color"/>
 
                 <Button
+                    android:id="@+id/b_set_center_circle_color"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="setCenterCircleColor"
                     android:text="set"/>
 
             </LinearLayout>
@@ -223,10 +223,10 @@
                     android:hint="low Speed"/>
 
                 <Button
+                    android:id="@+id/b_set_low_speed_color"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="setLowSpeedColor"
                     android:text="set"/>
 
             </LinearLayout>
@@ -250,10 +250,10 @@
                     android:hint="medium Speed"/>
 
                 <Button
+                    android:id="@+id/b_set_medium_speed_color"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="setMediumSpeedColor"
                     android:text="set" />
 
             </LinearLayout>
@@ -277,10 +277,10 @@
                     android:hint="high Speed"/>
 
                 <Button
+                    android:id="@+id/b_set_high_speed_color"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="setHighSpeedColor"
                     android:text="set"/>
 
             </LinearLayout>
