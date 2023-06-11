@@ -1,71 +1,51 @@
-package com.github.anastr.speedviewapp;
+package com.github.anastr.speedviewapp
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.os.Bundle
+import android.widget.Button
+import android.widget.SeekBar
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.github.anastr.speedviewlib.Gauge
+import com.github.anastr.speedviewlib.PointerSpeedometer
+import java.util.Locale
 
-import androidx.appcompat.app.AppCompatActivity;
+class PointerActivity : AppCompatActivity() {
 
-import com.github.anastr.speedviewlib.Gauge;
-import com.github.anastr.speedviewlib.PointerSpeedometer;
+    private lateinit var pointerSpeedometer: PointerSpeedometer
+    private lateinit var seekBarSpeed: SeekBar
+    private lateinit var ok: Button
+    private lateinit var textSpeed: TextView
+    private lateinit var textSpeedChange: TextView
 
-import java.util.Locale;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_pointer)
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function3;
+        title = "Pointer Speedometer"
+        pointerSpeedometer = findViewById(R.id.pointerSpeedometer)
+        seekBarSpeed = findViewById(R.id.seekBarSpeed)
+        ok = findViewById(R.id.ok)
+        textSpeed = findViewById(R.id.textSpeed)
+        textSpeedChange = findViewById(R.id.textSpeedChange)
 
-public class PointerActivity extends AppCompatActivity {
-
-    PointerSpeedometer pointerSpeedometer;
-    SeekBar seekBarSpeed;
-    Button ok;
-    TextView textSpeed, textSpeedChange;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pointer);
-        setTitle("Pointer Speedometer");
-
-        pointerSpeedometer = findViewById(R.id.pointerSpeedometer);
-        seekBarSpeed = findViewById(R.id.seekBarSpeed);
-        ok = findViewById(R.id.ok);
-        textSpeed = findViewById(R.id.textSpeed);
-        textSpeedChange = findViewById(R.id.textSpeedChange);
-
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pointerSpeedometer.speedTo(seekBarSpeed.getProgress());
-            }
-        });
-
-        seekBarSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textSpeed.setText(String.format(Locale.getDefault(), "%d", progress));
+        ok.setOnClickListener {
+            pointerSpeedometer.speedTo(
+                seekBarSpeed.progress.toFloat()
+            )
+        }
+        seekBarSpeed.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                textSpeed.text = String.format(Locale.getDefault(), "%d", progress)
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+        pointerSpeedometer.onSpeedChangeListener =
+            { gauge: Gauge, _: Boolean?, _: Boolean? ->
+                textSpeedChange.text = String.format(
+                    Locale.getDefault(), "onSpeedChange %d", gauge.currentIntSpeed
+                )
             }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        pointerSpeedometer.setOnSpeedChangeListener(new Function3<Gauge, Boolean, Boolean, Unit>() {
-            @Override
-            public Unit invoke(Gauge gauge, Boolean aBoolean, Boolean aBoolean2) {
-                textSpeedChange.setText(String.format(Locale.getDefault(), "onSpeedChange %d"
-                        , gauge.getCurrentIntSpeed()));
-                return Unit.INSTANCE;
-            }
-        });
     }
 }
