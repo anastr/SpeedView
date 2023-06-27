@@ -2,8 +2,6 @@
 Dynamic Speedometer, Gauge for Android. **amazing**, **powerful**, and _multi shape_ :zap: , you can change (colors, bar width, shape, text, font ...everything !!), this Library has also made to build **games** with `accelerate` and `decelerate`,
  [see project on GitHub](https://github.com/anastr/SpeedView/).
 
-`minSdkVersion=11`
-
 Library Size just ~ 48 KB.
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SpeedView-green.svg?style=true)](https://android-arsenal.com/details/1/4169)
@@ -29,6 +27,11 @@ This project needs you! If you would like to support this project, the creator o
 
 [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=VQ9DDY2KSQLJW)
 
+# Compose Multiplatform
+
+> SpeedView is now available in Jetpack Compose! Check [Speedometer](https://github.com/anastr/Speedometer/) repo for more info.
+
+<a href='https://github.com/anastr/Speedometer/'><img  width="25%" alt='Speedometer for Compose Multiplatform' src='images/Jetpack-Compose.png'/></a>
 
 
 # Download
