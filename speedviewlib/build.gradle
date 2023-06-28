@@ -54,7 +54,7 @@ artifacts {
     archives androidSourcesJar
 }
 
-version = '1.6.0'
+version = '1.6.1'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
