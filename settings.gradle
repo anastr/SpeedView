@@ -1,1 +1,1 @@
-include ':app', ':speedviewlib', ':speedviewlib-compose'
+include ':app', ':speedviewlib'
