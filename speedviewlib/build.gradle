@@ -80,6 +80,7 @@ afterEvaluate {
                     description = 'Dynamic Speedometer and Gauge for Android. amazing, powerful, and multi shape.'
                     url = 'https://github.com/anastr/SpeedView'
                     signing {
+                        useGpgCmd()
                         sign publishing.publications.release
 //                        sign configurations.archives
                     }
