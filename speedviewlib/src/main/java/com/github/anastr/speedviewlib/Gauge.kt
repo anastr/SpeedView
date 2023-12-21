@@ -481,7 +481,7 @@ abstract class Gauge constructor(
      * Speed-unit text position and size.
      * @return speed-unit's rect.
      */
-    protected fun getSpeedUnitTextBounds(): RectF {
+    protected open fun getSpeedUnitTextBounds(): RectF {
         val left = widthPa * speedTextPosition.x - translatedDx + padding -
                 getSpeedUnitTextWidth() * speedTextPosition.width + speedTextPadding * speedTextPosition.paddingH
         val top = heightPa * speedTextPosition.y - translatedDy + padding -
