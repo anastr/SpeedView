@@ -144,22 +144,27 @@ open class RaySpeedometer @JvmOverloads constructor(
 
         canvas.save()
         canvas.rotate(getStartDegree() + 90f, size * .5f, size * .5f)
-        var i = getStartDegree()
-        while (i < getEndDegree()) {
-            if (degree <= i) {
+        val zeroDegree = getDegreeAtSpeed(0f)
+        val drawingBackwards = degree <= zeroDegree
+        val rangeCheck = if (drawingBackwards) {
+            degree.toInt()..zeroDegree.toInt()
+        } else {
+            zeroDegree.toInt()..degree.toInt()
+        }
+
+        for (i in getStartDegree()..getEndDegree() step degreeBetweenMark) {
+            if (!rangeCheck.contains(i)) {
                 rayMarkPaint.color = markColor
                 canvas.drawPath(markPath, rayMarkPaint)
                 canvas.rotate(degreeBetweenMark.toFloat(), size * .5f, size * .5f)
-                i += degreeBetweenMark
-                continue
+            } else {
+                if (currentSection != null)
+                    activeMarkPaint.color = currentSection!!.color
+                else
+                    activeMarkPaint.color = 0 // transparent color
+                canvas.drawPath(markPath, activeMarkPaint)
+                canvas.rotate(degreeBetweenMark.toFloat(), size * .5f, size / 2f)
             }
-            if (currentSection != null)
-                activeMarkPaint.color = currentSection!!.color
-            else
-                activeMarkPaint.color = 0 // transparent color
-            canvas.drawPath(markPath, activeMarkPaint)
-            canvas.rotate(degreeBetweenMark.toFloat(), size * .5f, size / 2f)
-            i += degreeBetweenMark
         }
         canvas.restore()
 
