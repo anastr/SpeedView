@@ -148,6 +148,7 @@
         <attr name="sv_rayColor" format="color"/>
         <attr name="sv_degreeBetweenMark" format="integer"/>
         <attr name="sv_rayMarkWidth" format="dimension"/>
+        <attr name="sv_rayStartSpeed" format="float" />
     </declare-styleable>
 
     <declare-styleable name="PointerSpeedometer" parent="Speedometer">

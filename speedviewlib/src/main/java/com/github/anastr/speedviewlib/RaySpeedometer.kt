@@ -30,6 +30,7 @@ open class RaySpeedometer @JvmOverloads constructor(
     private var withEffects = true
 
     private var degreeBetweenMark = 5
+    var rayStartSpeed: Float? = null
 
     var isWithEffects: Boolean
         get() = withEffects
@@ -104,12 +105,21 @@ open class RaySpeedometer @JvmOverloads constructor(
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.RaySpeedometer, 0, 0)
 
         rayPaint.color = a.getColor(R.styleable.RaySpeedometer_sv_rayColor, rayPaint.color)
-        val degreeBetweenMark = a.getInt(R.styleable.RaySpeedometer_sv_degreeBetweenMark, this.degreeBetweenMark)
-        val rayMarkWidth = a.getDimension(R.styleable.RaySpeedometer_sv_rayMarkWidth, rayMarkPaint.strokeWidth)
+        val degreeBetweenMark =
+            a.getInt(R.styleable.RaySpeedometer_sv_degreeBetweenMark, this.degreeBetweenMark)
+        val rayMarkWidth =
+            a.getDimension(R.styleable.RaySpeedometer_sv_rayMarkWidth, rayMarkPaint.strokeWidth)
         rayMarkPaint.strokeWidth = rayMarkWidth
         activeMarkPaint.strokeWidth = rayMarkWidth
-        speedBackgroundPaint.color = a.getColor(R.styleable.RaySpeedometer_sv_speedBackgroundColor, speedBackgroundPaint.color)
+        speedBackgroundPaint.color = a.getColor(
+            R.styleable.RaySpeedometer_sv_speedBackgroundColor,
+            speedBackgroundPaint.color
+        )
         withEffects = a.getBoolean(R.styleable.RaySpeedometer_sv_withEffects, withEffects)
+        rayStartSpeed =
+            a.getFloat(R.styleable.RaySpeedometer_sv_rayStartSpeed, Float.NEGATIVE_INFINITY).let {
+                if (it == Float.NEGATIVE_INFINITY) null else it
+            }
         a.recycle()
         isWithEffects = withEffects
         if (degreeBetweenMark in 1..20)
@@ -139,32 +149,35 @@ open class RaySpeedometer @JvmOverloads constructor(
         updateBackgroundBitmap()
     }
 
+    open fun getRayStartDegree(): Float {
+        return getDegreeAtSpeed(rayStartSpeed ?: minSpeed)
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         canvas.save()
         canvas.rotate(getStartDegree() + 90f, size * .5f, size * .5f)
-        val zeroDegree = getDegreeAtSpeed(0f)
-        val drawingBackwards = degree <= zeroDegree
-        val rangeCheck = if (drawingBackwards) {
+
+        val zeroDegree = getRayStartDegree()
+        val rangeCheck = if (degree <= zeroDegree) {
             degree.toInt()..zeroDegree.toInt()
         } else {
             zeroDegree.toInt()..degree.toInt()
         }
 
         for (i in getStartDegree()..getEndDegree() step degreeBetweenMark) {
-            if (!rangeCheck.contains(i)) {
-                rayMarkPaint.color = markColor
-                canvas.drawPath(markPath, rayMarkPaint)
-                canvas.rotate(degreeBetweenMark.toFloat(), size * .5f, size * .5f)
+            val drawWith = if (!rangeCheck.contains(i)) {
+                rayMarkPaint.apply {
+                    color = markColor
+                }
             } else {
-                if (currentSection != null)
-                    activeMarkPaint.color = currentSection!!.color
-                else
-                    activeMarkPaint.color = 0 // transparent color
-                canvas.drawPath(markPath, activeMarkPaint)
-                canvas.rotate(degreeBetweenMark.toFloat(), size * .5f, size / 2f)
+                activeMarkPaint.apply {
+                    color = currentSection?.color ?: 0
+                }
             }
+            canvas.drawPath(markPath, drawWith)
+            canvas.rotate(degreeBetweenMark.toFloat(), size * .5f, size * .5f)
         }
         canvas.restore()
 
